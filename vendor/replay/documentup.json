@@ -1,0 +1,5 @@
+{ "name":     "Node Replay",
+  "issues":   true,
+  "travis":   true,
+  "twitter":  "assaf"
+}

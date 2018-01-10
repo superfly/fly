@@ -17,18 +17,31 @@ axios.defaults.validateStatus = undefined
 
 import { FileStore, FileStoreOptions } from '../src/config_stores/file'
 
+const Replay = require('replay');
+Replay.fixtures = __dirname + '/fixtures/replay';
+Replay.headers.push(/^fly-/);
+
 let isoPool: IsolatePool;
 
-export async function createServer(cwd: string, options?: FileStoreOptions) {
+export async function startServer(cwd: string, options?: FileStoreOptions) {
   options || (options = { build: false })
+  cwd = `./test/fixtures/apps/${cwd}`
   let store = new FileStore(cwd, options)
-
-  if (!isoPool) {
-    isoPool = await createIsoPool()
-  }
 
   conf.configStore = store
   conf.isoPool = isoPool
 
-  return new Server(conf).server
+  const server = new Server(conf).server
+
+  server.on('error', (e) => { throw e })
+
+  await new Promise((resolve, reject) => {
+    server.listen(3333, () => resolve())
+  })
+
+  return server
 }
+
+before(async function () {
+  isoPool = await createIsoPool()
+})
