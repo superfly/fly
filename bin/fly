@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+const prg = require('commander')
+
+prg
+	.version('0.1.0')
+	.command('server', 'launch a local fly server')
+	.parse(process.argv)

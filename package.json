@@ -1,0 +1,98 @@
+{
+	"name": "@flyio/fly",
+	"version": "0.1.0",
+	"description": "",
+	"main": "lib/index.js",
+	"scripts": {
+		"start": "npm run build:live",
+		"test": "mocha",
+		"coverage": "nyc npm test",
+		"build:live": "nodemon -e ts -w src/ --exec ts-node -- ./src/index.ts",
+		"build": "tsc -p .",
+		"start:production": "ts-node ./src/index.ts",
+		"prepublish": "npm run build"
+	},
+	"files": [
+		"lib/**/*",
+		"bin/**/*",
+		"v8env/**/*"
+	],
+	"bin": {
+		"fly": "bin/fly"
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/chai": "^4.0.8",
+		"@types/generic-pool": "^3.1.0",
+		"@types/js-yaml": "^3.10.1",
+		"@types/mocha": "^2.2.44",
+		"@types/multiparty": "0.0.31",
+		"@types/node": "^8.0.53",
+		"@types/promise.prototype.finally": "^2.0.2",
+		"@types/redis": "^2.8.1",
+		"@types/url-parse": "^1.1.0",
+		"@types/webpack": "^3.8.2",
+		"@types/winston": "^2.3.7",
+		"axios": "^0.17.1",
+		"babel-eslint": "^8.2.1",
+		"chai": "^4.1.2",
+		"mocha": "^4.0.1",
+		"nyc": "^11.3.0",
+		"standard": "^10.0.3",
+		"ts-loader": "^3.2.0",
+		"ts-node": "^3.3.0",
+		"typescript": "^2.6.2",
+		"url-parse": "^1.2.0",
+		"url-search-params": "^0.10.0"
+	},
+	"dependencies": {
+		"buffer": "^5.0.8",
+		"bugsnag": "^2.0.1",
+		"commander": "^2.12.2",
+		"cookie": "^0.3.1",
+		"css-select": "^1.3.0-rc0",
+		"domutils": "^1.6.2",
+		"findhit-proxywrap": "^0.3.12",
+		"generic-pool": "^3.2.0",
+		"get-stream": "^3.0.0",
+		"htmlparser2": "^3.9.2",
+		"http-cache-semantics": "^3.8.1",
+		"import-cwd": "^2.1.0",
+		"isolated-vm": "^0.1.3",
+		"js-yaml": "^3.10.0",
+		"memory-fs": "^0.4.1",
+		"mksuid": "0.0.3",
+		"msgpack5": "^3.6.0",
+		"multiparty": "^4.1.3",
+		"promise.prototype.finally": "^3.1.0",
+		"readable-stream": "^2.3.3",
+		"string-to-stream": "^1.1.0",
+		"text-encoding": "^0.6.4",
+		"to-arraybuffer": "^1.0.1",
+		"web-streams-polyfill": "^1.3.2",
+		"webpack": "^3.10.0",
+		"winston": "^2.4.0"
+	},
+	"nyc": {
+		"extension": [
+			".ts",
+			".tsx"
+		],
+		"exclude": [
+			"**/*.d.ts",
+			"src/spec/**/*",
+			"**/*.js"
+		],
+		"reporter": [
+			"text"
+		],
+		"all": true
+	},
+	"standard": {
+		"ignore": [
+			"node_modules/**",
+			"lib/**"
+		]
+	}
+}
