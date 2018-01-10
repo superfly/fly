@@ -57,6 +57,7 @@
 		"findhit-proxywrap": "^0.3.12",
 		"generic-pool": "^3.2.0",
 		"get-stream": "^3.0.0",
+		"glob": "^7.1.2",
 		"htmlparser2": "^3.9.2",
 		"http-cache-semantics": "^3.8.1",
 		"import-cwd": "^2.1.0",

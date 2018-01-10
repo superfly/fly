@@ -5,4 +5,5 @@ const prg = require('commander')
 prg
 	.version('0.1.0')
 	.command('server', 'launch a local fly server')
+	.command('test', 'unit test your fly app')
 	.parse(process.argv)

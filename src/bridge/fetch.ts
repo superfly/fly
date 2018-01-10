@@ -5,7 +5,7 @@ import log from "../log"
 import * as http from 'http'
 import * as https from 'https'
 import { URL, parse as parseURL, format as formatURL } from 'url'
-import { headersForWeb, fullURL } from '../utils'
+import { headersForWeb, fullURL } from '../utils/http'
 
 import { conf } from '../config'
 

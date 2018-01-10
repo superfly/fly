@@ -9,7 +9,7 @@ import log from './log'
 import * as genericPool from 'generic-pool';
 import { Trace } from './trace';
 import mksuid from "mksuid"
-import * as utils from './utils'
+import * as httpUtils from './utils/http'
 import { Readable, Writable, Transform } from 'stream'
 import { ConfigStore } from './config_store'
 import { createIsoPool } from './isolate'
@@ -133,7 +133,7 @@ export class Server {
 		try {
 			let jail = ctx.globalReference()
 
-			const fullURL = utils.fullURL(scheme, request)
+			const fullURL = httpUtils.fullURL(scheme, request)
 
 			const setContext = jail.getSync("setContext")
 			let rules = app.config.rules || []
@@ -164,7 +164,7 @@ export class Server {
 
 			let reqForV8 = new ivm.ExternalCopy({
 				method: request.method,
-				headers: utils.headersForWeb(request.rawHeaders),
+				headers: httpUtils.headersForWeb(request.rawHeaders),
 				remoteAddr: request.connection.remoteAddress
 			}).copyInto()
 
@@ -218,7 +218,7 @@ export class Server {
 
 					for (let n in res.headers) {
 						try {
-							const niceName = utils.normalizeHeader(n)
+							const niceName = httpUtils.normalizeHeader(n)
 							const val = res.headers[n]
 							response.setHeader(niceName, val)
 							finalHeaders[niceName] = val

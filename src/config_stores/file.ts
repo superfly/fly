@@ -4,12 +4,11 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as YAML from 'js-yaml'
 
+import { buildApp } from '../utils/build'
+
 import * as webpack from 'webpack'
 const MemoryFS = require('memory-fs')
 const importCwd = require('import-cwd')
-
-const webpackConfPath = "./webpack.config.js";
-const webpackConfRequirePath = "./webpack.config";
 
 export interface FileStoreOptions {
   build?: boolean
@@ -40,27 +39,10 @@ export class FileStore implements ConfigStore {
       return
     }
 
-    this.compiler = webpack(getWebpackConfig(cwd))
-    this.compiler.outputFileSystem = new MemoryFS() // save in memory
-
-    this.compiler.watch({}, (err: Error, stats: any) => {
-      if (err) {
-        console.error(err)
-        return
-      }
-      if (stats.hasErrors()) {
-        console.error(new Error(stats.toString({
-          errorDetails: true,
-          warnings: true
-        })))
-        return
-      }
-
-      if (stats.hash != this.codeHash) {
-        console.log(`Compiled app bundle (hash: ${stats.hash})`)
-        this.code = this.compiler.outputFileSystem.data['bundle.js'].toString()
-        this.codeHash = stats.hash
-      }
+    buildApp(cwd, { watch: true }, (err: Error, code: string) => {
+      if (err)
+        return console.error(err)
+      this.code = code
     })
   }
 
@@ -80,25 +62,4 @@ export class FileStore implements ConfigStore {
     this.cachedApp = app
     return app
   }
-}
-
-function getWebpackConfig(cwd: string) {
-  let conf;
-  if (fs.existsSync(path.join(cwd, webpackConfPath))) {
-    console.log(`Using Webpack config ${webpackConfPath}`)
-    conf = importCwd(webpackConfRequirePath)
-  } else {
-    console.log("Generating Webpack config...")
-    conf = {
-      entry: `${cwd}/index.js`,
-      resolve: {
-        extensions: ['.js']
-      }
-    }
-  }
-  conf.output = {
-    filename: 'bundle.js',
-    path: '/'
-  }
-  return conf
 }

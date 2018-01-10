@@ -1,5 +1,5 @@
 import * as http from 'http'
-import log from './log'
+import log from '../log'
 
 export function headersForWeb(headers: any[]): string[][] {
   let webHeaders: string[][] = []
