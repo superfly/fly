@@ -1,0 +1,7 @@
+GET /foo1
+
+HTTP/1.1 200 OK
+date: Wed, 13 Dec 2017 21:32:50 GMT
+content-type: text/plain; charset=utf-8
+
+bar1
