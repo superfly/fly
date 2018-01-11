@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "lib/index.js",
 	"scripts": {
+		"start": "./bin/fly server ./apps/getting-started",
 		"test": "mocha",
 		"coverage": "nyc npm test",
 		"build:live": "npm run build -- -w",
