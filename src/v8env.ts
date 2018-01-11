@@ -9,10 +9,10 @@ const MemoryFS = require('memory-fs')
 let v8EnvHash = "";
 let v8Env = "";
 
-const modulePath = path.resolve(path.dirname(fs.realpathSync(__filename)), '..')
+const v8EnvEntry = require.resolve("../v8env/index")
 
 let compiler = webpack({
-  entry: path.join(modulePath, 'v8env/index.js'),
+  entry: v8EnvEntry,
   output: {
     filename: 'v8env.js',
     path: '/' // memoryfs!
