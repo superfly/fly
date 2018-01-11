@@ -4,7 +4,7 @@ import { Isolate, IsolatePool } from './isolate';
 import * as url from 'url';
 import * as net from 'net';
 import * as fs from 'fs';
-import { Config, conf } from './config'
+import { Config } from './config'
 import log from './log'
 import * as genericPool from 'generic-pool';
 import { Trace } from './trace';
@@ -40,7 +40,7 @@ export class Server {
 	constructor(config: Config) {
 		this.config = config
 		this.server = proxiedHttp.createServer(this.handleRequest.bind(this));
-		this.port = conf.port
+		this.port = config.port
 	}
 
 	start() {
