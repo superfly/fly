@@ -1,32 +1,11 @@
 #!/usr/bin/env node
 
 const prg = require('commander')
-let { conf } = require('../lib/config')
-const path = require('path')
-const { FileStore } = require('../lib/config_stores/file')
-const { createIsoPool } = require('../lib/isolate')
-const { Server } = require('../lib/server')
-
 const { version } = require('../package.json')
 
 prg
   .version(version)
   .option('-p, --port <port>', 'Port to bind to.', parseInt)
-  .parse(process.argv)
+  .parse(process.argv);
 
-if (prg.port) { conf.port = prg.port }
-
-const cwd = !prg.args[0]
-  ? process.cwd()
-  : prg.args[0].startsWith('/')
-    ? prg.args[0]
-    : path.resolve(process.cwd(), prg.args[0])
-
-conf.configStore = new FileStore(cwd, { build: true })
-
-createIsoPool({ min: 5, max: 20 }).then((pool) => {
-  conf.isoPool = pool
-  new Server(conf).start()
-}).catch((err) => {
-  throw err
-})
+require('../lib/cmd/server').startServer(prg)

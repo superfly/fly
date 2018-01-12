@@ -1,27 +1,27 @@
-import { IsolatePool } from './isolate'
-import { ConfigStore } from './config_store'
+import { flyConf } from './fly_config'
+import { AppStore } from './app/store'
 
 export interface Config {
   env: string
   logLevel: string
   port: string | number
-  isoPool?: IsolatePool
-  configStore?: ConfigStore
+  appStore?: AppStore
 }
 
-const env = process.env.PROXY_ENV || process.env.NODE_ENV || "development"
-const port = process.env.PROXY_PORT || "3000"
+export let conf = parseConfig()
 
-const logLevelFromEnv = process.env.LOG_LEVEL
+function parseConfig(): Config {
+  const env = getValue(flyConf.env, process.env.FLY_ENV, process.env.NODE_ENV, 'development')
+  const logLevel = getValue(flyConf.logLevel, process.env.FLY_LOG_LEVEL, process.env.LOG_LEVEL)
+  const port = getValue(flyConf.port, process.env.FLY_PORT, process.env.PORT, 3000)
 
-let logLevel: string
-if (logLevelFromEnv)
-  logLevel = logLevelFromEnv
-else
-  logLevel = env === "development" ? "debug" : "info"
+  return {
+    env: env,
+    logLevel: logLevel || env === 'development' ? 'debug' : 'info',
+    port: /^\d+$/.test(port) ? parseInt(port) : port
+  }
+}
 
-export let conf: Config = {
-  env: env,
-  logLevel: logLevel,
-  port: /^\d+$/.test(port) ? parseInt(port) : port
+function getValue(...values: any[]) {
+  return values.find((v) => typeof v !== 'undefined')
 }

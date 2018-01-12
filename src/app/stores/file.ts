@@ -1,10 +1,11 @@
-import { ConfigStore } from '../config_store'
-import { AppConfig } from '../app_config'
+import { AppStore } from '../store'
+import { App } from '../'
 import * as path from 'path'
 import * as fs from 'fs'
-import * as YAML from 'js-yaml'
 
-import { buildApp } from '../utils/build'
+import { flyConf } from '../../fly_config'
+
+import { buildApp } from '../../utils/build'
 
 import * as webpack from 'webpack'
 const MemoryFS = require('memory-fs')
@@ -14,14 +15,14 @@ export interface FileStoreOptions {
   build?: boolean
 }
 
-export class FileStore implements ConfigStore {
+export class FileStore implements AppStore {
   cwd: string
   compiler: webpack.Compiler
 
   code: string
   codeHash: string
 
-  cachedApp: AppConfig
+  cachedApp: App
 
   constructor(cwd: string, options?: any) {
     this.cwd = cwd
@@ -43,22 +44,17 @@ export class FileStore implements ConfigStore {
       if (err)
         return console.error(err)
       this.code = code
+      if (this.cachedApp)
+        this.cachedApp.code = code
     })
   }
 
-  async getConfigByHostname(hostname: string) {
+  async getAppByHostname(hostname: string) {
     if (this.cachedApp)
       return this.cachedApp
 
-    let conf = {}
-    let pathToConfigYML = path.join(this.cwd, '.fly.yml')
-    if (fs.existsSync(pathToConfigYML))
-      conf = YAML.load(fs.readFileSync(pathToConfigYML).toString())
-
-    let app = new AppConfig(conf)
-    app.getCode = () => {
-      return this.code
-    }
+    let app = new App(flyConf.app || {})
+    app.code = this.code
     this.cachedApp = app
     return app
   }

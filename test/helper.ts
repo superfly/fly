@@ -15,7 +15,7 @@ import * as fs from 'fs'
 import axios from 'axios'
 axios.defaults.validateStatus = undefined
 
-import { FileStore, FileStoreOptions } from '../src/config_stores/file'
+import { FileStore, FileStoreOptions } from '../src/app/stores/file'
 
 const Replay = require('replay');
 Replay.fixtures = __dirname + '/fixtures/replay';
@@ -28,10 +28,9 @@ export async function startServer(cwd: string, options?: FileStoreOptions) {
   cwd = `./test/fixtures/apps/${cwd}`
   let store = new FileStore(cwd, options)
 
-  conf.configStore = store
-  conf.isoPool = isoPool
+  conf.appStore = store
 
-  const server = new Server(conf).server
+  const server = new Server(conf, { isoPool }).server
 
   server.on('error', (e) => { throw e })
 

@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+const prg = require('commander')
+const { version } = require('../package.json')
+
+prg
+  .version(version)
+  .option('-a, --app [id]', "app to deploy, defaults to .fly.yml's 'id' attribute")
+  .parse(process.argv)

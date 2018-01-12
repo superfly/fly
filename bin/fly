@@ -6,5 +6,6 @@ const { version } = require('../package.json')
 prg
 	.version(version)
 	.command('server', 'launch a local fly server')
+	.command('deploy', 'deploy your code to fly')
 	.command('test', 'unit test your fly app')
 	.parse(process.argv)

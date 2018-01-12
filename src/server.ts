@@ -11,7 +11,7 @@ import { Trace } from './trace';
 import mksuid from "mksuid"
 import * as httpUtils from './utils/http'
 import { Readable, Writable, Transform } from 'stream'
-import { ConfigStore } from './config_store'
+import { AppStore } from './app/store'
 import { createIsoPool } from './isolate'
 
 const proxiedHttp = require('findhit-proxywrap').proxy(http, { strict: false })
@@ -32,44 +32,57 @@ const hopHeaders = [
 	"Upgrade-Insecure-Requests"
 ]
 
+export interface ServerOptions {
+	isoPool?: IsolatePool
+	isoPoolMin?: number
+	isoPoolMax?: number
+}
+
 export class Server {
 	server: http.Server
 	config: Config
-	port: number | string
+	options: ServerOptions
+	isoPool: IsolatePool
 
-	constructor(config: Config) {
+	constructor(config: Config, options?: ServerOptions) {
 		this.config = config
+		this.options = options || {}
+		if (options && options.isoPool)
+			this.isoPool = options.isoPool
 		this.server = proxiedHttp.createServer(this.handleRequest.bind(this));
-		this.port = config.port
 	}
 
-	start() {
+	async start() {
 		this.server.on('listening', () => {
-			log.info("Server listening on", this.port);
+			log.info("Server listening on", this.config.port);
 			// set permissions
-			if (typeof this.port === "string") {
-				fs.chmod(this.port.toString(), 0o777, () => { });
+			if (typeof this.config.port === "string") {
+				fs.chmod(this.config.port.toString(), 0o777, () => { });
 			}
 		});
 
 		// double-check EADDRINUSE
 		this.server.on('error', (e: any) => {
-			if (typeof this.port === "string") {
+			if (typeof this.config.port === "string") {
 				if (e.code !== 'EADDRINUSE') throw e;
-				net.connect({ path: this.port.toString() }, () => {
+				net.connect({ path: this.config.port.toString() }, () => {
 					// really in use: re-throw
-					log.error(this.port.toString(), "socket already in use")
+					log.error(this.config.port.toString(), "socket already in use")
 					throw e;
 				}).on('error', (e: any) => {
 					if (e.code !== 'ECONNREFUSED') throw e;
 					// not in use: delete it and re-listen
-					fs.unlinkSync(this.port.toString());
-					this.server.listen(this.port.toString());
+					fs.unlinkSync(this.config.port.toString());
+					this.server.listen(this.config.port.toString());
 				});
 			}
 		});
 
-		this.server.listen(this.port);
+		this.isoPool = this.isoPool || await createIsoPool({
+			min: this.options.isoPoolMin || 20,
+			max: this.options.isoPoolMax || 100
+		})
+		this.server.listen(this.config.port);
 	}
 
 	private async handleRequest(request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
@@ -78,9 +91,9 @@ export class Server {
 
 		const requestID = mksuid()
 		let fullT = Trace.start("request")
-		let isoPool = this.config.isoPool
+		let isoPool = this.isoPool
 		if (!isoPool) {
-			isoPool = this.config.isoPool = await createIsoPool()
+			isoPool = this.isoPool = await createIsoPool()
 		}
 
 		if (request.headers.host === undefined)
@@ -90,7 +103,7 @@ export class Server {
 			return
 		}
 
-		if (!this.config.configStore) {
+		if (!this.config.appStore) {
 			throw new Error("please define a configStore")
 		}
 
@@ -98,7 +111,7 @@ export class Server {
 
 		let app: any
 		try {
-			app = await this.config.configStore.getConfigByHostname(request.headers.host)
+			app = await this.config.appStore.getAppByHostname(request.headers.host)
 		} catch (err) {
 			log.error("error getting app", err)
 			response.writeHead(500)
@@ -114,9 +127,7 @@ export class Server {
 			return
 		}
 
-		let code = app.getCode()
-
-		if (!code) {
+		if (!app.code) {
 			response.writeHead(400)
 			response.end("app has no code")
 			return
@@ -136,13 +147,12 @@ export class Server {
 			const fullURL = httpUtils.fullURL(scheme, request)
 
 			const setContext = jail.getSync("setContext")
-			let rules = app.config.rules || []
-			if (rules) {
-				rules = rules.sort((a: any, b: any) => a.priority - b.priority).reverse()
-			}
 
 			setContext.apply(null, [
 				new ivm.ExternalCopy({
+					appID: app.id,
+					appSettings: app.settings,
+
 					requestID: requestID,
 					originalScheme: scheme,
 					originalHost: request.headers.host,
@@ -152,7 +162,7 @@ export class Server {
 			])
 
 			let t = Trace.start("compile custom script")
-			let script = iso.iso.compileScriptSync(code, { filename: "code.js" })
+			let script = iso.iso.compileScriptSync(app.code, { filename: "code.js" })
 			t.end()
 			t = Trace.start("run custom script")
 			let ret = script.runSync(ctx)
@@ -284,13 +294,13 @@ export class Server {
 
 	stop() {
 		return new Promise((resolve, reject) => {
-			if (!this.config.isoPool)
+			if (!this.isoPool)
 				return
-			this.config.isoPool.drain().then(() => {
+			this.isoPool.drain().then(() => {
 				log.info("drained pool")
-				if (!this.config.isoPool)
+				if (!this.isoPool)
 					return
-				this.config.isoPool.clear().then(() => {
+				this.isoPool.clear().then(() => {
 					log.info("cleared pool")
 					this.server.close(() => {
 						log.info("closed server")
