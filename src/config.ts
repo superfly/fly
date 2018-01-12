@@ -11,9 +11,9 @@ export interface Config {
 export let conf = parseConfig()
 
 function parseConfig(): Config {
-  const env = getValue(flyConf.env, process.env.FLY_ENV, process.env.NODE_ENV, 'development')
-  const logLevel = getValue(flyConf.logLevel, process.env.FLY_LOG_LEVEL, process.env.LOG_LEVEL)
-  const port = getValue(flyConf.port, process.env.FLY_PORT, process.env.PORT, 3000)
+  const env = getValue(process.env.FLY_ENV, process.env.NODE_ENV, flyConf.env, 'development')
+  const logLevel = getValue(process.env.FLY_LOG_LEVEL, process.env.LOG_LEVEL, flyConf.log_level)
+  const port = getValue(process.env.FLY_PORT, process.env.PORT, flyConf.port, 3000)
 
   return {
     env: env,
