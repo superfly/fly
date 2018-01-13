@@ -1,41 +1,52 @@
 import * as ivm from 'isolated-vm'
 import log from "./log"
-import './bridge'
-import { catalog } from './bridge/catalog'
+import { Bridge } from './bridge/bridge'
 
-export async function createContext(iso: ivm.Isolate): Promise<ivm.Context> {
-	let ctx = await iso.createContext()
-	let jail = ctx.globalReference()
+export class Context {
+	ctx: ivm.Context
+	private global: ivm.Reference<Object>
+	meta: Map<string, any>
 
-	await jail.set('global', jail.derefInto());
-	await jail.set('_ivm', ivm);
-	await jail.set('_log', new ivm.Reference(function (...args: any[]) {
-		console.log(...args.slice(1))
-		// console[args[0]].call(null, ...args.slice(1))
-		// console.log(...args)
-	}))
+	constructor(ctx: ivm.Context) {
+		this.meta = new Map<string, any>()
+		this.ctx = ctx
+		this.global = ctx.globalReference()
+	}
 
-	await jail.set('_setTimeout', new ivm.Reference(function (fn: Function, timeout: number) {
-		return new ivm.Reference(setTimeout(() => { fn.apply(null, []) }, timeout))
-	}))
+	async bootstrap() {
+		await this.set('global', this.global.derefInto());
+		await this.set('_ivm', ivm);
+		await this.set('_log', new ivm.Reference(function (...args: any[]) {
+			console.log(...args.slice(1))
+			// console[args[0]].call(null, ...args.slice(1))
+			// console.log(...args)
+		}))
 
-	await jail.set('_clearTimeout', new ivm.Reference(function (timer: ivm.Reference<NodeJS.Timer>) {
-		return clearTimeout(timer.deref())
-	}))
+		await this.set('_setTimeout', new ivm.Reference(function (fn: Function, timeout: number) {
+			return new ivm.Reference(setTimeout(() => { fn.apply(null, []) }, timeout))
+		}))
 
-	await jail.set("_dispatch", new ivm.Reference(function (name: string, ...args: any[]) {
-		dispatch(name, ...args)
-	}))
+		await this.set('_clearTimeout', new ivm.Reference(function (timer: ivm.Reference<NodeJS.Timer>) {
+			return clearTimeout(timer.deref())
+		}))
 
-	await (await ctx.globalReference().get("bootstrap")).apply(undefined, [])
+		const bridge = new Bridge(this)
+		await this.set("_dispatch", new ivm.Reference(bridge.dispatch.bind(bridge)))
 
-	return ctx
+		await (await this.get("bootstrap")).apply(undefined, [])
+	}
+
+	async get(name: string) {
+		return await this.global.get(name)
+	}
+
+	async set(name: any, value: any) {
+		return await this.global.set(name, value)
+	}
 }
 
-function dispatch(name: string, ...args: any[]) {
-	const fn = catalog.get(name)
-	if (!fn)
-		throw new Error("dispatch did not find function " + name)
-	fn.apply(undefined, args)
-	return
+export async function createContext(iso: ivm.Isolate): Promise<Context> {
+	let ctx = new Context(await iso.createContext())
+	ctx.bootstrap()
+	return ctx
 }

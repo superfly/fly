@@ -1,5 +1,4 @@
 const { fireEventInit, addEventListener, dispatchEvent, FetchEvent } = require("./events")
-const { setContext, getContext } = require('./context')
 const { Middleware, MiddlewareChain } = require("./middleware")
 const { FlyBackend } = require("./fly-backend")
 const { ReadableStream, WritableStream } = require('web-streams-polyfill')
@@ -76,10 +75,6 @@ global.bootstrap = function bootstrap() {
 	global.dispatchEvent = dispatchEvent
 
 	global.FetchEvent = FetchEvent
-
-	// Global context
-	global.setContext = setContext
-	global.getContext = getContext
 
 	// DOM
 	global.Document = require('./document')

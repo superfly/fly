@@ -3,7 +3,7 @@ import { App } from '../'
 import * as path from 'path'
 import * as fs from 'fs'
 
-import { flyConf } from '../../fly_config'
+import { parseFlyConfig } from '../../fly_config'
 
 import { buildApp } from '../../utils/build'
 
@@ -36,6 +36,8 @@ export class FileStore implements AppStore {
       let fullPath = cwd
       if (stat.isDirectory())
         fullPath = path.resolve(cwd, './index.js')
+      if (!fs.existsSync(fullPath))
+        return
       this.code = fs.readFileSync(fullPath).toString()
       return
     }
@@ -52,6 +54,8 @@ export class FileStore implements AppStore {
   async getAppByHostname(hostname: string) {
     if (this.cachedApp)
       return this.cachedApp
+
+    const flyConf = parseFlyConfig(this.cwd)
 
     let app = new App(flyConf.app || {})
     app.code = this.code

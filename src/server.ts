@@ -142,33 +142,27 @@ export class Server {
 		let ctx = iso.ctx
 
 		try {
-			let jail = ctx.globalReference()
-
 			const fullURL = httpUtils.fullURL(scheme, request)
 
-			const setContext = jail.getSync("setContext")
+			iso.ctx.meta = new Map<string, any>([
+				['appID', app.id],
+				['appSettings', app.settings],
 
-			setContext.apply(null, [
-				new ivm.ExternalCopy({
-					appID: app.id,
-					appSettings: app.settings,
-
-					requestID: requestID,
-					originalScheme: scheme,
-					originalHost: request.headers.host,
-					originalPath: request.url,
-					originalURL: fullURL
-				}).copyInto()
+				['requestID', requestID],
+				['originalScheme', scheme],
+				['originalHost', request.headers.host],
+				['originalPath', request.url],
+				['originalURL', fullURL]
 			])
 
 			let t = Trace.start("compile custom script")
 			let script = iso.iso.compileScriptSync(app.code, { filename: "code.js" })
 			t.end()
 			t = Trace.start("run custom script")
-			let ret = script.runSync(ctx)
+			let ret = script.runSync(ctx.ctx)
 			t.end()
 
-			let fireEvent = jail.getSync("fireEvent")
+			let fireEvent = await ctx.get("fireEvent")
 
 			request.pause()
 

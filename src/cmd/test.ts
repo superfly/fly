@@ -39,9 +39,7 @@ export async function runTests(cwd: string, paths: string[]) {
         const iso = new ivm.Isolate({ snapshot })
         const ctx = await createContext(iso)
 
-        let jail = ctx.globalReference()
-
-        await jail.set('_mocha_done', new ivm.Reference(function (failures: number) {
+        await ctx.set('_mocha_done', new ivm.Reference(function (failures: number) {
           if (failures)
             return process.exit(1)
           process.exit()
@@ -49,13 +47,13 @@ export async function runTests(cwd: string, paths: string[]) {
 
         for (let script of scripts) {
           const compiled = await iso.compileScript(script.code, script)
-          await compiled.run(ctx)
+          await compiled.run(ctx.ctx)
         }
 
         const bundleScript = await iso.compileScript(code, { filename: 'bundle.js' })
-        await bundleScript.run(ctx)
+        await bundleScript.run(ctx.ctx)
 
-        await (await iso.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })).run(ctx)
+        await (await iso.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })).run(ctx.ctx)
       })
     } catch (err) {
       console.error(err)

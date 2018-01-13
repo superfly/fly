@@ -9,7 +9,7 @@ promiseFinally.shim()
 
 import { createIsoPool, IsolatePool } from '../src/isolate'
 import { Server } from '../src/server'
-import { conf } from '../src/config'
+import { parseConfig } from '../src/config'
 import * as ivm from 'isolated-vm'
 import * as fs from 'fs'
 import axios from 'axios'
@@ -27,6 +27,8 @@ export async function startServer(cwd: string, options?: FileStoreOptions) {
   options || (options = { build: false })
   cwd = `./test/fixtures/apps/${cwd}`
   let store = new FileStore(cwd, options)
+
+  let conf = parseConfig(cwd)
 
   conf.appStore = store
 

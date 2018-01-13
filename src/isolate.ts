@@ -2,14 +2,14 @@ import * as ivm from 'isolated-vm'
 import * as genericPool from 'generic-pool';
 import * as fs from 'fs';
 import log from "./log"
-import { createContext } from './context';
+import { createContext, Context } from './context';
 
 import { getV8Env } from './v8env';
 
 export class Isolate {
 	iso: ivm.Isolate
-	ctx: ivm.Context
-	constructor(iso: ivm.Isolate, ctx: ivm.Context) {
+	ctx: Context
+	constructor(iso: ivm.Isolate, ctx: Context) {
 		this.iso = iso
 		this.ctx = ctx
 	}

@@ -1,5 +1,3 @@
-const { getContext } = require("../context")
-
 module.exports = function () {
   registerMiddleware("session", function () {
     return async function (req, next) {
