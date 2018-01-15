@@ -22,6 +22,14 @@ export function fetchBridge(ctx: Context) {
     let t = Trace.start('native fetch')
     init || (init = {})
     const u = parseURL(urlStr)
+    let depth = <number>ctx.meta.get('flyDepth')
+
+    log.debug("fetch depth: ", depth)
+    if(depth >= 3){
+      log.error("too much recursion: ", depth)
+      cb.apply(undefined, ["Too much recursion"])
+      return
+    }
 
     if (!u.host)
       u.host = ctx.meta.get('originalHost')
@@ -35,6 +43,7 @@ export function fetchBridge(ctx: Context) {
 
         let method = init.method || "GET"
         let headers = init.headers || {}
+        headers['X-Fly-Depth'] = (depth + 1).toString()
         let req: http.ClientRequest;
 
         req = httpFn({

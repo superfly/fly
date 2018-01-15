@@ -144,6 +144,16 @@ export class Server {
 		try {
 			const fullURL = httpUtils.fullURL(scheme, request)
 
+			let flyDepth = 0
+			let flyDepthHeader = <string>request.headers["x-fly-depth"]
+			if(flyDepthHeader){
+				log.debug("got depth header: ", flyDepthHeader)
+				flyDepth = parseInt(flyDepthHeader)
+				if(isNaN(flyDepth) || flyDepth < 0){
+					flyDepth = 0
+				}
+			}
+
 			iso.ctx.meta = new Map<string, any>([
 				['appID', app.id],
 				['appSettings', app.settings],
@@ -152,7 +162,8 @@ export class Server {
 				['originalScheme', scheme],
 				['originalHost', request.headers.host],
 				['originalPath', request.url],
-				['originalURL', fullURL]
+				['originalURL', fullURL],
+				['flyDepth', flyDepth]
 			])
 
 			let t = Trace.start("compile custom script")
