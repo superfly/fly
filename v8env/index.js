@@ -25,9 +25,7 @@ global.bootstrap = function bootstrap() {
 
 	global.console = require('./console')(ivm)
 
-	global.fly = {
-		cache: require('./fly/cache')(ivm, dispatch)
-	}
+	global.fly = require('./fly/')(ivm, dispatch)
 
 	global.setTimeout = (function (st, ivm) {
 		return function (cb, ms) {
