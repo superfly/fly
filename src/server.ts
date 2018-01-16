@@ -36,6 +36,7 @@ export interface ServerOptions {
 	isoPool?: IsolatePool
 	isoPoolMin?: number
 	isoPoolMax?: number
+	isTLS?: boolean
 }
 
 export class Server {
@@ -133,7 +134,7 @@ export class Server {
 			return
 		}
 
-		const scheme = "http:"
+		const scheme = this.options.isTLS ? 'https:' : 'http:'
 
 		let t = Trace.start("acquire iso from pool")
 		let iso = await isoPool.acquire()
