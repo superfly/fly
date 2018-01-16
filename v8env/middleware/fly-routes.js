@@ -1,8 +1,8 @@
 const urlParse = require('url-parse')
 
-module.exports = function() {
-	registerMiddleware("fly-routes", function() {
-		return async function(req, next) {
+module.exports = function () {
+	registerMiddleware("fly-routes", function () {
+		return async function (req, next) {
 
 			const rule = _matchRules(req)
 			if (!rule) {
@@ -33,7 +33,9 @@ module.exports = function() {
 		}
 
 		function _matchRules(req) {
-			return global.rules.find((rule) => matchesRule(rule, req))
+			if (!app.rules)
+				return null
+			return app.rules.sort((a, b) => b.priority - a.priority).find((rule) => matchesRule(rule, req))
 		}
 
 		function matchesRule(rule, req) {
@@ -106,10 +108,10 @@ module.exports = function() {
 		}
 
 		function getBackendByID(id) {
-			if (!(global.backends instanceof Array)) {
+			if (!(app.backends instanceof Array)) {
 				return null
 			}
-			return global.backends.find((backend) => {
+			return app.backends.find((backend) => {
 				return backend.id == id
 			})
 		}

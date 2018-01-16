@@ -104,7 +104,7 @@ export class Server {
 		}
 
 		if (!this.config.appStore) {
-			throw new Error("please define a configStore")
+			throw new Error("please define an appStore")
 		}
 
 		response.setHeader("Server", `fly (${version})`)
@@ -146,17 +146,16 @@ export class Server {
 
 			let flyDepth = 0
 			let flyDepthHeader = <string>request.headers["x-fly-depth"]
-			if(flyDepthHeader){
+			if (flyDepthHeader) {
 				log.debug("got depth header: ", flyDepthHeader)
 				flyDepth = parseInt(flyDepthHeader)
-				if(isNaN(flyDepth) || flyDepth < 0){
+				if (isNaN(flyDepth) || flyDepth < 0) {
 					flyDepth = 0
 				}
 			}
 
 			iso.ctx.meta = new Map<string, any>([
-				['appID', app.id],
-				['appSettings', app.settings],
+				['app', app],
 
 				['requestID', requestID],
 				['originalScheme', scheme],
@@ -165,6 +164,8 @@ export class Server {
 				['originalURL', fullURL],
 				['flyDepth', flyDepth]
 			])
+
+			iso.ctx.set('app', new ivm.ExternalCopy(app).copyInto())
 
 			let t = Trace.start("compile custom script")
 			let script = iso.iso.compileScriptSync(app.code, { filename: "code.js" })

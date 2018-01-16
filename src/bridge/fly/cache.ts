@@ -8,7 +8,7 @@ const errCacheStoreUndefined = new Error("cacheStore is not defined in the confi
 
 registerBridge('flyCacheSet', function (ctx: Context) {
   return function cacheSet(key: string, value: string, ttl: number, callback: ivm.Reference<Function>) {
-    let k = "cache:" + ctx.meta.get('appID') + ":" + key
+    let k = "cache:" + ctx.meta.get('app').id + ":" + key
     console.log("native cache set:", k, "ttl:", ttl, "size:", value.length)
 
     if (!conf.cacheStore)
@@ -24,7 +24,7 @@ registerBridge('flyCacheSet', function (ctx: Context) {
 
 registerBridge('flyCacheExpire', function (ctx: Context) {
   return function cacheExpire(key: string, ttl: number, callback: ivm.Reference<Function>) {
-    let k = "cache:" + ctx.meta.get('appID') + ":" + key
+    let k = "cache:" + ctx.meta.get('app').id + ":" + key
     console.log("native cache expire:", k, "ttl:", ttl)
 
     if (!conf.cacheStore)
@@ -40,7 +40,7 @@ registerBridge('flyCacheExpire', function (ctx: Context) {
 
 registerBridge('flyCacheGetString', function (ctx: Context) {
   return function cacheGetString(key: string, callback: ivm.Reference<Function>) {
-    let k = "cache:" + ctx.meta.get('appID') + ":" + key
+    let k = "cache:" + ctx.meta.get('app').id + ":" + key
     console.log("native cache get: " + k)
 
     if (!conf.cacheStore)

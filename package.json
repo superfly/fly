@@ -1,6 +1,6 @@
 {
 	"name": "@flyio/fly",
-	"version": "0.1.6",
+	"version": "0.2.0",
 	"description": "",
 	"main": "lib/index.js",
 	"scripts": {
@@ -9,7 +9,8 @@
 		"coverage": "nyc npm test",
 		"build:live": "npm run build -- -w",
 		"build": "tsc",
-		"prepublish": "npm run build"
+		"prepublish": "npm run build",
+		"release": "standard-version"
 	},
 	"bin": {
 		"fly": "bin/fly"
@@ -36,6 +37,7 @@
 		"debug": "^3.1.0",
 		"nyc": "^11.3.0",
 		"replay": "file:./vendor/replay",
+		"standard-version": "^4.3.0",
 		"ts-loader": "^3.2.0",
 		"ts-node": "^3.3.0",
 		"typescript": "^2.6.2"

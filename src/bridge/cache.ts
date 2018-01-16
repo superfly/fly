@@ -13,7 +13,7 @@ let cache: { [key: string]: any } = {}
 
 registerBridge('cacheMatch', function (ctx: Context) {
   return function (request: any, callback: ivm.Reference<Function>) {
-    const key = `${ctx.meta.get('appID')}:${request.url}`
+    const key = `${ctx.meta.get('app').id}:${request.url}`
     log.debug("cache match called! key:", key)
     const found = cache[key]
     log.debug("found:", found)
@@ -36,7 +36,7 @@ registerBridge('cacheMatch', function (ctx: Context) {
 registerBridge('cacheAdd', function (ctx: Context) {
   const fetch = fetchBridge(ctx)
   return function (request: any, body: ArrayBuffer, callback: ivm.Reference<Function>) {
-    const key = `${ctx.meta.get('appID')}:${request.url}`
+    const key = `${ctx.meta.get('app').id}:${request.url}`
     log.debug("cache add called! key:", key)
 
     fetch(request.url, {

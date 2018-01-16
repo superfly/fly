@@ -13,6 +13,7 @@ const importCwd = require('import-cwd')
 
 export interface FileStoreOptions {
   build?: boolean
+  appConfig?: any
 }
 
 export class FileStore implements AppStore {
@@ -24,7 +25,10 @@ export class FileStore implements AppStore {
 
   cachedApp: App
 
+  options: FileStoreOptions
+
   constructor(cwd: string, options?: any) {
+    this.options = options || <FileStoreOptions>{}
     this.cwd = cwd
 
     if (!fs.existsSync(cwd))
@@ -55,7 +59,9 @@ export class FileStore implements AppStore {
     if (this.cachedApp)
       return this.cachedApp
 
-    const flyConf = parseFlyConfig(this.cwd)
+    const flyConf = this.options.appConfig ?
+      { app: this.options.appConfig } :
+      parseFlyConfig(this.cwd)
 
     let app = new App(flyConf.app || {})
     app.code = this.code
