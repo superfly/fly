@@ -122,6 +122,19 @@ describe('Server', () => {
     })
   })
 
+  describe('fetch recursive', ()=>{
+    before(async function () {
+      this.server = await startServer("fetch-recursive.js")
+    })
+    after(function (done) { this.server.close(done) })
+
+    it('returns an error', async ()=> {
+      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
+      expect(res.status).to.equal(500)
+      expect(res.data).to.equal("Too much recursion")
+    })
+  })
+
   describe('cache', () => {
     before(async function () {
       this.server = await startServer("cache.js")
