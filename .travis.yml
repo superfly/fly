@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+  - "8"
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-5
+    - g++-5
+
+before_install:
+  - set -e
+
+install:
+  - export CXX="g++-5"
+  - npm install
+
+script:
+  - npm test
