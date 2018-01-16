@@ -1,7 +1,6 @@
 language: node_js
 node_js:
-  - "8"
-
+- '8'
 addons:
   apt:
     sources:
@@ -9,13 +8,18 @@ addons:
     packages:
     - gcc-5
     - g++-5
-
 before_install:
-  - set -e
-
+- set -e
 install:
-  - export CXX="g++-5"
-  - npm install
-
+- export CXX="g++-5"
+- npm install
 script:
-  - npm test
+- npm test
+
+deploy:
+  provider: npm
+  email: jeromegn@gmail.com
+  api_key:
+    secure: ksFgDMiTYeDhDBL+fWsiuRiEf8z/JHYRZJBMTYuaUPTXPuzMysPXSv30Q8khBRPj1GznA5Xl0EQIoUR/CfqCYiS/WK/GsEHMylVYzDh42TkDpgT2e9hZxVCAKrDGkSCw0R6EnJ7P1H2/p7B7zSpo1mKKPu60AWkowAvmqkLuurOuyM8azzl39xVSB3U1kxHMm1sFU+5iMp47eqqa65mocypQt3dPk7oNDV4U962YdeYJCyZqDkOOymlbuCRH5htALKfIEYdBa5C1BrkrG4O8PB2A5DVkLCqdrBiprwcWvP7UCN1iMy1jTEbo1pbTvbdYUM2M/WHIgv/8MUwVzzYXMtGYNNAS/D3pkqKEhi561Pi+oOPptbm4/t8JVoO3Tw1+BcFSN4KsO1xoZRP1E2OkfwBep2XpwxOFIWVPo9DLhw/S9x6EM7FyJNtL9HfvJfxF4HJbxaKM2SMOKOhlqE1UxLE233llK2EQsVj0us3WJnohRnzqDfx9wYsDzAmmbSFoVlvg5AfYLREUNjTvKlA8gHJI0+GdrxrDJ7NiVgOGQKDA5ZWmbvZM9t7IjrSagHibf1mp7mOVbklkJujxebpd5hZ7yWsnqO6B7pPFwhA4EvBw45x1cZd6ADbMeLgdsRhCQ8+p9LM2p+0jlm6eqraTpKL1tc72E8GAjiYTL140NYU=
+  on:
+    tags: true
