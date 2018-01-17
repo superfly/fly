@@ -1,4 +1,4 @@
-module.exports = function(ivm, dispatch) {
+module.exports = function (ivm, dispatch) {
 	function FormData(form) {
 		this._data = [];
 		if (!form) return;
@@ -10,7 +10,7 @@ module.exports = function(ivm, dispatch) {
 	}
 
 	FormData.prototype = {
-		append: function(name, value /*, filename */ ) {
+		append: function (name, value /*, filename */) {
 			if ('Blob' in global && value instanceof global.Blob)
 				throw TypeError("Blob not supported");
 			name = String(name);
@@ -51,18 +51,18 @@ module.exports = function(ivm, dispatch) {
 			this._data.push([name, value]);
 		},
 
-		toString: function() {
-			return this._data.map(function(pair) {
-					return encodeURIComponent(pair[0]) + '=' + encodeURIComponent(pair[1]);
-				})
+		toString: function () {
+			return this._data.map(function (pair) {
+				return encodeURIComponent(pair[0]) + '=' + encodeURIComponent(pair[1]);
+			})
 				.join('&');
 		}
 	};
 
-	FormData.parse = function(req) {
-		return new Promise(function(resolve, reject) {
+	FormData.parse = function (req) {
+		return new Promise(function (resolve, reject) {
 			let fd = new FormData()
-			dispatch.apply(undefined, ["parseFormData", req, new ivm.Reference(function(name, ...args) {
+			dispatch.apply(undefined, ["parseFormData", req, new ivm.Reference(function (name, ...args) {
 				switch (name) {
 					case "end":
 						resolve(fd)
@@ -74,7 +74,7 @@ module.exports = function(ivm, dispatch) {
 						reject(new Error(args[0]))
 						break
 					case "part":
-						console.log("got a part! from v8")
+						console.debug("got a part! from v8")
 						fd.append(args[0], args[1])
 				}
 			})])
@@ -88,11 +88,11 @@ module.exports = function(ivm, dispatch) {
 //   let fd = new FormData()
 //   var parts = contentType.split('boundary=');
 //   var boundary = parts[1];
-//   console.log("before multipart parsing...", body, contentType)
+//   console.debug("before multipart parsing...", body, contentType)
 //   try {
-//     console.log("multipart parse", JSON.stringify(parseMultiparts(unicodeStringToTypedArray(body), boundary)))
+//     console.debug("multipart parse", JSON.stringify(parseMultiparts(unicodeStringToTypedArray(body), boundary)))
 //   } catch (err) {
-//     console.log("error parsing multipart:", err.toString())
+//     console.debug("error parsing multipart:", err.toString())
 //   }
 
 //   // Examples for content types:
@@ -167,7 +167,7 @@ module.exports = function(ivm, dispatch) {
 // }
 
 // Parser.prototype.skipPastNextBoundary = function () {
-//   console.log("in skipPastNextBoundary")
+//   console.debug("in skipPastNextBoundary")
 //   var boundaryIndex = 0;
 //   var isBoundary = false;
 
@@ -176,7 +176,7 @@ module.exports = function(ivm, dispatch) {
 //       return false;
 //     }
 
-//     console.log("in boundary loop", this.boundary, boundaryIndex)
+//     console.debug("in boundary loop", this.boundary, boundaryIndex)
 
 //     if (this.current === this.boundary[boundaryIndex]) {
 //       boundaryIndex++;
@@ -244,7 +244,7 @@ module.exports = function(ivm, dispatch) {
 // function processSections(arraybuf, sections) {
 //   for (var i = 0; i !== sections.length; ++i) {
 //     var section = sections[i];
-//     console.log("section:", JSON.stringify(section))
+//     console.debug("section:", JSON.stringify(section))
 //     if (section.header['content-type'] === 'text/plain') {
 //       section.text = buf2String(arraybuf.slice(section.bodyStart, section.end));
 //     } else {
@@ -269,11 +269,11 @@ module.exports = function(ivm, dispatch) {
 // function parseMultiparts(arraybuf, boundary) {
 //   boundary = '--' + boundary;
 //   var parser = new Parser(arraybuf, boundary);
-//   console.log("made parser")
+//   console.debug("made parser")
 
 //   var sections = [];
 //   while (parser.skipPastNextBoundary()) {
-//     console.log("looping")
+//     console.debug("looping")
 //     var header = parser.parseHeader();
 
 //     if (header !== null) {

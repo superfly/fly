@@ -116,13 +116,13 @@ Headers.prototype = {
 				continue
 			}
 
-			console.log("setting", h[0], this.getAll(h[0]))
+			console.debug("setting", h[0], this.getAll(h[0]))
 			jsonHeaders[h[0]] = this.getAll(h[0])
 		}
 		return jsonHeaders
 	}
 };
-Headers.prototype[Symbol.iterator] = function() {
+Headers.prototype[Symbol.iterator] = function () {
 	return new HeadersIterator(this);
 };
 
@@ -131,33 +131,33 @@ function HeadersIterator(headers) {
 	this._index = 0;
 }
 HeadersIterator.prototype = {};
-HeadersIterator.prototype.next = function() {
+HeadersIterator.prototype.next = function () {
 	if (this._index >= this._headers._headerList.length)
 		return { value: undefined, done: true };
 	return { value: this._headers._headerList[this._index++], done: false };
 };
-HeadersIterator.prototype[Symbol.iterator] = function() { return this; };
+HeadersIterator.prototype[Symbol.iterator] = function () { return this; };
 
 function fill(headers, init) {
-	console.log("headers FILL")
+	console.debug("headers FILL")
 	if (init instanceof Headers) {
-		console.log("actual headers", JSON.stringify(init))
-		init._headerList.forEach(function(header) {
+		console.debug("actual headers", JSON.stringify(init))
+		init._headerList.forEach(function (header) {
 			headers.append(header[0], header[1]);
 		});
 	} else if (Array.isArray(init)) {
-		console.log("array headers", JSON.stringify(init))
-		init.forEach(function(header) {
+		console.debug("array headers", JSON.stringify(init))
+		init.forEach(function (header) {
 			if (!Array.isArray(header) || header.length !== 2) throw TypeError();
 			headers.append(header[0], header[1]);
 		});
 	} else {
 		init = Object(init);
-		console.log("other headers", JSON.stringify(init))
+		console.debug("other headers", JSON.stringify(init))
 		Object.keys(init)
-			.forEach(function(key) {
+			.forEach(function (key) {
 				if (Array.isArray(init[key])) {
-					init[key].forEach(function(v) {
+					init[key].forEach(function (v) {
 						headers.append(key, v);
 					})
 				} else {

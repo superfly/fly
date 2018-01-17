@@ -13,7 +13,7 @@ module.exports = function (ivm, dispatch) {
      * @returns {Promise<String|Null>} Data stored at the key, or Null if none exists
      */
     getString(key) {
-      console.log("cache get: " + key)
+      console.debug("cache get: " + key)
       return new Promise(function (resolve, reject) {
         dispatch.apply(null, [
           "flyCacheGetString",
@@ -37,7 +37,7 @@ module.exports = function (ivm, dispatch) {
      * @returns {Promise<Boolean>} true if the set was successful
      */
     set(key, value, ttl) {
-      console.log("cache set")
+      console.debug("cache set")
       let size = value.length
       if (size > 2 * 1024 * 1024) {
         return Promise.reject("Cache does not support values > 2MB")
@@ -67,7 +67,7 @@ module.exports = function (ivm, dispatch) {
      * @returns {Promise<Boolean>} true if ttl was successfully updated
      */
     expire(key, ttl) {
-      console.log("cache expire:", ttl)
+      console.debug("cache expire:", ttl)
       return new Promise(function (resolve, reject) {
         dispatch.apply(null, [
           "flyCacheExpire",

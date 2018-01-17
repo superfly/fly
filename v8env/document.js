@@ -52,7 +52,7 @@ class Document {
 class Element {
 	constructor(dom) {
 		this._dom = dom
-		console.log("made element", this._dom.attribs)
+		console.debug("made element", this._dom.attribs)
 	}
 
 	get id() {
@@ -60,8 +60,8 @@ class Element {
 	}
 
 	get textContent() {
-		console.log("get text content!")
-		console.log("element?", this instanceof Element)
+		console.debug("get text content!")
+		console.debug("element?", this instanceof Element)
 		return getText(this._dom)
 	}
 
@@ -116,7 +116,7 @@ class DocumentParser {
 			this.parser.write(Buffer.from(value))
 		}
 		this.parser.end()
-		// console.log("done parsing!", dom.attribs)
+		// console.debug("done parsing!", dom.attribs)
 	}
 }
 
@@ -133,9 +133,9 @@ function parseDOMSync(html) {
 
 function parseDOMStreaming(elemCb) {
 	let handler = new htmlparser.DomHandler(() => {
-		console.log("done parsing dom")
+		console.debug("done parsing dom")
 	}, undefined, (elem) => {
-		console.log("got an element!", elem.attribs)
+		console.debug("got an element!", elem.attribs)
 		elemCb(elem)
 	})
 	return new WritableParser(handler)

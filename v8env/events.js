@@ -58,7 +58,7 @@ exports.fireEventInit = function (ivm) {
 					throw new Error(`unknown event listener: ${name}`)
 			}
 		} catch (err) {
-			console.log(err.message, err.stack)
+			console.debug(err.message, err.stack)
 			let cb = args[args.length - 1] // should be the last arg
 			if (cb instanceof ivm.Reference)
 				cb.apply(undefined, [err.toString()])
@@ -66,7 +66,7 @@ exports.fireEventInit = function (ivm) {
 	}
 
 	async function fireResponseChunkEvent(ivm, chunk, done) {
-		console.log("fire response chunk!")
+		console.debug("fire response chunk!")
 		if (!eventListeners["responseChunk"] || eventListeners["responseChunk"].length == 0)
 			return done.apply(null, [null, new ivm.ExternalCopy(chunk)
 				.copyInto()])
@@ -74,7 +74,7 @@ exports.fireEventInit = function (ivm) {
 			Buffer.from(chunk) :
 			Buffer.from(chunk, 'utf8')
 		for (let fn of eventListeners["responseChunk"]) {
-			// console.log("going to apply to fn:", fn.toString())
+			// console.debug("going to apply to fn:", fn.toString())
 			let ret = fn.apply(null, [{
 				chunk: newChunk,
 				rewrite: function (newNewChunk) {
@@ -84,18 +84,18 @@ exports.fireEventInit = function (ivm) {
 			if (ret instanceof Promise)
 				await ret
 		}
-		console.log("applying new chunk")
+		console.debug("applying new chunk")
 		done.apply(null, [null, new ivm.ExternalCopy(newChunk)
 			.copyInto()])
 	}
 }
 
 function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
-	console.log("handling request event")
+	console.debug("handling request event")
 	nodeReq.body = nodeBody
 	let req = new Request(url, nodeReq, reqProxy)
 	let fetchEvent = new FetchEvent('fetch', { request: req }, async function (err, res) {
-		console.log("request event callback called", typeof err, typeof res, res instanceof Response)
+		console.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 		callback.apply(undefined, [
 			err && err.toString() || null,
 			new ivm.ExternalCopy({
@@ -115,7 +115,7 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 		try {
 			fn.call(null, fetchEvent)
 		} catch (err) {
-			console.log("error in fetch!", err.toString())
+			console.debug("error in fetch!", err.toString())
 		}
 	}
 }

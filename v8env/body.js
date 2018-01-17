@@ -5,7 +5,7 @@ const unsupportedBodyTypeError = new Error("Body type is unsupported, please use
 
 module.exports = function (ivm) {
 	return function Body(_stream) {
-		console.log("calling body!", typeof _stream)
+		console.debug("calling body!", typeof _stream)
 		this.bodyUsed = false;
 
 		Object.defineProperty(this, "_stream", {
@@ -42,15 +42,15 @@ module.exports = function (ivm) {
 		// }
 
 		this.text = async () => {
-			console.log("body text() called")
+			console.debug("body text() called")
 			const arr = await bufferFromStream(this.body.getReader())
 			const text = new TextDecoder('utf-8').decode(arr)
-			console.log(text)
+			console.debug(text)
 			return text//new TextDecoder('utf-8').decode(arr)
 		}
 
 		this.arrayBuffer = async () => {
-			console.log("body arrayBuffer() called")
+			console.debug("body arrayBuffer() called")
 			const arr = await bufferFromStream(this.body.getReader())
 			this.bodyUsed = true
 			return arr.buffer
@@ -69,13 +69,13 @@ module.exports = function (ivm) {
 			return streamFromNode(_stream)
 		}
 		if (typeof _stream === "string") {
-			console.log("body is a string")
+			console.debug("body is a string")
 			return streamFromString(_stream)
 		}
 		if (_stream instanceof FormData) {
 			return streamFromString(_stream.toString())
 		}
-		console.log("make stream", typeof _stream, _stream.toString())
+		console.debug("make stream", typeof _stream, _stream.toString())
 		throw unsupportedBodyTypeError
 	}
 
@@ -85,26 +85,26 @@ module.exports = function (ivm) {
 			let encoder = new TextEncoder();
 			// recurse
 			(function pump() {
-				console.log("pumping!")
+				console.debug("pumping!")
 				stream.read()
 					.then(({ done, value }) => {
 						if (done) {
-							console.log("done!", typeof parts[0], parts[0] instanceof Uint8Array)
+							console.debug("done!", typeof parts[0], parts[0] instanceof Uint8Array)
 							return resolve(concatenate(Uint8Array, ...parts))
 						}
 
 						if (typeof value === "string") {
-							console.log("was a string")
+							console.debug("was a string")
 							parts.push(encoder.encode(value))
 						} else if (value instanceof ArrayBuffer) {
-							console.log("was array buffer")
+							console.debug("was array buffer")
 							parts.push(new Uint8Array(value))
 						}
 
 						return pump();
 					})
 					.catch((err) => {
-						console.log("error pumping", err.toString())
+						console.debug("error pumping", err.toString())
 						reject(err)
 					});
 			})()
@@ -116,24 +116,24 @@ module.exports = function (ivm) {
 		return new ReadableStream({
 			start(controller) {
 				fn.apply(undefined, [new ivm.Reference((name, ...args) => {
-					console.log("got an event in streamFromNode", name)
+					console.debug("got an event in streamFromNode", name)
 					if ((name === "close" || name === "end") && !closed) {
 						controller.close()
 						closed = true
 					} else if (name === "error") {
 						controller.error(new Error(args[0]))
 					} else if (name === "data") {
-						console.log("got data!")
+						console.debug("got data!")
 						controller.enqueue(args[0])
 					} else
-						console.log("unhandled event", name)
+						console.debug("unhandled event", name)
 				})])
 			},
 			cancel() {
-				console.log("readable stream was cancelled")
+				console.debug("readable stream was cancelled")
 			},
 			pull() {
-				console.log("readable stream pull called, not doing anything.")
+				console.debug("readable stream pull called, not doing anything.")
 			}
 		})
 	}

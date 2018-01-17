@@ -50,7 +50,7 @@ export class MiddlewareChain {
 	}
 
 	use(mw, settings) {
-		// console.log("use called", mw.type, mw.settings.toString())
+		// console.debug("use called", mw.type, mw.settings.toString())
 
 		if (mw instanceof Middleware)
 			this.chain.push(mw)
@@ -83,7 +83,7 @@ export class MiddlewareChain {
 				return res
 			throw errMiddlewareNotPromise
 		} catch (err) {
-			console.log("error running middleware chain:", err.toString())
+			console.debug("error running middleware chain:", err.toString())
 			return new Response("Internal Server Error", {
 				status: 500
 			})
@@ -91,36 +91,36 @@ export class MiddlewareChain {
 	}
 
 	buildNext(mw, pos) {
-		console.log("buildNext pos:", pos)
+		console.debug("buildNext pos:", pos)
 		if (!mw)
 			return this.lastNextFunc
 
-		console.log("mw.type", mw.type)
+		console.debug("mw.type", mw.type)
 		const newPos = ++pos
-		console.log("newPos:", newPos)
+		console.debug("newPos:", newPos)
 		const next = this.chain[newPos]
 		return (req) => {
-			console.log("next called!")
+			console.debug("next called!")
 			return this.runMiddleware(mw, req, this.buildNext(next, newPos))
 		}
 	}
 
 	runMiddleware(mw, req, next) {
-		console.log("run mw:", mw.type)
+		console.debug("run mw:", mw.type)
 		try {
 			const res = mw.fn.call(mw, req, next)
 			if (res instanceof Promise)
 				return res
 			throw errMiddlewareNotPromise
 		} catch (err) {
-			console.log("error running middleware")
-			console.log(mw.type, err.toString())
+			console.debug("error running middleware")
+			console.debug(mw.type, err.toString())
 			throw err
 		}
 	}
 
 	lastNextFunc() {
-		console.log("last next func with req")
+		console.debug("last next func with req")
 		return new Response("OK", {
 			headers: {
 				"Content-Type": "text/plain"

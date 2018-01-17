@@ -1,9 +1,9 @@
 const CookieJar = require('./cookie_jar')
 
-module.exports = function(ivm) {
+module.exports = function (ivm) {
 	function byteUpperCase(s) {
 		return String(s)
-			.replace(/[a-z]/g, function(c) {
+			.replace(/[a-z]/g, function (c) {
 				return c.toUpperCase();
 			});
 	}
@@ -26,7 +26,7 @@ module.exports = function(ivm) {
 			if (arguments[2] instanceof ivm.Reference) //proxied
 				this._proxy = arguments[2]
 
-			// console.log('creating request! body typeof:', typeof Body, typeof init.body)
+			// console.debug('creating request! body typeof:', typeof Body, typeof init.body)
 			Body.call(this, null);
 
 			// readonly attribute ByteString method;
@@ -72,7 +72,7 @@ module.exports = function(ivm) {
 			}
 
 			if ('body' in init) {
-				console.log("setting le body for request", typeof init.body, init.body instanceof FormData)
+				console.debug("setting le body for request", typeof init.body, init.body instanceof FormData)
 				this._stream = init.body;
 			}
 

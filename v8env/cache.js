@@ -2,7 +2,7 @@ module.exports = function (ivm, dispatch) {
 
 	return {
 		match(req) {
-			console.log("cache match")
+			console.debug("cache match")
 			return new Promise(function (resolve, reject) {
 				dispatch.apply(null, [
 					'cacheMatch',
@@ -12,7 +12,7 @@ module.exports = function (ivm, dispatch) {
 						headers: req.headers || {},
 					}).copyInto(),
 					new ivm.Reference(function (err, res) {
-						console.log("cache match got callback", err, res)
+						console.debug("cache match got callback", err, res)
 						if (err)
 							return reject(err)
 						if (res)
@@ -24,12 +24,12 @@ module.exports = function (ivm, dispatch) {
 			})
 		},
 		add(req) {
-			console.log("cache add")
+			console.debug("cache add")
 
 			return new Promise(function (resolve, reject) {
 				req.arrayBuffer()
 					.then(function (body) {
-						console.log("got req body in cache add")
+						console.debug("got req body in cache add")
 						dispatch.apply(null, [
 							'cacheAdd',
 							new ivm.ExternalCopy({
@@ -40,7 +40,7 @@ module.exports = function (ivm, dispatch) {
 							new ivm.ExternalCopy(body)
 								.copyInto(),
 							new ivm.Reference(function (err, res, bodyStr) {
-								console.log("cache add got callback", err, res)
+								console.debug("cache add got callback", err, res)
 								if (err)
 									return reject(err)
 								if (res)

@@ -13,6 +13,9 @@ import * as httpUtils from './utils/http'
 import { Readable, Writable, Transform } from 'stream'
 import { AppStore } from './app/store'
 import { createIsoPool } from './isolate'
+import { App } from './app'
+
+import EventEmitter = require('events')
 
 const proxiedHttp = require('findhit-proxywrap').proxy(http, { strict: false })
 const { version } = require('../package.json');
@@ -32,6 +35,20 @@ const hopHeaders = [
 	"Upgrade-Insecure-Requests"
 ]
 
+export interface RequestMeta {
+	app: App,
+	startedAt: [number, number], //process.hrtime() ya know
+	endedAt?: [number, number],
+	id: string,
+	originalURL: string,
+}
+
+declare module 'http' {
+	interface IncomingMessage {
+		meta: RequestMeta
+	}
+}
+
 export interface ServerOptions {
 	isoPool?: IsolatePool
 	isoPoolMin?: number
@@ -39,13 +56,14 @@ export interface ServerOptions {
 	isTLS?: boolean
 }
 
-export class Server {
+export class Server extends EventEmitter {
 	server: http.Server
 	config: Config
 	options: ServerOptions
 	isoPool: IsolatePool
 
 	constructor(config: Config, options?: ServerOptions) {
+		super()
 		this.config = config
 		this.options = options || {}
 		if (options && options.isoPool)
@@ -55,6 +73,7 @@ export class Server {
 
 	async start() {
 		this.server.on('listening', () => {
+			this.emit('listening')
 			log.info("Server listening on", this.config.port);
 			// set permissions
 			if (typeof this.config.port === "string") {
@@ -69,13 +88,15 @@ export class Server {
 				net.connect({ path: this.config.port.toString() }, () => {
 					// really in use: re-throw
 					log.error(this.config.port.toString(), "socket already in use")
-					throw e;
+					this.emit('error', e)
 				}).on('error', (e: any) => {
 					if (e.code !== 'ECONNREFUSED') throw e;
 					// not in use: delete it and re-listen
 					fs.unlinkSync(this.config.port.toString());
 					this.server.listen(this.config.port.toString());
 				});
+			} else {
+				this.emit('error', e)
 			}
 		});
 
@@ -86,16 +107,14 @@ export class Server {
 		this.server.listen(this.config.port);
 	}
 
-	private async handleRequest(request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
+	private async handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {
+		const startedAt = process.hrtime()
+		const requestID = mksuid()
 		if (request.url === undefined) // wtf
 			return
 
-		const requestID = mksuid()
 		let fullT = Trace.start("request")
 		let isoPool = this.isoPool
-		if (!isoPool) {
-			isoPool = this.isoPool = await createIsoPool()
-		}
 
 		if (request.headers.host === undefined)
 			return
@@ -109,6 +128,7 @@ export class Server {
 		}
 
 		response.setHeader("Server", `fly (${version})`)
+		request.headers['x-request-id'] = requestID
 
 		let app: any
 		try {
@@ -128,23 +148,30 @@ export class Server {
 			return
 		}
 
-		if (!app.code) {
-			response.writeHead(400)
-			response.end("app has no code")
-			return
-		}
-
 		const scheme = this.options.isTLS ? 'https:' : 'http:'
+		const fullURL = httpUtils.fullURL(scheme, request)
 
-		let t = Trace.start("acquire iso from pool")
-		let iso = await isoPool.acquire()
-		t.end()
-
-		let ctx = iso.ctx
+		request.meta = {
+			id: requestID,
+			app: app,
+			startedAt: startedAt,
+			originalURL: fullURL,
+		}
+		this.emit('request', request)
 
 		try {
-			const fullURL = httpUtils.fullURL(scheme, request)
 
+			if (!app.code) {
+				response.writeHead(400)
+				response.end("app has no code")
+				return
+			}
+
+			let t = Trace.start("acquire iso from pool")
+			let iso = await isoPool.acquire()
+			t.end()
+
+			let ctx = iso.ctx
 			let flyDepth = 0
 			let flyDepthHeader = <string>request.headers["x-fly-depth"]
 			if (flyDepthHeader) {
@@ -168,7 +195,7 @@ export class Server {
 
 			iso.ctx.set('app', new ivm.ExternalCopy(app).copyInto())
 
-			let t = Trace.start("compile custom script")
+			t = Trace.start("compile custom script")
 			let script = iso.iso.compileScriptSync(app.code, { filename: "code.js" })
 			t.end()
 			t = Trace.start("run custom script")
@@ -195,107 +222,111 @@ export class Server {
 			let finalHeaders: http.OutgoingHttpHeaders = {}
 
 			t = Trace.start("process 'fetch' event")
-			// log.debug("calling fireEvent")
-			fireEvent.apply(undefined, [
-				"fetch",
-				fullURL,
-				reqForV8,
-				new ivm.Reference(request),
-				new ivm.Reference(function (callback: ivm.Reference<Function>) { // readBody
-					let t = Trace.start("read native body")
-					setImmediate(() => {
-						let readDone = false
-						request.on("end", () => {
-							readDone = true
-							callback.apply(undefined, ["end"])
-						})
-						request.on("close", () => {
-							readDone = true
-							callback.apply(undefined, ["close"])
-						})
-						do {
-							let data = request.read()
-							if (!data)
-								break
-							log.debug("got data!", typeof data, data instanceof Buffer)
-							callback.apply(undefined, [
-								"data", new ivm.ExternalCopy(bufferToArrayBuffer(data)).copyInto()
-							])
-							t.end()
-						} while (!readDone)
-					})
-				}),
-				new ivm.Reference(function (err: any, res: any, resBody: ArrayBuffer, proxy?: ivm.Reference<http.IncomingMessage>) {
-					t.end()
-
-					if (err) {
-						log.error("error from fetch callback:", err)
-						return
-					}
-
-					for (let n in res.headers) {
-						try {
-							const niceName = httpUtils.normalizeHeader(n)
-							const val = res.headers[n]
-							response.setHeader(niceName, val)
-							finalHeaders[niceName] = val
-						} catch (err) {
-							log.error("error setting header", err)
-						}
-					}
-
-					for (let n of hopHeaders)
-						response.removeHeader(n)
-
-					response.writeHead(res.status)
-
-					let resProm: Promise<void>
-
-					if (!resBody && proxy) {
-						let res = proxy.deref()
-						resProm = handleResponse(res, response, fireEvent)
-					} else if (resBody) {
-						log.debug("got a body", resBody instanceof ArrayBuffer)
-						resProm = handleResponse(bufferToStream(Buffer.from(resBody)), response, fireEvent)
-					} else {
-						resProm = Promise.resolve()
-					}
-
-					resProm.then(() => {
-						fullT.end()
-						log.debug("res sent.")
-						finalResponse.status = res.status
-						finalResponse.statusText = res.statusText
-						finalResponse.ok = res.statusCode && res.statusCode >= 200 && res.statusCode < 400
-						finalResponse.headers = finalHeaders
-						fireEvent.apply(undefined, [
-							"fetchEnd",
-							fullURL,
-							reqForV8,
-							new ivm.ExternalCopy(finalResponse),
-							null,
-							new ivm.Reference(function () { // done callback
-								log.debug("finished all fetchEnd")
-								try {
-									setTimeout(() => {
-										if (!isoPool)
-											return
-										isoPool.destroy(iso)
-									}, 1000)
-								} catch (err) {
-									log.error("error destroying isolate", err)
-								}
+			await new Promise((resolve, reject) => { // mainly to make try...finally work
+				fireEvent.apply(undefined, [
+					"fetch",
+					fullURL,
+					reqForV8,
+					new ivm.Reference(request),
+					new ivm.Reference(function (callback: ivm.Reference<Function>) { // readBody
+						let t = Trace.start("read native body")
+						setImmediate(() => {
+							let readDone = false
+							request.on("end", () => {
+								readDone = true
+								callback.apply(undefined, ["end"])
 							})
-						])
+							request.on("close", () => {
+								readDone = true
+								callback.apply(undefined, ["close"])
+							})
+							do {
+								let data = request.read()
+								if (!data)
+									break
+								log.debug("got data!", typeof data, data instanceof Buffer)
+								callback.apply(undefined, [
+									"data", new ivm.ExternalCopy(bufferToArrayBuffer(data)).copyInto()
+								])
+								t.end()
+							} while (!readDone)
+						})
+					}),
+					new ivm.Reference((err: any, res: any, resBody: ArrayBuffer, proxy?: ivm.Reference<http.IncomingMessage>) => {
+						t.end()
+
+						if (err) {
+							log.error("error from fetch callback:", err)
+							return
+						}
+
+						for (let n in res.headers) {
+							try {
+								const niceName = httpUtils.normalizeHeader(n)
+								const val = res.headers[n]
+								response.setHeader(niceName, val)
+								finalHeaders[niceName] = val
+							} catch (err) {
+								log.error("error setting header", err)
+							}
+						}
+
+						for (let n of hopHeaders)
+							response.removeHeader(n)
+
+						response.writeHead(res.status)
+
+						let resProm: Promise<void>
+
+						if (!resBody && proxy) {
+							let res = proxy.deref()
+							resProm = handleResponse(res, response, fireEvent)
+						} else if (resBody) {
+							log.debug("got a body", resBody instanceof ArrayBuffer)
+							resProm = handleResponse(bufferToStream(Buffer.from(resBody)), response, fireEvent)
+						} else {
+							resProm = Promise.resolve()
+						}
+
+						resProm.then(() => {
+							request.meta.endedAt = process.hrtime()
+							fullT.end()
+							resolve()
+							log.debug("res sent.")
+							finalResponse.status = res.status
+							finalResponse.statusText = res.statusText
+							finalResponse.ok = res.statusCode && res.statusCode >= 200 && res.statusCode < 400
+							finalResponse.headers = finalHeaders
+							fireEvent.apply(undefined, [
+								"fetchEnd",
+								fullURL,
+								reqForV8,
+								new ivm.ExternalCopy(finalResponse),
+								null,
+								new ivm.Reference(function () { // done callback
+									log.debug("finished all fetchEnd")
+									try {
+										setTimeout(() => {
+											if (!isoPool)
+												return
+											isoPool.destroy(iso)
+										}, 1000)
+									} catch (err) {
+										log.error("error destroying isolate", err)
+									}
+								})
+							])
+						})
 					})
-				})
-			])
+				])
+			})
 
 		} catch (e) {
 			log.error("error...", e, e.stack)
 			response.statusCode = 500
 			response.end("Critical error.")
-			return
+		} finally {
+			this.emit('requestEnd', request, response)
 		}
 	}
 

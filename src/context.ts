@@ -16,10 +16,20 @@ export class Context {
 	async bootstrap() {
 		await this.set('global', this.global.derefInto());
 		await this.set('_ivm', ivm);
-		await this.set('_log', new ivm.Reference(function (...args: any[]) {
-			console.log(...args.slice(1))
-			// console[args[0]].call(null, ...args.slice(1))
-			// console.log(...args)
+		await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
+			const prefix = '(v8)'
+			switch (lvl) {
+				case 'info':
+					log.info(prefix, ...args)
+				case 'warn':
+					log.warn(prefix, ...args)
+				case 'debug':
+					log.debug(prefix, ...args)
+				case 'error':
+					log.error(prefix, ...args)
+				default:
+					log.debug(prefix, ...args)
+			}
 		}))
 
 		await this.set('_setTimeout', new ivm.Reference(function (fn: Function, timeout: number) {
