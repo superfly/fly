@@ -4,6 +4,8 @@
  * @global
  * @param {String} url - The direct URL of the resource you wish to fetch
  * @param {Object} [init] - Options for the request
+ * @param {Headers} [init.headers] Headers to send with the http request
+ * @param {string} [init.method=GET] HTTP request method, defaults to `GET`
  * @returns {Promise<Response>} - A {@linkcode Promise} that resolves to a {@linkcode Response} object
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch}
  */
