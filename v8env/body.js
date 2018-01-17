@@ -2,7 +2,11 @@ const { ReadableStream } = require('web-streams-polyfill')
 
 const bodyUsedError = new Error("Body already used, try using tee() on the stream to output to multiple destinations")
 const unsupportedBodyTypeError = new Error("Body type is unsupported, please use a ReadableStream or a string")
-
+/**
+ * This provides methods for handling body streams. It's not meant to be used directly.
+ * @name Body
+ * @mixin
+ */
 module.exports = function (ivm) {
 	return function Body(_stream) {
 		console.debug("calling body!", typeof _stream)
@@ -41,6 +45,11 @@ module.exports = function (ivm) {
 		//   })
 		// }
 
+
+		/**
+		 * Buffers and returns body text (be careful on huge bodies)
+		 * @returns {string} The body as a string
+		 */
 		this.text = async () => {
 			console.debug("body text() called")
 			const arr = await bufferFromStream(this.body.getReader())
@@ -49,6 +58,10 @@ module.exports = function (ivm) {
 			return text//new TextDecoder('utf-8').decode(arr)
 		}
 
+		/**
+		 * Buffers and returns the body
+		 * @returns {Uint8Array} Raw body data
+		 */
 		this.arrayBuffer = async () => {
 			console.debug("body arrayBuffer() called")
 			const arr = await bufferFromStream(this.body.getReader())

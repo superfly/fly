@@ -27,6 +27,22 @@ class Session {
 
 const errMiddlewareNotPromise = new Error("Middleware does not return a promise")
 
+/**
+ * Middleware functions must implement this signature.
+ * They must accept a `req` and a `next` parameter, and return a `Rseponse`.
+ * @function middlewareFn
+ * @param {Request} request The HTTP request to operate on
+ * @param {function} next A function to process subsequent middleware
+ * @returns {Response} The response to serve to the user
+ */
+
+/**
+ * A single Middleware. Middleware accepts a request, does its business, and then returns a Response.
+ * @param {Object} props
+ * @param {string} [props.type] Key for a prebuilt middleware
+ * @param {string} [props.fn] A function to use as middleware
+ * @param {Object.<string,Object>} [props.settings] Settings to hand off to the middleware
+ */
 export class Middleware {
 	constructor(props) {
 		this.type = props.type
@@ -36,6 +52,12 @@ export class Middleware {
 		this.session = new Session()
 	}
 
+	/**
+	 * Runs a single middleware instance
+	 * @param {Middleware} mw  The middleware to run
+	 * @param {Object.<string,Object>} settings Settings for this middleware run
+	 * @param {Request} req The HTTP request to operate on
+	 */
 	static run(mw, settings, req) {
 		const chain = new MiddlewareChain()
 		chain.use(mw, settings)
@@ -43,12 +65,20 @@ export class Middleware {
 	}
 }
 
+/**
+ * A chain of middleware to execute in order
+ */
 export class MiddlewareChain {
 	constructor() {
 		this.currentPos = 0
 		this.chain = []
 	}
 
+	/**
+	 * Appends middleware to the chain
+	 * @param {Middleware} mw Middleware to add to the chain
+	 * @param {Object.<string,Object>} settings Settings for this middleware
+	 */
 	use(mw, settings) {
 		// console.debug("use called", mw.type, mw.settings.toString())
 
@@ -76,6 +106,11 @@ export class MiddlewareChain {
 			this.chain.push(new Middleware(mw))
 	}
 
+	/**
+	 * Runs the chain of middleware
+	 * @param {Request} req The HTTP request to thread through the chain
+	 * @returns {Response} The resulting response
+	 */
 	async run(req) {
 		try {
 			let res = await this.buildNext(this.chain[0], this.currentPos)(req)

@@ -16,8 +16,10 @@ module.exports = function (ivm) {
 	}
 
 	/**
+	 * An HTTP request
 	 * @param {Blob|String} [body]
 	 * @param {Object} [init]
+	 * @mixes Body
 	 */
 	class Request {
 		constructor(input, init) {
@@ -30,9 +32,20 @@ module.exports = function (ivm) {
 			Body.call(this, null);
 
 			// readonly attribute ByteString method;
+			/**
+			 * The HTTP request method
+			 * @readonly
+			 * @default GET
+			 * @type {string}
+			 */
 			this.method = 'GET';
 
 			// readonly attribute USVString url;
+			/**
+			 * The request URL
+			 * @readonly
+			 * @type {string}
+			 */
 			this.url = '';
 
 			// readonly attribute DOMString referrer;
@@ -68,6 +81,10 @@ module.exports = function (ivm) {
 			}
 
 			if ('headers' in init) {
+				/**
+				 * Headers sent with the request.
+				 * @type {Headers}
+				 */
 				this.headers = new Headers(init.headers);
 			}
 

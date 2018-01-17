@@ -1,5 +1,15 @@
 const { Buffer } = require('buffer')
 
+/**
+ * The fetch event fires when your app receives an HTTP request
+ * @event #fetch
+ * @type {FetchEvent}
+ * @property {FetchEvent} event
+ */
+
+/**
+ * @class
+ */
 class FetchEvent {
 	constructor(type, init, callback) {
 		this.type = type
@@ -9,6 +19,15 @@ class FetchEvent {
 		this.callback = callback
 	}
 
+	/** 
+	 * respondWith callback
+	 * @callback respondWithCallback
+	 * @param {Response} The HTTP response to reply with
+	 */
+	/**
+	 * Registers a function to generate a response for this event
+	 * @param {respondWithCallback} fn
+	 */
 	respondWith(fn) {
 		try {
 			if (typeof fn === "function") {

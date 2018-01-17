@@ -10,6 +10,7 @@ module.exports = function(ivm) {
 	 * @param {Number} [init.status]
 	 * @param {String} [init.statusText]
 	 * @param {String} [init.url]
+	 * @mixes Body
 	 */
 	class Response {
 		constructor(body, init) {
