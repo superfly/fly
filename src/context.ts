@@ -21,14 +21,19 @@ export class Context {
 			switch (lvl) {
 				case 'info':
 					log.info(prefix, ...args)
+					break
 				case 'warn':
 					log.warn(prefix, ...args)
+					break
 				case 'debug':
 					log.debug(prefix, ...args)
+					break
 				case 'error':
 					log.error(prefix, ...args)
+					break
 				default:
 					log.debug(prefix, ...args)
+					break
 			}
 		}))
 

@@ -1,12 +1,9 @@
 // Console
 module.exports = function (ivm) {
-	let nodeLog = function (nativeLog) {
-		return function (...args) {
-			nativeLog.apply(undefined, args.map(arg => new ivm.ExternalCopy(arg)
-				.copyInto()));
-		}
-	}(global._log)
-	delete global._log;
+	function nodeLog(...args) {
+		global._log.apply(undefined, args.map(arg => new ivm.ExternalCopy(arg)
+			.copyInto()));
+	}
 
 	const Console = {
 		log(...args) {

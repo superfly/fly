@@ -4,6 +4,7 @@ import * as ivm from 'isolated-vm'
 import { getWebpackConfig, buildAppWithConfig } from '../utils/build'
 import { createContext } from '../context'
 import { getV8Env } from '../v8env'
+import log from '../log'
 
 const scripts = [
   require.resolve("mocha/mocha"),
@@ -39,6 +40,27 @@ export async function runTests(cwd: string, paths: string[]) {
         const iso = new ivm.Isolate({ snapshot })
         const ctx = await createContext(iso)
 
+        // override _log
+        await ctx.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
+          switch (lvl) {
+            case 'info':
+              console.info(...args)
+              break
+            case 'warn':
+              console.warn(...args)
+              break
+            case 'debug':
+              log.debug('(v8)', ...args)
+              break
+            case 'error':
+              console.error(...args)
+              break
+            default:
+              console.info(...args)
+              break
+          }
+        }))
+
         await ctx.set('_mocha_done', new ivm.Reference(function (failures: number) {
           if (failures)
             return process.exit(1)
@@ -52,8 +74,8 @@ export async function runTests(cwd: string, paths: string[]) {
 
         const bundleScript = await iso.compileScript(code, { filename: 'bundle.js' })
         await bundleScript.run(ctx.ctx)
-
-        await (await iso.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })).run(ctx.ctx)
+        const runScript = await iso.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })
+        await runScript.run(ctx.ctx)
       })
     } catch (err) {
       console.error(err)
