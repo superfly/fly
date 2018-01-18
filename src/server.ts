@@ -35,6 +35,8 @@ const hopHeaders = [
 	"Upgrade-Insecure-Requests"
 ]
 
+const statusPath = "/__fly/status"
+
 export interface RequestMeta {
 	app: App,
 	startedAt: [number, number], //process.hrtime() ya know
@@ -114,7 +116,6 @@ export class Server extends EventEmitter {
 			return
 
 		let fullT = Trace.start("request")
-		let isoPool = this.isoPool
 
 		if (request.headers.host === undefined)
 			return
@@ -128,6 +129,14 @@ export class Server extends EventEmitter {
 		}
 
 		response.setHeader("Server", `fly (${version})`)
+
+		if (request.url === statusPath) {
+			response.writeHead(200)
+			response.end()
+			return
+		}
+
+		let isoPool = this.isoPool
 		request.headers['x-request-id'] = requestID
 
 		let app: any
