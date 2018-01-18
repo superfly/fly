@@ -17,24 +17,7 @@ export class Context {
 		await this.set('global', this.global.derefInto());
 		await this.set('_ivm', ivm);
 		await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
-			const prefix = '(v8)'
-			switch (lvl) {
-				case 'info':
-					log.info(prefix, ...args)
-					break
-				case 'warn':
-					log.warn(prefix, ...args)
-					break
-				case 'debug':
-					log.debug(prefix, ...args)
-					break
-				case 'error':
-					log.error(prefix, ...args)
-					break
-				default:
-					log.debug(prefix, ...args)
-					break
-			}
+			log.log(lvl, '(v8)', ...args)
 		}))
 
 		await this.set('_setTimeout', new ivm.Reference(function (fn: Function, timeout: number) {

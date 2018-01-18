@@ -50,7 +50,7 @@ export async function runTests(cwd: string, paths: string[]) {
               console.warn(...args)
               break
             case 'debug':
-              log.debug('(v8)', ...args)
+              log.log(lvl, '(v8)', ...args)
               break
             case 'error':
               console.error(...args)
