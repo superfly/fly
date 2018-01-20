@@ -48,7 +48,9 @@ module.exports = function (ivm) {
 
 		/**
 		 * Buffers and returns body text (be careful on huge bodies)
+		 * @function
 		 * @returns {string} The body as a string
+		 * @memberof Body
 		 */
 		this.text = async () => {
 			console.debug("body text() called")
@@ -61,6 +63,8 @@ module.exports = function (ivm) {
 		/**
 		 * Buffers and returns the body
 		 * @returns {Uint8Array} Raw body data
+		 * @function
+		 * @memberof Body
 		 */
 		this.arrayBuffer = async () => {
 			console.debug("body arrayBuffer() called")
