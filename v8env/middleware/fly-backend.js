@@ -1,11 +1,13 @@
 function backendFetch(req, next) {
+	console.log("backend:", req)
 	if (!(this.settings instanceof Object) && !this.settings.backend) {
 		return new Response('no backend found', {
 			status: 500
 		})
 	}
 
-	const b = FlyBackend.getBackend(this.settings.get("backend"))
+	const config = this.settings.get("backend")
+	const b = FlyBackend.getBackend(config)
 	return b.fetch(req)
 }
 

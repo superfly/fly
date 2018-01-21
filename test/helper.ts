@@ -23,10 +23,18 @@ Replay.headers.push(/^fly-/);
 
 let isoPool: IsolatePool;
 
-export async function startServer(cwd: string, options?: FileStoreOptions) {
+interface ServerOptions extends FileStoreOptions {
+  port?: number
+}
+
+export async function startServer(cwd: string, options?: ServerOptions) {
   options || (options = { build: false })
   cwd = `./test/fixtures/apps/${cwd}`
   let store = new FileStore(cwd, options)
+  let port = options.port
+  if(!port || port == 0){
+    port = 3333
+  }
 
   let conf = parseConfig(cwd)
 
@@ -37,7 +45,7 @@ export async function startServer(cwd: string, options?: FileStoreOptions) {
   server.on('error', (e) => { throw e })
 
   await new Promise((resolve, reject) => {
-    server.listen(3333, () => resolve())
+    server.listen(port, () => resolve())
   })
 
   return server

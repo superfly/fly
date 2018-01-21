@@ -66,6 +66,10 @@ module.exports = function (ivm) {
 				this.headers._guard = input.headers._guard;
 				this.credentials = input.credentials;
 				this._stream = input._stream;
+				this.remoteAddr = input.remoteAddr;
+				console.log("new Request remoteAddr:", this.remoteAddr)
+				this.referrer = input.referrer;
+				this.mode = input.mode;
 			} else {
 				// input = USVString(input);
 				this.url = input //String(new URL(input, self.location));
@@ -73,8 +77,9 @@ module.exports = function (ivm) {
 
 			init = Object(init);
 
-			if ('remoteAddr' in init)
+			if ('remoteAddr' in init){
 				this.remoteAddr = init.remoteAddr
+			}
 
 			if ('method' in init) {
 				this.method = normalizeMethod(init.method)

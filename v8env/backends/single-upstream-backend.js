@@ -8,13 +8,14 @@ export class SingleUpstreamBackend {
 	}
 
 	fetch(req) {
-		let url = urlParse(req.url)
+		let breq = new Request(req) // don't want to munge the existing one
+		let url = urlParse(breq.url)
 		url = setBackendURL(this, url)
-		req.url = url.toString()
+		breq.url = url.toString()
 
-		req.headers.delete('accept-encoding')
-		setRequestHeaders(req, this.headers)
-		return global.fetch(req)
+		breq.headers.delete('accept-encoding')
+		setRequestHeaders(breq, url, this.headers)
+		return global.fetch(breq)
 	}
 }
 
@@ -29,11 +30,14 @@ function setBackendURL(backend, url) {
 	return url
 }
 
-function setRequestHeaders(req, headers) {
+function setRequestHeaders(req, url, headers) {
 	if (global.overrideHost) {
 		req.headers.set('host', global.overrideHost)
 		req.headers.set('x-forwarded-host', global.overrideHost)
 	}
+	req.headers.set('x-forwarded-proto', url.protocol.slice(0, url.protocol.length - 1))
+	req.headers.set('x-forwarded-for', req.remoteAddr)
+
 	for (const k in headers) {
 		if (headers[k] === false) {
 			if (k == 'host') {
