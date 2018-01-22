@@ -12,7 +12,8 @@ prg
 const { parseFlyConfig } = require('../lib/fly_config')
 const conf = parseFlyConfig(process.cwd())
 
-const appID = prg.option.app || conf.app && conf.app.id
+const appID = prg.app || conf.app && conf.app.id
+console.log("app id", appID)
 
 if (!appID) {
   console.log("--app option or app.id (in your .fly.yml) needs to be set.")
