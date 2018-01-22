@@ -13,8 +13,12 @@ export class SingleUpstreamBackend {
 		url = setBackendURL(this, url)
 		breq.url = url.toString()
 
+		if(breq.url == req.url){
+			return new Response("Can't do recursive proxy", {status: 500})
+		}
+
 		breq.headers.delete('accept-encoding')
-		setRequestHeaders(breq, url, this.headers)
+		setRequestHeaders(req, breq, this.headers)
 		return global.fetch(breq)
 	}
 }
@@ -30,23 +34,24 @@ function setBackendURL(backend, url) {
 	return url
 }
 
-function setRequestHeaders(req, url, headers) {
+function setRequestHeaders(req, breq, headers) {
 	if (global.overrideHost) {
-		req.headers.set('host', global.overrideHost)
-		req.headers.set('x-forwarded-host', global.overrideHost)
+		breq.headers.set('host', global.overrideHost)
+		breq.headers.set('x-forwarded-host', global.overrideHost)
 	}
-	req.headers.set('x-forwarded-proto', url.protocol.slice(0, url.protocol.length - 1))
-	req.headers.set('x-forwarded-for', req.remoteAddr)
+	let url = urlParse(req.url)
+	breq.headers.set('x-forwarded-proto', url.protocol.slice(0, url.protocol.length - 1))
+	breq.headers.set('x-forwarded-for', req.remoteAddr)
 
 	for (const k in headers) {
 		if (headers[k] === false) {
 			if (k == 'host') {
-				req.headers.set(k, '')
+				breq.headers.set(k, '')
 			} else {
-				req.headers.delete(k)
+				breq.headers.delete(k)
 			}
 		} else {
-			req.headers.set(k, headers[k])
+			breq.headers.set(k, headers[k])
 		}
 	}
 }
