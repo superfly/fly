@@ -1,5 +1,3 @@
-const urlParse = require("url-parse")
-
 export class SingleUpstreamBackend {
 	constructor(props) {
 		this.upstreamScheme = props.upstream_scheme || "http"
@@ -9,7 +7,7 @@ export class SingleUpstreamBackend {
 
 	fetch(req) {
 		let breq = new Request(req) // don't want to munge the existing one
-		let url = urlParse(breq.url)
+		let url = new URL(breq.url)
 		url = setBackendURL(this, url)
 		breq.url = url.toString()
 
@@ -24,7 +22,7 @@ export class SingleUpstreamBackend {
 }
 
 function setBackendURL(backend, url) {
-	const backendUrl = urlParse(backend.upstreamScheme + "://" + backend.upstream)
+	const backendUrl = new URL(backend.upstreamScheme + "://" + backend.upstream)
 
 	url.protocol = backendUrl.protocol
 	url.host = backendUrl.host
@@ -39,7 +37,7 @@ function setRequestHeaders(req, breq, headers) {
 		breq.headers.set('host', global.overrideHost)
 		breq.headers.set('x-forwarded-host', global.overrideHost)
 	}
-	let url = urlParse(req.url)
+	let url = new URL(req.url)
 	breq.headers.set('x-forwarded-proto', url.protocol.slice(0, url.protocol.length - 1))
 	breq.headers.set('x-forwarded-for', req.remoteAddr)
 

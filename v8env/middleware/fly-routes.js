@@ -1,5 +1,3 @@
-const urlParse = require('url-parse')
-
 module.exports = function () {
 	registerMiddleware("fly-routes", function () {
 		return async function (req, next) {
@@ -11,7 +9,7 @@ module.exports = function () {
 				})
 			}
 
-			let url = urlParse(req.url)
+			let url = new URL(req.url)
 
 			if (rule.action_type == "redirect") {
 				const redirectURL = rewriteRedirectURL(rule, url)
@@ -39,7 +37,7 @@ module.exports = function () {
 		}
 
 		function matchesRule(rule, req) {
-			const u = urlParse(req.url)
+			const u = new URL(req.url)
 			if (!(rule instanceof Object)) {
 				return false
 			}
@@ -98,7 +96,7 @@ module.exports = function () {
 			}
 			const redirectURL = url.pathname.replace(new RegExp(rule.path_pattern), rule.redirect_url)
 			try {
-				const newURL = urlParse(redirectURL)
+				const newURL = new URL(redirectURL)
 				url = newURL
 			} catch (err) {
 				// not an absolute path
