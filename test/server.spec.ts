@@ -122,13 +122,13 @@ describe('Server', () => {
     })
   })
 
-  describe('fetch recursive', ()=>{
+  describe('fetch recursive', () => {
     before(async function () {
       this.server = await startServer("fetch-recursive.js")
     })
     after(function (done) { this.server.close(done) })
 
-    it('returns an error', async ()=> {
+    it('returns an error', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
       expect(res.status).to.equal(500)
       expect(res.data).to.equal("Too much recursion")
@@ -177,6 +177,19 @@ describe('Server', () => {
         "foo=bar",
         "_some_session=2342353454edge56rtyghf"
       ])
+    })
+  })
+
+  describe('log event', () => {
+    before(async function () {
+      this.server = await startServer("log.js")
+    })
+    after(function (done) { this.server.close(done) })
+
+    it('received logs', async () => {
+      let res = await axios.get("http://127.0.0.1:3333/")
+      expect(res.status).to.equal(200);
+      expect(res.data).to.deep.include.members([{ message: "hello world", level: 'info' }, { message: "debug world", level: "debug" }])
     })
   })
 })

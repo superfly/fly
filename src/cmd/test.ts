@@ -40,27 +40,6 @@ export async function runTests(cwd: string, paths: string[]) {
         const iso = new ivm.Isolate({ snapshot })
         const ctx = await createContext(iso)
 
-        // override _log
-        await ctx.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
-          switch (lvl) {
-            case 'info':
-              console.info(...args)
-              break
-            case 'warn':
-              console.warn(...args)
-              break
-            case 'debug':
-              log.log(lvl, '(v8)', ...args)
-              break
-            case 'error':
-              console.error(...args)
-              break
-            default:
-              console.info(...args)
-              break
-          }
-        }))
-
         await ctx.set('_mocha_done', new ivm.Reference(function (failures: number) {
           if (failures)
             return process.exit(1)

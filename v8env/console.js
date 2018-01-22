@@ -1,29 +1,32 @@
+const { LogEvent, dispatchEvent } = require('./events')
+const util = require('util')
+
 // Console
 module.exports = function (ivm) {
-	function nodeLog(...args) {
-		global._log.apply(undefined, args.map(arg => new ivm.ExternalCopy(arg)
-			.copyInto()));
-	}
+	// function nodeLog(...args) {
+	// 	global._log.apply(undefined, args.map(arg => new ivm.ExternalCopy(arg)
+	// 		.copyInto()));
+	// }
 
 	const Console = {
 		log(...args) {
 			Console.info(...args)
 		},
 		info(...args) {
-			nodeLog('info', ...args)
+			dispatchEvent(new LogEvent('log', { level: 'info', message: util.format(...args), timestamp: new Date }))
 		},
 		assert(assertion, ...args) {
 			if (!assertion)
 				Console.info(...args)
 		},
 		error(...args) {
-			nodeLog('error', ...args)
+			dispatchEvent(new LogEvent('log', { level: 'error', message: util.format(...args), timestamp: new Date }))
 		},
 		exception(...args) {
 			Console.error(...args)
 		},
 		warn(...args) {
-			nodeLog('warn', ...args)
+			dispatchEvent(new LogEvent('log', { level: 'warn', message: util.format(...args), timestamp: new Date }))
 		},
 		trace() {
 			let stack = new Error().stack.match(/[^\r\n]+/g)
@@ -32,7 +35,7 @@ module.exports = function (ivm) {
 
 		// off-spec
 		debug(...args) {
-			nodeLog('debug', ...args)
+			dispatchEvent(new LogEvent('log', { level: 'debug', message: util.format(...args), timestamp: new Date }))
 		},
 
 		// unimplemented

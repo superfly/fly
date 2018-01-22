@@ -1,5 +1,6 @@
 import * as ivm from 'isolated-vm'
 import log from "./log"
+import { conf } from './config'
 import { Bridge } from './bridge/bridge'
 
 export class Context {
@@ -16,9 +17,13 @@ export class Context {
 	async bootstrap() {
 		await this.set('global', this.global.derefInto());
 		await this.set('_ivm', ivm);
-		await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
-			log.log(lvl, '(v8)', ...args)
-		}))
+
+		if (conf.env !== 'production') {
+			await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
+				log.log(lvl, '(v8)', ...args)
+			}))
+			await (await this.get("localBootstrap")).apply(undefined, [])
+		}
 
 		await this.set('_setTimeout', new ivm.Reference(function (fn: Function, timeout: number) {
 			return new ivm.Reference(setTimeout(() => { fn.apply(null, []) }, timeout))

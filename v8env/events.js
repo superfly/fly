@@ -132,7 +132,7 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 	})
 	for (let fn of eventListeners["fetch"]) {
 		try {
-			fn.call(null, fetchEvent)
+			fn.apply(null, [fetchEvent])
 		} catch (err) {
 			console.debug("error in fetch!", err.toString())
 		}
@@ -161,11 +161,25 @@ function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
 		})
 }
 
-exports.dispatchEvent = function dispatchEvent(event) {
-	switch (event.type) {
-		case 'fetch':
-			for (let fn of eventListeners["fetch"]) {
-				fn.call(null, event)
-			}
+class Log {
+	constructor(level, message, timestamp = new Date) {
+		this.level = level
+		this.message = message
+		this.timestamp = timestamp
 	}
+}
+
+class LogEvent {
+	constructor(type = "log", init = {}) {
+		this.type = type
+		this.log = new Log(init.level, init.message, init.timestamp || new Date)
+	}
+}
+
+exports.LogEvent = LogEvent
+
+exports.dispatchEvent = function dispatchEvent(event) {
+	if (Array.isArray(eventListeners[event.type]))
+		for (let fn of eventListeners[event.type])
+			fn.apply(null, [event])
 }

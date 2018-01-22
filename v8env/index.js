@@ -8,6 +8,8 @@ const { TextEncoder, TextDecoder } = require('text-encoding')
 
 let internalTimers = {}
 
+require('./local')
+
 global.bootstrap = function bootstrap() {
 	const ivm = global._ivm
 	const dispatch = global._dispatch
