@@ -1,6 +1,6 @@
 import * as http from 'http';
 import * as ivm from 'isolated-vm';
-import { Isolate, IsolatePool } from './isolate';
+import { createIsoPool, Isolate, IsolatePool } from './isolate';
 import * as url from 'url';
 import * as net from 'net';
 import * as fs from 'fs';
@@ -12,7 +12,7 @@ import mksuid from "mksuid"
 import * as httpUtils from './utils/http'
 import { Readable, Writable, Transform } from 'stream'
 import { AppStore } from './app/store'
-import { createIsoPool } from './isolate'
+import { Context } from './context'
 import { App } from './app'
 
 import EventEmitter = require('events')
@@ -36,7 +36,6 @@ const hopHeaders = [
 ]
 
 const statusPath = "/__fly/status"
-
 export interface RequestMeta {
 	app: App,
 	startedAt: [number, number], //process.hrtime() ya know
@@ -48,6 +47,7 @@ export interface RequestMeta {
 declare module 'http' {
 	interface IncomingMessage {
 		meta: RequestMeta
+		ctx?: Context
 	}
 }
 
@@ -56,6 +56,7 @@ export interface ServerOptions {
 	isoPoolMin?: number
 	isoPoolMax?: number
 	isTLS?: boolean
+	onRequest?: Function
 }
 
 export class Server extends EventEmitter {
@@ -115,8 +116,6 @@ export class Server extends EventEmitter {
 		if (request.url === undefined) // wtf
 			return
 
-		let fullT = Trace.start("request")
-
 		if (request.headers.host === undefined)
 			return
 
@@ -127,6 +126,8 @@ export class Server extends EventEmitter {
 		if (!this.config.appStore) {
 			throw new Error("please define an appStore")
 		}
+
+		let finalHeaders: http.OutgoingHttpHeaders = {}
 
 		response.setHeader("Server", `fly (${version})`)
 
@@ -152,6 +153,8 @@ export class Server extends EventEmitter {
 		log.info("checked app for", request.headers.host)
 
 		if (!app) {
+			if (await this.runRequestHook(null, request, response))
+				return
 			response.writeHead(404)
 			response.end()
 			return
@@ -171,6 +174,8 @@ export class Server extends EventEmitter {
 		try {
 
 			if (!app.code) {
+				if (await this.runRequestHook(null, request, response))
+					return
 				response.writeHead(400)
 				response.end("app has no code")
 				return
@@ -181,6 +186,9 @@ export class Server extends EventEmitter {
 			t.end()
 
 			let ctx = iso.ctx
+			if (await this.runRequestHook(ctx, request, response))
+				return
+
 			let flyDepth = 0
 			let flyDepthHeader = <string>request.headers["x-fly-depth"]
 			if (flyDepthHeader) {
@@ -191,7 +199,7 @@ export class Server extends EventEmitter {
 				}
 			}
 
-			iso.ctx.meta = new Map<string, any>([
+			ctx.meta = new Map<string, any>([
 				['app', app],
 
 				['requestID', requestID],
@@ -202,7 +210,7 @@ export class Server extends EventEmitter {
 				['flyDepth', flyDepth]
 			])
 
-			iso.ctx.set('app', new ivm.ExternalCopy(app).copyInto())
+			ctx.set('app', new ivm.ExternalCopy(app).copyInto())
 
 			t = Trace.start("compile custom script")
 			let script = iso.iso.compileScriptSync(app.code, { filename: "code.js" })
@@ -220,15 +228,6 @@ export class Server extends EventEmitter {
 				headers: httpUtils.headersForWeb(request.rawHeaders),
 				remoteAddr: request.connection.remoteAddress
 			}).copyInto()
-
-			let finalResponse = {
-				status: 200,
-				statusText: "OK",
-				ok: true,
-				url: fullURL,
-				headers: {}
-			}
-			let finalHeaders: http.OutgoingHttpHeaders = {}
 
 			t = Trace.start("process 'fetch' event")
 			await new Promise((resolve, reject) => { // mainly to make try...finally work
@@ -299,8 +298,16 @@ export class Server extends EventEmitter {
 
 						resProm.then(() => {
 							request.meta.endedAt = process.hrtime()
-							fullT.end()
+							response.end() // we are done. triggers 'finish' event
 							resolve()
+							let finalResponse = {
+								status: 200,
+								statusText: "OK",
+								ok: true,
+								url: fullURL,
+								headers: {}
+							}
+
 							log.debug("res sent.")
 							finalResponse.status = res.status
 							finalResponse.statusText = res.statusText
@@ -336,6 +343,13 @@ export class Server extends EventEmitter {
 			response.end("Critical error.")
 		} finally {
 			this.emit('requestEnd', request, response)
+		}
+	}
+
+	async runRequestHook(ctx: Context | null, req: http.IncomingMessage, res: http.ServerResponse) {
+		if (this.options.onRequest) {
+			await this.options.onRequest(ctx, req, res)
+			return res.finished
 		}
 	}
 

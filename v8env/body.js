@@ -56,8 +56,7 @@ module.exports = function (ivm) {
 			console.debug("body text() called")
 			const arr = await bufferFromStream(this.body.getReader())
 			const text = new TextDecoder('utf-8').decode(arr)
-			console.debug(text)
-			return text//new TextDecoder('utf-8').decode(arr)
+			return text
 		}
 
 		/**
