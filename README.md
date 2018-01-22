@@ -4,8 +4,16 @@ Basic engine running fly.io edge apps
 
 ## Installation
 
+Install globally:
+
 ```
-npm install -g @flyio/fly
+npm install -g @fly/fly
+```
+
+or as a `devDependency` in your project:
+
+```
+npm install --save-dev @fly/fly
 ```
 
 ## Usage
