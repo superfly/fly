@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import log from "./log"
 import { createContext, Context } from './context';
 
-import { getV8Env } from './v8env';
+import { v8Env } from './v8env';
 
 export class Isolate {
 	iso: ivm.Isolate
@@ -36,46 +36,32 @@ let snapshot: ivm.ExternalCopy<ArrayBuffer>;
 
 let pools: IsolatePool[] = [];
 
-export async function createIsolate(): Promise<Isolate> {
+export function createIsolate(): Promise<Isolate> {
 	const iso = new ivm.Isolate({ snapshot })
-	const ctx = await createContext(iso)
-	return new Isolate(iso, ctx)
-}
-
-export function createIsoPool(options?: genericPool.Options): Promise<IsolatePool> {
-	console.log("Creating v8 isolate pool.")
 	return new Promise((resolve, reject) => {
-		(function waitForSnapshot() {
-			if (!snapshot) {
-				return setTimeout(waitForSnapshot, 400)
-			}
-			options || (options = { min: 20, max: 50 })
-			const pool = new IsolatePool(options)
-			pools.push(pool)
-			resolve(pool)
-		})()
+		setTimeout(() => {
+			createContext(iso).then(function (ctx) {
+				resolve(new Isolate(iso, ctx))
+			})
+		}, 10)
 	})
 }
 
-function updateSnapshot(code: string) {
-	console.log("Updating v8 snapshot with latest v8 environment")
-	snapshot = ivm.Isolate.createSnapshot([{
-		code: code,
-		filename: './v8env.js'
-	}])
+export async function createIsoPool(options?: genericPool.Options): Promise<IsolatePool> {
+	console.log("Creating v8 isolate pool.")
+	await v8Env.waitForReadiness()
+	options || (options = { min: 20, max: 50 })
+	const pool = new IsolatePool(options)
+	pools.push(pool)
+	return pool
+}
 
+v8Env.on('snapshot', (newSnapshot: ivm.ExternalCopy<ArrayBuffer>) => {
+	snapshot = newSnapshot
 	pools.forEach(async (pool) => {
 		await pool.resetPool()
 	})
-}
-
-(function startSnapshotUpdater() {
-	getV8Env((err: Error, code: string) => {
-		if (err)
-			return log.error("error compiling v8 env", err)
-		updateSnapshot(code)
-	})
-})()
+})
 
 export class IsolatePool {
 	pool: genericPool.Pool<Isolate>

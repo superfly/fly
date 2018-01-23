@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as ivm from 'isolated-vm'
 import { getWebpackConfig, buildAppWithConfig } from '../utils/build'
 import { createContext } from '../context'
-import { getV8Env } from '../v8env'
+import { v8Env } from '../v8env'
 import log from '../log'
 
 const scripts = [
@@ -31,31 +31,28 @@ export async function runTests(cwd: string, paths: string[]) {
     if (err)
       throw err
 
+
+
     try {
-      getV8Env(async (err: Error, v8Env: string) => {
-        const snapshot = ivm.Isolate.createSnapshot([{
-          code: v8Env,
-          filename: './v8env.js'
-        }])
-        const iso = new ivm.Isolate({ snapshot })
-        const ctx = await createContext(iso)
+      await v8Env.waitForReadiness()
+      const iso = new ivm.Isolate({ snapshot: v8Env.snapshot })
+      const ctx = await createContext(iso)
 
-        await ctx.set('_mocha_done', new ivm.Reference(function (failures: number) {
-          if (failures)
-            return process.exit(1)
-          process.exit()
-        }))
+      await ctx.set('_mocha_done', new ivm.Reference(function (failures: number) {
+        if (failures)
+          return process.exit(1)
+        process.exit()
+      }))
 
-        for (let script of scripts) {
-          const compiled = await iso.compileScript(script.code, script)
-          await compiled.run(ctx.ctx)
-        }
+      for (let script of scripts) {
+        const compiled = await iso.compileScript(script.code, script)
+        await compiled.run(ctx.ctx)
+      }
 
-        const bundleScript = await iso.compileScript(code, { filename: 'bundle.js' })
-        await bundleScript.run(ctx.ctx)
-        const runScript = await iso.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })
-        await runScript.run(ctx.ctx)
-      })
+      const bundleScript = await iso.compileScript(code, { filename: 'bundle.js' })
+      await bundleScript.run(ctx.ctx)
+      const runScript = await iso.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })
+      await runScript.run(ctx.ctx)
     } catch (err) {
       console.error(err)
     }
