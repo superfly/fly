@@ -1,3 +1,5 @@
+const logger = require('../logger')
+
 /**
  * @namespace fly.cache
  * @description An API for accessing a regional, volatile cache. Data stored in the `fly.cache` can have an associated per-key time to live (TTL), and we will evict key data automatically after the elapsed TTL. We will also evict unused data periodically.
@@ -13,7 +15,7 @@ module.exports = function (ivm, dispatch) {
      * @returns {Promise<String|Null>} Data stored at the key, or Null if none exists
      */
     getString(key) {
-      console.debug("cache get: " + key)
+      logger.debug("cache get: " + key)
       return new Promise(function (resolve, reject) {
         dispatch.apply(null, [
           "flyCacheGetString",
@@ -37,7 +39,7 @@ module.exports = function (ivm, dispatch) {
      * @returns {Promise<Boolean>} true if the set was successful
      */
     set(key, value, ttl) {
-      console.debug("cache set")
+      logger.debug("cache set")
       let size = value.length
       if (size > 2 * 1024 * 1024) {
         return Promise.reject("Cache does not support values > 2MB")
@@ -67,7 +69,7 @@ module.exports = function (ivm, dispatch) {
      * @returns {Promise<Boolean>} true if ttl was successfully updated
      */
     expire(key, ttl) {
-      console.debug("cache expire:", ttl)
+      logger.debug("cache expire:", ttl)
       return new Promise(function (resolve, reject) {
         dispatch.apply(null, [
           "flyCacheExpire",

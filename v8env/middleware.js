@@ -1,3 +1,4 @@
+const logger = require('./logger')
 class MiddlewareSettings {
 	constructor(settings) {
 		this.settings = settings || {}
@@ -80,7 +81,7 @@ export class MiddlewareChain {
 	 * @param {Object.<string,Object>} settings Settings for this middleware
 	 */
 	use(mw, settings) {
-		// console.debug("use called", mw.type, mw.settings.toString())
+		// logger.debug("use called", mw.type, mw.settings.toString())
 
 		if (mw instanceof Middleware)
 			this.chain.push(mw)
@@ -118,7 +119,7 @@ export class MiddlewareChain {
 				return res
 			throw errMiddlewareNotPromise
 		} catch (err) {
-			console.debug("error running middleware chain:", err.toString())
+			logger.debug("error running middleware chain:", err.toString())
 			return new Response("Internal Server Error", {
 				status: 500
 			})
@@ -126,36 +127,36 @@ export class MiddlewareChain {
 	}
 
 	buildNext(mw, pos) {
-		console.debug("buildNext pos:", pos)
+		logger.debug("buildNext pos:", pos)
 		if (!mw)
 			return this.lastNextFunc
 
-		console.debug("mw.type", mw.type)
+		logger.debug("mw.type", mw.type)
 		const newPos = ++pos
-		console.debug("newPos:", newPos)
+		logger.debug("newPos:", newPos)
 		const next = this.chain[newPos]
 		return (req) => {
-			console.debug("next called!")
+			logger.debug("next called!")
 			return this.runMiddleware(mw, req, this.buildNext(next, newPos))
 		}
 	}
 
 	runMiddleware(mw, req, next) {
-		console.debug("run mw:", mw.type)
+		logger.debug("run mw:", mw.type)
 		try {
 			const res = mw.fn.call(mw, req, next)
 			if (res instanceof Promise)
 				return res
 			throw errMiddlewareNotPromise
 		} catch (err) {
-			console.debug("error running middleware")
-			console.debug(mw.type, err.toString())
+			logger.debug("error running middleware")
+			logger.debug(mw.type, err.toString())
 			throw err
 		}
 	}
 
 	lastNextFunc() {
-		console.debug("last next func with req")
+		logger.debug("last next func with req")
 		return new Response("OK", {
 			headers: {
 				"Content-Type": "text/plain"

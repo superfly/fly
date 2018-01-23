@@ -1,3 +1,4 @@
+const logger = require('./logger')
 module.exports = Headers
 
 /**
@@ -116,7 +117,7 @@ Headers.prototype = {
 				continue
 			}
 
-			console.debug("setting", h[0], this.getAll(h[0]))
+			logger.debug("setting", h[0], this.getAll(h[0]))
 			jsonHeaders[h[0]] = this.getAll(h[0])
 		}
 		return jsonHeaders
@@ -139,21 +140,21 @@ HeadersIterator.prototype.next = function () {
 HeadersIterator.prototype[Symbol.iterator] = function () { return this; };
 
 function fill(headers, init) {
-	console.debug("headers FILL")
+	logger.debug("headers FILL")
 	if (init instanceof Headers) {
-		console.debug("actual headers", JSON.stringify(init))
+		logger.debug("actual headers", JSON.stringify(init))
 		init._headerList.forEach(function (header) {
 			headers.append(header[0], header[1]);
 		});
 	} else if (Array.isArray(init)) {
-		console.debug("array headers", JSON.stringify(init))
+		logger.debug("array headers", JSON.stringify(init))
 		init.forEach(function (header) {
 			if (!Array.isArray(header) || header.length !== 2) throw TypeError();
 			headers.append(header[0], header[1]);
 		});
 	} else {
 		init = Object(init);
-		console.debug("other headers", JSON.stringify(init))
+		logger.debug("other headers", JSON.stringify(init))
 		Object.keys(init)
 			.forEach(function (key) {
 				if (Array.isArray(init[key])) {

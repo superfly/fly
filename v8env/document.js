@@ -6,6 +6,8 @@ const {
 	replaceElement
 } = require('domutils')
 
+const logger = require('./logger')
+
 const WritableParser = htmlparser.WritableStream
 
 const css = require('css-select')
@@ -52,7 +54,7 @@ class Document {
 class Element {
 	constructor(dom) {
 		this._dom = dom
-		console.debug("made element", this._dom.attribs)
+		logger.debug("made element", this._dom.attribs)
 	}
 
 	get id() {
@@ -60,8 +62,8 @@ class Element {
 	}
 
 	get textContent() {
-		console.debug("get text content!")
-		console.debug("element?", this instanceof Element)
+		logger.debug("get text content!")
+		logger.debug("element?", this instanceof Element)
 		return getText(this._dom)
 	}
 
@@ -116,7 +118,7 @@ class DocumentParser {
 			this.parser.write(Buffer.from(value))
 		}
 		this.parser.end()
-		// console.debug("done parsing!", dom.attribs)
+		// logger.debug("done parsing!", dom.attribs)
 	}
 }
 
@@ -133,9 +135,9 @@ function parseDOMSync(html) {
 
 function parseDOMStreaming(elemCb) {
 	let handler = new htmlparser.DomHandler(() => {
-		console.debug("done parsing dom")
+		logger.debug("done parsing dom")
 	}, undefined, (elem) => {
-		console.debug("got an element!", elem.attribs)
+		logger.debug("got an element!", elem.attribs)
 		elemCb(elem)
 	})
 	return new WritableParser(handler)

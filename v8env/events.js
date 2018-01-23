@@ -1,4 +1,5 @@
 const { Buffer } = require('buffer')
+const logger = require('./logger')
 
 /**
  * The fetch event fires when your app receives an HTTP request
@@ -77,7 +78,7 @@ exports.fireEventInit = function (ivm) {
 					throw new Error(`unknown event listener: ${name}`)
 			}
 		} catch (err) {
-			console.debug(err.message, err.stack)
+			logger.debug(err.message, err.stack)
 			let cb = args[args.length - 1] // should be the last arg
 			if (cb instanceof ivm.Reference)
 				cb.apply(undefined, [err.toString()])
@@ -85,7 +86,7 @@ exports.fireEventInit = function (ivm) {
 	}
 
 	async function fireResponseChunkEvent(ivm, chunk, done) {
-		console.debug("fire response chunk!")
+		logger.debug("fire response chunk!")
 		if (!eventListeners["responseChunk"] || eventListeners["responseChunk"].length == 0)
 			return done.apply(null, [null, new ivm.ExternalCopy(chunk)
 				.copyInto()])
@@ -93,7 +94,7 @@ exports.fireEventInit = function (ivm) {
 			Buffer.from(chunk) :
 			Buffer.from(chunk, 'utf8')
 		for (let fn of eventListeners["responseChunk"]) {
-			// console.debug("going to apply to fn:", fn.toString())
+			// logger.debug("going to apply to fn:", fn.toString())
 			let ret = fn.apply(null, [{
 				chunk: newChunk,
 				rewrite: function (newNewChunk) {
@@ -103,18 +104,18 @@ exports.fireEventInit = function (ivm) {
 			if (ret instanceof Promise)
 				await ret
 		}
-		console.debug("applying new chunk")
+		logger.debug("applying new chunk")
 		done.apply(null, [null, new ivm.ExternalCopy(newChunk)
 			.copyInto()])
 	}
 }
 
 function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
-	console.debug("handling request event")
+	logger.debug("handling request event")
 	nodeReq.body = nodeBody
 	let req = new Request(url, nodeReq, reqProxy)
 	let fetchEvent = new FetchEvent('fetch', { request: req }, async function (err, res) {
-		console.debug("request event callback called", typeof err, typeof res, res instanceof Response)
+		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 		callback.apply(undefined, [
 			err && err.toString() || null,
 			new ivm.ExternalCopy({
@@ -134,7 +135,7 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 		try {
 			fn.apply(null, [fetchEvent])
 		} catch (err) {
-			console.debug("error in fetch!", err.toString())
+			logger.debug("error in fetch!", err.toString())
 		}
 	}
 }
@@ -161,7 +162,7 @@ function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
 		})
 }
 
-class Log {
+class LogMessage {
 	constructor(level, message, timestamp = new Date) {
 		this.level = level
 		this.message = message
@@ -172,7 +173,7 @@ class Log {
 class LogEvent {
 	constructor(type = "log", init = {}) {
 		this.type = type
-		this.log = new Log(init.level, init.message, init.timestamp || new Date)
+		this.log = new LogMessage(init.level, init.message, init.timestamp || new Date)
 	}
 }
 

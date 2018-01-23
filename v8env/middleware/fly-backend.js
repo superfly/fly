@@ -1,5 +1,7 @@
+const logger = require('../logger')
+
 function backendFetch(req, next) {
-	console.log("backend:", req)
+	logger.info("backend:", req)
 	if (!(this.settings instanceof Object) && !this.settings.backend) {
 		return new Response('no backend found', {
 			status: 500
@@ -11,8 +13,8 @@ function backendFetch(req, next) {
 	return b.fetch(req)
 }
 
-module.exports = function() {
-	registerMiddleware("fly-backend", function() {
+module.exports = function () {
+	registerMiddleware("fly-backend", function () {
 		return backendFetch;
 	}())
 }

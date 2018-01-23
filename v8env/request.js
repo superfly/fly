@@ -1,3 +1,4 @@
+const logger = require('./logger')
 const CookieJar = require('./cookie_jar')
 
 module.exports = function (ivm) {
@@ -28,7 +29,7 @@ module.exports = function (ivm) {
 			if (arguments[2] instanceof ivm.Reference) //proxied
 				this._proxy = arguments[2]
 
-			// console.debug('creating request! body typeof:', typeof Body, typeof init.body)
+			// logger.debug('creating request! body typeof:', typeof Body, typeof init.body)
 			Body.call(this, null);
 
 			// readonly attribute ByteString method;
@@ -67,7 +68,7 @@ module.exports = function (ivm) {
 				this.credentials = input.credentials;
 				this._stream = input._stream;
 				this.remoteAddr = input.remoteAddr;
-				console.log("new Request remoteAddr:", this.remoteAddr)
+				logger.info("new Request remoteAddr:", this.remoteAddr)
 				this.referrer = input.referrer;
 				this.mode = input.mode;
 			} else {
@@ -77,7 +78,7 @@ module.exports = function (ivm) {
 
 			init = Object(init);
 
-			if ('remoteAddr' in init){
+			if ('remoteAddr' in init) {
 				this.remoteAddr = init.remoteAddr
 			}
 
@@ -94,7 +95,7 @@ module.exports = function (ivm) {
 			}
 
 			if ('body' in init) {
-				console.debug("setting le body for request", typeof init.body, init.body instanceof FormData)
+				logger.debug("setting le body for request", typeof init.body, init.body instanceof FormData)
 				this._stream = init.body;
 			}
 

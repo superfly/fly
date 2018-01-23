@@ -1,8 +1,9 @@
-module.exports = function (ivm, dispatch) {
+const logger = require('./logger')
 
+module.exports = function (ivm, dispatch) {
 	return {
 		match(req) {
-			console.debug("cache match")
+			logger.debug("cache match")
 			return new Promise(function (resolve, reject) {
 				dispatch.apply(null, [
 					'cacheMatch',
@@ -12,7 +13,7 @@ module.exports = function (ivm, dispatch) {
 						headers: req.headers || {},
 					}).copyInto(),
 					new ivm.Reference(function (err, res) {
-						console.debug("cache match got callback", err, res)
+						logger.debug("cache match got callback", err, res)
 						if (err)
 							return reject(err)
 						if (res)
@@ -24,12 +25,12 @@ module.exports = function (ivm, dispatch) {
 			})
 		},
 		add(req) {
-			console.debug("cache add")
+			logger.debug("cache add")
 
 			return new Promise(function (resolve, reject) {
 				req.arrayBuffer()
 					.then(function (body) {
-						console.debug("got req body in cache add")
+						logger.debug("got req body in cache add")
 						dispatch.apply(null, [
 							'cacheAdd',
 							new ivm.ExternalCopy({
@@ -40,7 +41,7 @@ module.exports = function (ivm, dispatch) {
 							new ivm.ExternalCopy(body)
 								.copyInto(),
 							new ivm.Reference(function (err, res, bodyStr) {
-								console.debug("cache add got callback", err, res)
+								logger.debug("cache add got callback", err, res)
 								if (err)
 									return reject(err)
 								if (res)

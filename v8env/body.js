@@ -1,4 +1,5 @@
 const { ReadableStream } = require('web-streams-polyfill')
+const logger = require('./logger')
 
 const bodyUsedError = new Error("Body already used, try using tee() on the stream to output to multiple destinations")
 const unsupportedBodyTypeError = new Error("Body type is unsupported, please use a ReadableStream or a string")
@@ -9,7 +10,7 @@ const unsupportedBodyTypeError = new Error("Body type is unsupported, please use
  */
 module.exports = function (ivm) {
 	return function Body(_stream) {
-		console.debug("calling body!", typeof _stream)
+		logger.debug("calling body!", typeof _stream)
 		this.bodyUsed = false;
 
 		Object.defineProperty(this, "_stream", {
@@ -53,7 +54,7 @@ module.exports = function (ivm) {
 		 * @memberof Body
 		 */
 		this.text = async () => {
-			console.debug("body text() called")
+			logger.debug("body text() called")
 			const arr = await bufferFromStream(this.body.getReader())
 			const text = new TextDecoder('utf-8').decode(arr)
 			return text
@@ -66,7 +67,7 @@ module.exports = function (ivm) {
 		 * @memberof Body
 		 */
 		this.arrayBuffer = async () => {
-			console.debug("body arrayBuffer() called")
+			logger.debug("body arrayBuffer() called")
 			const arr = await bufferFromStream(this.body.getReader())
 			this.bodyUsed = true
 			return arr.buffer
@@ -85,13 +86,13 @@ module.exports = function (ivm) {
 			return streamFromNode(_stream)
 		}
 		if (typeof _stream === "string") {
-			console.debug("body is a string")
+			logger.debug("body is a string")
 			return streamFromString(_stream)
 		}
 		if (_stream instanceof FormData) {
 			return streamFromString(_stream.toString())
 		}
-		console.debug("make stream", typeof _stream, _stream.toString())
+		logger.debug("make stream", typeof _stream, _stream.toString())
 		throw unsupportedBodyTypeError
 	}
 
@@ -101,26 +102,26 @@ module.exports = function (ivm) {
 			let encoder = new TextEncoder();
 			// recurse
 			(function pump() {
-				console.debug("pumping!")
+				logger.debug("pumping!")
 				stream.read()
 					.then(({ done, value }) => {
 						if (done) {
-							console.debug("done!", typeof parts[0], parts[0] instanceof Uint8Array)
+							logger.debug("done!", typeof parts[0], parts[0] instanceof Uint8Array)
 							return resolve(concatenate(Uint8Array, ...parts))
 						}
 
 						if (typeof value === "string") {
-							console.debug("was a string")
+							logger.debug("was a string")
 							parts.push(encoder.encode(value))
 						} else if (value instanceof ArrayBuffer) {
-							console.debug("was array buffer")
+							logger.debug("was array buffer")
 							parts.push(new Uint8Array(value))
 						}
 
 						return pump();
 					})
 					.catch((err) => {
-						console.debug("error pumping", err.toString())
+						logger.debug("error pumping", err.toString())
 						reject(err)
 					});
 			})()
@@ -132,24 +133,24 @@ module.exports = function (ivm) {
 		return new ReadableStream({
 			start(controller) {
 				fn.apply(undefined, [new ivm.Reference((name, ...args) => {
-					console.debug("got an event in streamFromNode", name)
+					logger.debug("got an event in streamFromNode", name)
 					if ((name === "close" || name === "end") && !closed) {
 						controller.close()
 						closed = true
 					} else if (name === "error") {
 						controller.error(new Error(args[0]))
 					} else if (name === "data") {
-						console.debug("got data!")
+						logger.debug("got data!")
 						controller.enqueue(args[0])
 					} else
-						console.debug("unhandled event", name)
+						logger.debug("unhandled event", name)
 				})])
 			},
 			cancel() {
-				console.debug("readable stream was cancelled")
+				logger.debug("readable stream was cancelled")
 			},
 			pull() {
-				console.debug("readable stream pull called, not doing anything.")
+				logger.debug("readable stream pull called, not doing anything.")
 			}
 		})
 	}

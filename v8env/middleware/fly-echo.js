@@ -1,6 +1,8 @@
+const logger = require('../logger')
+
 async function echo(req, next) {
-  console.debug("echo middleware");
-  console.debug("settings:", typeof this.settings, this.settings.constructor.name, JSON.stringify(this.settings));
+  logger.debug("echo middleware");
+  logger.debug("settings:", typeof this.settings, this.settings.constructor.name, JSON.stringify(this.settings));
   let body = this.settings.get("body") || req.url,
     contentType = this.settings.get("contentType") || "text/html",
     status = this.settings.get("status");

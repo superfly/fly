@@ -1,3 +1,5 @@
+const logger = require('../logger')
+
 module.exports = function () {
   registerMiddleware("google-analytics", function () {
     const gaCollectURL = "http://www.google-analytics.com/collect",
@@ -18,17 +20,17 @@ module.exports = function () {
     const htmlContentType = /^text\/html/;
 
     return async function (req, next) {
-      console.debug("INSIDE GA MIDDLEWARE", typeof this, this.constructor.name)
-      console.debug("settings:", typeof this.settings, this.settings.constructor.name, JSON.stringify(this.settings))
+      logger.debug("INSIDE GA MIDDLEWARE", typeof this, this.constructor.name)
+      logger.debug("settings:", typeof this.settings, this.settings.constructor.name, JSON.stringify(this.settings))
       const trackingID = this.settings.get("tracking_id");
-      console.debug("got tracking id", trackingID)
+      logger.debug("got tracking id", trackingID)
       if (!trackingID) {
-        // console.debug("no tracking id bro")
+        // logger.debug("no tracking id bro")
         return next(req);
       }
 
       let sess = this.session;
-      console.debug("session", typeof this.session)
+      logger.debug("session", typeof this.session)
 
       const userID = sess.userID,
         clientID = sess.clientID;
@@ -39,10 +41,10 @@ module.exports = function () {
       cache.ignoreQueryParam(ignoreQueryParam);
 
       const fullURL = req.url; // original url
-      console.debug("full url:", fullURL)
-      // console.debug("fullURL", fullURL)
+      logger.debug("full url:", fullURL)
+      // logger.debug("fullURL", fullURL)
 
-      // console.debug("adding event listener in a sec.")
+      // logger.debug("adding event listener in a sec.")
 
       // TODO: implement
       addEventListener(
@@ -50,13 +52,13 @@ module.exports = function () {
         fetchEnd(fullURL, trackingID, clientID, userID)
       );
 
-      console.debug("(ga) awaiting response")
+      logger.debug("(ga) awaiting response")
       const res = await next(req);
-      console.debug("(ga) got res", typeof res, res instanceof Response)
+      logger.debug("(ga) got res", typeof res, res instanceof Response)
 
       // TODO: implement
       if (htmlContentType.test(res.headers.get("content-type"))) {
-        console.debug("MATCHED TEXT/HTML")
+        logger.debug("MATCHED TEXT/HTML")
         addEventListener("responseChunk", responseChunk(trackingID, clientID, userID))
         // let html = await res.text()
         // if (bodyEndTagRegex.test(html)) {
@@ -81,7 +83,7 @@ module.exports = function () {
 
     function fetchEnd(fullURL, trackingID, clientID, userID) {
       return async function (event) {
-        console.debug("in fetch end")
+        logger.debug("in fetch end")
         // throw new Error("waaaaaa")
         const req = event.request,
           res = event.response,
@@ -90,22 +92,22 @@ module.exports = function () {
           ua = req.headers.get("user-agent"),
           remoteAddr = req.remoteAddr.split(":")[0];
 
-        console.debug("made it after assignments")
+        logger.debug("made it after assignments")
 
         if (err)
-          console.debug("got event.error", err)
+          logger.debug("got event.error", err)
 
-        console.debug("ua:", ua)
+        logger.debug("ua:", ua)
         if (!ua) return;
 
         let lang = req.headers.get("accept-language");
         if (!!lang) lang = lang.toLowerCase().split(",")[0];
 
-        console.debug("got lang:", lang)
+        logger.debug("got lang:", lang)
 
         let form = new FormData();
 
-        console.debug("made it past form data creation")
+        logger.debug("made it past form data creation")
 
         form.set("v", 1);
         form.set("t", "pageview");
@@ -118,7 +120,7 @@ module.exports = function () {
         form.set("ds", "fly.io");
         form.set("ua", ua);
 
-        console.debug("got all kinds of form data set!")
+        logger.debug("got all kinds of form data set!")
 
         if (userID != "") form.set("uid", userID);
 
@@ -127,19 +129,19 @@ module.exports = function () {
           form.set("exd", res.status);
         }
 
-        console.debug("form to string", form.toString())
+        logger.debug("form to string", form.toString())
 
         let u;
         try {
           u = new URL(fullURL);
-          console.debug("new URL!", typeof u)
+          logger.debug("new URL!", typeof u)
         } catch (err) {
-          console.debug("error making URL:", err.toString())
+          logger.debug("error making URL:", err.toString())
         }
 
         const sp = u.searchParams;
         for (let k of sp.keys()) {
-          console.debug("sp key:", k);
+          logger.debug("sp key:", k);
           const gaName = gaURLParams[k];
           if (gaName) {
             form.set(gaName, sp.get(k));
@@ -153,9 +155,9 @@ module.exports = function () {
           },
           body: form
         });
-        console.debug("gaRes:", JSON.stringify(gaRes))
-        console.debug("ga body:", await gaRes.text())
-        console.debug("done with fetch end");
+        logger.debug("gaRes:", JSON.stringify(gaRes))
+        logger.debug("ga body:", await gaRes.text())
+        logger.debug("done with fetch end");
       };
     }
 

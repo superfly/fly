@@ -20,7 +20,7 @@ export class Context {
 
 		if (conf.env !== 'production') {
 			await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
-				log.log(lvl, '(v8)', ...args)
+				log.log(lvl, args[0], ...args.slice(1))
 			}))
 			await (await this.get("localBootstrap")).apply(undefined, [])
 		}
