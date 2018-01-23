@@ -282,6 +282,8 @@ export class Server extends EventEmitter {
 						for (let n of hopHeaders)
 							response.removeHeader(n)
 
+
+						response.setHeader("Server", `fly (${version})`)
 						response.writeHead(res.status)
 
 						let resProm: Promise<void>
