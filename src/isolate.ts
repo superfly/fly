@@ -6,6 +6,10 @@ import { createContext, Context } from './context';
 
 import { v8Env } from './v8env';
 
+const testScript = `
+typeof addEventListener !== 'undefined'
+`
+
 export class Isolate {
 	iso: ivm.Isolate
 	ctx: Context
@@ -15,6 +19,20 @@ export class Isolate {
 	}
 	dispose() {
 		return this.iso.dispose()
+	}
+	async test() {
+		let allgood: boolean;
+		try {
+			const s = await this.iso.compileScript(testScript)
+			allgood = await s.run(this.ctx.ctx)
+		} catch (e) {
+			log.error("error testing isolate!", e)
+			throw e
+		}
+		if (!allgood) {
+			log.error("isolate was bad!")
+			throw new Error("isolate was not setup correctly.")
+		}
 	}
 }
 
@@ -41,13 +59,13 @@ let snapshot: ivm.ExternalCopy<ArrayBuffer>;
 let pools: IsolatePool[] = [];
 
 export function createIsolate(): Promise<Isolate> {
-	const iso = new ivm.Isolate({ snapshot })
+	const ivmIso = new ivm.Isolate({ snapshot })
 	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			createContext(iso).then(function (ctx) {
-				resolve(new Isolate(iso, ctx))
-			})
-		}, 10)
+		createContext(ivmIso).then(function (ctx) {
+			const iso = new Isolate(ivmIso, ctx)
+			// test the isolate!
+			iso.test().then(() => resolve(iso)).catch(reject)
+		})
 	})
 }
 
@@ -72,15 +90,18 @@ export class IsolatePool {
 	options: genericPool.Options
 
 	constructor(options: genericPool.Options) {
+		log.debug("new iso pool")
 		this.options = options
 		this.makePool()
 	}
 
 	makePool() {
+		log.debug("make a pool")
 		this.pool = genericPool.createPool(isoFactory, this.options)
 	}
 
 	async resetPool() {
+		log.debug("reset iso pool")
 		const oldPool = this.pool
 		this.makePool()
 		await oldPool.drain()
@@ -88,18 +109,22 @@ export class IsolatePool {
 	}
 
 	acquire() {
+		log.debug("acquire from iso pool")
 		return this.pool.acquire()
 	}
 
 	destroy(iso: Isolate) {
+		log.debug("destroy in iso pool")
 		return this.pool.destroy(iso)
 	}
 
 	drain() {
+		log.debug("drain iso pool")
 		return this.pool.drain.bind(this.pool)()
 	}
 
 	clear() {
+		log.debug("clear iso pool")
 		return this.pool.clear.bind(this.pool)()
 	}
 }
