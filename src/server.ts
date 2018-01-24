@@ -213,10 +213,10 @@ export class Server extends EventEmitter {
 			ctx.set('app', new ivm.ExternalCopy(app).copyInto())
 
 			t = Trace.start("compile custom script")
-			let script = iso.iso.compileScriptSync(app.code, { filename: "code.js" })
+			let script = await iso.iso.compileScript(app.code, { filename: "code.js" })
 			t.end()
 			t = Trace.start("run custom script")
-			let ret = script.runSync(ctx.ctx)
+			let ret = await script.run(ctx.ctx)
 			t.end()
 
 			let fireEvent = await ctx.get("fireEvent")
