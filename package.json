@@ -49,6 +49,7 @@
     "cookie": "^0.3.1",
     "css-select": "^1.3.0-rc0",
     "domutils": "^1.6.2",
+    "eventemitter2": "^5.0.1",
     "findhit-proxywrap": "^0.3.12",
     "generic-pool": "^3.2.0",
     "get-stream": "^3.0.0",

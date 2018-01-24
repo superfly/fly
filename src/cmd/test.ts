@@ -31,8 +31,6 @@ export async function runTests(cwd: string, paths: string[]) {
     if (err)
       throw err
 
-
-
     try {
       await v8Env.waitForReadiness()
       const iso = new ivm.Isolate({ snapshot: v8Env.snapshot })

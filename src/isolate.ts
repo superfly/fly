@@ -21,14 +21,18 @@ export class Isolate {
 const isoFactory: genericPool.Factory<Isolate> = {
 	create: createIsolate,
 
-	destroy: async function (iso: Isolate): Promise<undefined> {
-		try {
-			iso.dispose()
-		} catch (err) {
-			log.error("error disposing of Isolate", err)
-			throw err
-		}
-		return
+	destroy: function (iso: Isolate): Promise<undefined> {
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				try {
+					iso.dispose()
+					resolve()
+				} catch (err) {
+					log.error("error disposing of Isolate", err)
+					reject(err)
+				}
+			}, 500)
+		})
 	}
 }
 
@@ -92,11 +96,11 @@ export class IsolatePool {
 	}
 
 	drain() {
-		return this.pool.drain()
+		return this.pool.drain.bind(this.pool)()
 	}
 
 	clear() {
-		return this.pool.clear()
+		return this.pool.clear.bind(this.pool)()
 	}
 }
 

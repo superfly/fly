@@ -290,10 +290,10 @@ export class Server extends EventEmitter {
 
 						if (!resBody && proxy) {
 							let res = proxy.deref()
-							resProm = handleResponse(res, response, fireEvent)
+							resProm = handleResponse(res, response)
 						} else if (resBody) {
 							log.debug("got a body", resBody instanceof ArrayBuffer)
-							resProm = handleResponse(bufferToStream(Buffer.from(resBody)), response, fireEvent)
+							resProm = handleResponse(bufferToStream(Buffer.from(resBody)), response)
 						} else {
 							resProm = Promise.resolve()
 						}
@@ -324,11 +324,7 @@ export class Server extends EventEmitter {
 								new ivm.Reference(function () { // done callback
 									log.debug("finished all fetchEnd")
 									try {
-										setTimeout(() => {
-											if (!isoPool)
-												return
-											isoPool.destroy(iso)
-										}, 1000)
+										isoPool.destroy(iso)
 									} catch (err) {
 										log.error("error destroying isolate", err)
 									}
@@ -375,48 +371,10 @@ export class Server extends EventEmitter {
 	}
 }
 
-function handleResponse(src: Readable, dst: Writable, fireEvent: ivm.Reference<Function>): Promise<void> {
+function handleResponse(src: Readable, dst: Writable): Promise<void> {
 	return new Promise(function (resolve, reject) {
-		let getChunk = Trace.start("get chunk")
-		const tr = new Transform({
-			transform(chunk, encoding, callback) {
-				getChunk.end().start()
-				let t = Trace.start("push chunk")
-				// log.debug("chunk:", chunk.toString())
-				const toSend = Buffer.isBuffer(chunk) ? bufferToArrayBuffer(chunk) : chunk
-				// log.debug("toSend:", toSend)
-				try {
-					fireEvent.apply(null, [
-						"responseChunk",
-						new ivm.ExternalCopy(toSend).copyInto(),
-						new ivm.Reference(function (err: any, newChunk: string | ArrayBuffer | Buffer) {
-							if (err) {
-								log.error("error processing chunk", err)
-								newChunk = chunk
-							}
-							setImmediate(() => {
-								t.end()
-								try {
-									if (Buffer.isBuffer(newChunk))
-										callback(null, newChunk)
-									else if (newChunk instanceof ArrayBuffer)
-										callback(null, Buffer.from(newChunk))
-									else if (typeof newChunk === 'string')
-										callback(null, Buffer.from(newChunk, 'utf8'))
-								} catch (err) {
-									log.error("error calling back", err)
-								}
-							})
-						})
-					])
-				} catch (err) {
-					log.error("error applying chunk event", err)
-					callback(err)
-				}
-			}
-		})
 		setImmediate(() => {
-			src.pipe(tr).pipe(dst)
+			src.pipe(dst)
 				.on("finish", function () {
 					resolve()
 				}).on("error", reject)
