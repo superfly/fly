@@ -28,6 +28,6 @@ app:
       site_id: 1
       priority: 2
       path: "/foo1"
-      path_pattern: "^\\/"
+      path_pattern: "^\\/foo1"
       action_type: "rewrite"
       backend_id: 1
