@@ -1,4 +1,4 @@
-# Fly
+# Fly [![Build Status](https://travis-ci.org/superfly/fly.svg?branch=master)](https://travis-ci.org/superfly/fly)
 
 Basic engine running fly.io edge apps
 

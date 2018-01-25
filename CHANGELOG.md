@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* allow using an async function in , closer to spec, but not quite there ([73c0d00](https://github.com/superfly/fly/commit/73c0d00))
+* allow using an async function in `FetchEvent.prototype.respondWith`, closer to spec, but not quite there ([73c0d00](https://github.com/superfly/fly/commit/73c0d00))
 
 
 
