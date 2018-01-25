@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.4"></a>
+## [0.5.4](https://github.com/superfly/fly/compare/v0.5.3...v0.5.4) (2018-01-25)
+
+
+### Bug Fixes
+
+* Disallow responding with anything other than a response or something resolving to a response ([1c77f58](https://github.com/superfly/fly/commit/1c77f58))
+
+
+
 <a name="0.5.3"></a>
 ## [0.5.3](https://github.com/superfly/fly/compare/v0.5.2...v0.5.3) (2018-01-25)
 
