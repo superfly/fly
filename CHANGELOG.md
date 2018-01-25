@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.3"></a>
+## [0.5.3](https://github.com/superfly/fly/compare/v0.5.2...v0.5.3) (2018-01-25)
+
+
+### Bug Fixes
+
+* bomb when `FetchEvent.prototype.respondWith` isn't called ([032c2ee](https://github.com/superfly/fly/commit/032c2ee))
+
+
+
 <a name="0.5.2"></a>
 ## [0.5.2](https://github.com/superfly/fly/compare/v0.5.1...v0.5.2) (2018-01-25)
 
