@@ -47,7 +47,7 @@ registerBridge('flyCacheGetString', function (ctx: Context) {
       return callback.apply(null, [errCacheStoreUndefined.toString()])
 
     conf.cacheStore.get(k).then((buf) => {
-      const ret = buf ? buf.toString() : buf
+      const ret = buf ? buf.toString() : null
       callback.apply(null, [null, ret])
 
     }).catch((err) => {

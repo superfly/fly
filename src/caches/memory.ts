@@ -11,7 +11,7 @@ export class MemoryCacheStore implements CacheStore {
   }
 
   async get(key: string): Promise<Buffer> {
-    console.log("get buffer for key:", key, await this.redis.getBuffer(key))
+    console.log("get buffer for key:", key)
     return await this.redis.getBuffer(key)
   }
 
