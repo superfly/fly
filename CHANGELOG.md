@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/superfly/fly/compare/v0.4.4...v0.5.0) (2018-01-25)
+
+
+### Bug Fixes
+
+* pass querystring through to native fetch (fixes [#4](https://github.com/superfly/fly/issues/4)) ([d277d83](https://github.com/superfly/fly/commit/d277d83))
+* rule priority order ([db5dffa](https://github.com/superfly/fly/commit/db5dffa))
+* rules match hostname properly (fixes [#3](https://github.com/superfly/fly/issues/3)) ([9ff560f](https://github.com/superfly/fly/commit/9ff560f))
+
+
+### Features
+
+* Create ContextStore interface, use a DefaultContextStore (removes isolate pool) ([0938252](https://github.com/superfly/fly/commit/0938252))
+
+
+
 <a name="0.4.5"></a>
 ## [0.4.5](https://github.com/superfly/fly/compare/v0.4.4...v0.4.5) (2018-01-25)
 
