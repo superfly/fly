@@ -1,6 +1,8 @@
 const logger = require('./logger')
 const { EventEmitter2 } = require('eventemitter2')
 
+const invalidResponseType = new Error(`Invalid response type for 'fetch' event. Expecting a straight Response, a function returning a Promise<Response> or a Response.`)
+
 /**
  * The fetch event fires when your app receives an HTTP request
  * @event #fetch
@@ -39,12 +41,16 @@ class FetchEvent {
 			}
 			if (ret instanceof Promise) {
 				ret.then((res) => {
-					this.callback(null, res)
+					if (res instanceof Response)
+						return this.callback(null, res)
+					this.callback(invalidResponseType)
 				}).catch((err) => {
 					this.callback(err)
 				})
 			} else if (ret instanceof Response) {
 				this.callback(null, fn)
+			} else {
+				this.callback(invalidResponseType)
 			}
 		} catch (err) {
 			this.callback(err)
@@ -89,8 +95,11 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 	let req = new Request(url, nodeReq, reqProxy)
 	let fetchEvent = new FetchEvent('fetch', { request: req }, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
-		callback.apply(undefined, [
-			err && err.toString() || null,
+
+		if (err)
+			return callback.apply(null, [err.toString()])
+
+		callback.apply(undefined, [null,
 			new ivm.ExternalCopy({
 				headers: res.headers,
 				status: res.status,
