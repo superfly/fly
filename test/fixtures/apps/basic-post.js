@@ -1,8 +1,6 @@
-addEventListener('fetch', async (event) => {
-  let res = await fetch("https://example.com", {
+addEventListener('fetch', (event) => {
+  event.respondWith(fetch("https://example.com", {
     method: "POST",
     body: "testing",
-  })
-
-  event.respondWith(res)
+  }))
 })

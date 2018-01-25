@@ -6,7 +6,6 @@ let mwChain = new MiddlewareChain();
 
 mwChain.use(notAsync);
 
-addEventListener('fetch', async function (event) {
-  let res = await mwChain.run(event.request);
-  event.respondWith(res);
+addEventListener('fetch', function (event) {
+  event.respondWith(mwChain.run(event.request));
 });

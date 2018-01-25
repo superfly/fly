@@ -1,3 +1,3 @@
-addEventListener('fetch', async function (event) {
-  event.respondWith(await fetch("/foo"))
+addEventListener('fetch', function (event) {
+  event.respondWith(fetch("/foo"))
 })

@@ -1,4 +1,4 @@
-addEventListener('fetch', async (event) => {
+addEventListener('fetch', function (event) {
   event.respondWith(new Response("foo bar"))
 })
 

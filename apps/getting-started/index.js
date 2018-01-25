@@ -1,4 +1,4 @@
-addEventListener('fetch', async function (event) {
+addEventListener('fetch', function (event) {
   event.respondWith(new Response(null,
     {
       headers: {

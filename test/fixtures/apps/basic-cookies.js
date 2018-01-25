@@ -1,4 +1,4 @@
-addEventListener('fetch', async function (event) {
+addEventListener('fetch', function (event) {
   const foo = event.request.cookies.get("foo").value
   const hello = event.request.cookies.get("hello").value
 

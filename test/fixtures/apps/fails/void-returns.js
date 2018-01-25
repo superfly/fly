@@ -1,11 +1,10 @@
-async function voidReturn(req, resp){
+async function voidReturn(req, resp) {
 
 }
 
 let mwChain = new MiddlewareChain();
 mwChain.use(voidReturn);
 
-addEventListener('fetch', async function(event){
-  let res = await mwChain.run(event.request);
-  event.respondWith(res);
+addEventListener('fetch', function (event) {
+  event.respondWith(mwChain.run(event.request));
 });

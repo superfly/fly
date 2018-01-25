@@ -2,6 +2,6 @@ const chain = new MiddlewareChain()
 chain.use('google-analytics', { tracking_id: 'poutine-is-good' })
 
 
-addEventListener('fetch', async function (event) {
-  event.respondWith(await chain.run(event.request))
+addEventListener('fetch', function (event) {
+  event.respondWith(chain.run(event.request))
 })

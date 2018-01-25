@@ -26,7 +26,7 @@ class Session {
 	}
 }
 
-const errMiddlewareNotPromise = new Error("Middleware does not return a promise")
+const errMiddlewareNotPromise = new Error("Middleware did not return a promise")
 
 /**
  * Middleware functions must implement this signature.

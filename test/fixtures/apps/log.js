@@ -7,7 +7,12 @@ addEventListener('log', (event) => {
 addEventListener('fetch', (event) => {
   console.log('hello world')
   console.debug('debug world')
-  setTimeout(function () {
-    event.respondWith(new Response(JSON.stringify(logs), { headers: { "content-type": "application/json" } }))
-  }, 10)
+
+  event.respondWith(function () {
+    return new Promise((resolve) => {
+      setTimeout(function () {
+        resolve(new Response(JSON.stringify(logs), { headers: { "content-type": "application/json" } }))
+      }, 10)
+    })
+  })
 })

@@ -31,18 +31,17 @@ class FetchEvent {
 	 */
 	respondWith(fn) {
 		try {
-			if (typeof fn === "function") {
-				let ret = fn.call(null)
-				if (ret instanceof Promise) {
-					ret.then(res => {
-						this.callback(null, res)
-					}).catch(err => {
-						this.callback(err)
-					})
-				} else if (ret instanceof Response) {
-					this.callback(null, ret)
-				}
-			} else if (fn instanceof Response) {
+			let ret = fn;
+			if (typeof ret === "function") {
+				ret = fn()
+			}
+			if (ret instanceof Promise) {
+				ret.then((res) => {
+					this.callback(null, res)
+				}).catch((err) => {
+					this.callback(err)
+				})
+			} else if (ret instanceof Response) {
 				this.callback(null, fn)
 			}
 		} catch (err) {
@@ -94,11 +93,9 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 				headers: res.headers,
 				status: res.status,
 				bodyUsed: res.bodyUsed,
-			})
-				.copyInto(),
+			}).copyInto(),
 			!res._proxy ?
-				new ivm.ExternalCopy(await res.arrayBuffer())
-					.copyInto() :
+				new ivm.ExternalCopy(await res.arrayBuffer()).copyInto() :
 				null,
 			res._proxy // pass back the proxy
 		])
