@@ -23,6 +23,9 @@ module.exports = function deployApp(appID: string, token: string) {
         console.log("Successfully updated app on Fly.")
         process.exit(0)
       }
+    }).catch((err) => {
+      console.error(err.message)
+      process.exit(1)
     })
 
   })
