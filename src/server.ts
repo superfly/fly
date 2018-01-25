@@ -193,6 +193,7 @@ export class Server extends EventEmitter {
 			}
 
 			ctx.meta = new Map<string, any>([
+				...ctx.meta,
 				['app', app],
 
 				['requestID', requestID],
