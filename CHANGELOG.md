@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.1"></a>
+## [0.5.1](https://github.com/superfly/fly/compare/v0.5.0...v0.5.1) (2018-01-25)
+
+
+### Bug Fixes
+
+* export more types ([d5c873b](https://github.com/superfly/fly/commit/d5c873b))
+* merge Context.meta instead of overriding ([da22a86](https://github.com/superfly/fly/commit/da22a86))
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/superfly/fly/compare/v0.4.4...v0.5.0) (2018-01-25)
 
