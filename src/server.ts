@@ -5,7 +5,6 @@ import * as net from 'net';
 import * as fs from 'fs';
 import { Config } from './config'
 import log from './log'
-import * as genericPool from 'generic-pool';
 import { Trace } from './trace';
 import mksuid from "mksuid"
 import * as httpUtils from './utils/http'
