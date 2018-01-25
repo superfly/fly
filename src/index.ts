@@ -1,5 +1,4 @@
 export { Server } from './server'
-export { createIsoPool, IsolatePool, Isolate } from './isolate'
 export { Context } from './context'
 export { Config } from './config'
 export { AppStore } from './app/store'

@@ -1,5 +1,5 @@
 import { registerBridge, Context } from './'
-import * as ivm from 'isolated-vm'
+import { ivm } from '../'
 import * as http from 'http'
 import log from '../log'
 import { fetchBridge } from './fetch'

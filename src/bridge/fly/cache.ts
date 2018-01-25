@@ -1,5 +1,5 @@
 import { registerBridge, Context } from '../'
-import * as ivm from 'isolated-vm'
+import { ivm } from '../../'
 import log from '../../log'
 
 import { conf } from '../../config'

@@ -2,6 +2,7 @@ import { parseFlyConfig } from './fly_config'
 import { AppStore } from './app/store'
 import { CacheStore } from './cache_store'
 import { MemoryCacheStore } from './caches/memory'
+import { ContextStore } from './context_store'
 
 export interface Config {
   env: string
@@ -9,6 +10,7 @@ export interface Config {
   port: string | number
   appStore?: AppStore
   cacheStore: CacheStore
+  contextStore?: ContextStore
 }
 
 export let conf: Config = parseConfig(process.cwd())

@@ -7,32 +7,32 @@ import 'mocha';
 import * as promiseFinally from 'promise.prototype.finally'
 promiseFinally.shim()
 
-import { createIsoPool, IsolatePool } from '../isolate'
-import { Server } from '../server'
-import { parseConfig } from '../config'
-import * as ivm from 'isolated-vm'
+import { Server } from '../src/server'
+import { parseConfig } from '../src/config'
 import * as fs from 'fs'
 import axios from 'axios'
 axios.defaults.validateStatus = undefined
 
 import http = require('http')
 
-import { FileStore, FileStoreOptions } from '../app/stores/file'
+import { FileStore, FileStoreOptions } from '../src/app/stores/file'
+import { DefaultContextStore } from '../src/default_context_store';
 
 const Replay = require('replay');
 Replay.fixtures = './test/fixtures/replay';
 Replay.headers.push(/^fly-/);
 
-let isoPool: IsolatePool;
 
 export interface ServerOptions extends FileStoreOptions {
   port?: number
 }
 
+const contextStore = new DefaultContextStore()
+
 export async function startServer(cwd: string, options?: ServerOptions): Promise<http.Server> {
   options || (options = { build: false })
   cwd = `./test/fixtures/apps/${cwd}`
-  let store = new FileStore(cwd, options)
+  let appStore = new FileStore(cwd, options)
   let port = options.port
   if (!port || port == 0) {
     port = 3333
@@ -40,9 +40,9 @@ export async function startServer(cwd: string, options?: ServerOptions): Promise
 
   let conf = parseConfig(cwd)
 
-  conf.appStore = store
+  conf.appStore = appStore
 
-  const server = new Server(conf, { isoPool }).server
+  const server = new Server(Object.assign({}, conf, { contextStore, appStore })).server
 
   server.on('error', (e) => { throw e })
 
@@ -54,5 +54,5 @@ export async function startServer(cwd: string, options?: ServerOptions): Promise
 }
 
 before(async function () {
-  isoPool = await createIsoPool()
+  await contextStore.getIsolate()
 })

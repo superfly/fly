@@ -6,7 +6,7 @@ import * as fs from 'fs'
 import * as webpack from 'webpack'
 
 import { EventEmitter } from 'events'
-import ivm = require('isolated-vm')
+import { ivm } from './'
 
 const MemoryFS = require('memory-fs')
 

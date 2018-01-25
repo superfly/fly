@@ -1,5 +1,3 @@
-import { Isolate } from '../isolate'
-
 export let catalog = new Map<string, BridgeFunctionFactory>()
 export function registerBridge(name: string, fn: BridgeFunctionFactory) {
   catalog.set(name, fn)

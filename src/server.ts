@@ -1,6 +1,5 @@
 import * as http from 'http';
-import * as ivm from 'isolated-vm';
-import { createIsoPool, Isolate, IsolatePool } from './isolate';
+import { ivm } from './'
 import * as url from 'url';
 import * as net from 'net';
 import * as fs from 'fs';
@@ -16,9 +15,13 @@ import { Context } from './context'
 import { App } from './app'
 
 import EventEmitter = require('events')
+import { DefaultContextStore } from './default_context_store';
 
 const proxiedHttp = require('findhit-proxywrap').proxy(http, { strict: false })
 const { version } = require('../package.json');
+
+const fetchTimeout = 1000
+const fetchEndTimeout = 5000
 
 const hopHeaders = [
 	// From RFC 2616 section 13.5.1
@@ -52,9 +55,6 @@ declare module 'http' {
 }
 
 export interface ServerOptions {
-	isoPool?: IsolatePool
-	isoPoolMin?: number
-	isoPoolMax?: number
 	isTLS?: boolean
 	onRequest?: Function
 }
@@ -63,14 +63,11 @@ export class Server extends EventEmitter {
 	server: http.Server
 	config: Config
 	options: ServerOptions
-	isoPool: IsolatePool
 
 	constructor(config: Config, options?: ServerOptions) {
 		super()
 		this.config = config
 		this.options = options || {}
-		if (options && options.isoPool)
-			this.isoPool = options.isoPool
 		this.server = proxiedHttp.createServer(this.handleRequest.bind(this));
 	}
 
@@ -103,10 +100,6 @@ export class Server extends EventEmitter {
 			}
 		});
 
-		this.isoPool = this.isoPool || await createIsoPool({
-			min: this.options.isoPoolMin || 20,
-			max: this.options.isoPoolMax || 100
-		})
 		this.server.listen(this.config.port);
 	}
 
@@ -137,7 +130,6 @@ export class Server extends EventEmitter {
 			return
 		}
 
-		let isoPool = this.isoPool
 		request.headers['x-request-id'] = requestID
 
 		let app: any
@@ -181,11 +173,13 @@ export class Server extends EventEmitter {
 				return
 			}
 
-			let t = Trace.start("acquire iso from pool")
-			let iso = await isoPool.acquire()
+			if (!this.config.contextStore)
+				this.config.contextStore = new DefaultContextStore()
+
+			let t = Trace.start("acquire context from context store")
+			let ctx = await this.config.contextStore.getContext(app)
 			t.end()
 
-			let ctx = iso.ctx
 			if (await this.runRequestHook(ctx, request, response))
 				return
 
@@ -211,13 +205,6 @@ export class Server extends EventEmitter {
 			])
 
 			ctx.set('app', new ivm.ExternalCopy(app).copyInto())
-
-			t = Trace.start("compile custom script")
-			let script = await iso.iso.compileScript(app.code, { filename: "code.js" })
-			t.end()
-			t = Trace.start("run custom script")
-			let ret = await script.run(ctx.ctx)
-			t.end()
 
 			let fireEvent = await ctx.get("fireEvent")
 
@@ -321,18 +308,15 @@ export class Server extends EventEmitter {
 								reqForV8,
 								new ivm.ExternalCopy(finalResponse),
 								null,
-								new ivm.Reference(function () { // done callback
+								new ivm.Reference(() => { // done callback
 									log.debug("finished all fetchEnd")
-									try {
-										isoPool.destroy(iso)
-									} catch (err) {
-										log.error("error destroying isolate", err)
-									}
+									if (this.config.contextStore)
+										this.config.contextStore.putContext(ctx)
 								})
-							])
+							], { timeout: fetchEndTimeout })
 						})
 					})
-				])
+				], { timeout: fetchTimeout })
 			})
 
 		} catch (e) {
@@ -353,20 +337,10 @@ export class Server extends EventEmitter {
 
 	stop() {
 		return new Promise((resolve, reject) => {
-			if (!this.isoPool)
-				return
-			this.isoPool.drain().then(() => {
-				log.info("drained pool")
-				if (!this.isoPool)
-					return
-				this.isoPool.clear().then(() => {
-					log.info("cleared pool")
-					this.server.close(() => {
-						log.info("closed server")
-						resolve()
-					})
-				}).catch(reject)
-			}).catch(reject)
+			this.server.close(() => {
+				log.info("closed server")
+				resolve()
+			})
 		})
 	}
 }

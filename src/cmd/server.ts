@@ -1,6 +1,5 @@
 import { parseConfig } from '../config'
 import * as path from 'path'
-import { createIsoPool } from '../isolate'
 import { Server } from '../server'
 import { FileStore } from '../app/stores/file'
 
@@ -19,5 +18,5 @@ export function startServer(prg: CommanderStatic) {
 
   conf.appStore = new FileStore(cwd, { build: true })
 
-  new Server(conf, { isoPoolMin: 5, isoPoolMax: 20 }).start()
+  new Server(conf).start()
 }

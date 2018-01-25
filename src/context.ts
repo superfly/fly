@@ -1,4 +1,4 @@
-import * as ivm from 'isolated-vm'
+import { ivm } from './'
 import log from "./log"
 import { conf } from './config'
 import { Bridge } from './bridge/bridge'

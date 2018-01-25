@@ -1,6 +1,6 @@
 import { registerBridge, Context } from './'
 
-import * as ivm from 'isolated-vm'
+import { ivm } from '../'
 import log from "../log"
 import * as http from 'http'
 import * as https from 'https'
@@ -25,7 +25,7 @@ export function fetchBridge(ctx: Context) {
     let depth = <number>ctx.meta.get('flyDepth')
 
     log.debug("fetch depth: ", depth)
-    if(depth >= 3){
+    if (depth >= 3) {
       log.error("too much recursion: ", depth)
       cb.apply(undefined, ["Too much recursion"])
       return

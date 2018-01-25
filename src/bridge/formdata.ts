@@ -1,5 +1,5 @@
 import * as multiparty from 'multiparty'
-import * as ivm from 'isolated-vm'
+import { ivm } from '../'
 import * as http from 'http'
 
 import { registerBridge, Context } from './'

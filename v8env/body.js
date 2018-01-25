@@ -83,6 +83,7 @@ module.exports = function (ivm) {
 			return emptyStream()
 		}
 		if (_stream instanceof ivm.Reference) {
+			logger.debug('is ivm reference')
 			return streamFromNode(_stream)
 		}
 		if (typeof _stream === "string") {

@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { startServer } from './helper'
-import { conf } from '../config'
+import { conf } from '../src/config'
 import axios from 'axios'
 
 describe('Cache API', () => {

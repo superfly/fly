@@ -26,6 +26,8 @@ module.exports = function (ivm) {
 		constructor(input, init) {
 			if (arguments.length < 1) throw TypeError('Not enough arguments');
 
+			logger.debug("ARG 2 IS:", arguments[2] instanceof ivm.Reference, arguments[2] && arguments[2].toString())
+
 			if (arguments[2] instanceof ivm.Reference) //proxied
 				this._proxy = arguments[2]
 

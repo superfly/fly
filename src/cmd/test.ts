@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import * as ivm from 'isolated-vm'
+import { ivm } from '../'
 import { getWebpackConfig, buildAppWithConfig } from '../utils/build'
 import { createContext } from '../context'
 import { v8Env } from '../v8env'
