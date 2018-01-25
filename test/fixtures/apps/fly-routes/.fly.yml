@@ -31,3 +31,12 @@ app:
       path_pattern: "^\\/foo1"
       action_type: "rewrite"
       backend_id: 1
+    - id: 4
+      site_1: 1
+      priority: 10
+      path: "/"
+      path_pattern: "^\\/"
+      action_type: "redirect"
+      redirect_url: "http://www.test.com/"
+      hostname:
+        hostname: "test8"

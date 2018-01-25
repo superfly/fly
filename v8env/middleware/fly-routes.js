@@ -46,7 +46,7 @@ module.exports = function () {
 				return false
 			}
 
-			if (rule.hostname && rule.hostname != u.hostname) {
+			if (rule.hostname && rule.hostname.hostname != u.hostname) {
 				return false
 			}
 

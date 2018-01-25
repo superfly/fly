@@ -47,5 +47,14 @@ describe('fly-routes', () => {
       expect(res.status).to.equal(200)
       //expect(res.data).to.equal('bar1')
     })
+
+    it('matches a hostname', async () => {
+      let res = await axios.get("http://127.0.0.1:3333/bar1", {
+        headers: {'Host': "test8"},
+        maxRedirects: 0
+      })
+      expect(res.status).to.equal(302)
+      expect(res.headers['location']).to.equal('http://www.test.com/bar1')
+    })
   })
 })
