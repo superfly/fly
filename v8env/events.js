@@ -115,7 +115,9 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 	if (typeof fn !== 'function')
 		return callback.apply(null, ["No 'fetch' event listener attached."])
 
-	fn(fetchEvent)
+	if (fn(fetchEvent) instanceof Promise)
+		return callback.apply(null, ["'fetch' event handler function cannot return a promise."])
+
 	if (!fetchEvent.respondWithEntered)
 		return callback.apply(null, ["respondWith was not called for FetchEvent"])
 }
