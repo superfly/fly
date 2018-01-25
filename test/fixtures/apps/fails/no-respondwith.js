@@ -1,0 +1,3 @@
+addEventListener('fetch', function (event) {
+
+})

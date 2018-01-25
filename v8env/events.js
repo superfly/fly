@@ -18,6 +18,7 @@ class FetchEvent {
 		if (!this.request)
 			throw new Error("init.request is required.")
 		this.callback = callback
+		this.respondWithEntered = false
 	}
 
 	/** 
@@ -30,6 +31,7 @@ class FetchEvent {
 	 * @param {respondWithCallback} fn
 	 */
 	respondWith(fn) {
+		this.respondWithEntered = true
 		try {
 			let ret = fn;
 			if (typeof ret === "function") {
@@ -100,7 +102,13 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 			res._proxy // pass back the proxy
 		])
 	})
-	emitter.emit('fetch', fetchEvent)
+	let fn = emitter.listeners('fetch').slice(-1)[0]
+	if (typeof fn !== 'function')
+		return callback.apply(null, ["No 'fetch' event listener attached."])
+
+	fn(fetchEvent)
+	if (!fetchEvent.respondWithEntered)
+		return callback.apply(null, ["respondWith was not called for FetchEvent"])
 }
 
 function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {

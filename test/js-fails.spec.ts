@@ -4,7 +4,7 @@ import axios from 'axios'
 
 describe('JS Fails', () => {
   describe('bad js syntax', () => {
-    let fixtures = ["bad-syntax", "not-async", "void-returns"];
+    let fixtures = ["bad-syntax", "not-async", "void-returns", "no-respondwith", "no-fetch-listener"];
     fixtures.forEach(f => {
       let bad = f
       describe(bad, () => {

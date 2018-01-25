@@ -252,6 +252,8 @@ export class Server extends EventEmitter {
 
 						if (err) {
 							log.error("error from fetch callback:", err)
+							response.writeHead(500)
+							response.end("Error: " + err)
 							return
 						}
 
