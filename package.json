@@ -17,7 +17,7 @@
   },
   "types": "./lib/index.d.ts",
   "author": "",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "devDependencies": {
     "@types/chai": "^4.0.8",
     "@types/ioredis": "^3.2.5",
