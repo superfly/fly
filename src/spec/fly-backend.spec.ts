@@ -22,7 +22,16 @@ describe('fly-backend', () => {
     expect(res.data.headers['host']).to.equal("test")
     Object.keys(headers).forEach((k) => {
       expect(res.data.headers[k]).instanceOf(Array, k)
-      expect(res.data.headers[k]).include(headers[k], k)
+      expect(res.data.headers[k]).to.include(headers[k], k)
     })
+  })
+
+  it('passes querystring through', async ()=> {
+    let res = await axios.get("http://127.0.0.1:3333/querystring?node=isdeadtome.com", {
+      headers: { 'Host': "test" }
+    })
+
+    expect(res.status).to.equal(200)
+    expect(res.data.url).to.include("querystring?node=isdeadtome.com")
   })
 })

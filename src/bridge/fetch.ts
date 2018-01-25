@@ -46,10 +46,14 @@ export function fetchBridge(ctx: Context) {
         headers['X-Fly-Depth'] = (depth + 1).toString()
         let req: http.ClientRequest;
 
+        let path = u.pathname
+        if(u.query != null){
+          path = path + "?" + u.query
+        }
         req = httpFn({
           agent: httpAgent,
           protocol: u.protocol,
-          path: u.pathname,
+          path: path,
           hostname: u.hostname,
           host: u.host,
           port: u.port,
