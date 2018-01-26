@@ -77,7 +77,7 @@ global.bootstrap = function bootstrap() {
 	global.FetchEvent = FetchEvent
 
 	// DOM
-	global.Document = require('./document')
+	// global.Document = require('./document')
 
 	// Fly-specific
 	global.FlyBackend = FlyBackend

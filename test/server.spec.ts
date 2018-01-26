@@ -57,31 +57,31 @@ describe('Server', () => {
     })
   })
 
-  describe('dom selector', () => {
-    before(async function () {
-      this.server = await startServer("dom-selector.js")
-    })
-    after(function (done) { this.server.close(done) })
+  // describe('dom selector', () => {
+  //   before(async function () {
+  //     this.server = await startServer("dom-selector.js")
+  //   })
+  //   after(function (done) { this.server.close(done) })
 
-    it('selects the dom', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(200);
-      expect(res.data).to.equal(`<span>empty-ish span</span><div id="woot2">nice2!</div>`);
-    })
-  })
+  //   it('selects the dom', async () => {
+  //     let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
+  //     expect(res.status).to.equal(200);
+  //     expect(res.data).to.equal(`<span>empty-ish span</span><div id="woot2">nice2!</div>`);
+  //   })
+  // })
 
-  describe('dom streaming selector', () => {
-    before(async function () {
-      this.server = await startServer("streaming-dom-selector.js")
-    })
-    after(function (done) { this.server.close(done) })
+  // describe('dom streaming selector', () => {
+  //   before(async function () {
+  //     this.server = await startServer("streaming-dom-selector.js")
+  //   })
+  //   after(function (done) { this.server.close(done) })
 
-    it('selects the dom', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(200);
-      expect(res.data).to.equal(`Example Domain`);
-    })
-  })
+  //   it('selects the dom', async () => {
+  //     let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
+  //     expect(res.status).to.equal(200);
+  //     expect(res.data).to.equal(`Example Domain`);
+  //   })
+  // })
 
   describe('cookies', () => {
     before(async function () {
