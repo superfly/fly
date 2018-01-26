@@ -217,6 +217,7 @@ export class Server extends EventEmitter {
 			}).copyInto()
 
 			t = Trace.start("process 'fetch' event")
+			let cbCalled = false
 			await new Promise((resolve, reject) => { // mainly to make try...finally work
 				fireEvent.apply(undefined, [
 					"fetch",
@@ -248,12 +249,19 @@ export class Server extends EventEmitter {
 						})
 					}),
 					new ivm.Reference((err: any, res: any, resBody: ArrayBuffer, proxy?: ivm.Reference<http.IncomingMessage>) => {
+						if(cbCalled){
+							return // this can't happen twice
+						}
+						cbCalled = true
 						t.end()
 
 						if (err) {
 							log.error("error from fetch callback:", err)
 							response.writeHead(500)
 							response.end("Error: " + err)
+							// release ctx
+							if (this.config.contextStore)
+								this.config.contextStore.putContext(ctx)
 							return
 						}
 
