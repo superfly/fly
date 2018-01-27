@@ -179,8 +179,10 @@ export class Server extends EventEmitter {
 			let ctx = await this.config.contextStore.getContext(app)
 			t.end()
 
-			if (await this.runRequestHook(ctx, request, response))
+			if (await this.runRequestHook(ctx, request, response)) {
+				this.config.contextStore.putContext(ctx)
 				return
+			}
 
 			let flyDepth = 0
 			let flyDepthHeader = <string>request.headers["x-fly-depth"]
@@ -249,7 +251,7 @@ export class Server extends EventEmitter {
 						})
 					}),
 					new ivm.Reference((err: any, res: any, resBody: ArrayBuffer, proxy?: ivm.Reference<http.IncomingMessage>) => {
-						if(cbCalled){
+						if (cbCalled) {
 							return // this can't happen twice
 						}
 						cbCalled = true
