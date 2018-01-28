@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/superfly/fly/compare/v0.5.9-0...v0.6.0) (2018-01-28)
+
+
+### Features
+
+* the most basic of basic ssl forwarders ([4435b7a](https://github.com/superfly/fly/commit/4435b7a))
+
+
+
 <a name="0.5.9-0"></a>
 ## [0.5.9-0](https://github.com/superfly/fly/compare/v0.5.8...v0.5.9-0) (2018-01-27)
 
