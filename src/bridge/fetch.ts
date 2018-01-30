@@ -106,7 +106,7 @@ export function fetchBridge(ctx: Context) {
 
         log.warn("body is", typeof body, body instanceof ArrayBuffer)
 
-        req.end(Buffer.from(body), () => { log.debug("ENDED!", arguments) })
+        req.end(Buffer.from(body))
       })
     } catch (err) {
       log.error("caught error", err)

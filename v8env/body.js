@@ -10,7 +10,6 @@ const unsupportedBodyTypeError = new Error("Body type is unsupported, please use
  */
 module.exports = function (ivm) {
 	return function Body(_stream) {
-		logger.debug("calling body!", typeof _stream)
 		this.bodyUsed = false;
 
 		Object.defineProperty(this, "_stream", {
@@ -54,7 +53,6 @@ module.exports = function (ivm) {
 		 * @memberof Body
 		 */
 		this.text = async () => {
-			logger.debug("body text() called")
 			const arr = await bufferFromStream(this.body.getReader())
 			const text = new TextDecoder('utf-8').decode(arr)
 			return text
@@ -67,7 +65,6 @@ module.exports = function (ivm) {
 		 * @memberof Body
 		 */
 		this.arrayBuffer = async () => {
-			logger.debug("body arrayBuffer() called")
 			const arr = await bufferFromStream(this.body.getReader())
 			this.bodyUsed = true
 			return arr.buffer
@@ -83,11 +80,9 @@ module.exports = function (ivm) {
 			return emptyStream()
 		}
 		if (_stream instanceof ivm.Reference) {
-			logger.debug('is ivm reference')
 			return streamFromNode(_stream)
 		}
 		if (typeof _stream === "string") {
-			logger.debug("body is a string")
 			return streamFromString(_stream)
 		}
 		if (_stream instanceof FormData) {
@@ -103,20 +98,18 @@ module.exports = function (ivm) {
 			let encoder = new TextEncoder();
 			// recurse
 			(function pump() {
-				logger.debug("pumping!")
 				stream.read()
 					.then(({ done, value }) => {
 						if (done) {
-							logger.debug("done!", typeof parts[0], parts[0] instanceof Uint8Array, parts.length)
 							return resolve(concatenate(Uint8Array, ...parts))
 						}
 
 						if (typeof value === "string") {
-							logger.debug("was a string:", value.length)
 							parts.push(encoder.encode(value))
 						} else if (value instanceof ArrayBuffer) {
-							logger.debug("was array buffer:", value.byteLength)
 							parts.push(new Uint8Array(value))
+						}else{
+							logger.error("unhandled type on stream read")
 						}
 
 						return pump();
@@ -134,14 +127,13 @@ module.exports = function (ivm) {
 		return new ReadableStream({
 			start(controller) {
 				fn.apply(undefined, [new ivm.Reference((name, ...args) => {
-					logger.debug("got an event in streamFromNode", name)
 					if ((name === "close" || name === "end") && !closed) {
-						controller.close()
 						closed = true
+						controller.close()
+						logger.debug("stream closed:", name)
 					} else if (name === "error") {
 						controller.error(new Error(args[0]))
 					} else if (name === "data") {
-						logger.debug("got data!")
 						controller.enqueue(args[0])
 					} else
 						logger.debug("unhandled event", name)
@@ -149,9 +141,6 @@ module.exports = function (ivm) {
 			},
 			cancel() {
 				logger.debug("readable stream was cancelled")
-			},
-			pull() {
-				logger.debug("readable stream pull called, not doing anything.")
 			}
 		})
 	}

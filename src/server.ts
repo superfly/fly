@@ -286,7 +286,6 @@ export class Server extends EventEmitter {
 							let res = proxy.deref()
 							resProm = handleResponse(res, response)
 						} else if (resBody) {
-							log.debug("got a body", resBody instanceof ArrayBuffer)
 							resProm = handleResponse(bufferToStream(Buffer.from(resBody)), response)
 						} else {
 							resProm = Promise.resolve()
@@ -303,8 +302,7 @@ export class Server extends EventEmitter {
 								url: fullURL,
 								headers: {}
 							}
-
-							log.debug("res sent.")
+							
 							finalResponse.status = res.status
 							finalResponse.statusText = res.statusText
 							finalResponse.ok = res.statusCode && res.statusCode >= 200 && res.statusCode < 400

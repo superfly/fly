@@ -140,21 +140,17 @@ HeadersIterator.prototype.next = function () {
 HeadersIterator.prototype[Symbol.iterator] = function () { return this; };
 
 function fill(headers, init) {
-	logger.debug("headers FILL")
 	if (init instanceof Headers) {
-		logger.debug("actual headers", JSON.stringify(init))
 		init._headerList.forEach(function (header) {
 			headers.append(header[0], header[1]);
 		});
 	} else if (Array.isArray(init)) {
-		logger.debug("array headers", JSON.stringify(init))
 		init.forEach(function (header) {
 			if (!Array.isArray(header) || header.length !== 2) throw TypeError();
 			headers.append(header[0], header[1]);
 		});
 	} else {
 		init = Object(init);
-		logger.debug("other headers", JSON.stringify(init))
 		Object.keys(init)
 			.forEach(function (key) {
 				if (Array.isArray(init[key])) {
