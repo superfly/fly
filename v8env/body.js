@@ -107,15 +107,15 @@ module.exports = function (ivm) {
 				stream.read()
 					.then(({ done, value }) => {
 						if (done) {
-							logger.debug("done!", typeof parts[0], parts[0] instanceof Uint8Array)
+							logger.debug("done!", typeof parts[0], parts[0] instanceof Uint8Array, parts.length)
 							return resolve(concatenate(Uint8Array, ...parts))
 						}
 
 						if (typeof value === "string") {
-							logger.debug("was a string")
+							logger.debug("was a string:", value.length)
 							parts.push(encoder.encode(value))
 						} else if (value instanceof ArrayBuffer) {
-							logger.debug("was array buffer")
+							logger.debug("was array buffer:", value.byteLength)
 							parts.push(new Uint8Array(value))
 						}
 

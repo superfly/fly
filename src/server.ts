@@ -229,25 +229,20 @@ export class Server extends EventEmitter {
 					new ivm.Reference(function (callback: ivm.Reference<Function>) { // readBody
 						let t = Trace.start("read native body")
 						setImmediate(() => {
-							let readDone = false
 							request.on("end", () => {
-								readDone = true
+								t.end()
 								callback.apply(undefined, ["end"])
 							})
 							request.on("close", () => {
-								readDone = true
+								t.end()
 								callback.apply(undefined, ["close"])
 							})
-							do {
-								let data = request.read()
-								if (!data)
-									break
-								log.debug("got data!", typeof data, data instanceof Buffer)
+							request.on("data", function(data: any){
 								callback.apply(undefined, [
 									"data", new ivm.ExternalCopy(bufferToArrayBuffer(data)).copyInto()
 								])
-								t.end()
-							} while (!readDone)
+							})
+							request.resume()
 						})
 					}),
 					new ivm.Reference((err: any, res: any, resBody: ArrayBuffer, proxy?: ivm.Reference<http.IncomingMessage>) => {

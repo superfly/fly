@@ -75,27 +75,24 @@ export function fetchBridge(ctx: Context) {
             }),
             new ivm.Reference(function (callback: ivm.Reference<Function>) {
               setImmediate(async () => {
-                let readDone = false
                 res.on("close", function () {
-                  readDone = true
+                  t.end()
                   callback.apply(undefined, ["close"])
                 })
                 res.on("end", function () {
-                  readDone = true
+                  t.end()
                   callback.apply(undefined, ["end"])
                 })
                 res.on("error", function (err: Error) {
-                  readDone = true
+                  t.end()
                   callback.apply(undefined, ["error", err.toString()])
                 })
-                do {
-                  let data = res.read()
-                  if (!data)
-                    break
+
+                res.on("data", function (data: any) {
                   callback.apply(undefined, ["data", new ivm.ExternalCopy(bufferToArrayBuffer(data)).copyInto()])
-                } while (!readDone)
-                callback.apply(undefined, ["end"])
-                t.end()
+                })
+                res.resume()
+                //callback.apply(undefined, ["end"])
               })
             }),
             new ivm.Reference(res)
