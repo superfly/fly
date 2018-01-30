@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.1"></a>
+## [0.6.1](https://github.com/superfly/fly/compare/v0.6.0...v0.6.1) (2018-01-30)
+
+
+### Bug Fixes
+
+* priority matching on fly-routes ([c7d348d](https://github.com/superfly/fly/commit/c7d348d))
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/superfly/fly/compare/v0.5.9-0...v0.6.0) (2018-01-28)
 
