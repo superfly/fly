@@ -19,7 +19,7 @@ registerBridge('fetch', fetchBridge)
 export function fetchBridge(ctx: Context) {
   return function (urlStr: string, init: any, body: ArrayBuffer, cb: ivm.Reference<Function>) {
     log.info("native fetch with url:", urlStr)
-    let t = Trace.start('native fetch')
+    let t = ctx.trace && ctx.trace.start('fetch()') || Trace.start('fetch()')
     init || (init = {})
     const u = parseURL(urlStr)
     let depth = <number>ctx.meta.get('flyDepth')

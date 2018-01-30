@@ -2,6 +2,7 @@ import { ivm } from './'
 import { Context } from './context'
 import { ContextStore } from './context_store'
 import { v8Env } from './v8env'
+import { Trace } from './trace'
 
 import { createContext } from './context'
 
@@ -14,11 +15,14 @@ export class DefaultContextStore implements ContextStore {
     v8Env.on('snapshot', this.resetIsolate.bind(this))
   }
 
-  async getContext(app: App) {
+  async getContext(app: App, trace?: Trace) {
     const iso = await this.getIsolate()
     const ctx = await createContext(iso)
     const script = await iso.compileScript(app.code)
+    ctx.trace = trace
+    const t = ctx.trace && ctx.trace.start("compile app")
     await script.run(ctx.ctx)
+    t && t.end()
     return ctx
   }
 

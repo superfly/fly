@@ -105,6 +105,7 @@ export class Server extends EventEmitter {
 	private async handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {
 		const startedAt = process.hrtime()
 		const requestID = mksuid()
+		const trace = Trace.start("httpRequest")
 		if (request.url === undefined) // wtf
 			return
 
@@ -175,9 +176,10 @@ export class Server extends EventEmitter {
 			if (!this.config.contextStore)
 				this.config.contextStore = new DefaultContextStore()
 
-			let t = Trace.start("acquire context from context store")
-			let ctx = await this.config.contextStore.getContext(app)
-			t.end()
+			let t = trace.start("context")
+			let t2 = t.start("acquire")
+			let ctx = await this.config.contextStore.getContext(app, t)
+			t2.end()
 
 			if (await this.runRequestHook(ctx, request, response)) {
 				this.config.contextStore.putContext(ctx)
@@ -218,7 +220,8 @@ export class Server extends EventEmitter {
 				remoteAddr: request.connection.remoteAddress
 			}).copyInto()
 
-			t = Trace.start("process 'fetch' event")
+			t = ctx.trace && ctx.trace.start("'fetch' event") || Trace.start("'fetch' event")
+			ctx.trace = t
 			let cbCalled = false
 			await new Promise((resolve, reject) => { // mainly to make try...finally work
 				fireEvent.apply(undefined, [
@@ -227,14 +230,14 @@ export class Server extends EventEmitter {
 					reqForV8,
 					new ivm.Reference(request),
 					new ivm.Reference(function (callback: ivm.Reference<Function>) { // readBody
-						let t = Trace.start("read native body")
+						let t2 = t.start("respBody")
 						setImmediate(() => {
 							request.on("end", () => {
-								t.end()
+								t2.end()
 								callback.apply(undefined, ["end"])
 							})
 							request.on("close", () => {
-								t.end()
+								t2.end()
 								callback.apply(undefined, ["close"])
 							})
 							request.on("data", function(data: any){
@@ -251,6 +254,7 @@ export class Server extends EventEmitter {
 						}
 						cbCalled = true
 						t.end()
+						ctx.trace = t.parent
 
 						if (err) {
 							log.error("error from fetch callback:", err)
@@ -302,7 +306,7 @@ export class Server extends EventEmitter {
 								url: fullURL,
 								headers: {}
 							}
-							
+
 							finalResponse.status = res.status
 							finalResponse.statusText = res.statusText
 							finalResponse.ok = res.statusCode && res.statusCode >= 200 && res.statusCode < 400
@@ -329,6 +333,7 @@ export class Server extends EventEmitter {
 			response.statusCode = 500
 			response.end("Critical error.")
 		} finally {
+			trace.end()
 			this.emit('requestEnd', request, response)
 		}
 	}

@@ -2,9 +2,11 @@ import { ivm } from './'
 import log from "./log"
 import { conf } from './config'
 import { Bridge } from './bridge/bridge'
+import { Trace } from './trace'
 
 export class Context {
 	ctx: ivm.Context
+	trace: Trace | undefined
 	private global: ivm.Reference<Object>
 	meta: Map<string, any>
 
