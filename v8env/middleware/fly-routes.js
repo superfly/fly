@@ -33,7 +33,7 @@ module.exports = function () {
 		function _matchRules(req) {
 			if (!app.rules)
 				return null
-			return app.rules.sort((a, b) => a.priority - b.priority).find((rule) => matchesRule(rule, req))
+			return app.rules.sort((a, b) => b.priority - a.priority).find((rule) => matchesRule(rule, req))
 		}
 
 		function matchesRule(rule, req) {

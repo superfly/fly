@@ -40,3 +40,17 @@ app:
       redirect_url: "http://www.test.com/"
       hostname:
         hostname: "test8"
+    - id: 5
+      site_id: 1
+      priority: 100
+      path: "/priority"
+      path_pattern: "^\\/priority"
+      action_type: "rewrite"
+      backend_id: 1
+    - id: 5
+      site_id: 1
+      priority: 101
+      path: "/priority"
+      path_pattern: "^\\/priority"
+      action_type: "redirect"
+      redirect_url: "https://test/priority101"
