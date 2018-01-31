@@ -1,12 +1,1 @@
-#!/usr/bin/env node
-
-const prg = require('commander')
-const { version } = require('../package.json')
-
-prg
-	.version(version)
-	.command('server', 'launch a local fly server')
-	.command('deploy', 'deploy your code to fly')
-	.command('fetch', 'fetch the compiled script from fly')
-	.command('test', 'unit test your fly app')
-	.parse(process.argv)
+../lib/cmd/index.js

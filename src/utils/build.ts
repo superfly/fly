@@ -45,7 +45,7 @@ function compileCallback(compiler: webpack.Compiler, callback: Function) {
 
     if (stats.hash != codeHash) {
       console.log(`Compiled app bundle (hash: ${stats.hash})`)
-      callback(null, compiler.outputFileSystem.data['bundle.js'].toString())
+      callback(null, compiler.outputFileSystem.data['bundle.js'].toString(), stats.hash)
       codeHash = stats.hash
     }
   }

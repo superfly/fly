@@ -1,32 +1,21 @@
-import axios from 'axios'
-const { buildApp } = require('../utils/build')
+import { root, getApp } from './root'
+import { API } from './api'
 
-const flyEndpoint = process.env.FLY_BASE_URL || "https://fly.io"
+export interface DeployOptions { }
+export interface DeployArgs { }
 
-module.exports = function deployApp(appID: string, token: string) {
-  buildApp(process.cwd(), { watch: false }, (err: Error, code: string) => {
-    if (err) {
-      throw err
-    }
-
-    axios({
-      method: 'put',
-      url: `${flyEndpoint}/api/v1/sites/${appID}/script`,
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      data: {
-        script: code
+root
+  .subCommand<DeployOptions, DeployArgs>("deploy")
+  .description("Deploy your local Fly app.")
+  .action((opts, args, rest) => {
+    const { buildApp } = require('../utils/build')
+    const appID = getApp()
+    buildApp(process.cwd(), { watch: false }, async (err: Error, code: string, hash: string) => {
+      if (err)
+        throw err
+      const res = await API.patch(`/api/v1/apps/${appID}`, { data: { attributes: { source: code, source_hash: hash } } })
+      if (res.status === 200) {
+        console.log(`Deploying v${res.data.data.attributes.version} globally, should be updated in a few seconds.`)
       }
-    }).then((res) => {
-      if (res.status === 200 && res.data.meta.updated) {
-        console.log("Successfully updated app on Fly.")
-        process.exit(0)
-      }
-    }).catch((err) => {
-      console.error(err.message)
-      process.exit(1)
     })
-
   })
-}

@@ -1,24 +1,17 @@
-import axios from 'axios'
-const { buildApp } = require('../utils/build')
+import { root, getApp } from './root'
+import { API } from './api'
 
-const flyEndpoint = process.env.FLY_BASE_URL || "https://fly.io"
+export interface FetchOptions { }
+export interface FetchArgs { }
 
-module.exports = async function deployApp(appID: string, token: string) {
-  try{
-    let res = await axios({
-      method: 'get',
-      url: `${flyEndpoint}/api/v1/sites/${appID}/script`,
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-
-    if (res.status === 200) {
-      console.log(res.data.script)
-      process.exit(0)
+root
+  .subCommand<FetchOptions, FetchArgs>("fetch")
+  .description("Fecth your Fly app locally.")
+  .action(async (opts, args, rest) => {
+    const appID = getApp()
+    const appRes = await API.get(`/api/v1/apps/${appID}`)
+    if (appRes.status === 200) {
+      const res = await API.get(`/api/v1/apps/${appID}/releases/${appRes.data.data.id}`)
+      console.log(res.data.attributes.source)
     }
-  }catch(err){
-    console.error(err.message)
-    process.exit(1)
-  }
-}
+  })

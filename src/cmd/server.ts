@@ -1,27 +1,33 @@
-import { parseConfig } from '../config'
 import * as path from 'path'
-import { Server } from '../server'
-import { FileStore } from '../app/stores/file'
 
-import { CommanderStatic } from 'commander';
-import log from "../log"
+import { root } from './root'
+import log from '../log'
+import { IncomingMessage } from 'http';
+import { ServerResponse } from 'http';
+import { Trace } from '../trace';
 
-export function startServer(prg: CommanderStatic) {
-  const cwd = !prg.args[0]
-    ? process.cwd()
-    : prg.args[0].startsWith('/')
-      ? prg.args[0]
-      : path.resolve(process.cwd(), prg.args[0])
-
-  let conf = parseConfig(cwd)
-
-  if (prg.port) { conf.port = prg.port }
-
-  conf.appStore = new FileStore(cwd, { build: true })
-
-  const server = new Server(conf)
-  server.addListener("requestEnd", (req, res, trace) => {
-    log.debug(trace.report())
-  })
-  server.start()
+interface ServerOptions {
+  port?: string
 }
+
+root
+  .subCommand<ServerOptions, any>("server")
+  .description("Run the local Fly development server")
+  .option("-p, --port <port>", "Port to bind to")
+  .action((opts, args, rest) => {
+    const { parseConfig } = require('../config')
+    const { FileStore } = require('../app/stores/file')
+    const { Server } = require('../server')
+    const cwd = process.cwd()
+    let conf = parseConfig(cwd)
+
+    if (opts.port && opts.port.length) { conf.port = opts.port }
+
+    conf.appStore = new FileStore(cwd, { build: true })
+
+    const server = new Server(conf)
+    server.addListener("requestEnd", (req: IncomingMessage, res: ServerResponse, trace: Trace) => {
+      log.debug(trace.report())
+    })
+    server.start()
+  })
