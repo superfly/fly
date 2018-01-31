@@ -3,6 +3,7 @@ const nsPerSecond = 1e9
 
 export class Trace {
   name: string
+  tags: any
   children: Trace[] | undefined
   parent: Trace | undefined
 
@@ -14,7 +15,7 @@ export class Trace {
     this.parent = parent
   }
 
-  start(name?: string) : Trace {
+  start(name?: string, tags?: any) : Trace {
     if(!name){
       this.startTime = process.hrtime()
       return this
@@ -31,9 +32,12 @@ export class Trace {
     }
   }
 
-  end(force: boolean=false) {
+  end(tags?: any) {
     if(!this.diff){
       this.diff = process.hrtime(this.startTime)
+    }
+    if(tags){
+      this.addTags(tags)
     }
     if(this.children){
       for(let c of this.children){
@@ -42,10 +46,17 @@ export class Trace {
         }
       }
     }
-    if(force || !this.parent){
+    if(!this.parent){
       //log.debug(`${this.name} took: ${this.milliseconds()}ms`)
-      log.debug(this.report())
+      //log.debug(this.report())
     }
+  }
+
+  addTags(tags: any){
+    if(!this.tags){
+      this.tags = {}
+    }
+    Object.assign(this.tags, tags)
   }
 
   report(depth: number=0){
@@ -55,6 +66,9 @@ export class Trace {
       prefix += "--"
     }
     r = `${prefix} ${this.name}: ${this.milliseconds()}ms`
+    if(this.tags){
+      r += prefix + "  -> " + JSON.stringify(this.tags)
+    }
     if(this.children){
       for(let c of this.children){
         r += c.report(depth + 1)
@@ -75,5 +89,13 @@ export class Trace {
     let t: Trace = new Trace(name, parent)
     t.start()
     return t
+  }
+
+  static tryStart = function(name: string, trace?: Trace){
+    if(trace){
+      return trace.start(name)
+    }else{
+      return Trace.start(name)
+    }
   }
 }

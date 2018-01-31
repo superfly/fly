@@ -334,7 +334,7 @@ export class Server extends EventEmitter {
 			response.end("Critical error.")
 		} finally {
 			trace.end()
-			this.emit('requestEnd', request, response)
+			this.emit('requestEnd', request, response, trace)
 		}
 	}
 

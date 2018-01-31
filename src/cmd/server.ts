@@ -4,6 +4,7 @@ import { Server } from '../server'
 import { FileStore } from '../app/stores/file'
 
 import { CommanderStatic } from 'commander';
+import log from "../log"
 
 export function startServer(prg: CommanderStatic) {
   const cwd = !prg.args[0]
@@ -18,5 +19,9 @@ export function startServer(prg: CommanderStatic) {
 
   conf.appStore = new FileStore(cwd, { build: true })
 
-  new Server(conf).start()
+  const server = new Server(conf)
+  server.addListener("requestEnd", (req, res, trace) => {
+    log.debug(trace.report())
+  })
+  server.start()
 }

@@ -9,6 +9,7 @@ promiseFinally.shim()
 
 import { Server } from '../src/server'
 import { parseConfig } from '../src/config'
+import log from "../src/log"
 import * as fs from 'fs'
 import axios from 'axios'
 axios.defaults.validateStatus = undefined
@@ -42,15 +43,20 @@ export async function startServer(cwd: string, options?: ServerOptions): Promise
 
   conf.appStore = appStore
 
-  const server = new Server(Object.assign({}, conf, { contextStore, appStore })).server
+  const server = new Server(Object.assign({}, conf, { contextStore, appStore }))
+  const http = server.server
 
-  server.on('error', (e) => { throw e })
-
-  await new Promise((resolve, reject) => {
-    server.listen(port, () => resolve())
+  server.addListener("requestEnd", (req, res, trace) => {
+    log.debug(trace.report())
   })
 
-  return server
+  http.on('error', (e) => { throw e })
+
+  await new Promise((resolve, reject) => {
+    http.listen(port, () => resolve())
+  })
+
+  return http
 }
 
 before(async function () {
