@@ -48,33 +48,22 @@ open http://localhost:3000
 By default, fly will read your a `.fly.yml` file in your current working directory.
 
 ```yaml
-app:
-  id: my-app-id
-  settings:
-    foo: bar
-
-port: 4000 # defaults to 3000
-log_level: debug
-env: development
+app_id: my-app-id
+config:
+  foo: bar
 ```
 
 #### App configuration
 
-Located in `app` in your `.fly.yml` file.
+Located in your `.fly.yml` file.
 
-- `id` - the fly.io app id, can be ommitted, useful for deployment purposes
-- `settings` - arbitrary settings for your applications, accessible in your code via the global variable `appSettings`
+- `app_id` - the fly.io app id, can be ommitted, useful for deployment purposes
+- `config` - arbitrary settings for your applications, accessible in your code via the global variable `app.config`
 
 #### Server configuration
 
-Located at the root level of the `.fly.yml` file.
+Using environment variables:
 
-- `port` - is either a number or a string, it can refer to unix socket (default: `3000`)
-- `log_level` - is how much logs we'll show you, can be `info`, `debug`, `warn`, `error` (default: `debug` in development, `info` everywhere else)
-- `env` - current deployment environment: `development`, `test` or `production` (default: `development`)
-
-#### Environment overrides
-
-- `port` can be overriden by the environment variables `FLY_PORT` or `PORT` in that order
-- `log_level` will also lookup `FLY_LOG_LEVEL` or `LOG_LEVEL`
-- `env` will check `FLY_ENV` and then `NODE_ENV`
+- `port` (`FLY_PORT` or `PORT`) - is either a number or a string, it can refer to unix socket (default: `3000`)
+- `log_level` (`FLY_LOG_LEVEL` or `LOG_LEVEL`) - is how much logs we'll show you, can be `info`, `debug`, `warn`, `error` (default: `debug` in development, `info` everywhere else)
+- `env` (`FLY_ENV` or `NODE_ENV`) - current deployment environment: `development`, `test` or `production` (default: `development`)

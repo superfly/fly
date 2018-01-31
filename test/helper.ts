@@ -31,7 +31,8 @@ export interface ServerOptions extends FileStoreOptions {
 const contextStore = new DefaultContextStore()
 
 export async function startServer(cwd: string, options?: ServerOptions): Promise<http.Server> {
-  options || (options = { build: false })
+  options || (options = {})
+  Object.assign(options, { build: false, noWatch: true })
   cwd = `./test/fixtures/apps/${cwd}`
   let appStore = new FileStore(cwd, options)
   let port = options.port

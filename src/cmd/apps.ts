@@ -16,7 +16,6 @@ const apps = root
         style: { head: [] },
         head: ['id', 'name', 'version']
       })
-      console.log(res.data.data)
       table.push(...res.data.data.map((a: any) =>
         [a.id, a.attributes.name, a.attributes.version]
       ))

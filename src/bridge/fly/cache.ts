@@ -1,7 +1,7 @@
 import { registerBridge, Context } from '../'
 import { ivm } from '../../'
 import log from '../../log'
-import {Trace} from '../../trace'
+import { Trace } from '../../trace'
 
 import { conf } from '../../config'
 
@@ -17,7 +17,7 @@ registerBridge('flyCacheSet', function (ctx: Context) {
       return callback.apply(null, [errCacheStoreUndefined.toString()])
 
     conf.cacheStore.set(k, value, ttl).then((ok) => {
-      t.end({size: value.length, key: key})
+      t.end({ size: value.length, key: key })
       callback.apply(null, [null, ok])
     }).catch((err) => {
       t.end()
@@ -36,7 +36,7 @@ registerBridge('flyCacheExpire', function (ctx: Context) {
       return callback.apply(null, [errCacheStoreUndefined.toString()])
 
     conf.cacheStore.expire(k, ttl).then((ok) => {
-      t.end({key: key})
+      t.end({ key: key })
       callback.apply(null, [null, ok])
     }).catch((err) => {
       t.end()
@@ -57,7 +57,7 @@ registerBridge('flyCacheGetString', function (ctx: Context) {
     conf.cacheStore.get(k).then((buf) => {
       const size = buf ? buf.byteLength : 0
       const ret = buf ? buf.toString() : null
-      t.end({size: size, key: key})
+      t.end({ size: size, key: key })
       callback.apply(null, [null, ret])
     }).catch((err) => {
       t.end()

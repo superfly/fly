@@ -5,7 +5,7 @@ import axios from 'axios'
 describe('fly-routes', () => {
   describe('with no rules', () => {
     before(async function () {
-      this.server = await startServer('fly-routes', { appConfig: {} })
+      this.server = await startServer('fly-routes', { config: {} })
     })
     after(function (done) { this.server.close(done) })
 
@@ -60,7 +60,7 @@ describe('fly-routes', () => {
 
     it('matches a hostname', async () => {
       let res = await axios.get("http://127.0.0.1:3333/bar1", {
-        headers: {'Host': "test8"},
+        headers: { 'Host': "test8" },
         maxRedirects: 0
       })
       expect(res.status).to.equal(302)

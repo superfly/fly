@@ -165,11 +165,11 @@ export class Server extends EventEmitter {
 
 		try {
 
-			if (!app.code) {
+			if (!app.source) {
 				if (await this.runRequestHook(null, request, response))
 					return
 				response.writeHead(400)
-				response.end("app has no code")
+				response.end("app has no source")
 				return
 			}
 
@@ -208,7 +208,7 @@ export class Server extends EventEmitter {
 				['flyDepth', flyDepth]
 			])
 
-			ctx.set('app', new ivm.ExternalCopy(app).copyInto())
+			ctx.set('app', new ivm.ExternalCopy({ id: app.id, config: app.config }).copyInto())
 
 			let fireEvent = await ctx.get("fireEvent")
 
@@ -240,7 +240,7 @@ export class Server extends EventEmitter {
 								t2.end()
 								callback.apply(undefined, ["close"])
 							})
-							request.on("data", function(data: any){
+							request.on("data", function (data: any) {
 								callback.apply(undefined, [
 									"data", new ivm.ExternalCopy(bufferToArrayBuffer(data)).copyInto()
 								])

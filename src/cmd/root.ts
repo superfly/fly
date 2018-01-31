@@ -1,5 +1,6 @@
 import { create, Command } from "commandpost";
-import { parseFlyConfig } from '../fly_config'
+
+import { getLocalConfig } from "../app/config"
 
 import YAML = require('js-yaml')
 import fs = require('fs-extra')
@@ -21,9 +22,6 @@ export const root =
     .description("Fly CLI")
     .option("-a, --app <id>", "App to use for commands.")
     .option("--token <token>", "Fly Access Token (can be set via environment FLY_ACCESS_TOKEN)")
-// .action((opts, args) => {
-//   console.log(`hello fly ${opts.app}`);
-// });
 
 export function getToken() {
 
@@ -45,11 +43,11 @@ export function getToken() {
 }
 
 export function getApp() {
-  const conf = parseFlyConfig(process.cwd())
-  const app = (root.parsedOpts.app && root.parsedOpts.app[0]) || conf.app && conf.app.id
+  const conf = getLocalConfig(process.cwd())
+  const app = (root.parsedOpts.app && root.parsedOpts.app[0]) || conf.app_id
 
   if (!app) {
-    throw new Error("--app option or app.id (in your .fly.yml) needs to be set.")
+    throw new Error("--app option or app_id (in your .fly.yml) needs to be set.")
   }
   return app
 }

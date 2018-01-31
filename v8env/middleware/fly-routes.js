@@ -31,9 +31,9 @@ module.exports = function () {
 		}
 
 		function _matchRules(req) {
-			if (!app.rules)
+			if (!app.config.rules)
 				return null
-			return app.rules.sort((a, b) => b.priority - a.priority).find((rule) => matchesRule(rule, req))
+			return app.config.rules.sort((a, b) => b.priority - a.priority).find((rule) => matchesRule(rule, req))
 		}
 
 		function matchesRule(rule, req) {
@@ -106,10 +106,10 @@ module.exports = function () {
 		}
 
 		function getBackendByID(id) {
-			if (!(app.backends instanceof Array)) {
+			if (!(app.config.backends instanceof Array)) {
 				return null
 			}
-			return app.backends.find((backend) => {
+			return app.config.backends.find((backend) => {
 				return backend.id == id
 			})
 		}

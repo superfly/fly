@@ -18,7 +18,7 @@ export class DefaultContextStore implements ContextStore {
   async getContext(app: App, trace?: Trace) {
     const iso = await this.getIsolate()
     const ctx = await createContext(iso)
-    const script = await iso.compileScript(app.code)
+    const script = await iso.compileScript(app.source)
     ctx.trace = trace
     const t = ctx.trace && ctx.trace.start("compile app")
     await script.run(ctx.ctx)
