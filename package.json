@@ -15,7 +15,7 @@
     "release": "standard-version"
   },
   "bin": {
-    "fly": "bin/fly"
+    "fly": "lib/cmd/index.js"
   },
   "types": "./lib/index.d.ts",
   "author": "",
