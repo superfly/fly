@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.9.2"></a>
+## [0.9.2](https://github.com/superfly/fly/compare/v0.9.1...v0.9.2) (2018-02-01)
+
+
+### Bug Fixes
+
+* some of the CLI commands and API endpoints were slightly off ([f079cd1](https://github.com/superfly/fly/commit/f079cd1))
+
+
+
 <a name="0.9.1"></a>
 ## [0.9.1](https://github.com/superfly/fly/compare/v0.9.0...v0.9.1) (2018-02-01)
 
