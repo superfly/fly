@@ -27,8 +27,15 @@ hostnames
   .subCommand<HostnamesAddOptions, HostnamesAddArgs>("add <hostname>")
   .description("Add a hostname to your fly app.")
   .action(async (opts, args, rest) => {
-    const res = await API.post(`/api/v1/apps/${getApp()}/hostnames`, { data: { attributes: { hostname: args.hostname } } })
-    if (res.status === 201) {
-      console.log(`Successfully added hostname ${args.hostname}`)
+    try {
+      const res = await API.post(`/api/v1/apps/${getApp()}/hostnames`, { data: { attributes: { hostname: args.hostname } } })
+      if (res.status === 201) {
+        console.log(`Successfully added hostname ${args.hostname}`)
+      }
+    } catch (e) {
+      if (e.response)
+        console.log(e.response.data)
+      else
+        throw e
     }
   })

@@ -14,12 +14,18 @@ root
     const email = await promptly.prompt("Email: ")
     const password = await promptly.password("Password: ")
     const otp = await promptly.prompt("2FA code (if any): ", { default: "n/a", retry: false })
-
-    const res = await API.post("/api/v1/sessions", { data: { attributes: { email, password, otp } } })
-    if (res.status === 201) {
-      const homepath = homeConfigPath()
-      const credspath = path.join(homepath, "credentials.yml")
-      await fs.writeFile(credspath, YAML.dump({ access_token: res.data.data.attributes.access_token }))
-      console.log("Wrote credentials at:", credspath)
+    try {
+      const res = await API.post("/api/v1/sessions", { data: { attributes: { email, password, otp } } })
+      if (res.status === 201) {
+        const homepath = homeConfigPath()
+        const credspath = path.join(homepath, "credentials.yml")
+        await fs.writeFile(credspath, YAML.dump({ access_token: res.data.data.attributes.access_token }))
+        console.log("Wrote credentials at:", credspath)
+      }
+    } catch (e) {
+      if (e.response)
+        console.log(e.response.data)
+      else
+        throw e
     }
   })

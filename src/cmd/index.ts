@@ -9,6 +9,7 @@ require("../cmd/test");
 require("../cmd/server");
 require("../cmd/hostnames");
 require("../cmd/login");
+require("../cmd/fetch");
 
 import { exec } from "commandpost";
 
