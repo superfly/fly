@@ -1,7 +1,7 @@
 const { fireEventInit, addEventListener, dispatchEvent, FetchEvent } = require("./events")
 const { Middleware, MiddlewareChain } = require("./middleware")
 const { FlyBackend } = require("./fly-backend")
-const { ReadableStream, WritableStream } = require('web-streams-polyfill')
+const { ReadableStream, WritableStream, TransformStream } = require('web-streams-polyfill')
 const SessionStore = require('./session_store')
 
 const { TextEncoder, TextDecoder } = require('text-encoding')
@@ -53,6 +53,8 @@ global.bootstrap = function bootstrap() {
 	// Web primitives (?)
 	global.ReadableStream = ReadableStream
 	global.WritableStream = WritableStream
+  global.TransformStream = TransformStream
+
 	global.TextEncoder = TextEncoder
 	global.TextDecoder = TextDecoder
 
