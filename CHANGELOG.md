@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.10.0"></a>
+# [0.10.0](https://github.com/superfly/fly/compare/v0.9.3...v0.10.0) (2018-02-01)
+
+
+### Features
+
+* new app id format: org/app ([7958437](https://github.com/superfly/fly/commit/7958437))
+
+
+
 <a name="0.9.3"></a>
 ## [0.9.3](https://github.com/superfly/fly/compare/v0.9.2...v0.9.3) (2018-02-01)
 
