@@ -2,6 +2,7 @@
 
 import { root } from '../cmd/root'
 require("../cmd/apps");
+require("../cmd/orgs");
 require("../cmd/deploy");
 require("../cmd/releases");
 require("../cmd/secrets");

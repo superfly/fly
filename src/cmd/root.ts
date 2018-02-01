@@ -23,8 +23,8 @@ export const root =
     .option("-a, --app <id>", "App to use for commands.")
     .option("--token <token>", "Fly Access Token (can be set via environment FLY_ACCESS_TOKEN)")
 
-export function getToken() {
 
+export function getToken() {
   let token = root.parsedOpts.token[0] || process.env.FLY_ACCESS_TOKEN
   if (!token) {
     try {
@@ -42,6 +42,8 @@ export function getToken() {
   return token
 }
 
+export const fullAppMatch = /([a-z0-9_.-]+)\/([a-z0-9_.-]+)/i
+
 export function getApp() {
   const conf = getLocalConfig(process.cwd())
   const app = (root.parsedOpts.app && root.parsedOpts.app[0]) || conf.app_id
@@ -49,6 +51,10 @@ export function getApp() {
   if (!app) {
     throw new Error("--app option or app_id (in your .fly.yml) needs to be set.")
   }
+
+  if (!app.match(fullAppMatch))
+    throw new Error("app parameter needs to match a full org/app name (ie: your-org/app-name)")
+
   return app
 }
 
