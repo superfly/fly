@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.10.1"></a>
+## [0.10.1](https://github.com/superfly/fly/compare/v0.10.0...v0.10.1) (2018-02-02)
+
+
+### Bug Fixes
+
+* secrets are now applied correctly ([8efa441](https://github.com/superfly/fly/commit/8efa441))
+
+
+
 <a name="0.10.0"></a>
 # [0.10.0](https://github.com/superfly/fly/compare/v0.9.3...v0.10.0) (2018-02-01)
 
