@@ -41,7 +41,7 @@ export class FileStore implements AppStore {
       source_hash: "",
       config: {},
       secrets: {},
-    }, getLocalConfig(cwd))
+    }, getLocalConfig(cwd), { secrets: getLocalSecrets(cwd) })
 
     if (this.options.config)
       this.releaseInfo.config = this.options.config
@@ -54,14 +54,26 @@ export class FileStore implements AppStore {
     if (options.noWatch != true) {
       if (fs.existsSync(flyYmlPath))
         fs.watch(flyYmlPath, (event: string, filename?: string) => {
-          if (event === 'change')
-            this.releaseInfo.config = getLocalConfig(cwd)
+          if (event === 'change') {
+            console.log("Detected .fly.yml change, updating in-memory config.")
+            try {
+              this.releaseInfo.config = getLocalConfig(cwd)
+            } catch (e) {
+              console.error(e)
+            }
+          }
         })
 
       if (fs.existsSync(flySecretsPath))
         fs.watch(flySecretsPath, (event: string, filename?: string) => {
-          if (event === 'change')
-            this.releaseInfo.secrets = getLocalSecrets(cwd)
+          if (event === 'change') {
+            console.log("Detected .fly.secrets.yml change, updating in-memory config.")
+            try {
+              this.releaseInfo.secrets = getLocalSecrets(cwd)
+            } catch (e) {
+              console.error(e)
+            }
+          }
         })
     }
 

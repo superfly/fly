@@ -10,23 +10,15 @@ export function parseConfig(config: any, secrets: any) {
   if (!config)
     return
   for (const k of Object.keys(config)) {
-    if (typeof config[k] === 'object')
-      if (typeof config[fromSecretKey] !== 'undefined')
-        if (typeof secrets[k] !== 'undefined')
-          config[k] = secrets[config[fromSecretKey]]
-        else if (typeof config[defaultKey] !== 'undefined')
-          config[k] = secrets[config[defaultKey]]
-        else
-          throw new Error(`Expected secret '${config[fromSecretKey]}' to be defined in our secrets file`)
-      // else if (typeof config[fromEnvKey] !== 'undefined')
-      //   if (process.env[config[fromEnvKey]])
-      //     config[k] = process.env[config[fromEnvKey]]
-      //   else if (typeof config[defaultKey] !== 'undefined')
-      //     config[k] = secrets[config[defaultKey]]
-      //   else
-      //     throw new Error(`Expected setting '${config[fromEnvKey]}' to be defined in your environment.`)
-      else
+    if (typeof config[k] === 'object') {
+      if (typeof config[k][fromSecretKey] === 'string') {
+        if (typeof secrets[config[k][fromSecretKey]] !== 'undefined') {
+          config[k] = secrets[config[k][fromSecretKey]]
+        } else
+          throw new Error(`Expected secret '${config[k][fromSecretKey]}' to be defined in secrets`)
+      } else
         parseConfig(config[k], secrets)
+    }
   }
 }
 
