@@ -10,7 +10,7 @@ export function parseConfig(config: any, secrets: any) {
   if (!config)
     return
   for (const k of Object.keys(config)) {
-    if (typeof config[k] === 'object') {
+    if (!!config[k] && typeof config[k] === 'object') {
       if (typeof config[k][fromSecretKey] === 'string') {
         if (typeof secrets[config[k][fromSecretKey]] !== 'undefined') {
           config[k] = secrets[config[k][fromSecretKey]]
