@@ -1,14 +1,42 @@
-const { fireEventInit, addEventListener, dispatchEvent, FetchEvent } = require("./events")
-const { Middleware, MiddlewareChain } = require("./middleware")
-const { FlyBackend } = require("./fly-backend")
-const { ReadableStream, WritableStream, TransformStream } = require('web-streams-polyfill')
-const SessionStore = require('./session_store')
+import { fireEventInit, addEventListener, dispatchEvent, FetchEvent } from "./events"
+import { Middleware, MiddlewareChain } from "./middleware"
+import { FlyBackend } from "./fly-backend"
+import { ReadableStream, WritableStream, TransformStream } from 'web-streams-polyfill'
+import SessionStore from './session_store'
 
-const { TextEncoder, TextDecoder } = require('text-encoding')
+import { TextEncoder, TextDecoder } from 'text-encoding'
+
+import consoleInit from './console'
+import flyInit from './fly'
+
+import URL from './url'
+import Headers from './headers'
+
+import fetchInit from './fetch'
+import bodyInit from './body'
+import formDataInit from './formdata'
+import responseInit from './response'
+import requestInit from './request'
+import cacheInit from './cache'
 
 let internalTimers = {}
 
-require('./local')
+import registerFlyBackend from './middleware/fly-backend'
+import registerFlyEcho from './middleware/fly-echo'
+import registerFlyRoutes from './middleware/fly-routes'
+import registerForceSSL from './middleware/force-ssl'
+import registerGoogleAnalytics from './middleware/google-analytics'
+import registerSession from './middleware/session'
+
+const mwToRegister = [registerFlyBackend, registerFlyEcho, registerFlyRoutes, registerForceSSL, registerGoogleAnalytics, registerSession]
+
+import './local'
+
+global.middleware = {}
+
+global.registerMiddleware = function registerMiddleware(type, fn) {
+	global.middleware[type] = fn
+}
 
 global.bootstrap = function bootstrap() {
 	const ivm = global._ivm
@@ -19,9 +47,9 @@ global.bootstrap = function bootstrap() {
 	delete global._dispatch
 	delete global.bootstrap
 
-	global.console = require('./console')(ivm)
+	global.console = consoleInit(ivm)
 
-	global.fly = require('./fly/')(ivm, dispatch)
+	global.fly = flyInit(ivm, dispatch)
 
 	global.setTimeout = (function (st, ivm) {
 		return function (cb, ms) {
@@ -53,16 +81,16 @@ global.bootstrap = function bootstrap() {
 	global.TextDecoder = TextDecoder
 
 	// Web API
-	global.URL = require('./url')
-	global.fetch = require('./fetch')(ivm, dispatch)
-	global.Body = require('./body')(ivm, dispatch)
-	global.Headers = require('./headers')
-	global.FormData = require('./formdata')(ivm, dispatch)
-	global.Response = require('./response')(ivm, dispatch)
-	global.Request = require('./request')(ivm, dispatch)
+	global.URL = URL
+	global.Headers = Headers
+	global.fetch = fetchInit(ivm, dispatch)
+	global.Body = bodyInit(ivm, dispatch)
+	global.FormData = formDataInit(ivm, dispatch)
+	global.Response = responseInit(ivm, dispatch)
+	global.Request = requestInit(ivm, dispatch)
 
 	// oh boy
-	global.cache = require('./cache')(ivm, dispatch)
+	global.cache = cacheInit(ivm, dispatch)
 	global.session = new SessionStore()
 
 	// Events
@@ -81,16 +109,9 @@ global.bootstrap = function bootstrap() {
 	// Middleware
 	global.Middleware = Middleware
 	global.MiddlewareChain = MiddlewareChain
+
 	// load all middleware
-	const requireMw = require.context("./middleware", true, /\.js$/);
-	requireMw.keys()
-		.forEach((n) => {
-			requireMw(n)(ivm, dispatch)
-		});
-}
+	for (const mwReg of mwToRegister)
+		mwReg(ivm, dispatch)
 
-global.middleware = {}
-
-global.registerMiddleware = function registerMiddleware(type, fn) {
-	global.middleware[type] = fn
 }

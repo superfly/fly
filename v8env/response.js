@@ -1,6 +1,6 @@
-const CookieJar = require('./cookie_jar')
+import CookieJar from './cookie_jar'
 
-module.exports = function(ivm) {
+export default function responseInit(ivm) {
 	function ushort(x) { return x & 0xFFFF; }
 
 	/**

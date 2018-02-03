@@ -1,8 +1,10 @@
+import flyCacheInit from './cache'
+
 /**
  * @namespace fly
  */
-module.exports = function(ivm, dispatch){
+export default function flyInit(ivm, dispatch) {
   return {
-    cache: require('./cache')(ivm,dispatch)
+    cache: flyCacheInit(ivm, dispatch)
   }
 }

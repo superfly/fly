@@ -1,7 +1,7 @@
-const logger = require('./logger')
-const CookieJar = require('./cookie_jar')
+import { logger } from './logger'
+import CookieJar from './cookie_jar'
 
-module.exports = function (ivm) {
+export default function requestInit(ivm) {
 	function byteUpperCase(s) {
 		return String(s)
 			.replace(/[a-z]/g, function (c) {

@@ -1,4 +1,4 @@
-const { SingleUpstreamBackend } = require("./backends/single-upstream-backend")
+import { SingleUpstreamBackend } from "./backends/single-upstream-backend"
 
 export class FlyBackend {
 	static getBackend(backend) {

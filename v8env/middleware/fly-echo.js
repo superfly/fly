@@ -1,4 +1,4 @@
-const logger = require('../logger')
+import { logger } from '../logger'
 
 async function echo(req, next) {
   logger.debug("echo middleware");
@@ -20,7 +20,8 @@ async function echo(req, next) {
     }
   )
 }
-module.exports = function () {
+
+export default function registerFlyEcho() {
   registerMiddleware("fly-echo", function () {
     return echo;
   }())

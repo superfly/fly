@@ -1,6 +1,6 @@
-const logger = require('../logger')
+import { logger } from '../logger'
 
-module.exports = function () {
+export default function registerGoogleAnalytics() {
   registerMiddleware("google-analytics", function () {
     const gaCollectURL = "http://www.google-analytics.com/collect",
       gaURLParams = {

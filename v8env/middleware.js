@@ -1,4 +1,5 @@
-const logger = require('./logger')
+import { logger } from './logger'
+
 class MiddlewareSettings {
 	constructor(settings) {
 		this.settings = settings || {}

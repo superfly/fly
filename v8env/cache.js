@@ -1,6 +1,6 @@
-const logger = require('./logger')
+import { logger } from './logger'
 
-module.exports = function (ivm, dispatch) {
+export default function cacheInit(ivm, dispatch) {
 	return {
 		match(req) {
 			logger.debug("cache match")

@@ -1,4 +1,4 @@
-class SessionStore {
+export default class SessionStore {
 	constructor() {
 		this.session = {};
 	}
@@ -11,5 +11,3 @@ class SessionStore {
 		this.session[key] = value
 	}
 }
-
-module.exports = SessionStore

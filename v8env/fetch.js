@@ -1,4 +1,4 @@
-const logger = require('./logger')
+import { logger } from './logger'
 
 /**
  * Starts the process of fetching a network request.
@@ -11,7 +11,7 @@ const logger = require('./logger')
  * @returns {Promise<Response>} - A {@linkcode Promise} that resolves to a {@linkcode Response} object
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch}
  */
-module.exports = function (ivm, dispatch) {
+export default function fetchInit(ivm, dispatch) {
 	return async function fetch(url, init) {
 		logger.debug("fetch called", typeof url, typeof init)
 		try {

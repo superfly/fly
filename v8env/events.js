@@ -1,5 +1,5 @@
-const logger = require('./logger')
-const { EventEmitter2 } = require('eventemitter2')
+import { logger } from './logger'
+import { EventEmitter2 as EventEmitter } from 'eventemitter2'
 
 const invalidResponseType = new Error(`Invalid response type for 'fetch' event. Expecting a straight Response, a function returning a Promise<Response> or a Response.`)
 
@@ -13,7 +13,7 @@ const invalidResponseType = new Error(`Invalid response type for 'fetch' event. 
 /**
  * @class
  */
-class FetchEvent {
+export class FetchEvent {
 	constructor(type, init, callback) {
 		this.type = type
 		this.request = init.request
@@ -58,15 +58,13 @@ class FetchEvent {
 	}
 }
 
-exports.FetchEvent = FetchEvent
+const emitter = new EventEmitter()
 
-const emitter = new EventEmitter2()
-
-exports.addEventListener = function (name, fn) {
+export function addEventListener(name, fn) {
 	emitter.addListener(name, fn)
 }
 
-exports.fireEventInit = function (ivm) {
+export function fireEventInit(ivm) {
 	return function fireEvent(name, ...args) {
 		args.unshift(ivm)
 		try {
@@ -148,15 +146,13 @@ class LogMessage {
 	}
 }
 
-class LogEvent {
+export class LogEvent {
 	constructor(type = "log", init = {}) {
 		this.type = type
 		this.log = new LogMessage(init.level, init.message, init.timestamp || new Date)
 	}
 }
 
-exports.LogEvent = LogEvent
-
-exports.dispatchEvent = function dispatchEvent(event) {
+export function dispatchEvent(event) {
 	emitter.emit(event.type, event)
 }

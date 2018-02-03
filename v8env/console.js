@@ -1,8 +1,8 @@
-const { LogEvent, dispatchEvent } = require('./events')
-const util = require('util')
+import { LogEvent, dispatchEvent } from './events'
+import { format } from 'util'
 
 // Console
-module.exports = function (ivm) {
+export default function consoleInit(ivm) {
 	// function nodeLog(...args) {
 	// 	global._log.apply(undefined, args.map(arg => new ivm.ExternalCopy(arg)
 	// 		.copyInto()));
@@ -13,20 +13,20 @@ module.exports = function (ivm) {
 			Console.info(...args)
 		},
 		info(...args) {
-			dispatchEvent(new LogEvent('log', { level: 'info', message: util.format(...args), timestamp: new Date }))
+			dispatchEvent(new LogEvent('log', { level: 'info', message: format(...args), timestamp: new Date }))
 		},
 		assert(assertion, ...args) {
 			if (!assertion)
 				Console.info(...args)
 		},
 		error(...args) {
-			dispatchEvent(new LogEvent('log', { level: 'error', message: util.format(...args), timestamp: new Date }))
+			dispatchEvent(new LogEvent('log', { level: 'error', message: format(...args), timestamp: new Date }))
 		},
 		exception(...args) {
 			Console.error(...args)
 		},
 		warn(...args) {
-			dispatchEvent(new LogEvent('log', { level: 'warn', message: util.format(...args), timestamp: new Date }))
+			dispatchEvent(new LogEvent('log', { level: 'warn', message: format(...args), timestamp: new Date }))
 		},
 		trace() {
 			let stack = new Error().stack.match(/[^\r\n]+/g)
@@ -35,7 +35,7 @@ module.exports = function (ivm) {
 
 		// off-spec
 		debug(...args) {
-			dispatchEvent(new LogEvent('log', { level: 'debug', message: util.format(...args), timestamp: new Date }))
+			dispatchEvent(new LogEvent('log', { level: 'debug', message: format(...args), timestamp: new Date }))
 		},
 
 		// unimplemented

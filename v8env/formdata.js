@@ -1,6 +1,6 @@
-const logger = require('./logger')
+import { logger } from './logger'
 
-module.exports = function (ivm, dispatch) {
+export default function formDataInit(ivm, dispatch) {
 	function FormData(form) {
 		this._data = [];
 		if (!form) return;

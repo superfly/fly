@@ -1,11 +1,10 @@
-const logger = require('./logger')
-module.exports = Headers
+import { logger } from './logger'
 
 /**
  * @class
  * @param {Object} [init]
  */
-function Headers(init) {
+export default function Headers(init) {
 	Object.defineProperty(this, "_headerList", {
 		enumerable: false,
 		value: []

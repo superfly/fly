@@ -1,4 +1,4 @@
-module.exports = function () {
+export default function registerFlyRoutes() {
 	registerMiddleware("fly-routes", function () {
 		return async function (req, next) {
 

@@ -1,18 +1,19 @@
-const htmlparser = require('htmlparser2')
-const {
+import * as htmlparser from 'htmlparser2'
+
+import {
 	getOuterHTML,
 	getText,
 	getInnerHTML,
 	replaceElement
-} = require('domutils')
+} from 'domutils'
 
-const logger = require('./logger')
+import { logger } from './logger'
 
 const WritableParser = htmlparser.WritableStream
 
-const css = require('css-select')
+import * as css from 'css-select'
 
-class Document {
+export default class Document {
 	constructor(dom) {
 		this._dom = dom
 	}
@@ -123,8 +124,6 @@ class DocumentParser {
 }
 
 Document.Parser = DocumentParser
-
-module.exports = Document
 
 function parseDOMSync(html) {
 	let handler = new htmlparser.DomHandler()

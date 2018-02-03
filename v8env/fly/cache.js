@@ -1,10 +1,10 @@
-const logger = require('../logger')
+import { logger } from '../logger'
 
 /**
  * @namespace fly.cache
  * @description An API for accessing a regional, volatile cache. Data stored in the `fly.cache` can have an associated per-key time to live (TTL), and we will evict key data automatically after the elapsed TTL. We will also evict unused data periodically.
  */
-module.exports = function (ivm, dispatch) {
+export default function flyCacheInit(ivm, dispatch) {
   return {
     /**
      * Get a string value (or Null) from the cache

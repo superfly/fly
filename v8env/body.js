@@ -1,5 +1,5 @@
-const { ReadableStream } = require('web-streams-polyfill')
-const logger = require('./logger')
+import { ReadableStream } from 'web-streams-polyfill'
+import { logger } from './logger'
 
 const bodyUsedError = new Error("Body already used, try using tee() on the stream to output to multiple destinations")
 const unsupportedBodyTypeError = new Error("Body type is unsupported, please use a ReadableStream or a string")
@@ -8,7 +8,7 @@ const unsupportedBodyTypeError = new Error("Body type is unsupported, please use
  * @name Body
  * @mixin
  */
-module.exports = function (ivm) {
+export default function bodyInit(ivm) {
 	return function Body(_stream) {
 		this.bodyUsed = false;
 
@@ -108,7 +108,7 @@ module.exports = function (ivm) {
 							parts.push(encoder.encode(value))
 						} else if (value instanceof ArrayBuffer) {
 							parts.push(new Uint8Array(value))
-						}else{
+						} else {
 							logger.error("unhandled type on stream read")
 						}
 

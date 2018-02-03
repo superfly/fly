@@ -1,6 +1,6 @@
-const { format } = require('util')
+import { format } from 'util'
 
-module.exports = {
+export const logger = {
   info(...args) {
     nodeLog('info', format(...args))
   },

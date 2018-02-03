@@ -1,4 +1,4 @@
-const logger = require('../logger')
+import { logger } from '../logger'
 
 function backendFetch(req, next) {
 	logger.info("backend:", req)
@@ -13,7 +13,7 @@ function backendFetch(req, next) {
 	return b.fetch(req)
 }
 
-module.exports = function () {
+export default function registerFlyBackend() {
 	registerMiddleware("fly-backend", function () {
 		return backendFetch;
 	}())

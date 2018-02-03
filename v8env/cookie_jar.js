@@ -1,4 +1,4 @@
-const cookie = require('cookie')
+import * as cookie from 'cookie'
 
 const cookieAttributeNames = ['Max-Age', 'Expires', 'HttpOnly', 'Secure', 'Path', 'SameSite', 'Domain']
 
@@ -7,7 +7,7 @@ const cookieAttributeNames = ['Max-Age', 'Expires', 'HttpOnly', 'Secure', 'Path'
  * @class
  * @param {Response|Request} [parent] Underlying resource that contains cookies in headers
  */
-class CookieJar {
+export default class CookieJar {
 	constructor(parent) {
 		this.parent = parent
 		if (parent instanceof Request)
@@ -39,8 +39,6 @@ class CookieJar {
 			this.parent.headers.append("Set-Cookie", cookieStr)
 	}
 }
-
-module.exports = CookieJar
 
 function parseCookies(rawCookies) {
 	let cookies = []

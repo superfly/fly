@@ -1,6 +1,6 @@
-const logger = require('../logger')
+import { logger } from '../logger'
 
-module.exports = function () {
+export default function registerSession() {
   registerMiddleware("session", function () {
     return async function (req, next) {
       const sessCookie = this.settings.get("session_cookie");

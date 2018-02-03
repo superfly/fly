@@ -1,9 +1,7 @@
-const urlParse = require("url-parse")
-const URLSearchParams = require("url-search-params")
+import * as urlParse from 'url-parse'
+import * as URLSearchParams from 'url-search-params'
 
-module.exports = URL
-
-function URL(path, base) {
+export default function URL(path, base) {
 	let instance = urlParse(path, base)
 	let queryObject = new URLSearchParams(instance.query)
 	// Object.defineProperty(this, "_inst", {
@@ -13,15 +11,17 @@ function URL(path, base) {
 
 	Object.defineProperties(this, {
 		href: {
-			get: function() { return instance.href; },
-			set: function(v) { instance.href = v;
+			get: function () { return instance.href; },
+			set: function (v) {
+				instance.href = v;
 				tidy_instance();
-				update_steps(); },
+				update_steps();
+			},
 			enumerable: true,
 			configurable: true
 		},
 		origin: {
-			get: function() {
+			get: function () {
 				if ('origin' in instance) return instance.origin;
 				return this.protocol + '//' + this.host;
 			},
@@ -29,58 +29,58 @@ function URL(path, base) {
 			configurable: true
 		},
 		protocol: {
-			get: function() { return instance.protocol; },
-			set: function(v) { instance.protocol = v; },
+			get: function () { return instance.protocol; },
+			set: function (v) { instance.protocol = v; },
 			enumerable: true,
 			configurable: true
 		},
 		username: {
-			get: function() { return instance.username; },
-			set: function(v) { instance.username = v; },
+			get: function () { return instance.username; },
+			set: function (v) { instance.username = v; },
 			enumerable: true,
 			configurable: true
 		},
 		password: {
-			get: function() { return instance.password; },
-			set: function(v) { instance.password = v; },
+			get: function () { return instance.password; },
+			set: function (v) { instance.password = v; },
 			enumerable: true,
 			configurable: true
 		},
 		host: {
-			get: function() {
+			get: function () {
 				// IE returns default port in |host|
 				var re = { 'http:': /:80$/, 'https:': /:443$/, 'ftp:': /:21$/ }[instance.protocol];
 				return re ? instance.host.replace(re, '') : instance.host;
 			},
-			set: function(v) { instance.host = v; },
+			set: function (v) { instance.host = v; },
 			enumerable: true,
 			configurable: true
 		},
 		hostname: {
-			get: function() { return instance.hostname; },
-			set: function(v) { instance.hostname = v; },
+			get: function () { return instance.hostname; },
+			set: function (v) { instance.hostname = v; },
 			enumerable: true,
 			configurable: true
 		},
 		port: {
-			get: function() { return instance.port; },
-			set: function(v) { instance.port = v; },
+			get: function () { return instance.port; },
+			set: function (v) { instance.port = v; },
 			enumerable: true,
 			configurable: true
 		},
 		pathname: {
-			get: function() {
+			get: function () {
 				// IE does not include leading '/' in |pathname|
 				if (instance.pathname.charAt(0) !== '/') return '/' + instance.pathname;
 				return instance.pathname;
 			},
-			set: function(v) { instance.pathname = v; },
+			set: function (v) { instance.pathname = v; },
 			enumerable: true,
 			configurable: true
 		},
 		search: {
-			get: function() { return instance.search; },
-			set: function(v) {
+			get: function () { return instance.search; },
+			set: function (v) {
 				if (instance.search === v) return;
 				instance.search = v;
 				tidy_instance();
@@ -90,19 +90,21 @@ function URL(path, base) {
 			configurable: true
 		},
 		searchParams: {
-			get: function() { return queryObject; },
+			get: function () { return queryObject; },
 			enumerable: true,
 			configurable: true
 		},
 		hash: {
-			get: function() { return instance.hash; },
-			set: function(v) { instance.hash = v;
-				tidy_instance(); },
+			get: function () { return instance.hash; },
+			set: function (v) {
+				instance.hash = v;
+				tidy_instance();
+			},
 			enumerable: true,
 			configurable: true
 		},
 		toString: {
-			value: function() {
+			value: function () {
 				instance.set("query", queryObject.toString())
 				return instance.toString();
 			},
@@ -110,7 +112,7 @@ function URL(path, base) {
 			configurable: true
 		},
 		valueOf: {
-			value: function() { return instance.valueOf(); },
+			value: function () { return instance.valueOf(); },
 			enumerable: false,
 			configurable: true
 		}
@@ -133,7 +135,7 @@ function urlencoded_parse(input, isindex) {
 	if (isindex && sequences[0].indexOf('=') === -1)
 		sequences[0] = '=' + sequences[0];
 	var pairs = [];
-	sequences.forEach(function(bytes) {
+	sequences.forEach(function (bytes) {
 		if (bytes.length === 0) return;
 		var index = bytes.indexOf('=');
 		if (index !== -1) {
@@ -148,7 +150,7 @@ function urlencoded_parse(input, isindex) {
 		pairs.push({ name: name, value: value });
 	});
 	var output = [];
-	pairs.forEach(function(pair) {
+	pairs.forEach(function (pair) {
 		output.push({
 			name: decodeURIComponent(pair.name),
 			value: decodeURIComponent(pair.value)

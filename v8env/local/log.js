@@ -1,6 +1,6 @@
-const { addEventListener } = require('../events')
+import { addEventListener } from '../events'
 
-exports.setupLocalLogging = function setupLocalLogging(ivm, nodeLog) {
+export function setupLocalLogging(ivm, nodeLog) {
   addEventListener('log', (event) => {
     nodeLog.apply(null, [event.log.level, event.log.message])
   })
