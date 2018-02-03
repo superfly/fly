@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.12.0"></a>
+# [0.12.0](https://github.com/superfly/fly/compare/v0.10.2...v0.12.0) (2018-02-03)
+
+
+### Bug Fixes
+
+* hanging CLI, adds bootstrap warmup ([32bf527](https://github.com/superfly/fly/commit/32bf527))
+
+
+### Features
+
+* allow v8 inspector on server via --inspect ([f054e88](https://github.com/superfly/fly/commit/f054e88))
+
+
+
 <a name="0.11.0"></a>
 # [0.11.0](https://github.com/superfly/fly/compare/v0.10.2...v0.11.0) (2018-02-03)
 
