@@ -24,6 +24,7 @@
   },
   "globals": {
     "_ivm": true,
-    "registerMiddleware": true
+    "registerMiddleware": true,
+    "fly": true
   }
 }

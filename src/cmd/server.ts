@@ -5,11 +5,9 @@ import log from '../log'
 import { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
 import { Trace } from '../trace';
-import { DefaultContextStore } from '../default_context_store';
 import { ivm } from '../';
 
 import * as WebSocket from 'ws';
-import { ContextStore } from '../context_store';
 
 interface ServerOptions {
   port?: string
@@ -25,6 +23,8 @@ root
     const { parseConfig } = require('../config')
     const { FileStore } = require('../app/stores/file')
     const { Server } = require('../server')
+    const { DefaultContextStore } = require('../default_context_store');
+
     const cwd = process.cwd()
     let conf = parseConfig(cwd)
 
@@ -44,7 +44,7 @@ root
     server.start()
   })
 
-async function startInspector(ctxStore: DefaultContextStore) {
+async function startInspector(ctxStore: any) {
   // Create an inspector channel on port 10000
   let iso = await ctxStore.getIsolate()
   let channel = iso.createInspectorSession();

@@ -14,12 +14,6 @@ global.bootstrap = function bootstrap() {
 	const ivm = global._ivm
 	const dispatch = global._dispatch
 
-	if (!ivm)
-		throw new Error("isolated-vm as global _ivm is required")
-
-	if (!dispatch)
-		throw new Error("node function dispatcher as global _dispatch is required")
-
 	// Cleanup, early!
 	delete global._ivm
 	delete global._dispatch
@@ -53,7 +47,7 @@ global.bootstrap = function bootstrap() {
 	// Web primitives (?)
 	global.ReadableStream = ReadableStream
 	global.WritableStream = WritableStream
-  global.TransformStream = TransformStream
+	global.TransformStream = TransformStream
 
 	global.TextEncoder = TextEncoder
 	global.TextDecoder = TextDecoder

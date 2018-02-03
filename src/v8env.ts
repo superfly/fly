@@ -78,7 +78,7 @@ export class V8Environment extends EventEmitter {
       v8EnvSnapshot = ivm.Isolate.createSnapshot([{
         code: v8EnvCode,
         filename: './v8env.js'
-      }])
+      }], "bootstrap();")
       this.emit('snapshot', v8EnvSnapshot)
       if (!wasReady)
         this.emit('ready')
