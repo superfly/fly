@@ -5,18 +5,22 @@ import * as webpack from 'webpack'
 const importCwd = require('import-cwd')
 const MemoryFS = require('memory-fs')
 
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+
 const webpackConfPath = "./webpack.config.js";
 const webpackConfRequirePath = "./webpack.config";
 
 export interface AppBuilderOptions {
-  watch: boolean
+  watch: boolean,
+  uglify?: boolean
 }
 
 export function buildApp(cwd: string, opts: AppBuilderOptions, callback: Function) {
-  buildAppWithConfig(getWebpackConfig(cwd), opts, callback)
+  buildAppWithConfig(getWebpackConfig(cwd, opts), opts, callback)
 }
 
 export function buildAppWithConfig(config: webpack.Configuration, opts: AppBuilderOptions, callback: Function) {
+  console.log("Compiling app...")
   let compiler = webpack(config)
   compiler.outputFileSystem = new MemoryFS() // save in memory
 
@@ -51,7 +55,7 @@ function compileCallback(compiler: webpack.Compiler, callback: Function) {
   }
 }
 
-export function getWebpackConfig(cwd: string): webpack.Configuration {
+export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack.Configuration {
   let conf;
   if (fs.existsSync(path.join(cwd, webpackConfPath))) {
     console.log(`Using Webpack config ${webpackConfPath}`)
@@ -65,9 +69,17 @@ export function getWebpackConfig(cwd: string): webpack.Configuration {
       }
     }
   }
+  conf.devtool = 'inline-source-map'
   conf.output = {
     filename: 'bundle.js',
     path: '/'
+  }
+  if (opts && opts.uglify) {
+    conf.plugins = conf.plugins || []
+    conf.plugins.push(new UglifyJsPlugin({
+      parallel: true,
+      sourceMap: true
+    }))
   }
   return conf
 }

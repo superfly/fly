@@ -8,21 +8,23 @@ import { createContext } from './context'
 
 import { App } from './app'
 
+export interface DefaultContextStoreOptions {
+  inspect?: boolean
+}
+
 export class DefaultContextStore implements ContextStore {
   isolate: ivm.Isolate
-  isoOptions: ivm.IsolateOptions
-  ctxOptions: ivm.ContextOptions
+  options: DefaultContextStoreOptions
 
-  constructor(isoOptions: ivm.IsolateOptions = {}, ctxOptions: ivm.ContextOptions = {}) {
-    this.isoOptions = isoOptions
-    this.ctxOptions = ctxOptions
+  constructor(opts: DefaultContextStoreOptions = {}) {
+    this.options = opts
     v8Env.on('snapshot', this.resetIsolate.bind(this))
   }
 
   async getContext(app: App, trace?: Trace) {
     const iso = await this.getIsolate()
-    const ctx = await createContext(iso, this.ctxOptions)
-    const script = await iso.compileScript(app.source)
+    const ctx = await createContext(iso, { inspector: !!this.options.inspect })
+    const script = await iso.compileScript(app.source, { filename: 'bundle.js' })
     ctx.trace = trace
     const t = ctx.trace && ctx.trace.start("compile app")
     await script.run(ctx.ctx)
@@ -45,6 +47,10 @@ export class DefaultContextStore implements ContextStore {
   resetIsolate() {
     if (this.isolate)
       this.isolate.dispose()
-    this.isolate = new ivm.Isolate(Object.assign({ snapshot: v8Env.snapshot, memoryLimit: 1024 }, this.isoOptions))
+    this.isolate = new ivm.Isolate({
+      snapshot: v8Env.snapshot,
+      memoryLimit: 1024,
+      inspector: !!this.options.inspect
+    })
   }
 }

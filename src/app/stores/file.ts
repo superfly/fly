@@ -15,6 +15,7 @@ export interface FileStoreOptions {
   noWatch?: boolean
   config?: any
   secrets?: any
+  uglify?: boolean
 }
 
 export class FileStore implements AppStore {
@@ -87,9 +88,10 @@ export class FileStore implements AppStore {
       return
     }
 
-    buildApp(cwd, { watch: true }, (err: Error, code: string, hash: string) => {
+    buildApp(cwd, { watch: true, uglify: this.options.uglify }, (err: Error, code: string, hash: string) => {
       if (err)
         return console.error(err)
+
       this.releaseInfo.source = code
       this.releaseInfo.source_hash = hash
     })

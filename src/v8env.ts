@@ -18,6 +18,7 @@ const v8EnvEntry = require.resolve("../v8env/index")
 
 let compiler = webpack({
   entry: v8EnvEntry,
+  devtool: 'inline-source-map',
   output: {
     filename: 'v8env.js',
     path: '/' // memoryfs!
@@ -77,7 +78,7 @@ export class V8Environment extends EventEmitter {
       this.emit('update', v8EnvCode)
       v8EnvSnapshot = ivm.Isolate.createSnapshot([{
         code: v8EnvCode,
-        filename: './v8env.js'
+        filename: 'v8env.js'
       }], "bootstrap();")
       this.emit('snapshot', v8EnvSnapshot)
       if (!wasReady)

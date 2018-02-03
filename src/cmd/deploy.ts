@@ -11,7 +11,7 @@ root
   .action((opts, args, rest) => {
     const { buildApp } = require('../utils/build')
     const appID = getApp()
-    buildApp(process.cwd(), { watch: false }, async (err: Error, code: string, hash: string) => {
+    buildApp(process.cwd(), { watch: false, uglify: true }, async (err: Error, code: string, hash: string) => {
       if (err)
         throw err
       const res = await API.post(`/api/v1/apps/${appID}/releases`, { data: { attributes: { source: code, source_hash: hash, config: getLocalConfig(process.cwd(), "production") } } })

@@ -19,8 +19,8 @@ import { DefaultContextStore } from './default_context_store';
 const proxiedHttp = require('findhit-proxywrap').proxy(http, { strict: false })
 const { version } = require('../package.json');
 
-const fetchTimeout = 1000
-const fetchEndTimeout = 5000
+const defaultFetchDispatchTimeout = 1000
+const defaultFetchEndTimeout = 5000
 
 const hopHeaders = [
 	// From RFC 2616 section 13.5.1
@@ -56,6 +56,8 @@ declare module 'http' {
 export interface ServerOptions {
 	isTLS?: boolean
 	onRequest?: Function
+	fetchDispatchTimeout?: number
+	fetchEndTimeout?: number
 }
 
 export class Server extends EventEmitter {
@@ -66,7 +68,10 @@ export class Server extends EventEmitter {
 	constructor(config: Config, options?: ServerOptions) {
 		super()
 		this.config = config
-		this.options = options || {}
+		this.options = Object.assign({}, {
+			fetchDispatchTimeout: defaultFetchDispatchTimeout,
+			fetchEndTimeout: defaultFetchEndTimeout
+		}, options || {})
 		this.server = proxiedHttp.createServer(this.handleRequest.bind(this));
 	}
 
@@ -322,10 +327,10 @@ export class Server extends EventEmitter {
 									if (this.config.contextStore)
 										this.config.contextStore.putContext(ctx)
 								})
-							], { timeout: fetchEndTimeout })
+							], { timeout: this.options.fetchEndTimeout })
 						})
 					})
-				], { timeout: fetchTimeout })
+				], { timeout: this.options.fetchDispatchTimeout })
 			})
 
 		} catch (e) {

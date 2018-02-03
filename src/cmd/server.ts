@@ -12,6 +12,7 @@ import * as WebSocket from 'ws';
 interface ServerOptions {
   port?: string
   inspect?: boolean
+  uglify: boolean
 }
 
 root
@@ -19,6 +20,7 @@ root
   .description("Run the local Fly development server")
   .option("-p, --port <port>", "Port to bind to")
   .option("--inspect", "use the v8 inspector on your fly app")
+  .option("--uglify", "uglify your code like we'll use in production (warning: slow!)")
   .action((opts, args, rest) => {
     const { parseConfig } = require('../config')
     const { FileStore } = require('../app/stores/file')
@@ -30,14 +32,14 @@ root
 
     if (opts.port && opts.port.length) { conf.port = opts.port }
 
-    conf.appStore = new FileStore(cwd, { build: true })
+    conf.appStore = new FileStore(cwd, { build: true, uglify: opts.uglify })
 
     if (!!opts.inspect) {
-      conf.contextStore = new DefaultContextStore({ inspector: true }, { inspector: true })
+      conf.contextStore = new DefaultContextStore({ inspect: true })
       startInspector(conf.contextStore)
     }
 
-    const server = new Server(conf)
+    const server = new Server(conf, !!opts.inspect ? { fetchDispatchTimeout: 0, fetchEndTimeout: 0 } : {})
     server.addListener("requestEnd", (req: IncomingMessage, res: ServerResponse, trace: Trace) => {
       log.debug(trace.report())
     })
