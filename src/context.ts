@@ -50,8 +50,8 @@ export class Context {
 	}
 }
 
-export async function createContext(iso: ivm.Isolate): Promise<Context> {
-	let ctx = new Context(await iso.createContext())
+export async function createContext(iso: ivm.Isolate, opts: ivm.ContextOptions = {}): Promise<Context> {
+	let ctx = new Context(await iso.createContext(opts))
 	await ctx.bootstrap()
 	return ctx
 }

@@ -34,6 +34,7 @@
     "@types/url-parse": "^1.1.0",
     "@types/webpack": "^3.8.2",
     "@types/winston": "^2.3.7",
+    "@types/ws": "^4.0.0",
     "babel-eslint": "^8.2.1",
     "chai": "^4.1.2",
     "debug": "^3.1.0",
@@ -42,7 +43,8 @@
     "standard-version": "^4.3.0",
     "ts-loader": "^3.2.0",
     "ts-node": "^3.3.0",
-    "typescript": "^2.6.2"
+    "typescript": "^2.6.2",
+    "ws": "^4.0.0"
   },
   "dependencies": {
     "axios": "^0.17.1",
@@ -64,7 +66,7 @@
     "import-cwd": "^2.1.0",
     "ioredis": "^3.2.2",
     "ioredis-mock": "^3.6.1",
-    "isolated-vm": "github:superfly/isolated-vm#fix-linux",
+    "isolated-vm": "^0.1.6",
     "js-yaml": "^3.10.0",
     "memory-fs": "^0.4.1",
     "mksuid": "0.0.3",

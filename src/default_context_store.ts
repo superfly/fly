@@ -10,14 +10,18 @@ import { App } from './app'
 
 export class DefaultContextStore implements ContextStore {
   isolate: ivm.Isolate
+  isoOptions: ivm.IsolateOptions
+  ctxOptions: ivm.ContextOptions
 
-  constructor() {
+  constructor(isoOptions: ivm.IsolateOptions = {}, ctxOptions: ivm.ContextOptions = {}) {
+    this.isoOptions = isoOptions
+    this.ctxOptions = ctxOptions
     v8Env.on('snapshot', this.resetIsolate.bind(this))
   }
 
   async getContext(app: App, trace?: Trace) {
     const iso = await this.getIsolate()
-    const ctx = await createContext(iso)
+    const ctx = await createContext(iso, this.ctxOptions)
     const script = await iso.compileScript(app.source)
     ctx.trace = trace
     const t = ctx.trace && ctx.trace.start("compile app")
@@ -38,9 +42,9 @@ export class DefaultContextStore implements ContextStore {
     return this.isolate
   }
 
-  async resetIsolate() {
+  resetIsolate() {
     if (this.isolate)
       this.isolate.dispose()
-    this.isolate = new ivm.Isolate({ snapshot: v8Env.snapshot, memoryLimit: 1024 })
+    this.isolate = new ivm.Isolate(Object.assign({ snapshot: v8Env.snapshot, memoryLimit: 1024 }, this.isoOptions))
   }
 }
