@@ -48,6 +48,10 @@ export class Context {
 	async set(name: any, value: any) {
 		return await this.global.set(name, value)
 	}
+
+	release() {
+		this.ctx.release()
+	}
 }
 
 export async function createContext(iso: ivm.Isolate, opts: ivm.ContextOptions = {}): Promise<Context> {
