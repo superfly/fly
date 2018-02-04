@@ -5,6 +5,7 @@ import flyCacheInit from './cache'
  */
 export default function flyInit(ivm, dispatch) {
   return {
-    cache: flyCacheInit(ivm, dispatch)
+    cache: flyCacheInit(ivm, dispatch),
+    http: require('./http')
   }
 }
