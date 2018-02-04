@@ -30,8 +30,4 @@ export class App {
   get source() {
     return this.releaseInfo.source
   }
-
-  get sourceHash() {
-    return this.releaseInfo.source_hash
-  }
 }

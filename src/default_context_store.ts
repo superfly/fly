@@ -15,8 +15,6 @@ export interface DefaultContextStoreOptions {
 export class DefaultContextStore implements ContextStore {
   isolate: ivm.Isolate
   options: DefaultContextStoreOptions
-  currentSourceHash: string
-  ctx: Context
 
   constructor(opts: DefaultContextStoreOptions = {}) {
     this.options = opts
@@ -25,23 +23,13 @@ export class DefaultContextStore implements ContextStore {
 
   async getContext(app: App, trace?: Trace) {
     const iso = await this.getIsolate()
-    if (this.currentSourceHash && this.currentSourceHash === app.sourceHash) {
-      if (this.ctx)
-        return this.ctx
-    } else if (this.currentSourceHash !== app.sourceHash) {
-      if (this.ctx) {
-        this.ctx.ctx.release()
-        delete this.ctx
-      }
-    }
-    this.ctx = await createContext(iso, { inspector: !!this.options.inspect })
-    this.currentSourceHash = app.sourceHash
+    const ctx = await createContext(iso, { inspector: !!this.options.inspect })
     const script = await iso.compileScript(app.source, { filename: 'bundle.js' })
-    this.ctx.trace = trace
-    const t = this.ctx.trace && this.ctx.trace.start("compile app")
-    await script.run(this.ctx.ctx)
+    ctx.trace = trace
+    const t = ctx.trace && ctx.trace.start("compile app")
+    await script.run(ctx.ctx)
     t && t.end()
-    return this.ctx
+    return ctx
   }
 
   putContext(ctx: Context) {
@@ -57,10 +45,6 @@ export class DefaultContextStore implements ContextStore {
   }
 
   resetIsolate() {
-    if (this.ctx) {
-      this.ctx.ctx.release()
-      delete this.ctx
-    }
     if (this.isolate)
       this.isolate.dispose()
     this.isolate = new ivm.Isolate({

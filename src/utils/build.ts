@@ -72,9 +72,7 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
   conf.devtool = 'inline-source-map'
   conf.output = {
     filename: 'bundle.js',
-    path: '/',
-    hashFunction: 'sha1',
-    hashDigestLength: 40
+    path: '/'
   }
   if (opts && opts.uglify) {
     conf.plugins = conf.plugins || []
