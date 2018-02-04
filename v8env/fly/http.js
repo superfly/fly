@@ -1,25 +1,27 @@
-const logger = require("../logger")
-
-let router = undefined
+const routes = require('routes')
+let router = null
 let fetchEventBound = false
-let flyFetchHandler = undefined
+let flyFetchHandler = null
 
 function ensureFetchEvent(){
   if(!fetchEventBound){
-    addEventListener("fetch", handleFetch)
+    global.addEventListener("fetch", handleFetch)
     fetchEventBound = true
   }
 }
 function ensureRouter(){
+  console.log("ensuring router")
   if(!router){
-    router = require('routes')
+    router = routes()
+    ensureFetchEvent()
   }
   return router
 }
 function handleFetch(event){
-  let match = undefined
   if(router){
-    match = router.match(event.request.path)
+    const path = new URL(event.request.url).pathname
+    let match = router.match(path)
+    console.log("match:", match)
 
     if(match){
       event.respondWith(match.fn(event.request, match))
@@ -27,18 +29,21 @@ function handleFetch(event){
     }
   }
 
-  if(flyFetchHandler){
-    event.respondWith(flyFetchHandler(request))
+  if(flyFetchHandler != null){
+    event.respondWith(flyFetchHandler(event.request))
     return
   }
 
-  event.respondWith("404", { status: 404 })
+  event.respondWith(new Response("404", { status: 404 }))
 }
 module.exports = {
   route(pattern, fn){
+    console.log("registering route:", pattern)
     ensureRouter().addRoute(pattern, fn)
   },
   respondWith(fn){
+    ensureFetchEvent()
+    console.log("setting respondWith")
     flyFetchHandler = fn
   }
 }

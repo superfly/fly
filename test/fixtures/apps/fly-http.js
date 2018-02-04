@@ -1,5 +1,5 @@
 fly.http.route("/", function(request, route){
-  return new Reponse("/")
+  return new Response("/")
 })
 
 fly.http.respondWith(function(request){

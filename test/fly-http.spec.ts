@@ -4,7 +4,7 @@ import axios from 'axios'
 
 describe('fly.http', () => {
   before(async function () {
-    this.server = await startServer('fly-routes', { config: {} })
+    this.server = await startServer('fly-http.js', { config: {} })
   })
   after(function (done) { this.server.close(done) })
 
@@ -16,7 +16,7 @@ describe('fly.http', () => {
     expect(res.data).to.equal("/")
   })
   it("matches a respondWith", async () => {
-    let res = await axios.get("http://127.0.0.1:333/wat", {
+    let res = await axios.get("http://127.0.0.1:3333/wat", {
       headers: { 'Host': "test" }
     })
 
