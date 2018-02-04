@@ -33,6 +33,7 @@ const errMiddlewareNotPromise = new Error("Middleware did not return a promise")
  * Middleware functions must implement this signature.
  * They must accept a `req` and a `next` parameter, and return a `Rseponse`.
  * @function middlewareFn
+ * @callback middlewareFn
  * @param {Request} request The HTTP request to operate on
  * @param {function} next A function to process subsequent middleware
  * @returns {Response} The response to serve to the user
