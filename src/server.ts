@@ -225,7 +225,7 @@ export class Server extends EventEmitter {
 				remoteAddr: request.connection.remoteAddress
 			}).copyInto()
 
-			t = ctx.trace && ctx.trace.start("'fetch' event") || Trace.start("'fetch' event")
+			t = Trace.tryStart("fetchEvent", ctx.trace)
 			ctx.trace = t
 			let cbCalled = false
 			await new Promise((resolve, reject) => { // mainly to make try...finally work
