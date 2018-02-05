@@ -22,13 +22,18 @@ export class DefaultContextStore implements ContextStore {
   }
 
   async getContext(app: App, trace?: Trace) {
+    const t = trace || Trace.start("getContext")
+    let t2 = t.start("acquireContext")
     const iso = await this.getIsolate()
     const ctx = await createContext(iso, { inspector: !!this.options.inspect })
+    ctx.trace = t
+    t2.end()
+    t2 = t.start("compile")
     const script = await iso.compileScript(app.source, { filename: 'bundle.js' })
-    ctx.trace = trace
-    const t = Trace.tryStart("compile", ctx.trace)
+    t2.end()
+    t2 = Trace.tryStart("prerun", ctx.trace)
     await script.run(ctx.ctx)
-    t.end()
+    t2.end()
     return ctx
   }
 

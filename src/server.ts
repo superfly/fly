@@ -182,9 +182,7 @@ export class Server extends EventEmitter {
 				this.config.contextStore = new DefaultContextStore()
 
 			let t = trace.start("context")
-			let t2 = t.start("acquire")
 			let ctx = await this.config.contextStore.getContext(app, t)
-			t2.end()
 
 			if (await this.runRequestHook(ctx, request, response)) {
 				this.config.contextStore.putContext(ctx)
