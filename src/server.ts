@@ -138,13 +138,16 @@ export class Server extends EventEmitter {
 		request.headers['x-request-id'] = requestID
 
 		let app: any
+		const tapp = trace.start("get app")
 		try {
-			app = await this.config.appStore.getAppByHostname(request.headers.host)
+			app = await this.config.appStore.getAppByHostname(request.headers.host, tapp)
 		} catch (err) {
 			log.error("error getting app", err)
 			response.writeHead(500)
 			response.end()
 			return
+		} finally {
+			tapp.end()
 		}
 
 		log.info("checked app for", request.headers.host)
