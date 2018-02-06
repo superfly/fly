@@ -27,7 +27,7 @@ Write javascript code to a file (`index.js`):
 ```js
 // index.js
 
-addEventListener("fetch", async (event) => {
+addEventListener("fetch", function(event) {
   const res = new Response("Hello! We support whirled peas.", { status: 200 })
   event.respondWith(res)
 })
