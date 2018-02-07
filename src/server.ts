@@ -138,7 +138,7 @@ export class Server extends EventEmitter {
 		request.headers['x-request-id'] = requestID
 
 		let app: any
-		const tapp = trace.start("get app")
+		const tapp = trace.start("getApp")
 		try {
 			app = await this.config.appStore.getAppByHostname(request.headers.host, tapp)
 		} catch (err) {
@@ -184,8 +184,10 @@ export class Server extends EventEmitter {
 			if (!this.config.contextStore)
 				this.config.contextStore = new DefaultContextStore()
 
-			let t = trace.start("context")
+			let t = trace.start("acquireContext")
 			let ctx = await this.config.contextStore.getContext(app, t)
+			t.end()
+			ctx.trace = trace
 
 			if (await this.runRequestHook(ctx, request, response)) {
 				this.config.contextStore.putContext(ctx)
