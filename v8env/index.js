@@ -18,8 +18,7 @@ import formDataInit from './formdata'
 import responseInit from './response'
 import requestInit from './request'
 import cacheInit from './cache'
-
-let internalTimers = {}
+import timersInit from './timers'
 
 import registerFlyBackend from './middleware/fly-backend'
 import registerFlyEcho from './middleware/fly-echo'
@@ -49,28 +48,9 @@ global.bootstrap = function bootstrap() {
 
 	global.console = consoleInit(ivm)
 
+	timersInit(ivm)
+
 	global.fly = flyInit(ivm, dispatch)
-
-	global.setTimeout = (function (st, ivm) {
-		return function (cb, ms) {
-			const now = Date.now()
-			st.apply(null, [new ivm.Reference(cb), ms])
-				.then((t) => {
-					internalTimers[now] = t
-				})
-			return now
-		}
-	})(global._setTimeout, ivm)
-	delete global._setTimeout
-
-	global.clearTimeout = (function (ct) {
-		return function (timer) {
-			if (internalTimers[timer])
-				ct.apply(null, [internalTimers[timer]])
-			return
-		}
-	})(global._clearTimeout)
-	delete global._clearTimeout
 
 	// Web primitives (?)
 	global.ReadableStream = ReadableStream

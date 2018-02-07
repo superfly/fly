@@ -10,10 +10,18 @@ export class Context {
 	private global: ivm.Reference<Object>
 	meta: Map<string, any>
 
+	timeouts: { [id: number]: NodeJS.Timer }
+	intervals: { [id: number]: NodeJS.Timer }
+
+	private currentTimerId: number;
+
 	constructor(ctx: ivm.Context) {
 		this.meta = new Map<string, any>()
 		this.ctx = ctx
 		this.global = ctx.globalReference()
+		this.currentTimerId = 0
+		this.timeouts = {}
+		this.intervals = {}
 	}
 
 	async bootstrap() {
@@ -27,12 +35,24 @@ export class Context {
 			await (await this.get("localBootstrap")).apply(undefined, [])
 		}
 
-		await this.set('_setTimeout', new ivm.Reference(function (fn: Function, timeout: number) {
-			return new ivm.Reference(setTimeout(() => { fn.apply(null, []) }, timeout))
+		await this.set('_setTimeout', new ivm.Reference((fn: Function, timeout: number): number => {
+			const id = ++this.currentTimerId
+			this.timeouts[id] = setTimeout(() => { fn.apply(null, []) }, timeout)
+			return id
 		}))
 
-		await this.set('_clearTimeout', new ivm.Reference(function (timer: ivm.Reference<NodeJS.Timer>) {
-			return clearTimeout(timer.deref())
+		await this.set('_clearTimeout', new ivm.Reference((id: number): void => {
+			return clearTimeout(this.timeouts[id])
+		}))
+
+		await this.set('_setInterval', new ivm.Reference((fn: Function, timeout: number): number => {
+			const id = ++this.currentTimerId
+			this.intervals[id] = setInterval(() => { fn.apply(null, []) }, timeout)
+			return id
+		}))
+
+		await this.set('_clearInterval', new ivm.Reference((id: number): void => {
+			return clearInterval(this.intervals[id])
 		}))
 
 		const bridge = new Bridge(this)
@@ -50,7 +70,15 @@ export class Context {
 	}
 
 	release() {
+		this.cleanUp()
 		this.ctx.release()
+	}
+
+	cleanUp() {
+		for (const t of Object.values(this.intervals))
+			clearInterval(t)
+		for (const t of Object.values(this.timeouts))
+			clearTimeout(t)
 	}
 }
 
