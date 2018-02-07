@@ -1,6 +1,6 @@
 import { ivm } from './'
 import log from "./log"
-//import { conf } from './config'
+//import { conf } from './config'a
 import { Bridge } from './bridge/bridge'
 import { Trace } from './trace'
 import { Config } from './config';
@@ -55,7 +55,7 @@ export class Context {
 	}
 }
 
-export async function createContext(config: Config, iso: ivm.Isolate, opts: ivm.ContextOptions): Promise<Context> {
+export async function createContext(config: Config, iso: ivm.Isolate, opts: ivm.ContextOptions = {}): Promise<Context> {
 	let ctx = new Context(await iso.createContext(opts))
 	await ctx.bootstrap(config)
 	return ctx
