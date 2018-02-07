@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.14.5"></a>
+## [0.14.5](https://github.com/superfly/fly/compare/v0.14.4...v0.14.5) (2018-02-07)
+
+
+
 <a name="0.14.4"></a>
 ## [0.14.4](https://github.com/superfly/fly/compare/v0.14.3...v0.14.4) (2018-02-06)
 
