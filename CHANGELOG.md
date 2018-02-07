@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.15.0-1"></a>
+# [0.15.0-1](https://github.com/superfly/fly/compare/v0.15.0-0...v0.15.0-1) (2018-02-07)
+
+
+### Bug Fixes
+
+* tests did not include proper context meta data ([1e03fda](https://github.com/superfly/fly/commit/1e03fda))
+
+
+
 <a name="0.15.0-0"></a>
 # [0.15.0-0](https://github.com/superfly/fly/compare/v0.14.4...v0.15.0-0) (2018-02-07)
 
