@@ -13,6 +13,7 @@ const importCwd = require('import-cwd')
 export interface FileStoreOptions {
   build?: boolean
   noWatch?: boolean
+  noSource?: boolean
   config?: any
   secrets?: any
   uglify?: boolean
@@ -77,6 +78,9 @@ export class FileStore implements AppStore {
           }
         })
     }
+
+    if (options.noSource)
+      return
 
     if (!options.build) {
       let fullPath = cwd

@@ -26,6 +26,7 @@ root
   .action((opts, args, rest) => {
     const { ivm } = require('../')
     const { v8Env } = require('../v8env')
+    const { FileStore } = require('../app/stores/file')
     const { getWebpackConfig, buildAppWithConfig } = require('../utils/build')
     const { createContext } = require('../context')
 
@@ -49,6 +50,8 @@ root
     let conf = getWebpackConfig(cwd)
     conf.entry = paths
 
+    const appStore = new FileStore(cwd, { noWatch: true, noSource: true })
+
     buildAppWithConfig(conf, { watch: false }, async (err: Error, code: string) => {
       if (err)
         throw err
@@ -57,6 +60,12 @@ root
         await v8Env.waitForReadiness()
         const iso = new ivm.Isolate({ snapshot: v8Env.snapshot })
         const ctx = await createContext(iso)
+
+        const app = await appStore.getAppByHostname()
+
+        ctx.meta = new Map<string, any>([
+          ['app', app]
+        ])
 
         await ctx.set('_mocha_done', new ivm.Reference(function (failures: number) {
           if (failures)
@@ -71,6 +80,9 @@ root
 
         const bundleScript = await iso.compileScript(code, { filename: 'bundle.js' })
         await bundleScript.run(ctx.ctx)
+
+        ctx.set('app', new ivm.ExternalCopy({ id: app.id, config: app.config }).copyInto())
+
         const runScript = await iso.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })
         await runScript.run(ctx.ctx)
       } catch (err) {
