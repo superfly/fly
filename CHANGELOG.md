@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.15.0-0"></a>
+# [0.15.0-0](https://github.com/superfly/fly/compare/v0.14.4...v0.15.0-0) (2018-02-07)
+
+
+### Features
+
+* faster ArrayBuffers between v8 and node with the new isolated-vm's transfer option ([7d8a062](https://github.com/superfly/fly/commit/7d8a062))
+
+
+
 <a name="0.14.4"></a>
 ## [0.14.4](https://github.com/superfly/fly/compare/v0.14.3...v0.14.4) (2018-02-06)
 
