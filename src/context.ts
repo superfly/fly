@@ -10,20 +10,18 @@ export class Context {
 	trace: Trace | undefined
 	private global: ivm.Reference<Object>
 	meta: Map<string, any>
-	config: Config
 
-	constructor(ctx: ivm.Context, config: Config) {
+	constructor(ctx: ivm.Context) {
 		this.meta = new Map<string, any>()
 		this.ctx = ctx
-		this.config = config
 		this.global = ctx.globalReference()
 	}
 
-	async bootstrap() {
+	async bootstrap(config:Config) {
 		await this.set('global', this.global.derefInto());
 		await this.set('_ivm', ivm);
 
-		if (this.config.env !== 'production') {
+		if (config.env !== 'production') {
 			await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
 				log.log(lvl, args[0], ...args.slice(1))
 			}))
@@ -38,7 +36,7 @@ export class Context {
 			return clearTimeout(timer.deref())
 		}))
 
-		const bridge = new Bridge(this)
+		const bridge = new Bridge(this, config)
 		await this.set("_dispatch", new ivm.Reference(bridge.dispatch.bind(bridge)))
 
 		await (await this.get("bootstrap")).apply(undefined, [])
@@ -57,8 +55,8 @@ export class Context {
 	}
 }
 
-export async function createContext(config: Config, iso: ivm.Isolate, opts: ivm.ContextOptions = {}): Promise<Context> {
-	let ctx = new Context(await iso.createContext(opts), config)
-	await ctx.bootstrap()
+export async function createContext(config: Config, iso: ivm.Isolate, opts: ivm.ContextOptions): Promise<Context> {
+	let ctx = new Context(await iso.createContext(opts))
+	await ctx.bootstrap(config)
 	return ctx
 }

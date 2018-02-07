@@ -7,10 +7,9 @@ export function registerBridge(name: string, fn: BridgeFunctionFactory) {
 
 export interface Context {
   meta: Map<string, any>
-  trace: Trace | undefined,
-  config: Config
+  trace: Trace | undefined
 }
 
 export interface BridgeFunctionFactory {
-  (ctx: Context): Function
+  (ctx: Context, config: Config): Function
 }

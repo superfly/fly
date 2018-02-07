@@ -12,7 +12,7 @@ export interface Config {
   contextStore?: ContextStore
 }
 
-export let conf: Config = parseConfig(process.cwd())
+export let runtimeConfig: Config = parseConfig(process.cwd())
 
 export function parseConfig(cwd: string): Config {
   const env = getValue(process.env.FLY_ENV, process.env.NODE_ENV, 'development')

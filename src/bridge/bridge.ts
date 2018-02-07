@@ -4,6 +4,7 @@ import './cache'
 import './fly/cache'
 
 import { catalog, Context } from './'
+import { Config } from '../config';
 
 const errNoSuchBridgeFn = new Error("Attempted to call a unregistered bridge function.")
 
@@ -13,9 +14,10 @@ interface IterableIterator<T> extends Iterator<T> {
 
 export class Bridge {
   functions: Map<string, Function>
+  config: Config
 
-  constructor(ctx: Context) {
-    this.functions = new Map<string, Function>(Array.from(Array.from(catalog.entries()).map(([n, fn]) => [n, fn(ctx)])))
+  constructor(ctx: Context, config: Config) {
+    this.functions = new Map<string, Function>(Array.from(Array.from(catalog.entries()).map(([n, fn]) => [n, fn(ctx, config)])))
   }
 
   dispatch(name: string, ...args: any[]) {

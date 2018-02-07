@@ -1,4 +1,4 @@
-import { conf } from './config'
+import { runtimeConfig } from './config'
 
 import * as path from 'path'
 import * as fs from 'fs'
@@ -53,7 +53,7 @@ export class V8Environment extends EventEmitter {
   }
 
   startCodeUpdater() {
-    if (conf.env === 'development')
+    if (runtimeConfig.env === 'development')
       compiler.watch({}, this.updateV8Env.bind(this))
     else
       compiler.run(this.updateV8Env.bind(this))
