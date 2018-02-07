@@ -18,17 +18,18 @@ import http = require('http')
 
 import { FileStore, FileStoreOptions } from '../src/app/stores/file'
 import { DefaultContextStore } from '../src/default_context_store';
+import { MemoryCacheStore } from '../src/caches/memory';
 
 const Replay = require('replay');
 Replay.fixtures = './test/fixtures/replay';
 Replay.headers.push(/^fly-/);
-
 
 export interface ServerOptions extends FileStoreOptions {
   port?: number
 }
 
 const contextStore = new DefaultContextStore()
+export const cacheStore = new MemoryCacheStore("test cache")
 
 export async function startServer(cwd: string, options?: ServerOptions): Promise<http.Server> {
   options || (options = {})
@@ -44,7 +45,7 @@ export async function startServer(cwd: string, options?: ServerOptions): Promise
 
   conf.appStore = appStore
 
-  const server = new Server(Object.assign({}, conf, { contextStore, appStore }))
+  const server = new Server(Object.assign({}, conf, { contextStore, appStore, cacheStore }))
   const http = server.server
 
   server.addListener("requestEnd", (req, res, trace) => {

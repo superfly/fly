@@ -1,6 +1,5 @@
 import { expect } from 'chai'
-import { startServer } from './helper'
-import { conf } from '../src/config'
+import { startServer, cacheStore } from './helper'
 import axios from 'axios'
 
 describe('Cache API', () => {
@@ -16,7 +15,7 @@ describe('Cache API', () => {
 
     expect(res.status).to.equal(200)
 
-    let cached = await conf.cacheStore.get(`cache:test-app-id:${url}`)
+    let cached = await cacheStore.get(`cache:test-app-id:${url}`)
     expect(cached).to.equal(url)
   })
 
@@ -27,7 +26,7 @@ describe('Cache API', () => {
 
     expect(res.status).to.equal(200)
 
-    let ttl = await conf.cacheStore.ttl(`cache:test-app-id:${url}`)
+    let ttl = await cacheStore.ttl(`cache:test-app-id:${url}`)
     expect(ttl).to.equal(3600)
   })
 
@@ -40,7 +39,7 @@ describe('Cache API', () => {
 
   it('gets a value', async () => {
     let data = "cached:" + Math.random().toString()
-    await conf.cacheStore.set("cache:test-app-id:http://test/cache-api/get", data)
+    await cacheStore.set("cache:test-app-id:http://test/cache-api/get", data)
 
     let res = await axios.get("http://127.0.0.1:3333/cache-api/get", { headers: { 'Host': 'test' } })
     expect(res.status).to.equal(200)

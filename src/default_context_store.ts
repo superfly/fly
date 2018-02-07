@@ -7,6 +7,7 @@ import { Trace } from './trace'
 import { createContext } from './context'
 
 import { App } from './app'
+import { Config } from './config';
 
 export interface DefaultContextStoreOptions {
   inspect?: boolean
@@ -21,14 +22,14 @@ export class DefaultContextStore implements ContextStore {
     v8Env.on('snapshot', this.resetIsolate.bind(this))
   }
 
-  async getContext(app: App, trace?: Trace) {
+  async getContext(config: Config, app: App, trace?: Trace) {
     const t = trace || Trace.start("acquireContext")
     let t2 = t.start("getIsolate")
     const iso = await this.getIsolate()
     t2.end()
 
     t2 = t.start("createContext")
-    const ctx = await createContext(iso, { inspector: !!this.options.inspect })
+    const ctx = await createContext(config, iso, { inspector: !!this.options.inspect })
     t2.end()
 
     t2 = t.start("compile")

@@ -6,8 +6,10 @@ const OK = 'ok'
 
 export class MemoryCacheStore implements CacheStore {
   redis: IORedis.Redis
-  constructor() {
+  rand: number
+  constructor(label?:string) {
     this.redis = new Redis()
+    this.rand = Math.random()
   }
 
   async get(key: string): Promise<Buffer> {
