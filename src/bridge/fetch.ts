@@ -47,7 +47,7 @@ export function fetchBridge(ctx: Context) {
         let req: http.ClientRequest;
 
         let path = u.pathname
-        if(u.query != null){
+        if (u.query != null) {
           path = path + "?" + u.query
         }
         req = httpFn({
@@ -89,7 +89,12 @@ export function fetchBridge(ctx: Context) {
                 })
 
                 res.on("data", function (data: any) {
-                  callback.apply(undefined, ["data", new ivm.ExternalCopy(bufferToArrayBuffer(data)).copyInto()])
+                  callback.apply(undefined, [
+                    "data",
+                    new ivm.ExternalCopy(bufferToArrayBuffer(data)).copyInto({
+                      transfer: true
+                    })
+                  ])
                 })
                 res.resume()
                 //callback.apply(undefined, ["end"])

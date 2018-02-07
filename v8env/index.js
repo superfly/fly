@@ -101,6 +101,7 @@ global.bootstrap = function bootstrap() {
 	global.FetchEvent = FetchEvent
 
 	// DOM
+	// TODO: Reenable.
 	// global.Document = require('./document')
 
 	// Fly-specific

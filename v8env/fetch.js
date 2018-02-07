@@ -19,8 +19,9 @@ export default function fetchInit(ivm, dispatch) {
 			url = req.url
 			init = {
 				method: req.method,
-				headers: req.headers,
+				headers: req.headers && req.headers.toJSON() || {},
 			}
+			console.log("INIT:", init)
 			return await _applyFetch(url, init, await req.arrayBuffer())
 
 		} catch (err) {
@@ -36,7 +37,7 @@ export default function fetchInit(ivm, dispatch) {
 				"fetch",
 				url,
 				new ivm.ExternalCopy(init).copyInto(),
-				new ivm.ExternalCopy(body).copyInto(),
+				new ivm.ExternalCopy(body).copyInto({ transfer: true }),
 				new ivm.Reference(function (err, nodeRes, nodeBody, proxied) {
 					if (err != null) {
 						logger.debug("err :(", err)

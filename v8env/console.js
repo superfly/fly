@@ -2,12 +2,7 @@ import { LogEvent, dispatchEvent } from './events'
 import { format } from 'util'
 
 // Console
-export default function consoleInit(ivm) {
-	// function nodeLog(...args) {
-	// 	global._log.apply(undefined, args.map(arg => new ivm.ExternalCopy(arg)
-	// 		.copyInto()));
-	// }
-
+export default function consoleInit() {
 	const Console = {
 		log(...args) {
 			Console.info(...args)

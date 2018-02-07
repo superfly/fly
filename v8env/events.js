@@ -99,12 +99,12 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 
 		callback.apply(undefined, [null,
 			new ivm.ExternalCopy({
-				headers: res.headers,
+				headers: res.headers && res.headers.toJSON() || {},
 				status: res.status,
 				bodyUsed: res.bodyUsed,
 			}).copyInto(),
 			!res._proxy ?
-				new ivm.ExternalCopy(await res.arrayBuffer()).copyInto() :
+				new ivm.ExternalCopy(await res.arrayBuffer()).copyInto({ transfer: true }) :
 				null,
 			res._proxy // pass back the proxy
 		])

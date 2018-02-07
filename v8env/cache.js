@@ -10,7 +10,7 @@ export default function cacheInit(ivm, dispatch) {
 					new ivm.ExternalCopy({
 						method: req.method,
 						url: req.url,
-						headers: req.headers || {},
+						headers: req.headers && req.headers.toJSON() || {},
 					}).copyInto(),
 					new ivm.Reference(function (err, res) {
 						logger.debug("cache match got callback", err, res)
@@ -36,10 +36,10 @@ export default function cacheInit(ivm, dispatch) {
 							new ivm.ExternalCopy({
 								method: req.method,
 								url: req.url,
-								headers: req.headers,
+								headers: req.headers && req.headers.toJSON() || {},
 							}).copyInto(),
 							new ivm.ExternalCopy(body)
-								.copyInto(),
+								.copyInto({ transfer: true }),
 							new ivm.Reference(function (err, res, bodyStr) {
 								logger.debug("cache add got callback", err, res)
 								if (err)

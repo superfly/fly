@@ -25,7 +25,6 @@ registerBridge('cacheMatch', function (ctx: Context) {
     log.debug("satisfactory?", policy.satisfiesWithoutRevalidation(request))
     if (policy && policy.satisfiesWithoutRevalidation(request)) {
       response.headers = policy.responseHeaders();
-      log.debug("sending response", JSON.stringify(response))
       return callback.apply(null, [null, new ivm.ExternalCopy(response).copyInto()]);
     }
 
