@@ -93,7 +93,7 @@ export function fetchBridge(ctx: Context) {
                     "data",
                     new ivm.ExternalCopy(bufferToArrayBuffer(data), {
                       transfer: true
-                    }).copyInto()
+                    }).copyInto({ transfer: true })
                   ])
                 })
                 res.resume()

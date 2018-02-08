@@ -108,7 +108,7 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 			body && body.byteLength > 0 ?
 				new ivm.ExternalCopy(body, {
 					transfer: true
-				}).copyInto() :
+				}).copyInto({ transfer: true }) :
 				null,
 			res._proxy // pass back the proxy
 		])

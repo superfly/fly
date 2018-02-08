@@ -41,7 +41,7 @@ export default function cacheInit(ivm, dispatch) {
 							body && body.byteLength > 0 ?
 								new ivm.ExternalCopy(body, {
 									transfer: true
-								}).copyInto() :
+								}).copyInto({ transfer: true }) :
 								null,
 							new ivm.Reference(function (err, res, bodyStr) {
 								logger.debug("cache add got callback", err, res)

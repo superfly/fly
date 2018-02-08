@@ -206,4 +206,17 @@ describe('Server', () => {
       expect(res.headers['server']).include("fly")
     })
   })
+
+  describe('cloning bodies', () => {
+    before(async function () {
+      this.server = await startServer("clone.js")
+    })
+    after(function (done) { this.server.close(done) })
+
+    it('can clone both requests and responses', async () => {
+      let res = await axios.post("http://127.0.0.1:3333/", "hello", { headers: { host: "test" } })
+      expect(res.status).to.equal(200);
+      expect(res.data).to.equal(`res1: hellohello\nres2: hellohello`)
+    })
+  })
 })

@@ -21,8 +21,6 @@ export default function bodyInit(ivm) {
 		Object.defineProperty(this, "body", {
 			enumerable: false,
 			get: function () {
-				if (this.bodyUsed)
-					throw bodyUsedError
 				return makeStream(this._stream)
 			}
 		})
@@ -53,6 +51,8 @@ export default function bodyInit(ivm) {
 		 * @memberof Body
 		 */
 		this.text = async () => {
+			if (this.bodyUsed)
+				throw bodyUsedError
 			const arr = await bufferFromStream(this.body.getReader())
 			const text = new TextDecoder('utf-8').decode(arr)
 			return text
@@ -65,6 +65,8 @@ export default function bodyInit(ivm) {
 		 * @memberof Body
 		 */
 		this.arrayBuffer = async () => {
+			if (this.bodyUsed)
+				throw bodyUsedError
 			const arr = await bufferFromStream(this.body.getReader())
 			this.bodyUsed = true
 			return arr.buffer

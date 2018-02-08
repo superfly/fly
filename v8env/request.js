@@ -74,8 +74,7 @@ export default function requestInit(ivm) {
 				this.referrer = input.referrer;
 				this.mode = input.mode;
 			} else {
-				// input = USVString(input);
-				this.url = input //String(new URL(input, self.location));
+				this.url = input
 			}
 
 			init = Object(init);
@@ -111,6 +110,19 @@ export default function requestInit(ivm) {
 				return this.cookieJar
 			this.cookieJar = new CookieJar(this)
 			return this.cookieJar
+		}
+
+		clone() {
+			const [body1, body2] = this.body.tee()
+			const cloned = new Request(this.url, {
+				body: body2,
+				remoteAddr: this.remoteAddr,
+				method: this.method,
+				headers: this.headers,
+				credentials: this.credentials
+			})
+			this._stream = body1
+			return cloned
 		}
 	}
 

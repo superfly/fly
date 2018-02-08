@@ -92,6 +92,13 @@ export default function responseInit(ivm) {
 			this.cookieJar = new CookieJar(this)
 			return this.cookieJar
 		}
+
+		clone() {
+			const [body1, body2] = this.body.tee()
+			const cloned = new Response(body2, this)
+			this._stream = body1
+			return cloned
+		}
 	}
 
 	return Response

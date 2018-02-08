@@ -252,7 +252,7 @@ export class Server extends EventEmitter {
 								callback.apply(undefined, [
 									"data", new ivm.ExternalCopy(bufferToArrayBuffer(data), {
 										transfer: true
-									}).copyInto()
+									}).copyInto({ transfer: true })
 								])
 							})
 							request.resume()
