@@ -248,9 +248,11 @@ export class Server extends EventEmitter {
 								t2.end()
 								callback.apply(undefined, ["close"])
 							})
-							request.on("data", function (data: any) {
+							request.on("data", function (data: Buffer) {
 								callback.apply(undefined, [
-									"data", new ivm.ExternalCopy(bufferToArrayBuffer(data)).copyInto({ transfer: true })
+									"data", new ivm.ExternalCopy(bufferToArrayBuffer(data), {
+										transfer: true
+									}).copyInto()
 								])
 							})
 							request.resume()

@@ -88,12 +88,12 @@ export function fetchBridge(ctx: Context) {
                   callback.apply(undefined, ["error", err.toString()])
                 })
 
-                res.on("data", function (data: any) {
+                res.on("data", function (data: Buffer) {
                   callback.apply(undefined, [
                     "data",
-                    new ivm.ExternalCopy(bufferToArrayBuffer(data)).copyInto({
+                    new ivm.ExternalCopy(bufferToArrayBuffer(data), {
                       transfer: true
-                    })
+                    }).copyInto()
                   ])
                 })
                 res.resume()
@@ -111,7 +111,7 @@ export function fetchBridge(ctx: Context) {
 
         log.warn("body is", typeof body, body instanceof ArrayBuffer)
 
-        req.end(Buffer.from(body))
+        req.end(body && Buffer.from(body) || null)
       })
     } catch (err) {
       log.error("caught error", err)

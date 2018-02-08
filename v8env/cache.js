@@ -38,8 +38,11 @@ export default function cacheInit(ivm, dispatch) {
 								url: req.url,
 								headers: req.headers && req.headers.toJSON() || {},
 							}).copyInto(),
-							new ivm.ExternalCopy(body)
-								.copyInto({ transfer: true }),
+							body && body.byteLength > 0 ?
+								new ivm.ExternalCopy(body, {
+									transfer: true
+								}).copyInto() :
+								null,
 							new ivm.Reference(function (err, res, bodyStr) {
 								logger.debug("cache add got callback", err, res)
 								if (err)

@@ -33,11 +33,14 @@ export default function fetchInit(ivm, dispatch) {
 	function _applyFetch(url, init, body) {
 		return new Promise(function (resolve, reject) {
 			logger.debug("gonna fetch", url, init && JSON.stringify(init))
+			const bodyForNode = body instanceof ArrayBuffer && body.byteLength > 0 ?
+				new ivm.ExternalCopy(body, { transfer: true }).copyInto() :
+				null
 			dispatch.apply(null, [
 				"fetch",
 				url,
 				new ivm.ExternalCopy(init).copyInto(),
-				new ivm.ExternalCopy(body).copyInto({ transfer: true }),
+				bodyForNode,
 				new ivm.Reference(function (err, nodeRes, nodeBody, proxied) {
 					if (err != null) {
 						logger.debug("err :(", err)
