@@ -116,7 +116,7 @@ class DocumentParser {
 				fullyRead = true
 				break
 			}
-			this.parser.write(Buffer.from(value))
+			this.parser.write(value)
 		}
 		this.parser.end()
 		// logger.debug("done parsing!", dom.attribs)

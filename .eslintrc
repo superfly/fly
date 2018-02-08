@@ -3,7 +3,6 @@
     "browser": true,
     "commonjs": true,
     "es6": true,
-    "node": true,
     "worker": true
   },
   "parser": "babel-eslint",
@@ -24,7 +23,14 @@
   },
   "globals": {
     "_ivm": true,
+    "_log": true,
     "registerMiddleware": true,
-    "fly": true
+    "middleware": true,
+    "session": true,
+    "app": true,
+    "mocha": true,
+    "_mocha_done": true,
+    "fly": true,
+    "Body": true
   }
 }

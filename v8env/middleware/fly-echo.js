@@ -1,6 +1,6 @@
 import { logger } from '../logger'
 
-async function echo(req, next) {
+async function echo(req) {
   logger.debug("echo middleware");
   logger.debug("settings:", typeof this.settings, this.settings.constructor.name, JSON.stringify(this.settings));
   let body = this.settings.get("body") || req.url,

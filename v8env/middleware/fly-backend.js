@@ -1,6 +1,7 @@
+import { FlyBackend } from '../fly-backend'
 import { logger } from '../logger'
 
-function backendFetch(req, next) {
+function backendFetch(req) {
 	logger.info("backend:", req)
 	if (!(this.settings instanceof Object) && !this.settings.backend) {
 		return new Response('no backend found', {

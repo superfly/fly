@@ -1,6 +1,8 @@
+import { Middleware } from '../middleware'
+
 export default function registerFlyRoutes() {
 	registerMiddleware("fly-routes", function () {
-		return async function (req, next) {
+		return async function (req) {
 
 			const rule = _matchRules(req)
 			if (!rule) {
