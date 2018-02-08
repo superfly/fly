@@ -21,6 +21,10 @@ notifications:
       tags: true
     rooms:
     - secure: zCMYVLF7j8pZtQexDOuxCjNiE/nDstKS5PS0vagsrJuu7QPPOxMFqqXft6hJJ+Tu50t6sZND4hkOmL0qxKXlaSWwxRdIg3TWSfzVDR1sEpYz6+9dgyz7RFbHZ7Fp8SGmamPAMcWVOElU8x0NLCjpXMQ43EPTAp1CPRJEV3l/9IaSFX4fy+tJaWI+Vh56JwHL2OEfLhxo2fl4Uil04b/X3lILM1/P1SM/hxWzac8dXeOt6ztjbWwEJ/AqbMwzhl3U6/6qd5rN37HXsPRYKodARS7kKrzzBm/BbTe9NhA4IalrU29dXlZymA/KCxzFnMzJTqKNsdP46NcMoZ2MlLWskBopyxVnermPyK4rZzjFHtLBMZWDw6GdvChJpid8boCHxTSW/VNRMsX5gb3GO9gJrALBCRwR/PKJsaelpkvdcnoL82fPVfn3c4FlxNlmzNrADr++WLPndSuoB+5vnoMJUATsnn4ECG2/2/gXR5rdUeJaJTl9MJNOf/Z63bWci1wxH9AAUl0U5ADxbDkDaBjL3CIHf6QCRq0NTtS3nU6GyTciRCvGBC1cMZV2RvACvnj5CxzaEHak3dQbDqq5mJh4Etk2OXxJRaVwZQDMZYvWN25EQYMCZKGHgrhbfhlbnkcaGa7GMBHGrmgbpRajJirT62X55w5JaDlzJ58T5NO2oiM=
+
+before_deploy:
+  - npm install typescript
+
 deploy:
   on:
     tags: true
