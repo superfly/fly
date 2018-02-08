@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.15.1"></a>
+## [0.15.1](https://github.com/superfly/fly/compare/v0.15.0-1...v0.15.1) (2018-02-08)
+
+
+### Bug Fixes
+
+* actually transfer ArrayBuffers directly ([430cc9c](https://github.com/superfly/fly/commit/430cc9c))
+
+
+### Features
+
+* adds Request and Response clone() ([c0f17db](https://github.com/superfly/fly/commit/c0f17db))
+
+
+
 <a name="0.15.0-2"></a>
 # [0.15.0-2](https://github.com/superfly/fly/compare/v0.15.0-1...v0.15.0-2) (2018-02-07)
 
