@@ -19,6 +19,8 @@ import { DefaultContextStore } from './default_context_store';
 const proxiedHttp = require('findhit-proxywrap').proxy(http, { strict: false })
 const { version } = require('../package.json');
 
+import { bufferToStream, transferInto } from './utils/buffer'
+
 const defaultFetchDispatchTimeout = 1000
 const defaultFetchEndTimeout = 5000
 
@@ -249,11 +251,7 @@ export class Server extends EventEmitter {
 								callback.apply(undefined, ["close"])
 							})
 							request.on("data", function (data: Buffer) {
-								callback.apply(undefined, [
-									"data", new ivm.ExternalCopy(bufferToArrayBuffer(data), {
-										transfer: true
-									}).copyInto({ transfer: true })
-								])
+								callback.apply(undefined, ["data", transferInto(data)])
 							})
 							request.resume()
 						})
@@ -374,18 +372,4 @@ function handleResponse(src: Readable, dst: Writable): Promise<void> {
 				}).on("error", reject)
 		})
 	})
-}
-
-let Duplex = require('stream').Duplex;
-function bufferToStream(buffer: Buffer) {
-	let stream = new Duplex();
-	stream.push(buffer);
-	stream.push(null);
-	return stream;
-}
-
-function bufferToArrayBuffer(buffer: Buffer): ArrayBuffer {
-	return buffer.buffer.slice(
-		buffer.byteOffset, buffer.byteOffset + buffer.byteLength
-	)
 }

@@ -3,12 +3,11 @@ import { ivm } from '../'
 import * as http from 'http'
 import log from '../log'
 import { fetchBridge } from './fetch'
-
-const getStream = require('get-stream')
+import { transferInto } from '../utils/buffer';
 
 const CachePolicy = require('http-cache-semantics')
 
-// TODO: Redis, you know.
+// TODO: Use config.cacheStore
 let cache: { [key: string]: any } = {}
 
 registerBridge('cacheMatch', function (ctx: Context) {
@@ -25,49 +24,45 @@ registerBridge('cacheMatch', function (ctx: Context) {
     log.debug("satisfactory?", policy.satisfiesWithoutRevalidation(request))
     if (policy && policy.satisfiesWithoutRevalidation(request)) {
       response.headers = policy.responseHeaders();
-      return callback.apply(null, [null, new ivm.ExternalCopy(response).copyInto()]);
+      const body = response.body
+      delete response.body
+      return callback.apply(null, [null, new ivm.ExternalCopy(response).copyInto(), transferInto(body)]);
     }
 
     return callback.apply(null, [null, null])
   }
 })
 
-registerBridge('cacheAdd', function (ctx: Context) {
-  const fetch = fetchBridge(ctx)
-  return function (request: any, body: ArrayBuffer, callback: ivm.Reference<Function>) {
-    const key = `${ctx.meta.get('app').id}:${request.url}`
-    log.debug("cache add called! key:", key)
+registerBridge("cachePut", function (ctx: Context) {
+  return function (req: any, res: any, resBody: ArrayBuffer, callback: ivm.Reference<Function>) {
+    try {
+      const key = `${ctx.meta.get('app').id}:${req.url}`
 
-    fetch(request.url, {
-      method: request.method,
-      headers: request.headers
-    }, body, new ivm.Reference(function (err: Error | null, res: ivm.ExternalCopy<any>, body: ivm.Reference<Function>, proxied: ivm.Reference<http.IncomingMessage>) {
-      log.debug("cache add fetch called callback, nice.", arguments)
-      if (err)
-        return callback.apply(null, [err.toString()])
-      let bodyStream = proxied.deref()
-      bodyStream.resume()
+      let resHeaders: any = {}
+      for (const k of Object.keys(res.headers)) {
+        if (k === 'set-cookie')
+          resHeaders[k] = res.headers[k]
+        else
+          resHeaders[k] = res.headers[k].join(',')
+      }
 
-      getStream(bodyStream).then((bodyStr: string) => {
-        log.debug("cache add got full body now", bodyStr)
-        const copiedRes = res.copy()
-        log.debug("copied res:", copiedRes)
-        let cacheableRes = {
-          status: copiedRes.status,
-          headers: copiedRes.headers,
-          body: bodyStr,
-        }
-        const policy = new CachePolicy({
-          url: request.url,
-          method: request.method,
-          headers: request.headers || {},
-        }, cacheableRes)
-        if (policy.storable())
-          cache[key] = { rawPolicy: policy.toObject(), response: cacheableRes }
-        return callback.apply(null, [null, res, bodyStr])
-      }).catch((err: Error) => {
-        callback.apply(null, [err.toString()])
-      })
-    }))
+      let cacheableRes = {
+        status: res.status,
+        headers: resHeaders,
+        body: resBody,
+      }
+      const policy = new CachePolicy({
+        url: req.url,
+        method: req.method,
+        headers: req.headers || {},
+      }, cacheableRes)
+      if (policy.storable())
+        cache[key] = { rawPolicy: policy.toObject(), response: cacheableRes }
+      callback.apply(null, [])
+    } catch (e) {
+      log.error("got error putting cache", e)
+      callback.apply(null, [e.toString()])
+    }
+
   }
 })

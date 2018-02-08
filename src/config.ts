@@ -21,7 +21,7 @@ export function parseConfig(cwd: string): Config {
 
   return {
     env: env,
-    logLevel: logLevel || env === 'development' ? 'debug' : 'info',
+    logLevel: logLevel || env !== 'production' ? 'debug' : 'info',
     port: /^\d+$/.test(port) ? parseInt(port) : port,
     cacheStore: new MemoryCacheStore()
   }

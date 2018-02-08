@@ -2,7 +2,7 @@ import { ReadableStream } from 'web-streams-polyfill'
 import { logger } from './logger'
 
 export const bodyUsedError = new Error("Body already used, try using tee() on the stream to output to multiple destinations")
-const unsupportedBodyTypeError = new Error("Body type is unsupported, please use a ReadableStream or a string")
+const unsupportedBodyTypeError = new Error("Body type is unsupported, please use a ReadableStream, ArrayBuffer or a string")
 /**
  * This provides methods for handling body streams. It's not meant to be used directly.
  * @name Body
@@ -75,11 +75,14 @@ export default function bodyInit(ivm) {
 	}
 
 	function makeStream(_stream) {
+		if (!_stream) {
+			return emptyStream()
+		}
 		if (_stream instanceof ReadableStream) {
 			return _stream
 		}
-		if (!_stream) {
-			return emptyStream()
+		if (_stream instanceof ArrayBuffer) {
+			return streamFromString(_stream)
 		}
 		if (_stream instanceof ivm.Reference) {
 			return streamFromNode(_stream)
@@ -129,10 +132,11 @@ export default function bodyInit(ivm) {
 		return new ReadableStream({
 			start(controller) {
 				fn.apply(undefined, [new ivm.Reference((name, ...args) => {
-					if ((name === "close" || name === "end") && !closed) {
-						closed = true
-						controller.close()
-						logger.debug("stream closed:", name)
+					if (name === "close" || name === "end") {
+						if (!closed) {
+							closed = true
+							controller.close()
+						}
 					} else if (name === "error") {
 						controller.error(new Error(args[0]))
 					} else if (name === "data") {

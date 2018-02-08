@@ -6,8 +6,10 @@ import * as http from 'http'
 import * as https from 'https'
 import { URL, parse as parseURL, format as formatURL } from 'url'
 import { headersForWeb, fullURL } from '../utils/http'
+import { transferInto } from '../utils/buffer'
 
 import { Trace } from '../trace'
+
 
 const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
@@ -89,12 +91,7 @@ export function fetchBridge(ctx: Context) {
                 })
 
                 res.on("data", function (data: Buffer) {
-                  callback.apply(undefined, [
-                    "data",
-                    new ivm.ExternalCopy(bufferToArrayBuffer(data), {
-                      transfer: true
-                    }).copyInto({ transfer: true })
-                  ])
+                  callback.apply(undefined, ["data", transferInto(data)])
                 })
                 res.resume()
                 //callback.apply(undefined, ["end"])
@@ -109,8 +106,6 @@ export function fetchBridge(ctx: Context) {
           cb.apply(undefined, [err.toString()])
         })
 
-        log.warn("body is", typeof body, body instanceof ArrayBuffer)
-
         req.end(body && Buffer.from(body) || null)
       })
     } catch (err) {
@@ -120,10 +115,4 @@ export function fetchBridge(ctx: Context) {
 
     return
   }
-}
-
-function bufferToArrayBuffer(buffer: Buffer) {
-  return buffer.buffer.slice(
-    buffer.byteOffset, buffer.byteOffset + buffer.byteLength
-  )
 }

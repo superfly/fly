@@ -7,14 +7,16 @@ const OK = 'ok'
 export class MemoryCacheStore implements CacheStore {
   redis: IORedis.Redis
   rand: number
-  constructor(label?:string) {
+  constructor(label?: string) {
     this.redis = new Redis()
     this.rand = Math.random()
   }
 
-  async get(key: string): Promise<Buffer> {
-    console.log("get buffer for key:", key)
-    return await this.redis.getBuffer(key)
+  async get(key: string): Promise<Buffer | null> {
+    const buf = await this.redis.getBuffer(key)
+    if (!buf)
+      return null
+    return Buffer.from(buf)
   }
 
   async set(key: string, value: any, ttl?: number): Promise<boolean> {

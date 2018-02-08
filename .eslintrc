@@ -24,6 +24,7 @@
   "globals": {
     "_ivm": true,
     "_log": true,
+    "cache": true,
     "registerMiddleware": true,
     "middleware": true,
     "session": true,

@@ -1,5 +1,6 @@
 import { logger } from './logger'
 import { EventEmitter2 as EventEmitter } from 'eventemitter2'
+import { transferInto } from './utils/buffer'
 
 const invalidResponseType = new Error(`Invalid response type for 'fetch' event. Expecting a straight Response, a function returning a Promise<Response> or a Response.`)
 
@@ -105,11 +106,7 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 				status: res.status,
 				bodyUsed: res.bodyUsed,
 			}).copyInto(),
-			body && body.byteLength > 0 ?
-				new ivm.ExternalCopy(body, {
-					transfer: true
-				}).copyInto({ transfer: true }) :
-				null,
+			transferInto(ivm, body),
 			res._proxy // pass back the proxy
 		])
 	})

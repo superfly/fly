@@ -7,29 +7,30 @@ import { logger } from '../logger'
 export default function flyCacheInit(ivm, dispatch) {
   return {
     /**
-     * Get a string value (or Null) from the cache
+     * Get a string value (or null) from the cache
      * @public
      * @function
      * @memberof fly.cache
      * @param {String} key The key to get
-     * @returns {Promise<String|Null>} Data stored at the key, or Null if none exists
+     * @returns {Promise<String|Null>} Data stored at the key, or null if none exists
      */
-    getString(key) {
-      logger.debug("cache get: " + key)
-      return new Promise(function (resolve, reject) {
-        dispatch.apply(null, [
-          "flyCacheGetString",
-          key,
-          new ivm.Reference(function (err, value) {
-            if (err != null) {
-              reject(err)
-              return
-            }
-            resolve(value)
-          })
-        ])
-      })
+    async getString(key) {
+      const buf = await get(key)
+      if (!buf)
+        return buf
+      return new TextDecoder('utf-8').decode(buf)
     },
+
+    /**
+     * Get an ArrayBuffer value (or null) from the cache
+     * @public
+     * @function
+     * @memberof fly.cache
+     * @param {String} key The key to get
+     * @return {Promise<ArrayBuffer|Null>} Raw bytes stored for provided key or null if empty.
+     */
+    get: get,
+
     /**
      * Sets a value at a certain key, with an optional ttl
      * @memberof fly.cache
@@ -85,5 +86,22 @@ export default function flyCacheInit(ivm, dispatch) {
         ])
       })
     }
+  }
+
+  function get(key) {
+    logger.debug("cache get: " + key)
+    return new Promise(function (resolve, reject) {
+      dispatch.apply(null, [
+        "flyCacheGet",
+        key,
+        new ivm.Reference(function (err, value) {
+          if (err != null) {
+            reject(err)
+            return
+          }
+          resolve(value)
+        })
+      ])
+    })
   }
 }

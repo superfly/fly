@@ -16,7 +16,7 @@ describe('Cache API', () => {
     expect(res.status).to.equal(200)
 
     let cached = await cacheStore.get(`cache:test-app-id:${url}`)
-    expect(cached).to.equal(url)
+    expect((<Buffer>cached).toString()).to.equal(url)
   })
 
   it('sets a ttl', async () => {

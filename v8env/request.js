@@ -95,6 +95,8 @@ export default function requestInit(ivm) {
 				 * @type {Headers}
 				 */
 				this.headers = new Headers(init.headers);
+			} else if (!('headers' in this)) {
+				this.headers = new Headers()
 			}
 
 			if ('body' in init) {
