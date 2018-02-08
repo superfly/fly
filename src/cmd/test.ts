@@ -29,6 +29,7 @@ root
     const { FileStore } = require('../app/stores/file')
     const { getWebpackConfig, buildAppWithConfig } = require('../utils/build')
     const { createContext } = require('../context')
+    const { runtimeConfig } = require("../config")
 
     const cwd = process.cwd()
 
@@ -59,7 +60,7 @@ root
       try {
         await v8Env.waitForReadiness()
         const iso = new ivm.Isolate({ snapshot: v8Env.snapshot })
-        const ctx = await createContext(iso)
+        const ctx = await createContext(runtimeConfig, iso)
 
         const app = await appStore.getAppByHostname()
 

@@ -1,4 +1,5 @@
 import { Trace } from '../trace'
+import { Config } from '../config';
 export let catalog = new Map<string, BridgeFunctionFactory>()
 export function registerBridge(name: string, fn: BridgeFunctionFactory) {
   catalog.set(name, fn)
@@ -10,5 +11,5 @@ export interface Context {
 }
 
 export interface BridgeFunctionFactory {
-  (ctx: Context): Function
+  (ctx: Context, config: Config): Function
 }

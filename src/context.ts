@@ -1,8 +1,9 @@
 import { ivm } from './'
 import log from "./log"
-import { conf } from './config'
+//import { conf } from './config'a
 import { Bridge } from './bridge/bridge'
 import { Trace } from './trace'
+import { Config } from './config';
 
 export class Context {
 	ctx: ivm.Context
@@ -24,11 +25,11 @@ export class Context {
 		this.intervals = {}
 	}
 
-	async bootstrap() {
+	async bootstrap(config:Config) {
 		await this.set('global', this.global.derefInto());
 		await this.set('_ivm', ivm);
 
-		if (conf.env !== 'production') {
+		if (config.env !== 'production') {
 			await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
 				log.log(lvl, args[0], ...args.slice(1))
 			}))
@@ -55,7 +56,7 @@ export class Context {
 			return clearInterval(this.intervals[id])
 		}))
 
-		const bridge = new Bridge(this)
+		const bridge = new Bridge(this, config)
 		await this.set("_dispatch", new ivm.Reference(bridge.dispatch.bind(bridge)))
 
 		await (await this.get("bootstrap")).apply(undefined, [])
@@ -82,8 +83,8 @@ export class Context {
 	}
 }
 
-export async function createContext(iso: ivm.Isolate, opts: ivm.ContextOptions = {}): Promise<Context> {
+export async function createContext(config: Config, iso: ivm.Isolate, opts: ivm.ContextOptions = {}): Promise<Context> {
 	let ctx = new Context(await iso.createContext(opts))
-	await ctx.bootstrap()
+	await ctx.bootstrap(config)
 	return ctx
 }
