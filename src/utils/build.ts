@@ -20,7 +20,7 @@ export function buildApp(cwd: string, opts: AppBuilderOptions, callback: Functio
 }
 
 export function buildAppWithConfig(config: webpack.Configuration, opts: AppBuilderOptions, callback: Function) {
-  console.log("Compiling app...")
+  console.log("Compiling app w/ options:", opts)
   let compiler = webpack(config)
   compiler.outputFileSystem = new MemoryFS() // save in memory
 

@@ -2,6 +2,8 @@ import axios from 'axios'
 import { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 import { getToken } from './root'
 
+const { version } = require('../../package.json')
+
 let apiClient: AxiosInstance;
 
 export const API = {
@@ -28,7 +30,10 @@ function getAPIClient() {
   apiClient = axios.create({
     baseURL: baseURL,
     timeout: 30000,
-    headers: { "Authorization": `Bearer ${getToken()}` }
+    headers: {
+      "Authorization": `Bearer ${getToken()}`,
+      "User-Agent": `fly/${version}`
+    }
   })
 
   return apiClient
