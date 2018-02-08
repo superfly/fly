@@ -27,7 +27,7 @@ function getAPIClient() {
 
   apiClient = axios.create({
     baseURL: baseURL,
-    timeout: 5000,
+    timeout: 30000,
     headers: { "Authorization": `Bearer ${getToken()}` }
   })
 
