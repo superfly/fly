@@ -1,6 +1,8 @@
 import { logger } from './logger'
 import CookieJar from './cookie_jar'
 
+import { bodyUsedError } from './body'
+
 export default function requestInit(ivm) {
 	function byteUpperCase(s) {
 		return String(s)
@@ -113,6 +115,8 @@ export default function requestInit(ivm) {
 		}
 
 		clone() {
+			if (this.bodyUsed)
+				throw bodyUsedError
 			const [body1, body2] = this.body.tee()
 			const cloned = new Request(this.url, {
 				body: body2,

@@ -1,7 +1,7 @@
 import { ReadableStream } from 'web-streams-polyfill'
 import { logger } from './logger'
 
-const bodyUsedError = new Error("Body already used, try using tee() on the stream to output to multiple destinations")
+export const bodyUsedError = new Error("Body already used, try using tee() on the stream to output to multiple destinations")
 const unsupportedBodyTypeError = new Error("Body type is unsupported, please use a ReadableStream or a string")
 /**
  * This provides methods for handling body streams. It's not meant to be used directly.

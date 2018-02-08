@@ -1,4 +1,5 @@
 import CookieJar from './cookie_jar'
+import { bodyUsedError } from './body'
 
 export default function responseInit(ivm) {
 	function ushort(x) { return x & 0xFFFF; }
@@ -94,6 +95,8 @@ export default function responseInit(ivm) {
 		}
 
 		clone() {
+			if (this.bodyUsed)
+				throw bodyUsedError
 			const [body1, body2] = this.body.tee()
 			const cloned = new Response(body2, this)
 			this._stream = body1
