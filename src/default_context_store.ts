@@ -14,7 +14,7 @@ export interface DefaultContextStoreOptions {
 }
 
 export class DefaultContextStore implements ContextStore {
-  isolate: ivm.Isolate
+  isolate?: ivm.Isolate
   options: DefaultContextStoreOptions
 
   constructor(opts: DefaultContextStoreOptions = {}) {
@@ -28,12 +28,15 @@ export class DefaultContextStore implements ContextStore {
     const iso = await this.getIsolate()
     t2.end()
 
+    if (!iso)
+      throw new Error("no isolate, something is very wrong")
+
     t2 = t.start("createContext")
     const ctx = await createContext(config, iso, { inspector: !!this.options.inspect })
     t2.end()
 
     t2 = t.start("compile")
-    const script = await iso.compileScript(app.source, { filename: 'bundle.js' })
+    const script = await iso.compileScript(app.source, { filename: `bundle-${app.sourceHash}.js` })
     t2.end()
     t2 = t.start("prerun")
     await script.run(ctx.ctx)

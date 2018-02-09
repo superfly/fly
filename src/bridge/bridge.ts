@@ -14,10 +14,11 @@ interface IterableIterator<T> extends Iterator<T> {
 
 export class Bridge {
   functions: Map<string, Function>
-  config: Config
 
   constructor(ctx: Context, config: Config) {
-    this.functions = new Map<string, Function>(Array.from(Array.from(catalog.entries()).map(([n, fn]) => [n, fn(ctx, config)])))
+    this.functions = new Map<string, Function>(Array.from(catalog.entries(), ([n, fn]) =>
+      <[string, Function]>[n, fn(ctx, config)]
+    ))
   }
 
   dispatch(name: string, ...args: any[]) {

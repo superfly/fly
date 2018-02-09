@@ -7,8 +7,8 @@ export class Trace {
   children: Trace[] | undefined
   parent: Trace | undefined
 
-  private startTime: [number, number]
-  private diff: [number, number]
+  private startTime?: [number, number]
+  private diff?: [number, number]
 
   constructor(name: string, parent?: Trace) {
     this.name = name
@@ -79,6 +79,8 @@ export class Trace {
   }
 
   nanoseconds() {
+    if (!this.diff)
+      return 0
     return this.diff[0] * nsPerSecond + this.diff[1]
   }
 

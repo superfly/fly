@@ -21,7 +21,6 @@ export interface FileStoreOptions {
 
 export class FileStore implements AppStore {
   cwd: string
-  compiler: webpack.Compiler
 
   releaseInfo: ReleaseInfo
 

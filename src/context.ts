@@ -25,7 +25,7 @@ export class Context {
 		this.intervals = {}
 	}
 
-	async bootstrap(config:Config) {
+	async bootstrap(config: Config) {
 		await this.set('global', this.global.derefInto());
 		await this.set('_ivm', ivm);
 
