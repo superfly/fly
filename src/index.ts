@@ -1,4 +1,4 @@
-export { Server } from './server'
+export { Server, ServerOptions } from './server'
 export { Context, createContext } from './context'
 export { ContextStore } from './context_store'
 export { Config } from './config'

@@ -48,15 +48,23 @@ export class V8Environment extends EventEmitter {
     if (this.isReady)
       return Promise.resolve()
     return new Promise((resolve, reject) => {
-      this.once('ready', resolve)
+      this.once('ready', () => {
+        this.removeListener('error', reject)
+        resolve()
+      })
+      this.once('error', reject)
     })
   }
 
   startCodeUpdater() {
-    if (runtimeConfig.env === 'development')
-      compiler.watch({}, this.updateV8Env.bind(this))
-    else
-      compiler.run(this.updateV8Env.bind(this))
+    try {
+      if (runtimeConfig.env === 'development')
+        compiler.watch({}, this.updateV8Env.bind(this))
+      else
+        compiler.run(this.updateV8Env.bind(this))
+    } catch (e) {
+      this.emit('error', e)
+    }
   }
 
   updateV8Env(err: Error, stats: any) {

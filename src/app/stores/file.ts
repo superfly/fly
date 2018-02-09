@@ -103,4 +103,6 @@ export class FileStore implements AppStore {
   async getAppByHostname(hostname: string) {
     return new App(this.releaseInfo)
   }
+
+  stop() { }
 }
