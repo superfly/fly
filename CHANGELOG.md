@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.16.1"></a>
+## [0.16.1](https://github.com/superfly/fly/compare/v0.16.0...v0.16.1) (2018-02-09)
+
+
+### Bug Fixes
+
+* added a few mechanisms is v8env fails ([3fbea22](https://github.com/superfly/fly/commit/3fbea22))
+
+
+
 <a name="0.16.0"></a>
 # [0.16.0](https://github.com/superfly/fly/compare/v0.15.2...v0.16.0) (2018-02-09)
 
