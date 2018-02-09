@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.16.0"></a>
+# [0.16.0](https://github.com/superfly/fly/compare/v0.15.2...v0.16.0) (2018-02-09)
+
+
+### Features
+
+* adds cache.put, simplify web api cache, simplify array buffer passing ([31b850e](https://github.com/superfly/fly/commit/31b850e))
+
+
+
 <a name="0.15.2"></a>
 ## [0.15.2](https://github.com/superfly/fly/compare/v0.15.1...v0.15.2) (2018-02-08)
 
