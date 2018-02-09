@@ -39,7 +39,6 @@ const hopHeaders = [
 	"Upgrade-Insecure-Requests"
 ]
 
-const statusPath = "/__fly/status"
 export interface RequestMeta {
 	app: App,
 	startedAt: [number, number], //process.hrtime() ya know
@@ -56,11 +55,14 @@ declare module 'http' {
 }
 
 export interface ServerOptions {
+	serverHeader?: string
 	isTLS?: boolean
 	onRequest?: Function
 	fetchDispatchTimeout?: number
 	fetchEndTimeout?: number
 }
+
+const defaultServerHeader = `fly (${version})`
 
 export class Server extends EventEmitter {
 	server: http.Server
@@ -72,7 +74,8 @@ export class Server extends EventEmitter {
 		this.config = config
 		this.options = Object.assign({}, {
 			fetchDispatchTimeout: defaultFetchDispatchTimeout,
-			fetchEndTimeout: defaultFetchEndTimeout
+			fetchEndTimeout: defaultFetchEndTimeout,
+			serverHeader: defaultServerHeader
 		}, options || {})
 		this.server = proxiedHttp.createServer(this.handleRequest.bind(this));
 	}
@@ -129,13 +132,8 @@ export class Server extends EventEmitter {
 
 		let finalHeaders: http.OutgoingHttpHeaders = {}
 
-		response.setHeader("Server", `fly (${version})`)
-
-		if (request.url === statusPath) {
-			response.writeHead(200)
-			response.end()
-			return
-		}
+		if (this.options.serverHeader)
+			response.setHeader("Server", this.options.serverHeader)
 
 		request.headers['x-request-id'] = requestID
 
@@ -289,7 +287,9 @@ export class Server extends EventEmitter {
 							response.removeHeader(n)
 
 
-						response.setHeader("Server", `fly (${version})`)
+						if (this.options.serverHeader)
+							response.setHeader("Server", this.options.serverHeader)
+
 						response.writeHead(res.status)
 
 						let resProm: Promise<void>
