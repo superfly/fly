@@ -5,14 +5,14 @@
   "main": "lib/index.js",
   "scripts": {
     "start": "./bin/fly server ./apps/getting-started",
-    "test": "./node_modules/.bin/mocha",
-    "coverage": "./node_modules/.bin/nyc npm test",
-    "build": "./node_modules/.bin/tsc",
+    "test": "mocha",
+    "coverage": "nyc npm test",
+    "build": "tsc",
     "build:live": "npm run build -- -w",
-    "build:cli": "./node_modules/.bin/tsc bin/fly.ts",
+    "build:cli": "tsc bin/fly.ts",
     "build:cli:live": "npm run build:cli -- -w",
     "prepublish": "npm run build",
-    "release": "./node_modules/.bin/standard-version"
+    "release": "standard-version"
   },
   "bin": {
     "fly": "lib/cmd/index.js"
