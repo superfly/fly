@@ -97,14 +97,11 @@ export default function registerFlyRoutes() {
 				return url
 			}
 			const redirectURL = url.pathname.replace(new RegExp(rule.path_pattern), rule.redirect_url)
-			try {
-				const newURL = new URL(redirectURL)
-				url = newURL
-			} catch (err) {
-				// not an absolute path
-				url.pathname = redirectURL
+			if(url.pathname == redirectURL){
+				return url
+			}else{
+				return redirectURL
 			}
-			return url
 		}
 
 		function getBackendByID(id) {

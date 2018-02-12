@@ -43,7 +43,8 @@
     "standard-version": "^4.3.0",
     "ts-loader": "^3.2.0",
     "ts-node": "^3.3.0",
-    "typescript": "^2.7.1"
+    "typescript": "^2.7.1",
+    "whatwg-url": "^6.4.0"
   },
   "dependencies": {
     "axios": "^0.17.1",
