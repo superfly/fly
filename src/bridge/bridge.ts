@@ -1,6 +1,5 @@
 import './fetch'
 import './formdata'
-import './cache'
 import './fly/cache'
 
 import { catalog, Context } from './'
