@@ -45,13 +45,11 @@ export default {
 		const res = await fetch(req)
 		return await cache.put(req, res)
 	},
-	async put(req, res, key){ // key is not to spec, but we need it for vary
+	async put(req, res){
 		const resHeaders = {}
-		if(!key){
-			key = hashData(req)
-		}
+		const key = hashData(req)
+
 		for (const h of res.headers) {
-			console.log(h)
 			if (h[0] === 'set-cookie')
 				resHeaders[h[0]] = h[1]
 			else
@@ -88,7 +86,8 @@ function hashData(req, vary) {
   // TODO: cacheable cookies
   // TODO: cache version for grand busting
 
-  return toHash
+	console.log("hashData", toHash)
+  return fly.util.md5.hash(toHash)
 }
 
 function normalizeURL(u) {

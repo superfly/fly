@@ -96,8 +96,10 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 	let fetchEvent = new FetchEvent('fetch', { request: req }, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 
-		if (err)
+		if (err){
+			console.log(err, err.stack)
 			return callback.apply(null, [err.toString()])
+		}
 
 		if(res.bodyUsed){
 			return callback.apply(null, [bodyUsedError.toString()])

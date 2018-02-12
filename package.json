@@ -41,6 +41,7 @@
     "http-cache-semantics": "^3.8.1",
     "nyc": "^11.3.0",
     "replay": "file:./vendor/replay",
+    "spark-md5": "^3.0.0",
     "standard-version": "^4.3.0",
     "ts-loader": "^3.2.0",
     "ts-node": "^3.3.0",
