@@ -9,7 +9,7 @@ import { TextEncoder, TextDecoder } from 'text-encoding'
 import consoleInit from './console'
 import flyInit from './fly'
 
-import URL from './url'
+import { URL } from 'whatwg-url'
 import Headers from './headers'
 
 import fetchInit from './fetch'
@@ -17,7 +17,7 @@ import bodyInit from './body'
 import formDataInit from './formdata'
 import responseInit from './response'
 import requestInit from './request'
-import cacheInit from './cache'
+import cache from './cache'
 import timersInit from './timers'
 
 import registerFlyBackend from './middleware/fly-backend'
@@ -70,7 +70,7 @@ global.bootstrap = function bootstrap() {
 	global.Request = requestInit(ivm, dispatch)
 
 	// oh boy
-	global.cache = cacheInit(ivm, dispatch)
+	global.cache = cache
 	global.session = new SessionStore()
 
 	// Events

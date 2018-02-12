@@ -99,6 +99,7 @@ export default function responseInit(ivm) {
 				throw bodyUsedError
 			const [body1, body2] = this.body.tee()
 			const cloned = new Response(body2, this)
+			this._proxy = null // not sure about this
 			this._stream = body1
 			return cloned
 		}

@@ -1,6 +1,7 @@
 import { logger } from './logger'
 import { EventEmitter2 as EventEmitter } from 'eventemitter2'
 import { transferInto } from './utils/buffer'
+import { bodyUsedError } from './body'
 
 const invalidResponseType = new Error(`Invalid response type for 'fetch' event. Expecting a straight Response, a function returning a Promise<Response> or a Response.`)
 
@@ -95,10 +96,22 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 	let fetchEvent = new FetchEvent('fetch', { request: req }, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 
-		if (err)
+		if (err){
+			console.log(err, err.stack)
 			return callback.apply(null, [err.toString()])
+		}
 
-		const body = !res._proxy && !res.bodyUsed ? await res.arrayBuffer() : null
+		if(res.bodyUsed){
+			return callback.apply(null, [bodyUsedError.toString()])
+		}
+
+		let body = null
+		if(!res._proxy){
+			body = await res.arrayBuffer()
+			logger.debug("Got arrayBuffer from response:", body.byteLength)
+		}else{
+			logger.debug("Response is a proxy")
+		}
 
 		callback.apply(undefined, [null,
 			new ivm.ExternalCopy({
