@@ -9,7 +9,6 @@ function ensureFetchEvent(){
   }
 }
 function ensureRouter(){
-  console.log("ensuring router")
   if(!router){
     router = require('find-my-way')()
     ensureFetchEvent()
@@ -54,7 +53,7 @@ module.exports = {
    * Register a handler to use for specific route patterns
    * @public
    * @memberof fly.http
-   * @param {String|Array<string>} [method] The http method (or methods, if it's an array) to match
+   * @param {String|Array<string>} [method=["GET,"HEAD"]] The http method (or methods, if it's an array) to match
    * @param {String} pattern The path to match. This accepts <code>/static/paths</code>, <code>/:parametric/path</code>, or <code>/path/*wildcards</code>. Parameters in patsh can include regular expressions like <code>/:param(^[regex])</code> 
    * @param {httpHandler} fn A function that accepts a request and a set of parameters, and returns a response
    */
@@ -62,7 +61,7 @@ module.exports = {
     const r = ensureRouter()
     let method = "GET"
     if(arguments.length == 2){
-      method = "GET"
+      method = ["GET", "HEAD"]
     }else if(arguments.length == 3){
       method = arguments[0]
     }else{
@@ -70,11 +69,9 @@ module.exports = {
     }
     const pattern = arguments[arguments.length - 2]
     const fn = arguments[arguments.length - 1]
-    console.log("registering route:", pattern)
     try{
     r.on(method, pattern, fn)
     }catch(err){
-      console.log("error:", err)
       throw err
     }
     //ensureRouter().addRoute(pattern, fn)
@@ -88,7 +85,6 @@ module.exports = {
    */
   respondWith(fn){
     ensureFetchEvent()
-    console.log("setting respondWith")
     flyFetchHandler = fn
   }
 }
