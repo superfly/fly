@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.16.5"></a>
+## [0.16.5](https://github.com/superfly/fly/compare/v0.16.4...v0.16.5) (2018-02-14)
+
+
+### Bug Fixes
+
+* **cli:** display errors for CLI commands and subcommands ([#13](https://github.com/superfly/fly/issues/13)) ([777f713](https://github.com/superfly/fly/commit/777f713))
+
+
+
 <a name="0.16.4"></a>
 ## [0.16.4](https://github.com/superfly/fly/compare/v0.16.3...v0.16.4) (2018-02-14)
 
