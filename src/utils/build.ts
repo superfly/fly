@@ -49,7 +49,7 @@ function compileCallback(compiler: webpack.Compiler, callback: Function) {
 
     if (stats.hash != codeHash) {
       console.log(`Compiled app bundle (hash: ${stats.hash})`)
-      callback(null, compiler.outputFileSystem.data[`bundle.js`].toString(), stats.hash)
+      callback(null, compiler.outputFileSystem.data[`bundle-${stats.hash}.js`].toString(), stats.hash, compiler.outputFileSystem.data[`bundle-${stats.hash}.map.json`].toString())
       codeHash = stats.hash
     }
   }
@@ -69,12 +69,13 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
       }
     }
   }
-  conf.devtool = 'inline-source-map'
+  conf.devtool = 'source-map'
   conf.output = {
-    filename: 'bundle.js',
+    filename: 'bundle-[hash].js',
     path: '/',
     hashFunction: 'sha1',
-    hashDigestLength: 40
+    hashDigestLength: 40,
+    sourceMapFilename: 'bundle-[hash].map.json'
   }
   if (opts && opts.uglify) {
     conf.plugins = conf.plugins || []

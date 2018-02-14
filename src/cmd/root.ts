@@ -9,8 +9,9 @@ import path = require('path')
 const { version } = require('../../package.json')
 
 export interface RootOptions {
-  app?: string[];
-  token: string[];
+  app?: string[]
+  env?: string[]
+  token: string[]
 }
 
 export interface RootArgs {
@@ -21,11 +22,12 @@ export const root =
     .version(version, "-v, --version")
     .description("Fly CLI")
     .option("-a, --app <id>", "App to use for commands.")
+    .option("-e, --env <env>", "Environment to use for commands.")
     .option("--token <token>", "Fly Access Token (can be set via environment FLY_ACCESS_TOKEN)")
 
 
 export function getToken() {
-  let token = root.parsedOpts.token[0] || process.env.FLY_ACCESS_TOKEN
+  let token = root.parsedOpts.token && root.parsedOpts.token[0] || process.env.FLY_ACCESS_TOKEN
   if (!token) {
     try {
       const creds = getCredentials()
@@ -44,18 +46,20 @@ export function getToken() {
 
 export const fullAppMatch = /([a-z0-9_.-]+)\/([a-z0-9_.-]+)/i
 
-export function getApp() {
-  const conf = getLocalConfig(process.cwd())
-  const app = (root.parsedOpts.app && root.parsedOpts.app[0]) || conf.app_id
+export function getAppId(env = "production") {
+  const cwd = process.cwd()
+  env = root.parsedOpts.env && root.parsedOpts.env[0] || process.env.FLY_ENV || env || "production"
+  const conf = getLocalConfig(cwd, env)
+  const appId = root.parsedOpts.app && root.parsedOpts.app[0] || conf.app_id
 
-  if (!app) {
+  if (!appId) {
     throw new Error("--app option or app_id (in your .fly.yml) needs to be set.")
   }
 
-  if (!app.match(fullAppMatch))
+  if (!appId.match(fullAppMatch))
     throw new Error("app parameter needs to match a full org/app name (ie: your-org/app-name)")
 
-  return app
+  return appId
 }
 
 export function homeConfigPath() {

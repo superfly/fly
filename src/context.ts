@@ -29,13 +29,6 @@ export class Context {
 		await this.set('global', this.global.derefInto());
 		await this.set('_ivm', ivm);
 
-		if (config.env !== 'production') {
-			await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
-				log.log(lvl, args[0], ...args.slice(1))
-			}))
-			await (await this.get("localBootstrap")).apply(undefined, [])
-		}
-
 		await this.set('_setTimeout', new ivm.Reference((fn: Function, timeout: number): number => {
 			const id = ++this.currentTimerId
 			this.timeouts[id] = setTimeout(() => { fn.apply(null, []) }, timeout)
@@ -60,6 +53,13 @@ export class Context {
 		await this.set("_dispatch", new ivm.Reference(bridge.dispatch.bind(bridge)))
 
 		await (await this.get("bootstrap")).apply(undefined, [])
+
+		if (config.env !== 'production') {
+			await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
+				log.log(lvl, args[0], ...args.slice(1))
+			}))
+			await (await this.get("localBootstrap")).apply(undefined, [])
+		}
 	}
 
 	async get(name: string) {

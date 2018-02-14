@@ -1,9 +1,6 @@
 import { root } from './root'
 import { API } from './api'
 
-// interface FetchOptions { }
-// interface FetchArgs { }
-
 root
   .subCommand<any, any>("orgs")
   .description("Manage Fly orgs.")

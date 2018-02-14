@@ -1,5 +1,8 @@
-import { setupLocalLogging } from './log'
-
 global.localBootstrap = function localBootstrap() {
-  setupLocalLogging(_ivm, _log)
+  global.flyLog = function (lvl, ...args) {
+    _log.apply(null, [lvl].concat(args))
+  }
+  addEventListener('log', (event) => {
+    flyLog(event.log.level, event.log.message)
+  })
 }

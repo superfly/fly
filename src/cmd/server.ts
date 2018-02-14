@@ -32,7 +32,7 @@ root
 
     if (opts.port && opts.port.length) { conf.port = opts.port }
 
-    conf.appStore = new FileStore(cwd, { build: true, uglify: opts.uglify })
+    conf.appStore = new FileStore(cwd, { build: true, uglify: opts.uglify, env: "development" })
 
     if (!!opts.inspect) {
       conf.contextStore = new DefaultContextStore({ inspect: true })

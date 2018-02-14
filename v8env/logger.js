@@ -11,5 +11,5 @@ export const logger = {
 
 function nodeLog(lvl, message) {
   if (global._log)
-    global._log.apply(undefined, [lvl, `(fly) ${message}`]);
+    global._log.apply(undefined, [lvl, message]);
 }

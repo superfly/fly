@@ -51,9 +51,9 @@ root
     let conf = getWebpackConfig(cwd)
     conf.entry = paths
 
-    const appStore = new FileStore(cwd, { noWatch: true, noSource: true })
+    const appStore = new FileStore(cwd, { noWatch: true, noSource: true, env: "test" })
 
-    buildAppWithConfig(conf, { watch: false }, async (err: Error, code: string) => {
+    buildAppWithConfig(conf, { watch: false }, async (err: Error, code: string, hash: string, sourceMap: string) => {
       if (err)
         throw err
 
@@ -61,6 +61,10 @@ root
         await v8Env.waitForReadiness()
         const iso = new ivm.Isolate({ snapshot: v8Env.snapshot })
         const ctx = await createContext(runtimeConfig, iso)
+
+        await ctx.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
+          console.log(...args)
+        }))
 
         const app = await appStore.getAppByHostname()
 
@@ -79,12 +83,15 @@ root
           await compiled.run(ctx.ctx)
         }
 
-        const bundleScript = await iso.compileScript(code, { filename: 'bundle.js' })
+        const bundleName = `bundle-${hash}`
+        const sourceFilename = `${bundleName}.js`
+        const bundleScript = await iso.compileScript(code, { filename: sourceFilename })
         await bundleScript.run(ctx.ctx)
 
         ctx.set('app', new ivm.ExternalCopy({ id: app.id, config: app.config }).copyInto())
 
         const runScript = await iso.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })
+        console.log("Running tests...")
         await runScript.run(ctx.ctx)
       } catch (err) {
         console.error(err)

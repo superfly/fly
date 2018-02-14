@@ -1,5 +1,5 @@
 import fs = require('fs')
-import { root, getApp } from './root'
+import { root, getAppId } from './root'
 import { API } from './api'
 
 export interface SecretSetOptions {
@@ -19,7 +19,7 @@ secrets
   .description("Set a secret to use in your config.")
   .option("--from-file <filename>", "Use a file's contents as the secret value.")
   .action(async (opts, args, rest) => {
-    const appID = getApp()
+    const appID = getAppId()
 
     const value = opts.filename ?
       fs.readFileSync(opts.filename[0]).toString() :

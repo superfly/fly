@@ -1,4 +1,4 @@
-import { root, getApp } from './root'
+import { root, getAppId } from './root'
 import { API } from './api'
 
 export interface ReleasesOptions { }
@@ -8,7 +8,7 @@ root
   .subCommand<ReleasesOptions, ReleasesArgs>("releases")
   .description("Manage Fly apps.")
   .action(async (opts, args, rest) => {
-    const appID = getApp()
+    const appID = getAppId()
     const res = await API.get(`/api/v1/apps/${appID}/releases`)
     if (res.status === 200) {
       if (res.data.data.length == 0)
