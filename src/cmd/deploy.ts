@@ -23,7 +23,7 @@ root
               source: source,
               source_hash: hash,
               // source_map: sourceMap,
-              config: getLocalConfig(process.cwd(), "production")
+              config: getLocalConfig(process.cwd(), "production").config || {}
             }
           }
         })
