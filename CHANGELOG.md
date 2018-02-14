@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.16.3"></a>
+## [0.16.3](https://github.com/superfly/fly/compare/v0.16.1...v0.16.3) (2018-02-14)
+
+
+### Bug Fixes
+
+* Commands now take into account environment for figuring out app id ([e1dea00](https://github.com/superfly/fly/commit/e1dea00))
+
+
+
 <a name="0.16.2"></a>
 ## [0.16.2](https://github.com/superfly/fly/compare/v0.16.1...v0.16.2) (2018-02-13)
 
