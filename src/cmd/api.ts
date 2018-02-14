@@ -33,7 +33,8 @@ function getAPIClient() {
     headers: {
       "Authorization": `Bearer ${getToken()}`,
       "User-Agent": `fly/${version}`
-    }
+    },
+    validateStatus: (status) => { return status >= 200 && status < 500 }
   })
 
   return apiClient

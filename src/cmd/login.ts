@@ -1,5 +1,7 @@
 import { root, homeConfigPath } from './root'
 import axios from 'axios'
+import { processResponse } from '../utils/cli'
+
 
 const promptly = require('promptly')
 
@@ -19,12 +21,12 @@ root
     try {
 
       const res = await axios.post(`${baseURL}/api/v1/sessions`, { data: { attributes: { email, password, otp } } })
-      if (res.status === 201) {
+      processResponse(res, (res: any) => {
         const homepath = homeConfigPath()
         const credspath = path.join(homepath, "credentials.yml")
-        await fs.writeFile(credspath, YAML.dump({ access_token: res.data.data.attributes.access_token }))
+        fs.writeFileSync(credspath, YAML.dump({ access_token: res.data.data.attributes.access_token }))
         console.log("Wrote credentials at:", credspath)
-      }
+      })
     } catch (e) {
       if (e.response)
         console.log(e.response.data)
