@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.16.6"></a>
+## [0.16.6](https://github.com/superfly/fly/compare/v0.16.5...v0.16.6) (2018-02-14)
+
+
+### Bug Fixes
+
+* actually use the config object, not the whole object when preparing the deploy config ([e08bf01](https://github.com/superfly/fly/commit/e08bf01))
+
+
+
 <a name="0.16.5"></a>
 ## [0.16.5](https://github.com/superfly/fly/compare/v0.16.4...v0.16.5) (2018-02-14)
 
