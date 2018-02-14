@@ -25,11 +25,8 @@ npm install --save-dev @fly/fly
 Write javascript code to a file (`index.js`):
 
 ```js
-// index.js
-
-addEventListener("fetch", function(event) {
-  const res = new Response("Hello! We support whirled peas.", { status: 200 })
-  event.respondWith(res)
+fly.http.respondWith(function(request){
+  return new Response("Hello! We support whirled peas.", { status: 200})
 })
 ```
 
