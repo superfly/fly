@@ -33,6 +33,7 @@ export class DefaultContextStore implements ContextStore {
 
     t2 = t.start("createContext")
     const ctx = await createContext(config, iso, { inspector: !!this.options.inspect })
+    ctx.meta.set("iso", iso)
     t2.end()
 
     t2 = t.start("compile")
@@ -46,6 +47,8 @@ export class DefaultContextStore implements ContextStore {
 
   putContext(ctx: Context) {
     // Nothing to do here.
+    const iso:ivm.Isolate = ctx.meta.get("iso")
+    iso.dispose()
   }
 
   async getIsolate() {
