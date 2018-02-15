@@ -1,6 +1,7 @@
 import './fetch'
 import './formdata'
 import './fly/cache'
+import { ivm } from '../'
 
 import { catalog, Context } from './'
 import { Config } from '../config';
@@ -26,8 +27,6 @@ export class Bridge {
     const fn = this.functions.get(name)
     if (!fn)
       throw errNoSuchBridgeFn
-    console.log("Calling:", name)
-    this.context.refCount +=1 
     fn.apply(null, args)
   }
 }

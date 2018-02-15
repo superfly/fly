@@ -22,6 +22,7 @@ export function fetchBridge(ctx: Context) {
   return function (urlStr: string, init: any, body: ArrayBuffer, cb: ivm.Reference<Function>) {
     log.info("native fetch with url:", urlStr)
     let t = Trace.tryStart('fetch', ctx.trace)
+    ctx.addCallback(cb)
     init || (init = {})
     const u = parseURL(urlStr)
     let depth = <number>ctx.meta.get('flyDepth')
@@ -29,7 +30,7 @@ export function fetchBridge(ctx: Context) {
     log.debug("fetch depth: ", depth)
     if (depth >= 3) {
       log.error("too much recursion: ", depth)
-      ctx.applyFinalCallback(cb, ["Too much recursion"])
+      ctx.applyCallback(cb, ["Too much recursion"])
       return
     }
 
@@ -38,35 +39,35 @@ export function fetchBridge(ctx: Context) {
     if (!u.protocol)
       u.protocol = ctx.meta.get('originalScheme')
 
-    try {
-      setImmediate(() => {
-        const httpFn = u.protocol == 'http:' ? http.request : https.request
-        const httpAgent = u.protocol == 'http:' ? fetchAgent : fetchHttpsAgent
+    const httpFn = u.protocol == 'http:' ? http.request : https.request
+    const httpAgent = u.protocol == 'http:' ? fetchAgent : fetchHttpsAgent
 
-        let method = init.method || "GET"
-        let headers = init.headers || {}
-        headers['X-Fly-Depth'] = (depth + 1).toString()
-        let req: http.ClientRequest;
+    let method = init.method || "GET"
+    let headers = init.headers || {}
+    headers['X-Fly-Depth'] = (depth + 1).toString()
+    let req: http.ClientRequest;
 
-        let path = u.pathname
-        if (u.query != null) {
-          path = path + "?" + u.query
-        }
-        req = httpFn({
-          agent: httpAgent,
-          protocol: u.protocol,
-          path: path,
-          hostname: u.hostname,
-          host: u.host,
-          port: u.port,
-          method: method,
-          headers: headers,
-          timeout: 5000
-        })
+    let path = u.pathname
+    if (u.query != null) {
+      path = path + "?" + u.query
+    }
+    req = httpFn({
+      agent: httpAgent,
+      protocol: u.protocol,
+      path: path,
+      hostname: u.hostname,
+      host: u.host,
+      port: u.port,
+      method: method,
+      headers: headers,
+      timeout: 5000
+    })
 
-        req.on("response", function (res) {
+    setImmediate(() => {
+      req.on("response", function (res) {
+        try {
           res.pause()
-          cb.apply(undefined, [
+          ctx.applyCallback(cb, [
             null,
             new ivm.ExternalCopy({
               status: res.statusCode,
@@ -94,25 +95,24 @@ export function fetchBridge(ctx: Context) {
                   callback.apply(undefined, ["data", transferInto(data)])
                 })
                 res.resume()
-                //callback.apply(undefined, ["end"])
               })
             }),
             new ivm.Reference(res)
           ])
-        })
-
-        req.on("error", function (err) {
-          log.error("error requesting http resource", err)
-          ctx.applyFinalCallback(cb, [err.toString()])
-        })
-
-        req.end(body && Buffer.from(body) || null)
+        } catch (err) {
+          log.error("caught error", err)
+          ctx.applyCallback(cb, [err.toString()])
+        }
       })
-    } catch (err) {
-      log.error("caught error", err)
-      ctx.applyFinalCallback(cb, [err.toString()])
-    }
 
-    return
+      req.on("error", function (err) {
+        log.error("error requesting http resource", err)
+        ctx.applyCallback(cb, [err.toString()])
+      })
+
+      req.end(body && Buffer.from(body) || null)
+    })
+
+    return cb
   }
 }
