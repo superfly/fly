@@ -8,6 +8,8 @@ export function registerBridge(name: string, fn: BridgeFunctionFactory) {
 export interface Context {
   meta: Map<string, any>
   trace: Trace | undefined
+  refCount: number,
+  applyFinalCallback: Function
 }
 
 export interface BridgeFunctionFactory {

@@ -13,25 +13,35 @@ export class Context {
 
 	timeouts: { [id: number]: NodeJS.Timer }
 	intervals: { [id: number]: NodeJS.Timer }
+	refCount: number
+	iso: ivm.Isolate
 
 	private currentTimerId: number;
 
-	constructor(ctx: ivm.Context) {
+	constructor(ctx: ivm.Context, iso: ivm.Isolate) {
 		this.meta = new Map<string, any>()
 		this.ctx = ctx
 		this.global = ctx.globalReference()
 		this.currentTimerId = 0
 		this.timeouts = {}
 		this.intervals = {}
+		this.refCount = 0
+		this.iso = iso
 	}
 
+	applyFinalCallback(fn: Function, args:any[]){
+		fn.apply(null, args)
+		this.refCount -= 1
+	}
 	async bootstrap(config: Config) {
 		await this.set('global', this.global.derefInto());
 		await this.set('_ivm', ivm);
 
 		await this.set('_setTimeout', new ivm.Reference((fn: Function, timeout: number): number => {
 			const id = ++this.currentTimerId
-			this.timeouts[id] = setTimeout(() => { fn.apply(null, []) }, timeout)
+			const ctx = this
+			this.refCount += 1
+			this.timeouts[id] = setTimeout(() => { ctx.applyFinalCallback(fn, []) }, timeout)
 			return id
 		}))
 
@@ -46,6 +56,7 @@ export class Context {
 		}))
 
 		await this.set('_clearInterval', new ivm.Reference((id: number): void => {
+			this.refCount -= 1
 			return clearInterval(this.intervals[id])
 		}))
 
@@ -84,7 +95,7 @@ export class Context {
 }
 
 export async function createContext(config: Config, iso: ivm.Isolate, opts: ivm.ContextOptions = {}): Promise<Context> {
-	let ctx = new Context(await iso.createContext(opts))
+	let ctx = new Context(await iso.createContext(opts), iso)
 	await ctx.bootstrap(config)
 	return ctx
 }
