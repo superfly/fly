@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { startServer } from './helper'
+import { startServer, cacheStore } from './helper'
 import axios from 'axios'
 
 describe('JS Fails', () => {
@@ -23,17 +23,31 @@ describe('JS Fails', () => {
   describe('races', ()=>{
     describe("setTimeout fires after response", ()=>{
       before(async function () {
-        this.server = await startServer(`fails/long-wait-after-response.js`)
+        await cacheStore.set("cache:test-app-id:long-wait-after-response", "no")
+        this.server = await startServer(`fails/async-app`)
       })
-      after(function (done) { 
-        const server = this.server
-        const close = function(){ server.close(done) }
-        setTimeout(close, 4000)
-      })
+      after(function (done) { this.server.close(done) })
 
-      it('not sure', async () => {
-        let res = await axios.get("http://127.0.0.1:3333/", { headers: { 'Host': "test" } })
+      it('should write to cache after response', async () => {
+        const cacheValue = Date.now().toString()
+        const res = await axios.get("http://127.0.0.1:3333/", { 
+          headers: { 
+            'Host': "test", 
+            'X-Cache-Value': cacheValue
+          }
+        })
         expect(res.status).to.equal(200)
+        expect(res.data).to.equal("hello")
+        const sleep = function(ms:number){
+          return new Promise((resolve)=>{
+            setTimeout(()=>{ resolve() }, ms)
+          })
+        }
+
+        await(sleep(500))
+
+        let cached = await cacheStore.get("cache:test-app-id:long-wait-after-response")
+        expect((<Buffer>cached).toString()).to.equal(cacheValue)
       })
     })
   })
