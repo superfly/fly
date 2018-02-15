@@ -1,6 +1,6 @@
 import { Trace } from '../trace'
 import { Config } from '../config';
-import { ivm } from '../'
+import * as ivm from 'isolated-vm'
 export let catalog = new Map<string, BridgeFunctionFactory>()
 export function registerBridge(name: string, fn: BridgeFunctionFactory) {
   catalog.set(name, fn)

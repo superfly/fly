@@ -1,4 +1,3 @@
-//import { conf } from './config'
 import * as winston from 'winston';
 
 export default new winston.Logger({
