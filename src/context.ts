@@ -16,8 +16,6 @@ export class Context extends EventEmitter {
 	intervals: { [id: number]: NodeJS.Timer }
 	callbacks: ivm.Reference<Function>[]
 
-	timeoutsEnd?: number
-
 	iso: ivm.Isolate
 
 	private currentTimerId: number;

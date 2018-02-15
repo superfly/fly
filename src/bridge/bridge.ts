@@ -1,7 +1,7 @@
 import './fetch'
 import './formdata'
 import './fly/cache'
-import { ivm } from '../'
+import * as ivm from 'isolated-vm'
 
 import { catalog, Context } from './'
 import { Config } from '../config';
