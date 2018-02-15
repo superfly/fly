@@ -14,8 +14,10 @@ interface IterableIterator<T> extends Iterator<T> {
 
 export class Bridge {
   functions: Map<string, Function>
+  context: Context
 
   constructor(ctx: Context, config: Config) {
+    this.context = ctx
     this.functions = new Map<string, Function>(Array.from(catalog.entries(), ([n, fn]) =>
       <[string, Function]>[n, fn(ctx, config)]
     ))
@@ -25,6 +27,8 @@ export class Bridge {
     const fn = this.functions.get(name)
     if (!fn)
       throw errNoSuchBridgeFn
+    console.log("Calling:", name)
+    this.context.refCount +=1 
     fn.apply(null, args)
   }
 }

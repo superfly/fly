@@ -30,7 +30,7 @@ export function fetchBridge(ctx: Context) {
     log.debug("fetch depth: ", depth)
     if (depth >= 3) {
       log.error("too much recursion: ", depth)
-      cb.apply(undefined, ["Too much recursion"])
+      ctx.applyFinalCallback(cb, ["Too much recursion"])
       return
     }
 
@@ -107,14 +107,14 @@ export function fetchBridge(ctx: Context) {
 
         req.on("error", function (err) {
           log.error("error requesting http resource", err)
-          cb.apply(undefined, [err.toString()])
+          ctx.applyFinalCallback(cb, [err.toString()])
         })
 
         req.end(body && Buffer.from(body) || null)
       })
     } catch (err) {
       log.error("caught error", err)
-      cb.apply(undefined, [err.toString()])
+      ctx.applyFinalCallback(cb, [err.toString()])
     }
 
     return
