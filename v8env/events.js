@@ -97,24 +97,24 @@ function fireFetchEvent(ivm, url, nodeReq, nodeBody, callback) {
 	let fetchEvent = new FetchEvent('fetch', { request: req }, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 
-		if (err){
+		if (err) {
 			console.log(err, err.stack)
 			return callback.apply(null, [err.toString()])
 		}
 
-		if(res.bodyUsed){
+		if (res.bodyUsed) {
 			return callback.apply(null, [bodyUsedError.toString()])
 		}
 
 		let body = null
-		if(res._stream instanceof ivm.Reference){
+		if (res._stream instanceof ivm.Reference) {
 			logger.debug("Response is a proxied stream")
 			body = res._stream
 		}
 		else if (!res._proxy) {
 			body = transferInto(ivm, await res.arrayBuffer())
 			logger.debug("Got arrayBuffer from response:", body.byteLength)
-		}else{
+		} else {
 			logger.debug("Response is a proxy")
 		}
 

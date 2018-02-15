@@ -42,11 +42,7 @@ export default function registerGoogleAnalytics() {
 
       const fullURL = req.url; // original url
       logger.debug("full url:", fullURL)
-      // logger.debug("fullURL", fullURL)
 
-      // logger.debug("adding event listener in a sec.")
-
-      // TODO: implement
       addEventListener(
         "fetchEnd",
         fetchEnd(fullURL, trackingID, clientID, userID)

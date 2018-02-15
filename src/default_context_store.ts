@@ -46,13 +46,9 @@ export class DefaultContextStore implements ContextStore {
   }
 
   putContext(ctx: Context) {
-    // if (ctx.refCount > 0) {
-    //   console.error("\x1b[31mContext was released but there are references:", ctx.refCount, "\x1b[0m")
-    // }
     ctx.finalize().then(() => {
       ctx.release()
     })
-    // this.resetIsolate()
   }
 
   async getIsolate() {
