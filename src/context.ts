@@ -108,13 +108,13 @@ export class Context extends EventEmitter {
 	}
 
 	async finalize() {
+		log.debug("Finalizing context.")
 		await new Promise((resolve) => {
 			if (this.callbacks.length === 0) {
 				return resolve()
 			}
 			log.debug("Callbacks present initially, waiting.")
 			this.on("callbackApplied", () => {
-				log.debug("callbackApplied emitted, current count:", this.callbacks.length)
 				if (this.callbacks.length === 0) {
 					return resolve()
 				}
@@ -124,27 +124,6 @@ export class Context extends EventEmitter {
 		// clear all intervals no matter what
 		for (const t of Object.values(this.intervals))
 			clearInterval(t)
-
-		// 	const self = this
-		// 	function tryEnd() {
-		// 		if (self.refCount != 0) {
-		// 			// check if there are timeouts lingering
-		// 			if (Object.keys(self.timeouts).length > 0 && self.timeoutsEnd) {
-		// 				const endsIn = self.timeoutsEnd - Date.now() // approximate
-		// 				if (endsIn > 0) {
-		// 					setTimeout(tryEnd, endsIn)
-		// 					return
-		// 				}
-		// 				// no timeouts lingering, but refCounts > 0
-		// 			} else {
-
-		// 			}
-		// 		}
-
-		// 		resolve()
-		// 	}
-		// 	tryEnd()
-		// })
 	}
 }
 
