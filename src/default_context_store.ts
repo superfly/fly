@@ -46,9 +46,8 @@ export class DefaultContextStore implements ContextStore {
   }
 
   putContext(ctx: Context) {
-    // Nothing to do here.
-    const iso:ivm.Isolate = ctx.meta.get("iso")
-    iso.dispose()
+    console.log("disposing isolate")
+    this.resetIsolate()
   }
 
   async getIsolate() {
