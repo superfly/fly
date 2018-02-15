@@ -46,11 +46,13 @@ export class DefaultContextStore implements ContextStore {
   }
 
   putContext(ctx: Context) {
-    if(ctx.refCount > 0){
-      console.error("\x1b[31mContext was released but there are references:", ctx.refCount,"\x1b[0m")
-    }
-    console.log("disposing isolate")
-    this.resetIsolate()
+    // if (ctx.refCount > 0) {
+    //   console.error("\x1b[31mContext was released but there are references:", ctx.refCount, "\x1b[0m")
+    // }
+    ctx.finalize().then(() => {
+      ctx.release()
+    })
+    // this.resetIsolate()
   }
 
   async getIsolate() {
@@ -66,7 +68,7 @@ export class DefaultContextStore implements ContextStore {
       this.isolate.dispose()
     this.isolate = new ivm.Isolate({
       snapshot: v8Env.snapshot,
-      memoryLimit: 1024,
+      memoryLimit: 128,
       inspector: !!this.options.inspect
     })
   }
