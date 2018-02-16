@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.16.7-0"></a>
+## [0.16.7-0](https://github.com/superfly/fly/compare/v0.16.6...v0.16.7-0) (2018-02-16)
+
+
+### Bug Fixes
+
+* gracefully handle out of band errors ([3ea91d6](https://github.com/superfly/fly/commit/3ea91d6))
+
+
+
 <a name="0.16.6"></a>
 ## [0.16.6](https://github.com/superfly/fly/compare/v0.16.5...v0.16.6) (2018-02-14)
 
