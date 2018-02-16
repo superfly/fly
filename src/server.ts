@@ -172,54 +172,64 @@ export class Server extends EventEmitter {
 		}
 		this.emit('request', request)
 
+		if (!app.source) {
+			if (await this.runRequestHook(null, request, response))
+				return
+			response.writeHead(400)
+			response.end("app has no source")
+			return
+		}
+
+		if (!this.config.contextStore)
+			this.config.contextStore = new DefaultContextStore()
+
+		const contextErrorHandler = (err: Error) => {
+			this.handleCriticalError(err, request, response)
+		}
+
+		let t = trace.start("acquireContext")
+		let ctx: Context
+		try {
+			ctx = await this.config.contextStore.getContext(this.config, app, t)
+		} catch (err) {
+			this.handleCriticalError(err, request, response)
+			return
+		}
+		t.end()
+		ctx.trace = trace
+
+		ctx.on("error", contextErrorHandler)
+
+		if (await this.runRequestHook(ctx, request, response)) {
+			this.config.contextStore.putContext(ctx)
+			return
+		}
+
+		let flyDepth = 0
+		let flyDepthHeader = <string>request.headers["x-fly-depth"]
+		if (flyDepthHeader) {
+			log.debug("got depth header: ", flyDepthHeader)
+			flyDepth = parseInt(flyDepthHeader)
+			if (isNaN(flyDepth) || flyDepth < 0) {
+				flyDepth = 0
+			}
+		}
+
+		ctx.meta = new Map<string, any>([
+			...ctx.meta,
+			['app', app],
+
+			['requestID', requestID],
+			['originalScheme', scheme],
+			['originalHost', request.headers.host],
+			['originalPath', request.url],
+			['originalURL', fullURL],
+			['flyDepth', flyDepth]
+		])
+
 		try {
 
-			if (!app.source) {
-				if (await this.runRequestHook(null, request, response))
-					return
-				response.writeHead(400)
-				response.end("app has no source")
-				return
-			}
-
-			if (!this.config.contextStore)
-				this.config.contextStore = new DefaultContextStore()
-
-			let t = trace.start("acquireContext")
-			let ctx = await this.config.contextStore.getContext(this.config, app, t)
-			t.end()
-			ctx.trace = trace
-
-			if (await this.runRequestHook(ctx, request, response)) {
-				this.config.contextStore.putContext(ctx)
-				return
-			}
-
-			let flyDepth = 0
-			let flyDepthHeader = <string>request.headers["x-fly-depth"]
-			if (flyDepthHeader) {
-				log.debug("got depth header: ", flyDepthHeader)
-				flyDepth = parseInt(flyDepthHeader)
-				if (isNaN(flyDepth) || flyDepth < 0) {
-					flyDepth = 0
-				}
-			}
-
-			ctx.meta = new Map<string, any>([
-				...ctx.meta,
-				['app', app],
-
-				['requestID', requestID],
-				['originalScheme', scheme],
-				['originalHost', request.headers.host],
-				['originalPath', request.url],
-				['originalURL', fullURL],
-				['flyDepth', flyDepth]
-			])
-
-			ctx.set('app', new ivm.ExternalCopy({ id: app.id, config: app.config }).copyInto())
-
-			let fireEvent = await ctx.get("fireEvent")
+			await ctx.set('app', new ivm.ExternalCopy({ id: app.id, config: app.config }).copyInto())
 
 			request.pause()
 
@@ -233,8 +243,7 @@ export class Server extends EventEmitter {
 			ctx.trace = t
 			let cbCalled = false
 			await new Promise((resolve, reject) => { // mainly to make try...finally work
-				fireEvent.apply(undefined, [
-					"fetch",
+				ctx.fireEvent("fetch", [
 					fullURL,
 					reqForV8,
 					new ProxyStream(request).ref,
@@ -278,7 +287,7 @@ export class Server extends EventEmitter {
 
 						let resProm: Promise<void>
 
-						if(resBody instanceof ivm.Reference){
+						if (resBody instanceof ivm.Reference) {
 							let res = resBody.deref().stream
 							resProm = handleResponse(res, response)
 						} else if (resBody) {
@@ -303,8 +312,8 @@ export class Server extends EventEmitter {
 							finalResponse.statusText = res.statusText
 							finalResponse.ok = res.statusCode && res.statusCode >= 200 && res.statusCode < 400
 							finalResponse.headers = finalHeaders
-							fireEvent.apply(undefined, [
-								"fetchEnd",
+
+							ctx.fireEvent("fetchEnd", [
 								fullURL,
 								reqForV8,
 								new ivm.ExternalCopy(finalResponse),
@@ -314,20 +323,32 @@ export class Server extends EventEmitter {
 									if (this.config.contextStore)
 										this.config.contextStore.putContext(ctx)
 								})
-							], { timeout: this.options.fetchEndTimeout })
+							], { timeout: this.options.fetchEndTimeout }).catch((err) => {
+								this.handleCriticalError(err, request, response)
+							})
 						})
 					})
-				], { timeout: this.options.fetchDispatchTimeout })
+				], { timeout: this.options.fetchDispatchTimeout }).catch((err) => {
+					this.handleCriticalError(err, request, response)
+				})
 			})
 
-		} catch (e) {
-			log.error("error...", e, e.stack)
-			response.statusCode = 500
-			response.end("Critical error.")
+		} catch (err) {
+			this.handleCriticalError(err, request, response)
 		} finally {
 			trace.end()
 			this.emit('requestEnd', request, response, trace)
+			ctx.removeListener("error", contextErrorHandler)
 		}
+	}
+
+	handleCriticalError(err: Error, request: http.IncomingMessage, response: http.ServerResponse) {
+		log.error("critical error:", err)
+		if (response.finished)
+			return
+		response.statusCode = 500
+		response.end("Critical error.")
+		request.destroy() // stop everything I guess.
 	}
 
 	async runRequestHook(ctx: Context | null, req: http.IncomingMessage, res: http.ServerResponse) {

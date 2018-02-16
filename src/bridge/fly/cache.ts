@@ -14,7 +14,7 @@ registerBridge('flyCacheSet', function (ctx: Context, config: Config) {
     let k = "cache:" + ctx.meta.get('app').id + ":" + key
 
     if (!config.cacheStore)
-      return ctx.applyCallback(callback, [errCacheStoreUndefined.toString()])
+      return ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
 
     let size = 0
     if (value instanceof ArrayBuffer) {
@@ -26,13 +26,13 @@ registerBridge('flyCacheSet', function (ctx: Context, config: Config) {
     }
     config.cacheStore.set(k, value, ttl).then((ok) => {
       t.end({ size: size, key: key })
-      ctx.applyCallback(callback, [null, ok])
+      ctx.tryCallback(callback, [null, ok])
     }).catch((err) => {
       log.error(err)
       t.end()
-      ctx.applyCallback(callback, [err.toString()])
+      ctx.tryCallback(callback, [err.toString()])
     })
-    return callback
+    return
   }
 })
 
@@ -43,14 +43,14 @@ registerBridge('flyCacheExpire', function (ctx: Context, config: Config) {
     let k = "cache:" + ctx.meta.get('app').id + ":" + key
 
     if (!config.cacheStore)
-      return ctx.applyCallback(callback, [errCacheStoreUndefined.toString()])
+      return ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
 
     config.cacheStore.expire(k, ttl).then((ok) => {
       t.end({ key: key })
       ctx.applyCallback(callback, [null, ok])
     }).catch((err) => {
       t.end()
-      ctx.applyCallback(callback, [err.toString()])
+      ctx.tryCallback(callback, [err.toString()])
     })
   }
 })
@@ -62,7 +62,7 @@ registerBridge('flyCacheGet', function (ctx: Context, config: Config) {
     let k = "cache:" + ctx.meta.get('app').id + ":" + key
 
     if (!config.cacheStore)
-      return ctx.applyCallback(callback, [errCacheStoreUndefined.toString()])
+      return ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
 
     config.cacheStore.get(k).then((buf) => {
       const size = buf ? buf.byteLength : 0
@@ -71,7 +71,7 @@ registerBridge('flyCacheGet', function (ctx: Context, config: Config) {
     }).catch((err) => {
       console.error("got err in cache.get", err)
       t.end()
-      ctx.applyCallback(callback, [err.toString()])
+      ctx.tryCallback(callback, [err.toString()])
     })
   }
 })

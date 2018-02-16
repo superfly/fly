@@ -27,6 +27,9 @@ root
     const { Server } = require('../server')
     const { DefaultContextStore } = require('../default_context_store');
 
+    process.on('uncaughtException', err => log.error('uncaught exception:', err, err.stack));
+    process.on('unhandledRejection', err => log.error('unhandled rejection:', err, err.stack));
+
     const cwd = process.cwd()
     let conf = parseConfig(cwd)
 

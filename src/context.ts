@@ -16,6 +16,8 @@ export class Context extends EventEmitter {
 	intervals: { [id: number]: NodeJS.Timer }
 	callbacks: ivm.Reference<Function>[]
 
+	fireEventFn?: ivm.Reference<Function>
+
 	iso: ivm.Isolate
 
 	private currentTimerId: number;
@@ -35,18 +37,39 @@ export class Context extends EventEmitter {
 	addCallback(fn: ivm.Reference<Function>) {
 		this.callbacks.push(fn)
 		this.emit("callbackAdded", fn)
-		log.debug("CALLBACK ADDED")
+		log.debug("Added a callback")
 	}
 
-	async applyCallback(fn: ivm.Reference<Function>, args: any[]) {
+	async applyCallback(fn: ivm.Reference<Function>, args: any[], opts?: any) {
 		try {
-			await fn.apply(null, args)
+			return await this._applyCallback(fn, args, opts)
+		} catch (err) {
+			log.error("Caught error while calling back:", err)
+			this.emit("error", err)
+		}
+	}
+
+	async _applyCallback(fn: ivm.Reference<Function>, args: any[], opts?: any) {
+		log.debug("Applying callback to context.")
+		try {
+			if (this.iso.isDisposed)
+				return
+			return await fn.apply(null, args, opts)
 		} finally {
 			const i = this.callbacks.indexOf(fn)
 			if (i !== -1) {
 				this.callbacks.splice(i, 1)
 				this.emit("callbackApplied")
 			}
+			log.debug("Done with callback.")
+		}
+	}
+
+	async tryCallback(fn: ivm.Reference<Function>, args: any[], opts?: any) {
+		try {
+			return await this._applyCallback(fn, args, opts)
+		} catch (err) {
+			log.error("Error trying to apply callback", err)
 		}
 	}
 
@@ -93,11 +116,31 @@ export class Context extends EventEmitter {
 		}
 	}
 
+	async fireEvent(name: string, args: any[], opts?: any) {
+		if (this.iso.isDisposed)
+			throw new Error("Isolate is disposed or disposing.")
+		try {
+			if (!this.fireEventFn)
+				this.fireEventFn = await this.get("fireEvent")
+			log.debug("Firing event", name)
+			return await this.fireEventFn.apply(null, [name, ...args], opts)
+		} catch (err) {
+			log.error("Error firing event:", err)
+			this.emit("error", err)
+		}
+	}
+
 	async get(name: string) {
+		if (this.iso.isDisposed)
+			throw new Error("Isolate is disposed or disposing.")
+		log.debug("Getting global", name)
 		return await this.global.get(name)
 	}
 
 	async set(name: any, value: any) {
+		if (this.iso.isDisposed)
+			throw new Error("Isolate is disposed or disposing.")
+		log.debug("Setting global", name)
 		return await this.global.set(name, value)
 	}
 

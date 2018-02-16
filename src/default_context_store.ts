@@ -52,7 +52,7 @@ export class DefaultContextStore implements ContextStore {
   }
 
   async getIsolate() {
-    if (this.isolate)
+    if (this.isolate && !this.isolate.isDisposed)
       return this.isolate
     await v8Env.waitForReadiness()
     this.resetIsolate()
@@ -60,7 +60,7 @@ export class DefaultContextStore implements ContextStore {
   }
 
   resetIsolate() {
-    if (this.isolate)
+    if (this.isolate && !this.isolate.isDisposed)
       this.isolate.dispose()
     this.isolate = new ivm.Isolate({
       snapshot: v8Env.snapshot,
