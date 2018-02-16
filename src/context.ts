@@ -37,7 +37,7 @@ export class Context extends EventEmitter {
 	addCallback(fn: ivm.Reference<Function>) {
 		this.callbacks.push(fn)
 		this.emit("callbackAdded", fn)
-		log.debug("Added a callback")
+		log.silly("Added a callback")
 	}
 
 	async applyCallback(fn: ivm.Reference<Function>, args: any[], opts?: any) {
@@ -50,7 +50,7 @@ export class Context extends EventEmitter {
 	}
 
 	async _applyCallback(fn: ivm.Reference<Function>, args: any[], opts?: any) {
-		log.debug("Applying callback to context.")
+		log.silly("Applying callback to context.")
 		try {
 			if (this.iso.isDisposed)
 				return
@@ -61,7 +61,7 @@ export class Context extends EventEmitter {
 				this.callbacks.splice(i, 1)
 				this.emit("callbackApplied")
 			}
-			log.debug("Done with callback.")
+			log.silly("Done with callback.")
 		}
 	}
 
@@ -133,14 +133,14 @@ export class Context extends EventEmitter {
 	async get(name: string) {
 		if (this.iso.isDisposed)
 			throw new Error("Isolate is disposed or disposing.")
-		log.debug("Getting global", name)
+		log.silly("Getting global", name)
 		return await this.global.get(name)
 	}
 
 	async set(name: any, value: any) {
 		if (this.iso.isDisposed)
 			throw new Error("Isolate is disposed or disposing.")
-		log.debug("Setting global", name)
+		log.silly("Setting global", name)
 		return await this.global.set(name, value)
 	}
 
