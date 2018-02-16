@@ -9,8 +9,10 @@ export function registerBridge(name: string, fn: BridgeFunctionFactory) {
 export interface Context {
   meta: Map<string, any>
   trace: Trace | undefined
+  iso: ivm.Isolate,
   addCallback(fn: ivm.Reference<Function>): any
-  applyCallback(fn: ivm.Reference<Function>, args: any[]): Promise<any>
+  applyCallback(fn: ivm.Reference<Function>, args: any[]): Promise<void>
+  tryCallback(fn: ivm.Reference<Function>, args: any[]): Promise<void>
 }
 
 export interface BridgeFunctionFactory {

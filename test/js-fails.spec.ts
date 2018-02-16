@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { startServer, cacheStore } from './helper'
+import { startServer, cacheStore, contextStore } from './helper'
 import axios from 'axios'
 
 describe('JS Fails', () => {
@@ -44,11 +44,31 @@ describe('JS Fails', () => {
           })
         }
 
-        await (sleep(510))
+        await (sleep(110))
 
         let cached = await cacheStore.get("cache:test-app-id:long-wait-after-response")
         expect((<Buffer>cached).toString()).to.equal(cacheValue)
       })
+    })
+  })
+
+  describe("out of band error in context", () => {
+    before(async function () {
+      this.server = await startServer(`fails/after-dispose.js`)
+    })
+    after(function (done) { this.server.close(done) })
+
+    it('returns a 500', function (done) {
+      axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } }).then((res) => {
+        expect(res.status).to.equal(500)
+        expect(res.data).to.equal('Critical error.')
+        done()
+      }).catch(done)
+
+      setTimeout(() => {
+        if (contextStore.isolate)
+          contextStore.isolate.dispose()
+      }, 10)
     })
   })
 })

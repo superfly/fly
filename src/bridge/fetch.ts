@@ -14,8 +14,6 @@ import { Trace } from '../trace'
 const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
 
-const wormholeRegex = /^(wormhole\.)/
-
 registerBridge('fetch', fetchBridge)
 
 export function fetchBridge(ctx: Context) {
@@ -30,7 +28,7 @@ export function fetchBridge(ctx: Context) {
     log.debug("fetch depth: ", depth)
     if (depth >= 3) {
       log.error("too much recursion: ", depth)
-      ctx.applyCallback(cb, ["Too much recursion"])
+      ctx.tryCallback(cb, ["Too much recursion"])
       return
     }
 
@@ -80,19 +78,23 @@ export function fetchBridge(ctx: Context) {
               setImmediate(async () => {
                 res.on("close", function () {
                   t.end()
-                  callback.apply(undefined, ["close"])
+                  ctx.addCallback(callback)
+                  ctx.applyCallback(callback, ["close"])
                 })
                 res.on("end", function () {
                   t.end()
-                  callback.apply(undefined, ["end"])
+                  ctx.addCallback(callback)
+                  ctx.applyCallback(callback, ["end"])
                 })
                 res.on("error", function (err: Error) {
                   t.end()
-                  callback.apply(undefined, ["error", err.toString()])
+                  ctx.addCallback(callback)
+                  ctx.applyCallback(callback, ["error", err.toString()])
                 })
 
                 res.on("data", function (data: Buffer) {
-                  callback.apply(undefined, ["data", transferInto(data)])
+                  ctx.addCallback(callback)
+                  ctx.applyCallback(callback, ["data", transferInto(data)])
                 })
                 res.resume()
               })
@@ -107,7 +109,7 @@ export function fetchBridge(ctx: Context) {
 
       req.on("error", function (err) {
         log.error("error requesting http resource", err)
-        ctx.applyCallback(cb, [err.toString()])
+        ctx.tryCallback(cb, [err.toString()])
       })
 
       req.end(body && Buffer.from(body) || null)

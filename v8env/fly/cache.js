@@ -46,7 +46,7 @@ export default function flyCacheInit(ivm, dispatch) {
       if (size > 2 * 1024 * 1024) {
         return Promise.reject("Cache does not support values > 2MB")
       }
-      if(value instanceof ArrayBuffer){
+      if (value instanceof ArrayBuffer) {
         logger.debug("Transferring buffer:", key, value.byteLength)
         value = transferInto(ivm, value)
       }
@@ -104,7 +104,7 @@ export default function flyCacheInit(ivm, dispatch) {
             reject(err)
             return
           }
-          if(value){
+          if (value) {
             logger.debug("cache got:", value.constructor.name, value.byteLength)
           }
           resolve(value)

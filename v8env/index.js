@@ -91,6 +91,18 @@ global.bootstrap = function bootstrap() {
 	global.Middleware = Middleware
 	global.MiddlewareChain = MiddlewareChain
 
+	global.getHeapStatistics = function getHeapStatistics() {
+		return new Promise((resolve, reject) => {
+			dispatch.apply(null, ['getHeapStatistics', new ivm.Reference(function (err, heap) {
+				if (err) {
+					reject(err)
+					return
+				}
+				resolve(heap)
+			})])
+		})
+	}
+
 	// load all middleware
 	for (const mwReg of mwToRegister)
 		mwReg(ivm, dispatch)

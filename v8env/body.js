@@ -50,13 +50,13 @@ export default function bodyInit(ivm) {
 		 * @returns {string} The body as a string
 		 * @memberof Body
 		 */
-		this.text = async () => {
+		this.text = async function text() {
 			if (this.bodyUsed)
 				throw bodyUsedError
+			logger.debug("getting text")
 			const arr = await bufferFromStream(this.body.getReader())
-			const text = new TextDecoder('utf-8').decode(arr)
-			return text
-		}
+			return new TextDecoder('utf-8').decode(arr)
+		}.bind(this)
 
 		/**
 		 * Buffers and returns the body
@@ -64,13 +64,13 @@ export default function bodyInit(ivm) {
 		 * @function
 		 * @memberof Body
 		 */
-		this.arrayBuffer = async () => {
+		this.arrayBuffer = async function arrayBuffer() {
 			if (this.bodyUsed)
 				throw bodyUsedError
 			const arr = await bufferFromStream(this.body.getReader())
 			this.bodyUsed = true
 			return arr.buffer
-		}
+		}.bind(this)
 
 	}
 
@@ -173,13 +173,15 @@ export default function bodyInit(ivm) {
 
 
 function concatenate(resultConstructor, ...arrays) {
-	const totalLength = arrays.reduce((total, arr) => {
-		return total + arr.length
-	}, 0);
-	const result = new resultConstructor(totalLength);
-	arrays.reduce((offset, arr) => {
+	let totalLength = 0;
+	for (let arr of arrays) {
+		totalLength += arr.length;
+	}
+	let result = new resultConstructor(totalLength);
+	let offset = 0;
+	for (let arr of arrays) {
 		result.set(arr, offset);
-		return offset + arr.length;
-	}, 0);
+		offset += arr.length;
+	}
 	return result;
 }

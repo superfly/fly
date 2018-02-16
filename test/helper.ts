@@ -28,7 +28,7 @@ export interface ServerOptions extends FileStoreOptions {
   port?: number
 }
 
-const contextStore = new DefaultContextStore()
+export const contextStore = new DefaultContextStore()
 export const cacheStore = new MemoryCacheStore("test cache")
 
 export async function startServer(cwd: string, options?: ServerOptions): Promise<http.Server> {

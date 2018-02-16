@@ -1,4 +1,5 @@
 import './fetch'
+import './heap'
 import './formdata'
 import './fly/cache'
 import * as ivm from 'isolated-vm'
