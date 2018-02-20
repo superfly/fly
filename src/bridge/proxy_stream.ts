@@ -13,31 +13,31 @@ import { transferInto } from "../utils/buffer";
 //   * if we're only reading from within node, we should handle this
 //   * can pipe it to both cache and http response
 
-export class ProxyStream{
+export class ProxyStream {
   stream: Readable
-  private _ref:ivm.Reference<ProxyStream> | undefined
+  private _ref: ivm.Reference<ProxyStream> | undefined
 
-  constructor(base:Readable){
+  constructor(base: Readable) {
     this.stream = base
   }
 
-  get ref(){
-    if(!this._ref){
+  get ref() {
+    if (!this._ref) {
       this._ref = new ivm.Reference<ProxyStream>(this)
     }
     return this._ref
   }
 }
 
-registerBridge("readProxyStream", function(ctx){
-  return function(ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>){
+registerBridge("readProxyStream", function (ctx) {
+  return function (ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
     const proxyable = ref.deref()
     const stream = proxyable.stream
-    if(!stream){
+    if (!stream) {
       cb.apply(undefined, ["end"])
       return
     }
-    stream.on("close", function(){
+    stream.on("close", function () {
       cb.apply(undefined, ["close"])
     })
     stream.on("end", function () {
@@ -49,6 +49,6 @@ registerBridge("readProxyStream", function(ctx){
     stream.on("data", function (data: Buffer) {
       cb.apply(undefined, ["data", transferInto(data)])
     })
-    setImmediate(()=> stream.resume())
+    setImmediate(() => stream.resume())
   }
 })
