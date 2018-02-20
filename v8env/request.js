@@ -30,9 +30,6 @@ export default function requestInit(ivm) {
 
 			logger.debug("ARG 2 IS:", arguments[2] instanceof ivm.Reference, arguments[2] && arguments[2].toString())
 
-			if (arguments[2] instanceof ivm.Reference) //proxied
-				this._proxy = arguments[2]
-
 			// logger.debug('creating request! body typeof:', typeof Body, typeof init.body)
 			Body.call(this, null);
 

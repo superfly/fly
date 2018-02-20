@@ -39,16 +39,18 @@ export default function fetchInit(ivm, dispatch) {
 				url,
 				new ivm.ExternalCopy(init).copyInto(),
 				transferInto(ivm, body),
-				new ivm.Reference(function (err, nodeRes, nodeBody, proxied) {
+				new ivm.Reference(function (err, nodeRes, nodeBody) {
 					if (err != null) {
 						logger.debug("err :(", err)
 						reject(err)
 						return
 					}
-					resolve(new Response(nodeBody, nodeRes.copy(), proxied))
+					resolve(new Response(nodeBody, nodeRes.copy()))
 				})
 			])
 			logger.debug("dispatched nativefetch")
 		})
 	}
+
+
 }

@@ -7,6 +7,7 @@ import * as https from 'https'
 import { URL, parse as parseURL, format as formatURL } from 'url'
 import { headersForWeb, fullURL } from '../utils/http'
 import { transferInto } from '../utils/buffer'
+import { ProxyStream } from './proxy_stream'
 
 import { Trace } from '../trace'
 
@@ -75,29 +76,32 @@ export function fetchBridge(ctx: Context) {
               url: urlStr,
               headers: res.headers
             }),
-            new ivm.Reference(function (callback: ivm.Reference<Function>) {
-              setImmediate(async () => {
-                res.on("close", function () {
-                  t.end()
-                  callback.apply(undefined, ["close"])
-                })
-                res.on("end", function () {
-                  t.end()
-                  callback.apply(undefined, ["end"])
-                })
-                res.on("error", function (err: Error) {
-                  t.end()
-                  callback.apply(undefined, ["error", err.toString()])
-                })
-
-                res.on("data", function (data: Buffer) {
-                  callback.apply(undefined, ["data", transferInto(data)])
-                })
-                res.resume()
-                //callback.apply(undefined, ["end"])
-              })
-            }),
-            new ivm.Reference(res)
+            new ProxyStream(res).ref
+//            new ivm.Reference(function (callback: ivm.Reference<Function>) {
+//              setImmediate(async () => {
+//                res.on("close", function () {
+//                  t.end()
+//                  ctx.addCallback(callback)
+//                  ctx.applyCallback(callback, ["close"])
+//                })
+//                res.on("end", function () {
+//                  t.end()
+//                  ctx.addCallback(callback)
+//                  ctx.applyCallback(callback, ["end"])
+//                })
+//                res.on("error", function (err: Error) {
+//                  t.end()
+//                  ctx.addCallback(callback)
+//                  ctx.applyCallback(callback, ["error", err.toString()])
+//                })
+//
+//                res.on("data", function (data: Buffer) {
+//                  ctx.addCallback(callback)
+//                  ctx.applyCallback(callback, ["data", transferInto(data)])
+//                })
+//                res.resume()
+//              })
+//            }),
           ])
         })
 

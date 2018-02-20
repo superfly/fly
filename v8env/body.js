@@ -8,7 +8,34 @@ const unsupportedBodyTypeError = new Error("Body type is unsupported, please use
  * @name Body
  * @mixin
  */
-export default function bodyInit(ivm) {
+export default function bodyInit(ivm, dispatch) {
+	function _read(ref){
+		let closed = false
+		return new ReadableStream({
+			start(controller) {
+				dispatch.apply(null, [
+					"readProxyStream",
+					ref,
+					new ivm.Reference((name, ...args) => {
+						if (name === "close" || name === "end") {
+							if (!closed) {
+								closed = true
+								controller.close()
+							}
+						} else if (name === "error") {
+							controller.error(new Error(args[0]))
+						} else if (name === "data") {
+							controller.enqueue(args[0])
+						} else
+							logger.debug("unhandled event", name)
+					})
+				])	
+			},
+			cancel() {
+				logger.debug("readable stream was cancelled")
+			}
+		})
+	}
 	return function Body(_stream) {
 		this.bodyUsed = false;
 
@@ -85,7 +112,7 @@ export default function bodyInit(ivm) {
 			return streamFromString(_stream)
 		}
 		if (_stream instanceof ivm.Reference) {
-			return streamFromNode(_stream)
+			return _read(_stream)
 		}
 		if (typeof _stream === "string") {
 			return streamFromString(_stream)
@@ -124,30 +151,6 @@ export default function bodyInit(ivm) {
 						reject(err)
 					});
 			})()
-		})
-	}
-
-	function streamFromNode(fn) {
-		let closed = false
-		return new ReadableStream({
-			start(controller) {
-				fn.apply(undefined, [new ivm.Reference((name, ...args) => {
-					if (name === "close" || name === "end") {
-						if (!closed) {
-							closed = true
-							controller.close()
-						}
-					} else if (name === "error") {
-						controller.error(new Error(args[0]))
-					} else if (name === "data") {
-						controller.enqueue(args[0])
-					} else
-						logger.debug("unhandled event", name)
-				})])
-			},
-			cancel() {
-				logger.debug("readable stream was cancelled")
-			}
 		})
 	}
 
