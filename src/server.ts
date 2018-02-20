@@ -228,7 +228,9 @@ export class Server extends EventEmitter {
 
 		try {
 
-			await ctx.set('app', new ivm.ExternalCopy({ id: app.id, config: app.config }).copyInto())
+			const appCopy = new ivm.ExternalCopy({ id: app.id, config: app.config })
+			await ctx.set('app', appCopy.copyInto())
+			appCopy.dispose()
 
 			request.pause()
 
@@ -236,7 +238,7 @@ export class Server extends EventEmitter {
 				method: request.method,
 				headers: httpUtils.headersForWeb(request.rawHeaders),
 				remoteAddr: request.connection.remoteAddress
-			}).copyInto()
+			})
 
 			t = Trace.tryStart("fetchEvent", ctx.trace)
 			ctx.trace = t
@@ -244,7 +246,7 @@ export class Server extends EventEmitter {
 			await new Promise((resolve, reject) => { // mainly to make try...finally work
 				ctx.fireEvent("fetch", [
 					fullURL,
-					reqForV8,
+					reqForV8.copyInto(),
 					new ivm.Reference(request),
 					new ivm.Reference((callback: ivm.Reference<Function>) => { // readBody
 						let t2 = t.start("respBody")
@@ -316,6 +318,9 @@ export class Server extends EventEmitter {
 						}
 
 						resProm.then(() => {
+							if (proxy)
+								proxy.dispose()
+
 							request.meta.endedAt = process.hrtime()
 							response.end() // we are done. triggers 'finish' event
 							resolve()
@@ -334,7 +339,7 @@ export class Server extends EventEmitter {
 
 							ctx.fireEvent("fetchEnd", [
 								fullURL,
-								reqForV8,
+								reqForV8.copyInto(),
 								new ivm.ExternalCopy(finalResponse),
 								null,
 								new ivm.Reference(() => { // done callback
@@ -345,11 +350,13 @@ export class Server extends EventEmitter {
 							], { timeout: this.options.fetchEndTimeout }).catch((err) => {
 								this.handleCriticalError(err, request, response)
 							})
+							reqForV8.dispose()
 						})
 					})
-				], { timeout: this.options.fetchDispatchTimeout }).catch((err) => {
-					this.handleCriticalError(err, request, response)
-				})
+				], { timeout: this.options.fetchDispatchTimeout })
+					.catch((err) => {
+						this.handleCriticalError(err, request, response)
+					})
 			})
 
 		} catch (err) {

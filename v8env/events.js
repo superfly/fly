@@ -66,38 +66,38 @@ export function addEventListener(name, fn) {
 	emitter.addListener(name, fn)
 }
 
-export function fireEventInit(ivm) {
-	return function fireEvent(name, ...args) {
-		args.unshift(ivm)
-		try {
-			switch (name) {
-				case "fetch":
-					fireFetchEvent.apply(undefined, args)
-					break
-				case "fetchEnd":
-					fireFetchEndEvent.apply(undefined, args)
-					break
-				default:
-					throw new Error(`unknown event listener: ${name}`)
-			}
-		} catch (err) {
-			logger.debug(err.message, err.stack)
-			let cb = args[args.length - 1] // should be the last arg
-			if (cb instanceof ivm.Reference)
-				cb.apply(undefined, [err.toString()])
+export function fireEvent(ivm, name, ...args) {
+	args.unshift(ivm)
+	try {
+		switch (name) {
+			case "fetch":
+				fireFetchEvent.apply(undefined, args)
+				break
+			case "fetchEnd":
+				fireFetchEndEvent.apply(undefined, args)
+				break
+			default:
+				throw new Error(`unknown event listener: ${name}`)
 		}
+	} catch (err) {
+		logger.debug(err.message, err.stack)
+		let cb = args[args.length - 1] // should be the last arg
+		if (cb instanceof ivm.Reference)
+			cb.apply(undefined, [err.toString()])
 	}
 }
 
 function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 	logger.debug("handling request event")
-	nodeReq.body = nodeBody
-	let req = new Request(url, nodeReq, reqProxy)
+	global.disposables.push(callback)
+	global.disposables.push(reqProxy)
+	global.disposables.push(nodeBody)
+	let req = new Request(url, Object.assign(nodeReq, { body: nodeBody }), reqProxy)
 	let fetchEvent = new FetchEvent('fetch', { request: req }, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 
 		if (err) {
-			console.log(err, err.stack)
+			logger.error(err, err.stack)
 			return callback.apply(null, [err.toString()])
 		}
 
@@ -113,15 +113,19 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 			logger.debug("Response is a proxy")
 		}
 
+		const resCopy = new ivm.ExternalCopy({
+			headers: res.headers && res.headers.toJSON() || {},
+			status: res.status,
+			bodyUsed: res.bodyUsed,
+		})
+
 		callback.apply(undefined, [null,
-			new ivm.ExternalCopy({
-				headers: res.headers && res.headers.toJSON() || {},
-				status: res.status,
-				bodyUsed: res.bodyUsed,
-			}).copyInto(),
+			resCopy.copyInto(),
 			transferInto(ivm, body),
 			res._proxy // pass back the proxy
 		])
+			.then(() => resCopy.dispose())
+			.catch(() => resCopy.dispose())
 	})
 	let fn = emitter.listeners('fetch').slice(-1)[0]
 	if (typeof fn !== 'function')
@@ -135,6 +139,8 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 }
 
 function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
+	global.disposables.push(done)
+	global.disposables.push(nodeRes)
 	const listeners = emitter.listeners('fetchEnd')
 	if (listeners.length === 0)
 		return done.apply()

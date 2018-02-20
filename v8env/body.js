@@ -90,9 +90,9 @@ export default function bodyInit(ivm) {
 		if (typeof _stream === "string") {
 			return streamFromString(_stream)
 		}
-		if (_stream instanceof FormData) {
-			return streamFromString(_stream.toString())
-		}
+		// if (_stream instanceof FormData) {
+		// 	return streamFromString(_stream.toString())
+		// }
 		logger.debug("make stream", typeof _stream, _stream.toString())
 		throw unsupportedBodyTypeError
 	}
@@ -131,7 +131,7 @@ export default function bodyInit(ivm) {
 		let closed = false
 		return new ReadableStream({
 			start(controller) {
-				fn.apply(undefined, [new ivm.Reference((name, ...args) => {
+				const fnRef = new ivm.Reference((name, ...args) => {
 					if (name === "close" || name === "end") {
 						if (!closed) {
 							closed = true
@@ -143,7 +143,12 @@ export default function bodyInit(ivm) {
 						controller.enqueue(args[0])
 					} else
 						logger.debug("unhandled event", name)
-				})])
+				})
+				fn.apply(undefined, [fnRef]).then(() => {
+					fnRef.dispose()
+				}).catch(() => {
+					fnRef.dispose()
+				})
 			},
 			cancel() {
 				logger.debug("readable stream was cancelled")
