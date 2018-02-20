@@ -1,8 +1,8 @@
 import { Trace } from '../trace'
 import { Config } from '../config';
-import * as ivm from 'isolated-vm'
-export let catalog = new Map<string, BridgeFunctionFactory>()
-export function registerBridge(name: string, fn: BridgeFunctionFactory) {
+import { ivm } from '../'
+export let catalog = new Map<string, BridgeFunction>()
+export function registerBridge(name: string, fn: BridgeFunction) {
   catalog.set(name, fn)
 }
 
@@ -15,6 +15,6 @@ export interface Context {
   tryCallback(fn: ivm.Reference<Function>, args: any[]): Promise<void>
 }
 
-export interface BridgeFunctionFactory {
-  (ctx: Context, config: Config): Function
+export interface BridgeFunction {
+  (ctx: Context, config: Config, ...args: any[]): void
 }

@@ -9,7 +9,7 @@ const unsupportedBodyTypeError = new Error("Body type is unsupported, please use
  * @mixin
  */
 export default function bodyInit(ivm, dispatch) {
-	function _read(ref){
+	function _read(ref) {
 		let closed = false
 		return new ReadableStream({
 			start(controller) {
@@ -29,7 +29,7 @@ export default function bodyInit(ivm, dispatch) {
 						} else
 							logger.debug("unhandled event", name)
 					})
-				])	
+				])
 			},
 			cancel() {
 				logger.debug("readable stream was cancelled")
@@ -117,9 +117,9 @@ export default function bodyInit(ivm, dispatch) {
 		if (typeof _stream === "string") {
 			return streamFromString(_stream)
 		}
-		if (_stream instanceof FormData) {
-			return streamFromString(_stream.toString())
-		}
+		// if (_stream instanceof FormData) {
+		// 	return streamFromString(_stream.toString())
+		// }
 		logger.debug("make stream", typeof _stream, _stream.toString())
 		throw unsupportedBodyTypeError
 	}

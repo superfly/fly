@@ -33,20 +33,23 @@ export default function fetchInit(ivm, dispatch) {
 
 	function _applyFetch(url, init, body) {
 		return new Promise(function (resolve, reject) {
+			const initCopy = new ivm.ExternalCopy(init)
+			const cbRef = new ivm.Reference(function (err, nodeRes, nodeBody) {
+				if (err != null) {
+					logger.debug("err :(", err)
+					reject(err)
+					return
+				}
+				resolve(new Response(nodeBody, nodeRes.copy()))
+			})
+			global.disposables.push(cbRef)
 			logger.debug("gonna fetch", url, init && JSON.stringify(init))
 			dispatch.apply(null, [
 				"fetch",
 				url,
-				new ivm.ExternalCopy(init).copyInto(),
+				initCopy.copyInto(),
 				transferInto(ivm, body),
-				new ivm.Reference(function (err, nodeRes, nodeBody) {
-					if (err != null) {
-						logger.debug("err :(", err)
-						reject(err)
-						return
-					}
-					resolve(new Response(nodeBody, nodeRes.copy()))
-				})
+				cbRef
 			])
 			logger.debug("dispatched nativefetch")
 		})
