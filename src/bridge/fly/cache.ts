@@ -17,7 +17,7 @@ registerBridge('flyCacheSet', function cacheSet(ctx: Context, config: Config, ke
 
   let size = 0
   if (value instanceof ArrayBuffer) {
-    console.log("Setting buffer in cache:", key, value.constructor.name, value.byteLength, ttl)
+    log.debug("Setting buffer in cache:", key, value.constructor.name, value.byteLength, ttl)
     size = value.byteLength
     value = Buffer.from(value)
   } else {

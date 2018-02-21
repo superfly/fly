@@ -31,7 +31,7 @@ const mwToRegister = [registerFlyBackend, registerFlyEcho, registerFlyRoutes, re
 
 import './local'
 
-global.disposables = []
+global.releasables = []
 global.middleware = {}
 
 global.registerMiddleware = function registerMiddleware(type, fn) {
@@ -47,7 +47,7 @@ global.bootstrap = function bootstrap() {
 	delete global._dispatch
 	delete global.bootstrap
 
-	global.disposables.push(dispatch)
+	global.releasables.push(dispatch)
 
 	global.console = consoleInit(ivm)
 
@@ -107,7 +107,7 @@ global.bootstrap = function bootstrap() {
 	}
 
 	if (global._log)
-		global.disposables.push(global._log)
+		global.releasables.push(global._log)
 
 	// load all middleware
 	for (const mwReg of mwToRegister)
@@ -115,11 +115,12 @@ global.bootstrap = function bootstrap() {
 }
 
 global.teardown = function teardown() {
-	for (const d of global.disposables) {
+	let r;
+	while (r = global.releasables.pop()) {
 		try {
-			if (d) d.dispose()
-		} finally {
-			// fail silently, we tried!
+			r.release()
+		} catch (e) {
+			// fail silently
 		}
 	}
 }

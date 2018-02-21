@@ -1,6 +1,6 @@
 import { registerBridge, Context } from './'
 import { Readable } from "stream";
-import { ivm } from "../";
+import { ivm, Config } from "../";
 import { transferInto } from "../utils/buffer";
 
 // get stream from http or whatever
@@ -29,26 +29,24 @@ export class ProxyStream {
   }
 }
 
-registerBridge("readProxyStream", function (ctx) {
-  return function (ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
-    const proxyable = ref.deref()
-    const stream = proxyable.stream
-    if (!stream) {
-      cb.apply(undefined, ["end"])
-      return
-    }
-    stream.on("close", function () {
-      cb.apply(undefined, ["close"])
-    })
-    stream.on("end", function () {
-      cb.apply(undefined, ["end"])
-    })
-    stream.on("error", function (err: Error) {
-      cb.apply(undefined, ["error", err.toString()])
-    })
-    stream.on("data", function (data: Buffer) {
-      cb.apply(undefined, ["data", transferInto(data)])
-    })
-    setImmediate(() => stream.resume())
+registerBridge("readProxyStream", function (ctx: Context, config: Config, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
+  const proxyable = ref.deref()
+  const stream = proxyable.stream
+  if (!stream) {
+    cb.apply(undefined, ["end"])
+    return
   }
+  stream.on("close", function () {
+    cb.apply(undefined, ["close"])
+  })
+  stream.on("end", function () {
+    cb.apply(undefined, ["end"])
+  })
+  stream.on("error", function (err: Error) {
+    cb.apply(undefined, ["error", err.toString()])
+  })
+  stream.on("data", function (data: Buffer) {
+    cb.apply(undefined, ["data", transferInto(data)])
+  })
+  setImmediate(() => stream.resume())
 })

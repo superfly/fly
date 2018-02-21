@@ -6,8 +6,8 @@ import { Trace } from './trace'
 import { Config } from './config';
 import { EventEmitter } from 'events';
 
-export interface Disposable {
-	dispose(): void
+export interface Releasable {
+	release(): void
 }
 
 export class Context extends EventEmitter {
@@ -22,7 +22,7 @@ export class Context extends EventEmitter {
 	callbacks: ivm.Reference<Function>[]
 	fireEventFn?: ivm.Reference<Function>
 
-	disposables: Disposable[]
+	releasables: Releasable[]
 
 	iso: ivm.Isolate
 
@@ -36,7 +36,7 @@ export class Context extends EventEmitter {
 		this.timeouts = {}
 		this.intervals = {}
 		this.callbacks = []
-		this.disposables = []
+		this.releasables = []
 		this.iso = iso
 		this.global = ctx.globalReference()
 	}
@@ -61,12 +61,12 @@ export class Context extends EventEmitter {
 				return
 			for (const arg of args)
 				if (arg instanceof ivm.Reference)
-					this.addDisposable(arg)
+					this.addReleasable(arg)
 				else if (arg instanceof ivm.ExternalCopy)
-					this.addDisposable(arg)
+					this.addReleasable(arg)
 			return await fn.apply(null, args, opts)
 		} finally {
-			this.addDisposable(fn)
+			this.addReleasable(fn)
 			const i = this.callbacks.indexOf(fn)
 			if (i >= 0) {
 				this.callbacks.splice(i, 1)
@@ -83,11 +83,11 @@ export class Context extends EventEmitter {
 		}
 	}
 
-	addDisposable(ref: ivm.Reference<any>): ivm.Reference<any>;
-	addDisposable(ec: ivm.ExternalCopy<any>): ivm.ExternalCopy<any>;
-	addDisposable(d: ivm.Reference<any> | ivm.ExternalCopy<any>) {
-		this.disposables.push(d)
-		return d
+	addReleasable(ref: ivm.Reference<any>): ivm.Reference<any>;
+	addReleasable(ec: ivm.ExternalCopy<any>): ivm.ExternalCopy<any>;
+	addReleasable(rel: ivm.Reference<any> | ivm.ExternalCopy<any>) {
+		this.releasables.push(rel)
+		return rel
 	}
 
 	async bootstrap(config: Config) {
@@ -111,7 +111,7 @@ export class Context extends EventEmitter {
 			const id = ++this.currentTimerId
 			// we don't add interval callbacks because we will clear them at the very end
 			this.intervals[id] = setInterval(() => { fn.apply(null, []) }, timeout)
-			this.addDisposable(fn)
+			this.addReleasable(fn)
 			return id
 		}))
 
@@ -139,18 +139,18 @@ export class Context extends EventEmitter {
 			throw new Error("Isolate is disposed or disposing.")
 		try {
 			if (!this.fireEventFn)
-				this.fireEventFn = await this.get("fireEvent")
+				this.fireEventFn = await this.global.get("fireEvent") // bypass releasable
 			for (const arg of args)
 				if (arg instanceof ivm.Reference)
-					this.addDisposable(arg)
+					this.addReleasable(arg)
 				else if (arg instanceof ivm.ExternalCopy)
-					this.addDisposable(arg)
-			log.debug("Firing event", name)
+					this.addReleasable(arg)
+			log.silly("Firing event", name)
 			const ret = await this.fireEventFn.apply(null, [name, ...args], opts)
 			if (ret instanceof ivm.Reference)
-				this.addDisposable(ret)
+				this.addReleasable(ret)
 			else if (ret instanceof ivm.ExternalCopy)
-				this.addDisposable(ret)
+				this.addReleasable(ret)
 			return ret
 		} catch (err) {
 			log.error("Error firing event:", err)
@@ -161,7 +161,7 @@ export class Context extends EventEmitter {
 	async get(name: string) {
 		if (this.iso.isDisposed)
 			throw new Error("Isolate is disposed or disposing.")
-		return this.addDisposable(await this.global.get(name))
+		return this.addReleasable(await this.global.get(name))
 	}
 
 	async set(name: any, value: any): Promise<boolean> {
@@ -169,21 +169,18 @@ export class Context extends EventEmitter {
 			throw new Error("Isolate is disposed or disposing.")
 		const ret = await this.global.set(name, value)
 		if (value instanceof ivm.Reference)
-			this.addDisposable(value)
+			this.addReleasable(value)
 		else if (value instanceof ivm.ExternalCopy)
-			this.addDisposable(value)
+			this.addReleasable(value)
 		return ret
 	}
 
 	async release() {
-		for (const ref of this.disposables) {
-			ref.dispose()
-		}
 		const teardownFn = await this.global.get("teardown")
 		await teardownFn.apply(null, [])
-		teardownFn.dispose()
-		// this.fireEventFn && this.fireEventFn.dispose()
-		this.global.dispose()
+		teardownFn.release()
+		this.fireEventFn && this.fireEventFn.release()
+		this.global.release()
 		this.callbacks = []
 		this.intervals = {}
 		this.timeouts = {}
@@ -198,13 +195,14 @@ export class Context extends EventEmitter {
 			if (this.callbacks.length === 0) {
 				return resolve()
 			}
-			log.debug("Callbacks present initially, waiting.")
+			log.silly("Callbacks present initially, waiting.")
 			const cbFn = () => {
 				if (this.callbacks.length === 0) {
 					this.removeListener("callbackApplied", cbFn)
-					return resolve()
+					resolve()
+					return
 				}
-				log.debug("Callbacks still present, waiting.")
+				log.silly("Callbacks still present, waiting.")
 			}
 			this.on("callbackApplied", cbFn)
 		})
@@ -212,6 +210,14 @@ export class Context extends EventEmitter {
 		for (const [id, t] of Object.entries(this.intervals)) {
 			clearInterval(t)
 			delete this.intervals[parseInt(id)] // stupid ts.
+		}
+		let rel;
+		while (rel = this.releasables.pop()) {
+			try {
+				rel.release()
+			} catch (e) {
+				log.debug("could not release!", e)
+			}
 		}
 	}
 }

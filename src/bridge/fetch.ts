@@ -25,7 +25,7 @@ function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, bo
   const u = parseURL(urlStr)
   let depth = <number>ctx.meta.get('flyDepth')
 
-  log.debug("fetch depth: ", depth)
+  log.silly("fetch depth: ", depth)
   if (depth >= 3) {
     log.error("too much recursion: ", depth)
     ctx.tryCallback(cb, ["Too much recursion"])
@@ -74,7 +74,7 @@ function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, bo
             ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
             url: urlStr,
             headers: res.headers
-          }),
+          }).copyInto({ release: true }),
           new ProxyStream(res).ref
         ])
       } catch (err) {

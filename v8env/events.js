@@ -88,22 +88,25 @@ export function fireEvent(ivm, name, ...args) {
 	}
 }
 
-function fireFetchEvent(ivm, url, nodeReq, nodeBody, callback) {
+function fireFetchEvent(ivm, url, req, body, callback) {
 	logger.debug("handling request event")
-	global.disposables.push(callback)
-	global.disposables.push(reqProxy)
-	global.disposables.push(nodeBody)
-	let req = new Request(url, Object.assign(nodeReq, { body: nodeBody }), reqProxy)
-	let fetchEvent = new FetchEvent('fetch', { request: req }, async function (err, res) {
+	let selfCleaningCallback = function selfCleaningCallback(...args) {
+		callback.apply(null, args)
+		callback.release()
+		body.release()
+	}
+	let fetchEvent = new FetchEvent('fetch', {
+		request: new Request(url, Object.assign(req, { body }))
+	}, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 
 		if (err) {
 			logger.error(err, err.stack)
-			return callback.apply(null, [err.toString()])
+			return selfCleaningCallback.apply(null, [err.toString()])
 		}
 
 		if (res.bodyUsed) {
-			return callback.apply(null, [bodyUsedError.toString()])
+			return selfCleaningCallback.apply(null, [bodyUsedError.toString()])
 		}
 
 		let body = null
@@ -118,13 +121,7 @@ function fireFetchEvent(ivm, url, nodeReq, nodeBody, callback) {
 			logger.debug("Response is a proxy")
 		}
 
-		const resCopy = new ivm.ExternalCopy({
-			headers: res.headers && res.headers.toJSON() || {},
-			status: res.status,
-			bodyUsed: res.bodyUsed,
-		})
-
-		callback.apply(undefined, [null,
+		selfCleaningCallback.apply(undefined, [null,
 			new ivm.ExternalCopy({
 				headers: res.headers && res.headers.toJSON() || {},
 				status: res.status,
@@ -135,21 +132,23 @@ function fireFetchEvent(ivm, url, nodeReq, nodeBody, callback) {
 	})
 	let fn = emitter.listeners('fetch').slice(-1)[0]
 	if (typeof fn !== 'function')
-		return callback.apply(null, ["No 'fetch' event listener attached."])
+		return selfCleaningCallback.apply(null, ["No 'fetch' event listener attached."])
 
 	if (fn(fetchEvent) instanceof Promise)
-		return callback.apply(null, ["'fetch' event handler function cannot return a promise."])
+		return selfCleaningCallback.apply(null, ["'fetch' event handler function cannot return a promise."])
 
 	if (!fetchEvent.respondWithEntered)
-		return callback.apply(null, ["respondWith was not called for FetchEvent"])
+		return selfCleaningCallback.apply(null, ["respondWith was not called for FetchEvent"])
 }
 
 function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
-	global.disposables.push(done)
-	global.disposables.push(nodeRes)
+	let selfCleaningCallback = function selfCleaningCallback(...args) {
+		done.apply(null, args)
+		done.release()
+	}
 	const listeners = emitter.listeners('fetchEnd')
 	if (listeners.length === 0)
-		return done.apply()
+		return selfCleaningCallback.apply()
 	const req = new Request(url, nodeReq)
 	const res = new Response("", nodeRes)
 
@@ -160,7 +159,7 @@ function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
 	}
 
 	emitter.emitAsync('fetchEnd', event).then(() => {
-		done.apply()
+		selfCleaningCallback.apply()
 	})
 }
 
