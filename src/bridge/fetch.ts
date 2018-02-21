@@ -66,17 +66,21 @@ function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, bo
     req.on("response", function (res) {
       try {
         res.pause()
+        const resCopy = new ivm.ExternalCopy({
+          status: res.statusCode,
+          statusText: res.statusMessage,
+          ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
+          url: urlStr,
+          headers: res.headers
+        })
+
         ctx.applyCallback(cb, [
           null,
-          new ivm.ExternalCopy({
-            status: res.statusCode,
-            statusText: res.statusMessage,
-            ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
-            url: urlStr,
-            headers: res.headers
-          }).copyInto({ release: true }),
+          resCopy.copyInto(),
           new ProxyStream(res).ref
-        ])
+        ]).finally(() => resCopy.dispose())
+
+
       } catch (err) {
         log.error("caught error", err)
         ctx.applyCallback(cb, [err.toString()])

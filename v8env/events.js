@@ -92,8 +92,8 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 	logger.debug("handling request event")
 	let selfCleaningCallback = function selfCleaningCallback(...args) {
 		callback.apply(null, args)
-		callback.release()
-		body.release()
+		callback.dispose()
+		body.dispose()
 	}
 	let fetchEvent = new FetchEvent('fetch', {
 		request: new Request(url, Object.assign(req, { body }))
@@ -121,12 +121,15 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 			logger.debug("Response is a proxy")
 		}
 
+		const initCopy = new ivm.ExternalCopy({
+			headers: res.headers && res.headers.toJSON() || {},
+			status: res.status,
+			bodyUsed: res.bodyUsed,
+		})
+		global.releasables.push(initCopy)
+
 		selfCleaningCallback.apply(undefined, [null,
-			new ivm.ExternalCopy({
-				headers: res.headers && res.headers.toJSON() || {},
-				status: res.status,
-				bodyUsed: res.bodyUsed,
-			}).copyInto({ release: true }),
+			initCopy.copyInto(),
 			body
 		])
 	})
@@ -144,7 +147,7 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
 	let selfCleaningCallback = function selfCleaningCallback(...args) {
 		done.apply(null, args)
-		done.release()
+		done.dispose()
 	}
 	const listeners = emitter.listeners('fetchEnd')
 	if (listeners.length === 0)

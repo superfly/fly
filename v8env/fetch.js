@@ -42,15 +42,18 @@ export default function fetchInit(ivm, dispatch) {
 					}
 					resolve(new Response(nodeBody, nodeRes))
 				} finally {
-					cbRef.release() // releases itself
+					cbRef.dispose() // releases itself
 				}
 			})
+
+			const initCopy = new ivm.ExternalCopy(init)
+			global.releasables.push(initCopy)
 
 			logger.debug("gonna fetch", url, init && JSON.stringify(init))
 			dispatch.apply(null, [
 				"fetch",
 				url,
-				new ivm.ExternalCopy(init).copyInto({ release: true }),
+				initCopy.copyInto(),
 				transferInto(ivm, body),
 				cbRef
 			])

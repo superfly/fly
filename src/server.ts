@@ -228,7 +228,9 @@ export class Server extends EventEmitter {
 
 		try {
 
-			await ctx.set('app', new ivm.ExternalCopy({ id: app.id, config: app.config }).copyInto({ release: true }))
+			const appCopy = new ivm.ExternalCopy({ id: app.id, config: app.config })
+			await ctx.set('app', appCopy.copyInto())
+			appCopy.dispose()
 
 			request.pause()
 
@@ -294,7 +296,7 @@ export class Server extends EventEmitter {
 
 					resProm.then(() => {
 						if (resBody instanceof ivm.Reference)
-							resBody.release()
+							resBody.dispose()
 
 						reqMeta.endedAt = process.hrtime()
 						response.end() // we are done. triggers 'finish' event
@@ -312,9 +314,11 @@ export class Server extends EventEmitter {
 						finalResponse.ok = res.statusCode && res.statusCode >= 200 && res.statusCode < 400
 						finalResponse.headers = finalHeaders
 
+						const reqCopy = new ivm.ExternalCopy(reqForV8)
+
 						ctx.fireEvent("fetchEnd", [
 							fullURL,
-							new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
+							reqCopy.copyInto(),
 							new ivm.ExternalCopy(finalResponse),
 							null,
 							new ivm.Reference(() => { // done callback
@@ -324,19 +328,21 @@ export class Server extends EventEmitter {
 							})
 						], { timeout: this.options.fetchEndTimeout }).catch((err) => {
 							this.handleCriticalError(err, request, response)
-						})
+						}).finally(() => reqCopy.dispose())
 					})
 				}
 
+				const reqCopy = new ivm.ExternalCopy(reqForV8)
+
 				ctx.fireEvent("fetch", [
 					fullURL,
-					new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
+					reqCopy.copyInto(),
 					new ProxyStream(request).ref,
 					new ivm.Reference(fetchCallback)
 				], { timeout: this.options.fetchDispatchTimeout })
 					.catch((err) => {
 						this.handleCriticalError(err, request, response)
-					})
+					}).finally(() => reqCopy.dispose())
 			})
 
 		} catch (err) {

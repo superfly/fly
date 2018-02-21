@@ -118,7 +118,7 @@ global.teardown = function teardown() {
 	let r;
 	while (r = global.releasables.pop()) {
 		try {
-			r.release()
+			r.dispose()
 		} catch (e) {
 			// fail silently
 		}
