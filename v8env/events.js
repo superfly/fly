@@ -50,7 +50,7 @@ export class FetchEvent {
 					this.callback(err)
 				})
 			} else if (ret instanceof Response) {
-				this.callback(null, fn)
+				this.callback(null, ret)
 			} else {
 				this.callback(invalidResponseType)
 			}
