@@ -20,6 +20,7 @@ const proxiedHttp = require('findhit-proxywrap').proxy(http, { strict: false })
 const { version } = require('../package.json');
 
 import { bufferToStream, transferInto } from './utils/buffer'
+import { ProxyStream } from './bridge/proxy_stream';
 
 const defaultFetchDispatchTimeout = 1000
 const defaultFetchEndTimeout = 5000
@@ -236,25 +237,8 @@ export class Server extends EventEmitter {
 					"fetch",
 					fullURL,
 					reqForV8,
-					new ivm.Reference(request),
-					new ivm.Reference(function (callback: ivm.Reference<Function>) { // readBody
-						let t2 = t.start("respBody")
-						setImmediate(() => {
-							request.on("end", () => {
-								t2.end()
-								callback.apply(undefined, ["end"])
-							})
-							request.on("close", () => {
-								t2.end()
-								callback.apply(undefined, ["close"])
-							})
-							request.on("data", function (data: Buffer) {
-								callback.apply(undefined, ["data", transferInto(data)])
-							})
-							request.resume()
-						})
-					}),
-					new ivm.Reference((err: any, res: any, resBody: ArrayBuffer, proxy?: ivm.Reference<http.IncomingMessage>) => {
+					new ProxyStream(request).ref,
+					new ivm.Reference((err: any, res: any, resBody: ArrayBuffer | ivm.Reference<ProxyStream>) => {
 						if (cbCalled) {
 							return // this can't happen twice
 						}
@@ -294,8 +278,8 @@ export class Server extends EventEmitter {
 
 						let resProm: Promise<void>
 
-						if (!resBody && proxy) {
-							let res = proxy.deref()
+						if(resBody instanceof ivm.Reference){
+							let res = resBody.deref().stream
 							resProm = handleResponse(res, response)
 						} else if (resBody) {
 							resProm = handleResponse(bufferToStream(Buffer.from(resBody)), response)

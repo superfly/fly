@@ -45,6 +45,7 @@ export class FetchEvent {
 				ret.then((res) => {
 					if (res instanceof Response)
 						return this.callback(null, res)
+					console.log("weird response:", res.constructor)
 					this.callback(invalidResponseType)
 				}).catch((err) => {
 					this.callback(err)
@@ -89,10 +90,10 @@ export function fireEventInit(ivm) {
 	}
 }
 
-function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
+function fireFetchEvent(ivm, url, nodeReq, nodeBody, callback) {
 	logger.debug("handling request event")
 	nodeReq.body = nodeBody
-	let req = new Request(url, nodeReq, reqProxy)
+	let req = new Request(url, nodeReq)
 	let fetchEvent = new FetchEvent('fetch', { request: req }, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 
@@ -106,8 +107,12 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 		}
 
 		let body = null
-		if(!res._proxy){
-			body = await res.arrayBuffer()
+		if(res._stream instanceof ivm.Reference){
+			logger.debug("Response is a proxied stream")
+			body = res._stream
+		}
+		else if (!res._proxy) {
+			body = transferInto(ivm, await res.arrayBuffer())
 			logger.debug("Got arrayBuffer from response:", body.byteLength)
 		}else{
 			logger.debug("Response is a proxy")
@@ -119,8 +124,7 @@ function fireFetchEvent(ivm, url, nodeReq, reqProxy, nodeBody, callback) {
 				status: res.status,
 				bodyUsed: res.bodyUsed,
 			}).copyInto(),
-			transferInto(ivm, body),
-			res._proxy // pass back the proxy
+			body
 		])
 	})
 	let fn = emitter.listeners('fetch').slice(-1)[0]

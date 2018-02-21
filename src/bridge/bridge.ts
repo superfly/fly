@@ -1,3 +1,4 @@
+import './proxy_stream'
 import './fetch'
 import './formdata'
 import './fly/cache'
