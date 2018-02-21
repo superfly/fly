@@ -7,6 +7,9 @@ import 'mocha';
 import * as promiseFinally from 'promise.prototype.finally'
 promiseFinally.shim()
 
+var SegfaultHandler = require('segfault-handler');
+SegfaultHandler.registerHandler("crash.log");
+
 import { Server } from '../src/server'
 import { parseConfig } from '../src/config'
 import log from "../src/log"
