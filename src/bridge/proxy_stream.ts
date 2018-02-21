@@ -49,6 +49,6 @@ registerBridge("readProxyStream", function(ctx){
     stream.on("data", function (data: Buffer) {
       cb.apply(undefined, ["data", transferInto(data)])
     })
-    stream.resume()
+    setImmediate(()=> stream.resume())
   }
 })
