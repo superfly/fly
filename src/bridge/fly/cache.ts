@@ -39,8 +39,10 @@ registerBridge('flyCacheExpire', function cacheExpire(ctx: Context, config: Conf
   ctx.addCallback(callback)
   let k = "cache:" + ctx.meta.get('app').id + ":" + key
 
-  if (!config.cacheStore)
-    return ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
+  if (!config.cacheStore) {
+    ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
+    return
+  }
 
   config.cacheStore.expire(k, ttl).then((ok) => {
     t.end({ key: key })
@@ -55,17 +57,19 @@ registerBridge('flyCacheGet',
   function cacheGet(ctx: Context, config: Config, key: string, callback: ivm.Reference<Function>) {
     let t = Trace.tryStart("cacheGet", ctx.trace)
     ctx.addCallback(callback)
-    let k = "cache:" + ctx.meta.get('app').id + ":" + key
 
-    if (!config.cacheStore)
-      return ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
+    if (!config.cacheStore) {
+      ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
+      return
+    }
+    let k = "cache:" + ctx.meta.get('app').id + ":" + key
 
     config.cacheStore.get(k).then((buf) => {
       const size = buf ? buf.byteLength : 0
       t.end({ size: size, key: key })
       ctx.applyCallback(callback, [null, transferInto(buf)])
     }).catch((err) => {
-      console.error("got err in cache.get", err)
+      log.error("got err in cache.get", err)
       t.end()
       ctx.tryCallback(callback, [err.toString()])
     })

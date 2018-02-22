@@ -31,6 +31,6 @@ export class MemoryCacheStore implements CacheStore {
   }
 
   async ttl(key: string): Promise<number> {
-    return await this.redis.ttl(key)
+    return this.redis.ttl(key)
   }
 }

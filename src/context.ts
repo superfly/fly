@@ -64,7 +64,13 @@ export class Context extends EventEmitter {
 					this.addReleasable(arg)
 				else if (arg instanceof ivm.ExternalCopy)
 					this.addReleasable(arg)
-			return await fn.apply(null, args, opts)
+			try {
+				return await fn.apply(null, args, opts)
+			} catch (err) {
+				if (err instanceof TypeError)
+					return
+				throw err
+			}
 		} finally {
 			this.addReleasable(fn)
 			const i = this.callbacks.indexOf(fn)
