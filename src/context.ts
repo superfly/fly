@@ -7,7 +7,7 @@ import { Config } from './config';
 import { EventEmitter } from 'events';
 
 export interface Releasable {
-	dispose(): void
+	release(): void
 }
 
 export class Context extends EventEmitter {
@@ -178,9 +178,9 @@ export class Context extends EventEmitter {
 	async release() {
 		const teardownFn = await this.global.get("teardown")
 		await teardownFn.apply(null, [])
-		teardownFn.dispose()
-		this.fireEventFn && this.fireEventFn.dispose()
-		this.global.dispose()
+		teardownFn.release()
+		this.fireEventFn && this.fireEventFn.release()
+		this.global.release()
 		this.callbacks = []
 		this.intervals = {}
 		this.timeouts = {}
@@ -214,7 +214,7 @@ export class Context extends EventEmitter {
 		let rel;
 		while (rel = this.releasables.pop()) {
 			try {
-				rel.dispose()
+				rel.release()
 			} catch (e) {
 				log.debug("could not release!", e)
 			}

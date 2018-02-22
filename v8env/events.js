@@ -92,8 +92,8 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 	logger.debug("handling request event")
 	let selfCleaningCallback = function selfCleaningCallback(...args) {
 		callback.apply(null, args)
-		callback.dispose()
-		body.dispose()
+		callback.release()
+		body.release()
 	}
 	let fetchEvent = new FetchEvent('fetch', {
 		request: new Request(url, Object.assign(req, { body }))
@@ -147,7 +147,7 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
 	let selfCleaningCallback = function selfCleaningCallback(...args) {
 		done.apply(null, args)
-		done.dispose()
+		done.release()
 	}
 	const listeners = emitter.listeners('fetchEnd')
 	if (listeners.length === 0)

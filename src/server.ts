@@ -228,9 +228,10 @@ export class Server extends EventEmitter {
 
 		try {
 
-			const appCopy = new ivm.ExternalCopy({ id: app.id, config: app.config })
-			await ctx.set('app', appCopy.copyInto())
-			appCopy.dispose()
+			await ctx.set('app', new ivm.ExternalCopy({
+				id: app.id,
+				config: app.config
+			}).copyInto({ release: true }))
 
 			request.pause()
 
@@ -285,8 +286,10 @@ export class Server extends EventEmitter {
 
 					let resProm: Promise<void>
 
+
+
 					if (resBody instanceof ivm.Reference) {
-						let res = resBody.deref().stream
+						let res = resBody.deref({ release: true }).stream
 						resProm = handleResponse(res, response)
 					} else if (resBody) {
 						resProm = handleResponse(bufferToStream(Buffer.from(resBody)), response)
@@ -295,9 +298,6 @@ export class Server extends EventEmitter {
 					}
 
 					resProm.then(() => {
-						if (resBody instanceof ivm.Reference)
-							resBody.dispose()
-
 						reqMeta.endedAt = process.hrtime()
 						response.end() // we are done. triggers 'finish' event
 						resolve()
@@ -314,11 +314,9 @@ export class Server extends EventEmitter {
 						finalResponse.ok = res.statusCode && res.statusCode >= 200 && res.statusCode < 400
 						finalResponse.headers = finalHeaders
 
-						const reqCopy = new ivm.ExternalCopy(reqForV8)
-
 						ctx.fireEvent("fetchEnd", [
 							fullURL,
-							reqCopy.copyInto(),
+							new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
 							new ivm.ExternalCopy(finalResponse),
 							null,
 							new ivm.Reference(() => { // done callback
@@ -328,21 +326,19 @@ export class Server extends EventEmitter {
 							})
 						], { timeout: this.options.fetchEndTimeout }).catch((err) => {
 							this.handleCriticalError(err, request, response)
-						}).finally(() => reqCopy.dispose())
+						})
 					})
 				}
 
-				const reqCopy = new ivm.ExternalCopy(reqForV8)
-
 				ctx.fireEvent("fetch", [
 					fullURL,
-					reqCopy.copyInto(),
+					new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
 					new ProxyStream(request).ref,
 					new ivm.Reference(fetchCallback)
 				], { timeout: this.options.fetchDispatchTimeout })
 					.catch((err) => {
 						this.handleCriticalError(err, request, response)
-					}).finally(() => reqCopy.dispose())
+					})
 			})
 
 		} catch (err) {

@@ -42,7 +42,7 @@ export default function fetchInit(ivm, dispatch) {
 					}
 					resolve(new Response(nodeBody, nodeRes))
 				} finally {
-					cbRef.dispose() // releases itself
+					cbRef.release() // releases itself
 				}
 			})
 
