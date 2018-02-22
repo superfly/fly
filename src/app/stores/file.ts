@@ -58,7 +58,7 @@ export class FileStore implements AppStore {
           if (event === 'change') {
             console.log("Detected .fly.yml change, updating in-memory config.")
             try {
-              this.releaseInfo.config = getLocalConfig(cwd)
+              this.releaseInfo.config = getLocalConfig(cwd).config || {}
             } catch (e) {
               console.error(e)
             }
