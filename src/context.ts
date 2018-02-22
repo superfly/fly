@@ -86,7 +86,8 @@ export class Context extends EventEmitter {
 	addReleasable(ref: ivm.Reference<any>): ivm.Reference<any>;
 	addReleasable(ec: ivm.ExternalCopy<any>): ivm.ExternalCopy<any>;
 	addReleasable(rel: ivm.Reference<any> | ivm.ExternalCopy<any>) {
-		this.releasables.push(rel)
+		if (this.releasables.indexOf(rel) === -1)
+			this.releasables.push(rel)
 		return rel
 	}
 
