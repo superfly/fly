@@ -82,7 +82,7 @@ function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, bo
 
       } catch (err) {
         log.error("caught error", err)
-        ctx.applyCallback(cb, [err.toString()])
+        ctx.tryCallback(cb, [err.toString()])
       }
     })
 

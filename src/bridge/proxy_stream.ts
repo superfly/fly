@@ -30,23 +30,24 @@ export class ProxyStream {
 }
 
 registerBridge("readProxyStream", function (ctx: Context, config: Config, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
-  const proxyable = ref.deref()
+  ctx.addCallback(cb)
+  const proxyable = ref.deref({ release: true })
   const stream = proxyable.stream
   if (!stream) {
-    cb.apply(undefined, ["end"])
+    ctx.applyCallback(cb, ["end"])
     return
   }
   stream.on("close", function () {
-    cb.apply(undefined, ["close"])
+    ctx.applyCallback(cb, ["close"])
   })
   stream.on("end", function () {
-    cb.apply(undefined, ["end"])
+    ctx.applyCallback(cb, ["end"])
   })
   stream.on("error", function (err: Error) {
-    cb.apply(undefined, ["error", err.toString()])
+    ctx.applyCallback(cb, ["error", err.toString()])
   })
   stream.on("data", function (data: Buffer) {
-    cb.apply(undefined, ["data", transferInto(data)])
+    ctx.applyCallback(cb, ["data", transferInto(data)])
   })
   setImmediate(() => stream.resume())
 })
