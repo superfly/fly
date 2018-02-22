@@ -7,7 +7,7 @@ describe('Context', () => {
   describe('no leaks!', () => {
     before(async function () {
       await v8Env.waitForReadiness()
-      this.iso = new ivm.Isolate({ memoryLimit: 64, snapshot: v8Env.snapshot })
+      this.iso = new ivm.Isolate({ memoryLimit: 96, snapshot: v8Env.snapshot })
       this.ctx = await createDefaultContext(this.iso)
     })
     after(async function () {

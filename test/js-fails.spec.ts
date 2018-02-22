@@ -44,7 +44,7 @@ describe('JS Fails', () => {
           })
         }
 
-        await (sleep(110))
+        await (sleep(150))
 
         let cached = await cacheStore.get("cache:test-app-id:long-wait-after-response")
         expect((<Buffer>cached).toString()).to.equal(cacheValue)
