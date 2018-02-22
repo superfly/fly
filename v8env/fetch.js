@@ -46,14 +46,11 @@ export default function fetchInit(ivm, dispatch) {
 				}
 			})
 
-			const initCopy = new ivm.ExternalCopy(init)
-			global.releasables.push(initCopy)
-
 			logger.debug("gonna fetch", url, init && JSON.stringify(init))
 			dispatch.apply(null, [
 				"fetch",
 				url,
-				initCopy.copyInto(),
+				new ivm.ExternalCopy(init).copyInto({ release: true }),
 				transferInto(ivm, body),
 				cbRef
 			])

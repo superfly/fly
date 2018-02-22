@@ -113,23 +113,15 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 		if (res._stream instanceof ivm.Reference) {
 			logger.debug("Response is a proxied stream")
 			body = res._stream
-		}
-		else if (!res._proxy) {
-			body = transferInto(ivm, await res.arrayBuffer())
-			logger.debug("Got arrayBuffer from response:", body.byteLength)
 		} else {
-			logger.debug("Response is a proxy")
+			body = transferInto(ivm, await res.arrayBuffer())
 		}
-
-		const initCopy = new ivm.ExternalCopy({
-			headers: res.headers && res.headers.toJSON() || {},
-			status: res.status,
-			bodyUsed: res.bodyUsed,
-		})
-		global.releasables.push(initCopy)
 
 		selfCleaningCallback.apply(undefined, [null,
-			initCopy.copyInto(),
+			new ivm.ExternalCopy({
+				headers: res.headers && res.headers.toJSON() || {},
+				status: res.status
+			}).copyInto({ release: true }),
 			body
 		])
 	})

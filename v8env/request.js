@@ -28,9 +28,6 @@ export default function requestInit(ivm) {
 		constructor(input, init) {
 			if (arguments.length < 1) throw TypeError('Not enough arguments');
 
-			if (arguments[2] instanceof ivm.Reference) //proxied
-				this._proxy = arguments[2]
-
 			// logger.debug('creating request! body typeof:', typeof Body, typeof init.body)
 			Body.call(this, null);
 

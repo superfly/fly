@@ -58,8 +58,6 @@ export default function bodyInit(ivm, dispatch) {
 		//     return Promise.resolve(this._stream)
 		//   if (this._body instanceof FormData)
 		//     return Promise.resolve(this._body)
-		//   if (!(this._proxy instanceof ivm.Reference))
-		//     return Promise.reject(new Error("can only get form data from native requests"))
 		//   return new Promise((resolve, reject) => {
 		//     FormData.parse(this._proxy).then((fd) => {
 		//       this._body = fd
