@@ -114,6 +114,7 @@ export class Server extends EventEmitter {
 	}
 
 	private async handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {
+		request.pause()
 		const startedAt = process.hrtime()
 		const requestID = mksuid()
 		const trace = Trace.start("httpRequest")
@@ -214,27 +215,18 @@ export class Server extends EventEmitter {
 			}
 		}
 
-		ctx.meta = new Map<string, any>([
-			...ctx.meta,
-			['app', app],
+		Object.assign(ctx.meta, {
+			app: app,
 
-			['requestID', requestID],
-			['originalScheme', scheme],
-			['originalHost', request.headers.host],
-			['originalPath', request.url],
-			['originalURL', fullURL],
-			['flyDepth', flyDepth]
-		])
+			requestID: requestID,
+			originalScheme: scheme,
+			originalHost: request.headers.host,
+			originalPath: request.url,
+			originalURL: fullURL,
+			flyDepth: flyDepth
+		})
 
 		try {
-
-			await ctx.set('app', new ivm.ExternalCopy({
-				id: app.id,
-				config: app.config
-			}).copyInto({ release: true }))
-
-			request.pause()
-
 			t = Trace.tryStart("fetchEvent", ctx.trace)
 			ctx.trace = t
 			let cbCalled = false
@@ -368,10 +360,7 @@ export class Server extends EventEmitter {
 
 	stop() {
 		return new Promise((resolve, reject) => {
-			this.server.close(() => {
-				log.info("closed server")
-				resolve()
-			})
+			this.server.close(resolve)
 		})
 	}
 }

@@ -31,8 +31,6 @@ import registerSession from './middleware/session'
 
 const mwToRegister = [registerFlyBackend, registerFlyEcho, registerFlyRoutes, registerForceSSL, registerGoogleAnalytics, registerSession]
 
-import './local'
-
 global.releasables = []
 global.middleware = {}
 
@@ -50,13 +48,11 @@ global.bootstrap = function bootstrap() {
 	const dispatcher = dispatcherInit(ivm, global._dispatch)
 	delete global._dispatch
 
+	global.fly = flyInit(ivm, dispatcher)
 	global.releasables.push(global._dispatch)
 
-	global.console = consoleInit(ivm)
-
+	global.console = consoleInit(ivm, dispatcher)
 	timersInit(ivm)
-
-	global.fly = flyInit(ivm, dispatcher)
 
 	// // Web primitives (?)
 	global.ReadableStream = ReadableStream
@@ -108,9 +104,6 @@ global.bootstrap = function bootstrap() {
 			}))
 		})
 	}
-
-	if (global._log)
-		global.releasables.push(global._log)
 
 	// load all middleware
 	for (const mwReg of mwToRegister)

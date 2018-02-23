@@ -1,36 +1,33 @@
-import { LogEvent, dispatchEvent } from './events'
-import { format } from 'util'
-
 // Console
-export default function consoleInit() {
-	const Console = {
+export default function consoleInit(ivm, dispatcher) {
+	return {
 		log(...args) {
-			Console.info(...args)
+			fly.log('info', ...args)
 		},
 		info(...args) {
-			dispatchEvent(new LogEvent('log', { level: 'info', message: format(...args), timestamp: new Date }))
+			fly.log('info', ...args)
 		},
 		assert(assertion, ...args) {
 			if (!assertion)
-				Console.info(...args)
+				fly.log('info', ...args)
 		},
 		error(...args) {
-			dispatchEvent(new LogEvent('log', { level: 'error', message: format(...args), timestamp: new Date }))
+			fly.log('error', ...args)
 		},
 		exception(...args) {
-			Console.error(...args)
+			fly.log('error', ...args)
 		},
 		warn(...args) {
-			dispatchEvent(new LogEvent('log', { level: 'warn', message: format(...args), timestamp: new Date }))
+			fly.log('warn', ...args)
 		},
 		trace() {
 			let stack = new Error().stack.match(/[^\r\n]+/g)
-			Console.info("Trace:\n" + stack.slice(2).join("\n"))
+			fly.log('info', "Trace:\n" + stack.slice(2).join("\n"))
 		},
 
 		// off-spec
 		debug(...args) {
-			dispatchEvent(new LogEvent('log', { level: 'debug', message: format(...args), timestamp: new Date }))
+			fly.log('debug', ...args)
 		},
 
 		// unimplemented
@@ -50,8 +47,6 @@ export default function consoleInit() {
 		time: noop,
 		timeEnd: noop,
 	}
-	return Console
 }
 
 function noop() { }
-

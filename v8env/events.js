@@ -158,21 +158,6 @@ function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
 	})
 }
 
-class LogMessage {
-	constructor(level, message, timestamp = new Date) {
-		this.level = level
-		this.message = message
-		this.timestamp = timestamp
-	}
-}
-
-export class LogEvent {
-	constructor(type = "log", init = {}) {
-		this.type = type
-		this.log = new LogMessage(init.level, init.message, init.timestamp || new Date)
-	}
-}
-
 export function dispatchEvent(event) {
 	emitter.emit(event.type, event)
 }
