@@ -4,7 +4,7 @@ import * as path from 'path'
 import fs = require('fs-extra')
 
 import { buildApp } from '../../utils/build'
-import { getLocalConfig, getLocalSecrets } from '../config'
+import { getLocalConfig, getLocalSecrets, parseConfig } from '../config'
 
 import * as webpack from 'webpack'
 const MemoryFS = require('memory-fs')
@@ -49,6 +49,8 @@ export class FileStore implements AppStore {
     if (this.options.secrets)
       this.releaseInfo.secrets = this.options.secrets
 
+    parseConfig(this.releaseInfo.config, this.releaseInfo.secrets)
+
     const flyYmlPath = path.join(cwd, '.fly.yml')
     const flySecretsPath = path.join(cwd, '.fly.secrets.yml')
 
@@ -59,6 +61,7 @@ export class FileStore implements AppStore {
             console.log("Detected .fly.yml change, updating in-memory config.")
             try {
               this.releaseInfo.config = getLocalConfig(cwd).config || {}
+              parseConfig(this.releaseInfo.config, this.releaseInfo.secrets)
             } catch (e) {
               console.error(e)
             }
@@ -71,6 +74,7 @@ export class FileStore implements AppStore {
             console.log("Detected .fly.secrets.yml change, updating in-memory config.")
             try {
               this.releaseInfo.secrets = getLocalSecrets(cwd)
+              parseConfig(this.releaseInfo.config, this.releaseInfo.secrets)
             } catch (e) {
               console.error(e)
             }
