@@ -5,7 +5,7 @@ import { transferInto } from '../utils/buffer'
  * @namespace fly.cache
  * @description An API for accessing a regional, volatile cache. Data stored in the `fly.cache` can have an associated per-key time to live (TTL), and we will evict key data automatically after the elapsed TTL. We will also evict unused data periodically.
  */
-export default function flyCacheInit(ivm, dispatch) {
+export default function flyCacheInit(ivm, dispatcher) {
   return {
     /**
      * Get a string value (or null) from the cache
@@ -52,19 +52,15 @@ export default function flyCacheInit(ivm, dispatch) {
       }
 
       return new Promise(function cacheSetPromise(resolve, reject) {
-        const cb = new ivm.Reference(function cacheSetCallback(err, ok) {
-          if (err != null) {
-            reject(err)
-            return
-          }
-          resolve(ok)
-        })
-
-        global.releasables.push(cb)
-
-        dispatch.apply(null, [
-          "flyCacheSet", key, value, ttl, cb
-        ])
+        dispatcher.dispatch("flyCacheSet", key, value, ttl,
+          new ivm.Reference(function cacheSetCallback(err, ok) {
+            if (err != null) {
+              reject(err)
+              return
+            }
+            resolve(ok)
+          })
+        )
       })
     },
     /**
@@ -78,17 +74,15 @@ export default function flyCacheInit(ivm, dispatch) {
     expire(key, ttl) {
       logger.debug("cache expire:", ttl)
       return new Promise(function cacheExpirePromise(resolve, reject) {
-        const cb = new ivm.Reference(function cacheExpireCallback(err, value) {
-          if (err != null) {
-            reject(err)
-            return
-          }
-          resolve(value)
-        })
-        global.releasables.push(cb)
-        dispatch.apply(null, [
-          "flyCacheExpire", key, ttl, cb
-        ])
+        dispatcher.dispatch("flyCacheExpire", key, ttl,
+          new ivm.Reference(function cacheExpireCallback(err, value) {
+            if (err != null) {
+              reject(err)
+              return
+            }
+            resolve(value)
+          })
+        )
       })
     }
   }
@@ -97,19 +91,15 @@ export default function flyCacheInit(ivm, dispatch) {
     logger.debug("cache get: " + key)
 
     return new Promise(function cacheGetPromise(resolve, reject) {
-      const cb = new ivm.Reference(function cacheGetCallback(err, value) {
-        if (err != null) {
-          reject(err)
-          return
-        }
-        resolve(value)
-      })
-
-      global.releasables.push(cb)
-
-      dispatch.apply(null, [
-        "flyCacheGet", key, cb
-      ])
+      dispatcher.dispatch("flyCacheGet", key,
+        new ivm.Reference(function cacheGetCallback(err, value) {
+          if (err != null) {
+            reject(err)
+            return
+          }
+          resolve(value)
+        })
+      )
     })
   }
 }

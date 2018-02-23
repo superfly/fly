@@ -8,13 +8,12 @@ const unsupportedBodyTypeError = new Error("Body type is unsupported, please use
  * @name Body
  * @mixin
  */
-export default function bodyInit(ivm, dispatch) {
+export default function bodyInit(ivm, dispatcher) {
 	function _read(ref) {
 		let closed = false
 		return new ReadableStream({
 			start(controller) {
-				dispatch.apply(null, [
-					"readProxyStream",
+				dispatcher.dispatch("readProxyStream",
 					ref,
 					new ivm.Reference((name, ...args) => {
 						if (name === "close" || name === "end") {
@@ -29,7 +28,7 @@ export default function bodyInit(ivm, dispatch) {
 						} else
 							logger.debug("unhandled event", name)
 					})
-				])
+				)
 			},
 			cancel() {
 				logger.debug("readable stream was cancelled")
