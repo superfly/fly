@@ -1,6 +1,6 @@
-import { registerBridge, Context } from './'
+import { registerBridge } from './'
 
-import { ivm } from '../'
+import { ivm, Context } from '../'
 import log from "../log"
 
 registerBridge('getHeapStatistics', function (ctx: Context) {

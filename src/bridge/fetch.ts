@@ -1,6 +1,6 @@
-import { registerBridge, Context } from './'
+import { registerBridge } from './'
 
-import { ivm, Config } from '../'
+import { ivm, Config, Context } from '../'
 import log from "../log"
 import * as http from 'http'
 import * as https from 'https'
@@ -23,7 +23,7 @@ function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, bo
   ctx.addCallback(cb)
   init || (init = {})
   const u = parseURL(urlStr)
-  let depth = <number>ctx.meta.get('flyDepth')
+  let depth = ctx.meta.flyDepth || 0
 
   log.silly("fetch depth: ", depth)
   if (depth >= 3) {
@@ -33,9 +33,9 @@ function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, bo
   }
 
   if (!u.host)
-    u.host = ctx.meta.get('originalHost')
+    u.host = ctx.meta.originalHost
   if (!u.protocol)
-    u.protocol = ctx.meta.get('originalScheme')
+    u.protocol = ctx.meta.originalScheme
 
   const httpFn = u.protocol == 'http:' ? http.request : https.request
   const httpAgent = u.protocol == 'http:' ? fetchAgent : fetchHttpsAgent

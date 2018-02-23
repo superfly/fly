@@ -1,4 +1,4 @@
-import { ivm } from './'
+import { ivm, App } from './'
 import log from "./log"
 //import { conf } from './config'a
 import { Bridge } from './bridge/bridge'
@@ -6,16 +6,31 @@ import { Trace } from './trace'
 import { Config } from './config';
 import { EventEmitter } from 'events';
 
+import * as winston from 'winston'
+
 export interface Releasable {
 	release(): void
+}
+
+export interface ContextMetadata {
+	app?: App
+	requestID?: string
+	originalScheme?: string
+	originalHost?: string
+	originalPath?: string
+	originalURL?: string
+	flyDepth?: number
+
+	[key: string]: any
 }
 
 export class Context extends EventEmitter {
 	ctx: ivm.Context
 	trace: Trace | undefined
 	private global: ivm.Reference<Object>
-	bridge?: Bridge
-	meta: Map<string, any>
+	bridge: Bridge
+	meta: ContextMetadata
+	logger: winston.LoggerInstance
 
 	timeouts: { [id: number]: NodeJS.Timer }
 	intervals: { [id: number]: NodeJS.Timer }
@@ -30,7 +45,7 @@ export class Context extends EventEmitter {
 
 	constructor(ctx: ivm.Context, iso: ivm.Isolate) {
 		super()
-		this.meta = new Map<string, any>()
+		this.meta = {}
 		this.ctx = ctx
 		this.currentTimerId = 0
 		this.timeouts = {}
@@ -39,6 +54,8 @@ export class Context extends EventEmitter {
 		this.releasables = []
 		this.iso = iso
 		this.global = ctx.globalReference()
+		this.bridge = new Bridge()
+		this.logger = new winston.Logger()
 	}
 
 	addCallback(fn: ivm.Reference<Function>) {
@@ -128,17 +145,18 @@ export class Context extends EventEmitter {
 			return
 		}))
 
-		this.bridge = new Bridge(this, config)
-		await this.set("_dispatch", new ivm.Reference(this.bridge.dispatch.bind(this.bridge)))
+		await this.set("_dispatch", new ivm.Reference((name: string, ...args: any[]) => {
+			this.bridge.dispatch(this, config, name, ...args)
+		}))
 
 		await (await this.get("bootstrap")).apply(undefined, [])
 
-		if (config.env !== 'production') {
-			await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
-				log.log(lvl, args[0], ...args.slice(1))
-			}))
-			await (await this.get("localBootstrap")).apply(undefined, [])
-		}
+		// if (config.env !== 'production') {
+		await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
+			log.log(lvl, args[0], ...args.slice(1))
+		}))
+		// 	await (await this.get("localBootstrap")).apply(undefined, [])
+		// }
 	}
 
 	async fireEvent(name: string, args: any[], opts?: any) {
@@ -191,7 +209,7 @@ export class Context extends EventEmitter {
 		this.callbacks = []
 		this.intervals = {}
 		this.timeouts = {}
-		this.bridge && this.bridge.dispose()
+		this.logger.close()
 		this.ctx.release()
 	}
 

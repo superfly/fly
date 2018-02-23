@@ -86,6 +86,7 @@
     "webpack": "^3.11.0",
     "whatwg-url": "^6.4.0",
     "winston": "^2.4.0",
+    "winston-syslog": "^1.2.6",
     "ws": "^4.0.0"
   },
   "publishConfig": {

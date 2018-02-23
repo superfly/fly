@@ -1,4 +1,5 @@
-import { parseConfig } from './config'
+import { parseConfig } from './app/config'
+import { ivm } from './';
 
 export interface ReleaseInfo {
   app_id: string
@@ -31,7 +32,18 @@ export class App {
     return this.releaseInfo.source
   }
 
+  get version() {
+    return this.releaseInfo.version
+  }
+
   get sourceHash() {
     return this.releaseInfo.source_hash
+  }
+
+  forV8() {
+    return new ivm.ExternalCopy({
+      id: this.id,
+      config: this.config
+    }).copyInto({ release: true })
   }
 }

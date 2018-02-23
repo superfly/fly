@@ -1,5 +1,5 @@
 import { AppStore } from '../store'
-import { App, ReleaseInfo } from '../'
+import { App, ReleaseInfo } from '../../app'
 import * as path from 'path'
 import fs = require('fs-extra')
 

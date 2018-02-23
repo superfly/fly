@@ -1,6 +1,6 @@
-import { registerBridge, Context } from './'
+import { registerBridge } from './'
 import { Readable } from "stream";
-import { ivm, Config } from "../";
+import { ivm, Config, Context } from "../";
 import { transferInto } from "../utils/buffer";
 
 // get stream from http or whatever
