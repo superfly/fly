@@ -1,3 +1,5 @@
+import dispatcherInit from './fly/dispatcher'
+
 import { fireEvent, addEventListener, dispatchEvent, FetchEvent } from "./events"
 import { Middleware, MiddlewareChain } from "./middleware"
 import { FlyBackend } from "./fly-backend"
@@ -40,20 +42,21 @@ global.registerMiddleware = function registerMiddleware(type, fn) {
 
 global.bootstrap = function bootstrap() {
 	const ivm = global._ivm
-	const dispatch = global._dispatch
 
 	// Cleanup, early!
 	delete global._ivm
-	delete global._dispatch
 	delete global.bootstrap
 
-	global.releasables.push(dispatch)
+	const dispatcher = dispatcherInit(ivm, global._dispatch)
+	delete global._dispatch
+
+	global.releasables.push(global._dispatch)
 
 	global.console = consoleInit(ivm)
 
 	timersInit(ivm)
 
-	global.fly = flyInit(ivm, dispatch)
+	global.fly = flyInit(ivm, dispatcher)
 
 	// // Web primitives (?)
 	global.ReadableStream = ReadableStream
@@ -66,11 +69,11 @@ global.bootstrap = function bootstrap() {
 	// // Web API
 	global.URL = URL
 	global.Headers = Headers
-	global.fetch = fetchInit(ivm, dispatch)
-	global.Body = bodyInit(ivm, dispatch)
-	// global.FormData = formDataInit(ivm, dispatch)
-	global.Response = responseInit(ivm, dispatch)
-	global.Request = requestInit(ivm, dispatch)
+	global.fetch = fetchInit(ivm, dispatcher)
+	global.Body = bodyInit(ivm, dispatcher)
+	// global.FormData = formDataInit(ivm, dispatcher)
+	global.Response = responseInit(ivm, dispatcher)
+	global.Request = requestInit(ivm, dispatcher)
 
 	// oh boy
 	global.cache = cache
@@ -96,13 +99,13 @@ global.bootstrap = function bootstrap() {
 
 	global.getHeapStatistics = function getHeapStatistics() {
 		return new Promise((resolve, reject) => {
-			dispatch.apply(null, ['getHeapStatistics', new ivm.Reference(function (err, heap) {
+			dispatcher.dispatch('getHeapStatistics', new ivm.Reference(function (err, heap) {
 				if (err) {
 					reject(err)
 					return
 				}
 				resolve(heap)
-			})])
+			}))
 		})
 	}
 
@@ -111,7 +114,7 @@ global.bootstrap = function bootstrap() {
 
 	// load all middleware
 	for (const mwReg of mwToRegister)
-		mwReg(ivm, dispatch)
+		mwReg(ivm, dispatcher)
 }
 
 global.teardown = function teardown() {

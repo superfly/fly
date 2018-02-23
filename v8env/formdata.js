@@ -1,6 +1,6 @@
 import { logger } from './logger'
 
-export default function formDataInit(ivm, dispatch) {
+export default function formDataInit(ivm, dispatcher) {
 	function FormData(form) {
 		this._data = [];
 		if (!form) return;
@@ -64,7 +64,7 @@ export default function formDataInit(ivm, dispatch) {
 	FormData.parse = function (req) {
 		return new Promise(function (resolve, reject) {
 			let fd = new FormData()
-			dispatch.apply(undefined, ["parseFormData", req, new ivm.Reference(function (name, ...args) {
+			dispatcher.dispatch("parseFormData", req, new ivm.Reference(function (name, ...args) {
 				switch (name) {
 					case "end":
 						resolve(fd)
@@ -79,7 +79,7 @@ export default function formDataInit(ivm, dispatch) {
 						logger.debug("got a part! from v8")
 						fd.append(args[0], args[1])
 				}
-			})])
+			}))
 		})
 	}
 

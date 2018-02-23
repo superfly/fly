@@ -2,33 +2,32 @@ let router = null
 let fetchEventBound = false
 let flyFetchHandler = null
 
-function ensureFetchEvent(){
-  if(!fetchEventBound){
+function ensureFetchEvent() {
+  if (!fetchEventBound) {
     global.addEventListener("fetch", handleFetch)
     fetchEventBound = true
   }
 }
-function ensureRouter(){
-  if(!router){
+function ensureRouter() {
+  if (!router) {
     router = require('find-my-way')()
     ensureFetchEvent()
   }
   return router
 }
-function handleFetch(event){
+function handleFetch(event) {
   const req = event.request
-  if(router){
+  if (router) {
     const path = new URL(req.url).pathname
     let match = router.find(req.method, path)
-    console.log("match:", match)
 
-    if(match){
+    if (match) {
       event.respondWith(match.handler(req, match))
       return
     }
   }
 
-  if(flyFetchHandler != null){
+  if (flyFetchHandler != null) {
     event.respondWith(flyFetchHandler(req))
     return
   }
@@ -57,21 +56,21 @@ module.exports = {
    * @param {String} pattern The path to match. This accepts <code>/static/paths</code>, <code>/:parametric/path</code>, or <code>/path/*wildcards</code>. Parameters in patsh can include regular expressions like <code>/:param(^[regex])</code> 
    * @param {httpHandler} fn A function that accepts a request and a set of parameters, and returns a response
    */
-  route(){
+  route() {
     const r = ensureRouter()
     let method = "GET"
-    if(arguments.length == 2){
+    if (arguments.length == 2) {
       method = ["GET", "HEAD"]
-    }else if(arguments.length == 3){
+    } else if (arguments.length == 3) {
       method = arguments[0]
-    }else{
+    } else {
       throw "fly.route requires either 2 or three arguments: (method?, pattern, fn)"
     }
     const pattern = arguments[arguments.length - 2]
     const fn = arguments[arguments.length - 1]
-    try{
-    r.on(method, pattern, fn)
-    }catch(err){
+    try {
+      r.on(method, pattern, fn)
+    } catch (err) {
       throw err
     }
     //ensureRouter().addRoute(pattern, fn)
@@ -83,7 +82,7 @@ module.exports = {
    * @memberof fly.http 
    * @param {httpHandler} fn A function that accepts a request and a set of parameters, and returns a response
    */
-  respondWith(fn){
+  respondWith(fn) {
     ensureFetchEvent()
     flyFetchHandler = fn
   }
