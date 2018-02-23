@@ -1,0 +1,5 @@
+app_id: config-and-secrets
+config:
+  option_a: val_a
+  password:
+    fromSecret: my_app_password
