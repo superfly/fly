@@ -172,162 +172,191 @@ export class Server extends EventEmitter {
 		}
 		this.emit('request', request)
 
+		if (!app.source) {
+			if (await this.runRequestHook(null, request, response))
+				return
+			response.writeHead(400)
+			response.end("app has no source")
+			return
+		}
+
+		if (!this.config.contextStore)
+			this.config.contextStore = new DefaultContextStore()
+
+		const contextErrorHandler = (err: Error) => {
+			this.handleCriticalError(err, request, response)
+		}
+
+		let t = trace.start("acquireContext")
+		let ctx: Context
+		try {
+			ctx = await this.config.contextStore.getContext(this.config, app, t)
+		} catch (err) {
+			this.handleCriticalError(err, request, response)
+			return
+		}
+		t.end()
+		ctx.trace = trace
+
+		ctx.on("error", contextErrorHandler)
+
+		if (await this.runRequestHook(ctx, request, response)) {
+			this.config.contextStore.putContext(ctx)
+			return
+		}
+
+		let flyDepth = 0
+		let flyDepthHeader = <string>request.headers["x-fly-depth"]
+		if (flyDepthHeader) {
+			flyDepth = parseInt(flyDepthHeader)
+			if (isNaN(flyDepth) || flyDepth < 0) {
+				flyDepth = 0
+			}
+		}
+
+		ctx.meta = new Map<string, any>([
+			...ctx.meta,
+			['app', app],
+
+			['requestID', requestID],
+			['originalScheme', scheme],
+			['originalHost', request.headers.host],
+			['originalPath', request.url],
+			['originalURL', fullURL],
+			['flyDepth', flyDepth]
+		])
+
 		try {
 
-			if (!app.source) {
-				if (await this.runRequestHook(null, request, response))
-					return
-				response.writeHead(400)
-				response.end("app has no source")
-				return
-			}
-
-			if (!this.config.contextStore)
-				this.config.contextStore = new DefaultContextStore()
-
-			let t = trace.start("acquireContext")
-			let ctx = await this.config.contextStore.getContext(this.config, app, t)
-			t.end()
-			ctx.trace = trace
-
-			if (await this.runRequestHook(ctx, request, response)) {
-				this.config.contextStore.putContext(ctx)
-				return
-			}
-
-			let flyDepth = 0
-			let flyDepthHeader = <string>request.headers["x-fly-depth"]
-			if (flyDepthHeader) {
-				log.debug("got depth header: ", flyDepthHeader)
-				flyDepth = parseInt(flyDepthHeader)
-				if (isNaN(flyDepth) || flyDepth < 0) {
-					flyDepth = 0
-				}
-			}
-
-			ctx.meta = new Map<string, any>([
-				...ctx.meta,
-				['app', app],
-
-				['requestID', requestID],
-				['originalScheme', scheme],
-				['originalHost', request.headers.host],
-				['originalPath', request.url],
-				['originalURL', fullURL],
-				['flyDepth', flyDepth]
-			])
-
-			ctx.set('app', new ivm.ExternalCopy({ id: app.id, config: app.config }).copyInto())
-
-			let fireEvent = await ctx.get("fireEvent")
+			await ctx.set('app', new ivm.ExternalCopy({
+				id: app.id,
+				config: app.config
+			}).copyInto({ release: true }))
 
 			request.pause()
-
-			let reqForV8 = new ivm.ExternalCopy({
-				method: request.method,
-				headers: httpUtils.headersForWeb(request.rawHeaders),
-				remoteAddr: request.connection.remoteAddress
-			}).copyInto()
 
 			t = Trace.tryStart("fetchEvent", ctx.trace)
 			ctx.trace = t
 			let cbCalled = false
 			await new Promise((resolve, reject) => { // mainly to make try...finally work
-				fireEvent.apply(undefined, [
-					"fetch",
-					fullURL,
-					reqForV8,
-					new ProxyStream(request).ref,
-					new ivm.Reference((err: any, res: any, resBody: ArrayBuffer | ivm.Reference<ProxyStream>) => {
-						if (cbCalled) {
-							return // this can't happen twice
+				let reqForV8 = {
+					method: request.method,
+					headers: httpUtils.headersForWeb(request.rawHeaders),
+					remoteAddr: request.connection.remoteAddress
+				}
+				const reqMeta = request.meta
+
+				let fetchCallback = (err: any, res: any, resBody: ArrayBuffer | ivm.Reference<ProxyStream>) => {
+					if (cbCalled) {
+						return // this can't happen twice
+					}
+					cbCalled = true
+					t.end()
+					ctx.trace = t.parent
+
+					if (err) {
+						log.error("error from fetch callback:", err)
+						response.writeHead(500)
+						response.end("Error: " + err)
+						// release ctx
+						if (this.config.contextStore)
+							this.config.contextStore.putContext(ctx)
+						return
+					}
+
+					for (let n in res.headers) {
+						try {
+							const niceName = httpUtils.normalizeHeader(n)
+							const val = res.headers[n]
+							response.setHeader(niceName, val)
+							finalHeaders[niceName] = val
+						} catch (err) {
+							log.error("error setting header", err)
 						}
-						cbCalled = true
-						t.end()
-						ctx.trace = t.parent
+					}
 
-						if (err) {
-							log.error("error from fetch callback:", err)
-							response.writeHead(500)
-							response.end("Error: " + err)
-							// release ctx
-							if (this.config.contextStore)
-								this.config.contextStore.putContext(ctx)
-							return
+					for (let n of hopHeaders)
+						response.removeHeader(n)
+
+
+					if (this.options.serverHeader)
+						response.setHeader("Server", this.options.serverHeader)
+
+					response.writeHead(res.status)
+
+					let resProm: Promise<void>
+
+
+
+					if (resBody instanceof ivm.Reference) {
+						let res = resBody.deref({ release: true }).stream
+						resProm = handleResponse(res, response)
+					} else if (resBody) {
+						resProm = handleResponse(bufferToStream(Buffer.from(resBody)), response)
+					} else {
+						resProm = Promise.resolve()
+					}
+
+					resProm.then(() => {
+						reqMeta.endedAt = process.hrtime()
+						response.end() // we are done. triggers 'finish' event
+						resolve()
+						let finalResponse = {
+							status: 200,
+							statusText: "OK",
+							ok: true,
+							url: fullURL,
+							headers: {}
 						}
 
-						for (let n in res.headers) {
-							try {
-								const niceName = httpUtils.normalizeHeader(n)
-								const val = res.headers[n]
-								response.setHeader(niceName, val)
-								finalHeaders[niceName] = val
-							} catch (err) {
-								log.error("error setting header", err)
-							}
-						}
+						finalResponse.status = res.status
+						finalResponse.statusText = res.statusText
+						finalResponse.ok = res.statusCode && res.statusCode >= 200 && res.statusCode < 400
+						finalResponse.headers = finalHeaders
 
-						for (let n of hopHeaders)
-							response.removeHeader(n)
-
-
-						if (this.options.serverHeader)
-							response.setHeader("Server", this.options.serverHeader)
-
-						response.writeHead(res.status)
-
-						let resProm: Promise<void>
-
-						if(resBody instanceof ivm.Reference){
-							let res = resBody.deref().stream
-							resProm = handleResponse(res, response)
-						} else if (resBody) {
-							resProm = handleResponse(bufferToStream(Buffer.from(resBody)), response)
-						} else {
-							resProm = Promise.resolve()
-						}
-
-						resProm.then(() => {
-							request.meta.endedAt = process.hrtime()
-							response.end() // we are done. triggers 'finish' event
-							resolve()
-							let finalResponse = {
-								status: 200,
-								statusText: "OK",
-								ok: true,
-								url: fullURL,
-								headers: {}
-							}
-
-							finalResponse.status = res.status
-							finalResponse.statusText = res.statusText
-							finalResponse.ok = res.statusCode && res.statusCode >= 200 && res.statusCode < 400
-							finalResponse.headers = finalHeaders
-							fireEvent.apply(undefined, [
-								"fetchEnd",
-								fullURL,
-								reqForV8,
-								new ivm.ExternalCopy(finalResponse),
-								null,
-								new ivm.Reference(() => { // done callback
-									log.debug("finished all fetchEnd")
-									if (this.config.contextStore)
-										this.config.contextStore.putContext(ctx)
-								})
-							], { timeout: this.options.fetchEndTimeout })
+						ctx.fireEvent("fetchEnd", [
+							fullURL,
+							new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
+							new ivm.ExternalCopy(finalResponse),
+							null,
+							new ivm.Reference(() => { // done callback
+								log.silly("finished all fetchEnd")
+								if (this.config.contextStore)
+									this.config.contextStore.putContext(ctx)
+							})
+						], { timeout: this.options.fetchEndTimeout }).catch((err) => {
+							this.handleCriticalError(err, request, response)
 						})
 					})
+				}
+
+				ctx.fireEvent("fetch", [
+					fullURL,
+					new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
+					new ProxyStream(request).ref,
+					new ivm.Reference(fetchCallback)
 				], { timeout: this.options.fetchDispatchTimeout })
+					.catch((err) => {
+						this.handleCriticalError(err, request, response)
+					})
 			})
 
-		} catch (e) {
-			log.error("error...", e, e.stack)
-			response.statusCode = 500
-			response.end("Critical error.")
+		} catch (err) {
+			this.handleCriticalError(err, request, response)
 		} finally {
 			trace.end()
 			this.emit('requestEnd', request, response, trace)
+			ctx.removeListener("error", contextErrorHandler)
 		}
+	}
+
+	handleCriticalError(err: Error, request: http.IncomingMessage, response: http.ServerResponse) {
+		log.error("critical error:", err)
+		if (response.finished)
+			return
+		response.statusCode = 500
+		response.end("Critical error.")
+		request.destroy() // stop everything I guess.
 	}
 
 	async runRequestHook(ctx: Context | null, req: http.IncomingMessage, res: http.ServerResponse) {

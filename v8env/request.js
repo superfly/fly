@@ -28,8 +28,6 @@ export default function requestInit(ivm) {
 		constructor(input, init) {
 			if (arguments.length < 1) throw TypeError('Not enough arguments');
 
-			logger.debug("ARG 2 IS:", arguments[2] instanceof ivm.Reference, arguments[2] && arguments[2].toString())
-
 			// logger.debug('creating request! body typeof:', typeof Body, typeof init.body)
 			Body.call(this, null);
 
@@ -97,7 +95,7 @@ export default function requestInit(ivm) {
 			}
 
 			if ('body' in init) {
-				logger.debug("setting le body for request", typeof init.body, init.body instanceof FormData)
+				logger.debug("setting le body for request", typeof init.body, init.body)
 				this._stream = init.body;
 			}
 

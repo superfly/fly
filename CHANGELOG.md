@@ -2,6 +2,82 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.17.0-4"></a>
+# [0.17.0-4](https://github.com/superfly/fly/compare/v0.17.0-3...v0.17.0-4) (2018-02-22)
+
+
+
+<a name="0.17.0-3"></a>
+# [0.17.0-3](https://github.com/superfly/fly/compare/v0.17.0-2...v0.17.0-3) (2018-02-22)
+
+
+
+<a name="0.17.0-2"></a>
+# [0.17.0-2](https://github.com/superfly/fly/compare/v0.17.0-1...v0.17.0-2) (2018-02-22)
+
+
+
+<a name="0.17.0-1"></a>
+# [0.17.0-1](https://github.com/superfly/fly/compare/v0.17.0-0...v0.17.0-1) (2018-02-22)
+
+
+
+<a name="0.17.0-0"></a>
+# [0.17.0-0](https://github.com/superfly/fly/compare/v0.16.6...v0.17.0-0) (2018-02-21)
+
+
+### Bug Fixes
+
+* gracefully handle out of band errors ([bb17cdd](https://github.com/superfly/fly/commit/bb17cdd))
+
+
+### Features
+
+* ProxyStreams ([7a9a442](https://github.com/superfly/fly/commit/7a9a442))
+* ProxyStreams ([#15](https://github.com/superfly/fly/issues/15)) ([871fec7](https://github.com/superfly/fly/commit/871fec7))
+
+
+
+<a name="0.16.7-6"></a>
+## [0.16.7-6](https://github.com/superfly/fly/compare/v0.16.7-5...v0.16.7-6) (2018-02-20)
+
+
+
+<a name="0.16.7-5"></a>
+## [0.16.7-5](https://github.com/superfly/fly/compare/v0.16.7-4...v0.16.7-5) (2018-02-20)
+
+
+
+<a name="0.16.7-4"></a>
+## [0.16.7-4](https://github.com/superfly/fly/compare/v0.16.7-3...v0.16.7-4) (2018-02-16)
+
+
+
+<a name="0.16.7-3"></a>
+## [0.16.7-3](https://github.com/superfly/fly/compare/v0.16.7-2...v0.16.7-3) (2018-02-16)
+
+
+
+<a name="0.16.7-2"></a>
+## [0.16.7-2](https://github.com/superfly/fly/compare/v0.16.7-1...v0.16.7-2) (2018-02-16)
+
+
+
+<a name="0.16.7-1"></a>
+## [0.16.7-1](https://github.com/superfly/fly/compare/v0.16.7-0...v0.16.7-1) (2018-02-16)
+
+
+
+<a name="0.16.7-0"></a>
+## [0.16.7-0](https://github.com/superfly/fly/compare/v0.16.6...v0.16.7-0) (2018-02-16)
+
+
+### Bug Fixes
+
+* gracefully handle out of band errors ([3ea91d6](https://github.com/superfly/fly/commit/3ea91d6))
+
+
+
 <a name="0.16.6"></a>
 ## [0.16.6](https://github.com/superfly/fly/compare/v0.16.5...v0.16.6) (2018-02-14)
 

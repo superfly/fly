@@ -8,6 +8,7 @@ import { createContext } from './context'
 
 import { App } from './app'
 import { Config } from './config';
+import log from './log';
 
 export interface DefaultContextStoreOptions {
   inspect?: boolean
@@ -22,7 +23,7 @@ export class DefaultContextStore implements ContextStore {
     v8Env.on('snapshot', this.resetIsolate.bind(this))
   }
 
-  async getContext(config: Config, app: App, trace?: Trace) {
+  async getContext(config: Config, app: App, trace?: Trace): Promise<Context> {
     const t = trace || Trace.start("acquireContext")
     let t2 = t.start("getIsolate")
     const iso = await this.getIsolate()
@@ -31,26 +32,36 @@ export class DefaultContextStore implements ContextStore {
     if (!iso)
       throw new Error("no isolate, something is very wrong")
 
-    t2 = t.start("createContext")
-    const ctx = await createContext(config, iso, { inspector: !!this.options.inspect })
-    t2.end()
+    try {
+      t2 = t.start("createContext")
+      const ctx = await createContext(config, iso, { inspector: !!this.options.inspect })
+      ctx.meta.set("iso", iso)
+      t2.end()
 
-    t2 = t.start("compile")
-    const script = await iso.compileScript(app.source, { filename: `bundle-${app.sourceHash}.js` })
-    t2.end()
-    t2 = t.start("prerun")
-    await script.run(ctx.ctx)
-    t2.end()
-    return ctx
+      t2 = t.start("compile")
+      const script = await iso.compileScript(app.source, { filename: `bundle-${app.sourceHash}.js` })
+      t2.end()
+      t2 = t.start("prerun")
+      await script.run(ctx.ctx)
+      t2.end()
+      return ctx
+    } catch (err) {
+      log.error("bombed somehow!", err)
+      throw err
+    }
   }
 
   putContext(ctx: Context) {
-    // Nothing to do here.
+    ctx.finalize().then(() => {
+      ctx.release()
+      log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
+    })
   }
 
   async getIsolate() {
-    if (this.isolate)
+    if (this.isolate && !this.isolate.isDisposed)
       return this.isolate
+    log.info("Getting a new isolate.")
     await v8Env.waitForReadiness()
     this.resetIsolate()
     return this.isolate
@@ -58,10 +69,12 @@ export class DefaultContextStore implements ContextStore {
 
   resetIsolate() {
     if (this.isolate)
-      this.isolate.dispose()
+      if (!this.isolate.isDisposed) {
+        this.isolate.dispose()
+      }
     this.isolate = new ivm.Isolate({
       snapshot: v8Env.snapshot,
-      memoryLimit: 1024,
+      memoryLimit: 128,
       inspector: !!this.options.inspect
     })
   }

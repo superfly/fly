@@ -67,81 +67,83 @@ export function addEventListener(name, fn) {
 	emitter.addListener(name, fn)
 }
 
-export function fireEventInit(ivm) {
-	return function fireEvent(name, ...args) {
-		args.unshift(ivm)
-		try {
-			switch (name) {
-				case "fetch":
-					fireFetchEvent.apply(undefined, args)
-					break
-				case "fetchEnd":
-					fireFetchEndEvent.apply(undefined, args)
-					break
-				default:
-					throw new Error(`unknown event listener: ${name}`)
-			}
-		} catch (err) {
-			logger.debug(err.message, err.stack)
-			let cb = args[args.length - 1] // should be the last arg
-			if (cb instanceof ivm.Reference)
-				cb.apply(undefined, [err.toString()])
+export function fireEvent(ivm, name, ...args) {
+	args.unshift(ivm)
+	try {
+		switch (name) {
+			case "fetch":
+				fireFetchEvent.apply(undefined, args)
+				break
+			case "fetchEnd":
+				fireFetchEndEvent.apply(undefined, args)
+				break
+			default:
+				throw new Error(`unknown event listener: ${name}`)
 		}
+	} catch (err) {
+		logger.debug(err.message, err.stack)
+		let cb = args[args.length - 1] // should be the last arg
+		if (cb instanceof ivm.Reference)
+			cb.apply(undefined, [err.toString()])
 	}
 }
 
-function fireFetchEvent(ivm, url, nodeReq, nodeBody, callback) {
+function fireFetchEvent(ivm, url, req, body, callback) {
 	logger.debug("handling request event")
-	nodeReq.body = nodeBody
-	let req = new Request(url, nodeReq)
-	let fetchEvent = new FetchEvent('fetch', { request: req }, async function (err, res) {
+	let selfCleaningCallback = function selfCleaningCallback(...args) {
+		callback.apply(null, args)
+		callback.release()
+		body.release()
+	}
+	let fetchEvent = new FetchEvent('fetch', {
+		request: new Request(url, Object.assign(req, { body }))
+	}, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 
-		if (err){
-			console.log(err, err.stack)
-			return callback.apply(null, [err.toString()])
+		if (err) {
+			logger.error(err, err.stack)
+			return selfCleaningCallback.apply(null, [err.toString()])
 		}
 
-		if(res.bodyUsed){
-			return callback.apply(null, [bodyUsedError.toString()])
+		if (res.bodyUsed) {
+			return selfCleaningCallback.apply(null, [bodyUsedError.toString()])
 		}
 
 		let body = null
-		if(res._stream instanceof ivm.Reference){
+		if (res._stream instanceof ivm.Reference) {
 			logger.debug("Response is a proxied stream")
 			body = res._stream
-		}
-		else if (!res._proxy) {
+		} else {
 			body = transferInto(ivm, await res.arrayBuffer())
-			logger.debug("Got arrayBuffer from response:", body.byteLength)
-		}else{
-			logger.debug("Response is a proxy")
 		}
 
-		callback.apply(undefined, [null,
+		selfCleaningCallback.apply(undefined, [null,
 			new ivm.ExternalCopy({
 				headers: res.headers && res.headers.toJSON() || {},
-				status: res.status,
-				bodyUsed: res.bodyUsed,
-			}).copyInto(),
+				status: res.status
+			}).copyInto({ release: true }),
 			body
 		])
 	})
 	let fn = emitter.listeners('fetch').slice(-1)[0]
 	if (typeof fn !== 'function')
-		return callback.apply(null, ["No 'fetch' event listener attached."])
+		return selfCleaningCallback.apply(null, ["No 'fetch' event listener attached."])
 
 	if (fn(fetchEvent) instanceof Promise)
-		return callback.apply(null, ["'fetch' event handler function cannot return a promise."])
+		return selfCleaningCallback.apply(null, ["'fetch' event handler function cannot return a promise."])
 
 	if (!fetchEvent.respondWithEntered)
-		return callback.apply(null, ["respondWith was not called for FetchEvent"])
+		return selfCleaningCallback.apply(null, ["respondWith was not called for FetchEvent"])
 }
 
 function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
+	let selfCleaningCallback = function selfCleaningCallback(...args) {
+		done.apply(null, args)
+		done.release()
+	}
 	const listeners = emitter.listeners('fetchEnd')
 	if (listeners.length === 0)
-		return done.apply()
+		return selfCleaningCallback.apply()
 	const req = new Request(url, nodeReq)
 	const res = new Response("", nodeRes)
 
@@ -152,7 +154,7 @@ function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
 	}
 
 	emitter.emitAsync('fetchEnd', event).then(() => {
-		done.apply()
+		selfCleaningCallback.apply()
 	})
 }
 

@@ -20,9 +20,6 @@ export default function responseInit(ivm) {
 
 			Body.call(this, body)
 
-			if (arguments[2] instanceof ivm.Reference) //proxied
-				this._proxy = arguments[2]
-
 			init = Object(init) || {};
 
 			/**
@@ -99,7 +96,6 @@ export default function responseInit(ivm) {
 				throw bodyUsedError
 			const [body1, body2] = this.body.tee()
 			const cloned = new Response(body2, this)
-			this._proxy = null // not sure about this
 			this._stream = body1
 			return cloned
 		}

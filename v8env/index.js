@@ -1,4 +1,4 @@
-import { fireEventInit, addEventListener, dispatchEvent, FetchEvent } from "./events"
+import { fireEvent, addEventListener, dispatchEvent, FetchEvent } from "./events"
 import { Middleware, MiddlewareChain } from "./middleware"
 import { FlyBackend } from "./fly-backend"
 import { ReadableStream, WritableStream, TransformStream } from 'web-streams-polyfill'
@@ -14,7 +14,7 @@ import Headers from './headers'
 
 import fetchInit from './fetch'
 import bodyInit from './body'
-import formDataInit from './formdata'
+// import formDataInit from './formdata'
 import responseInit from './response'
 import requestInit from './request'
 import cache from './cache'
@@ -31,6 +31,7 @@ const mwToRegister = [registerFlyBackend, registerFlyEcho, registerFlyRoutes, re
 
 import './local'
 
+global.releasables = []
 global.middleware = {}
 
 global.registerMiddleware = function registerMiddleware(type, fn) {
@@ -46,13 +47,15 @@ global.bootstrap = function bootstrap() {
 	delete global._dispatch
 	delete global.bootstrap
 
+	global.releasables.push(dispatch)
+
 	global.console = consoleInit(ivm)
 
 	timersInit(ivm)
 
 	global.fly = flyInit(ivm, dispatch)
 
-	// Web primitives (?)
+	// // Web primitives (?)
 	global.ReadableStream = ReadableStream
 	global.WritableStream = WritableStream
 	global.TransformStream = TransformStream
@@ -60,12 +63,12 @@ global.bootstrap = function bootstrap() {
 	global.TextEncoder = TextEncoder
 	global.TextDecoder = TextDecoder
 
-	// Web API
+	// // Web API
 	global.URL = URL
 	global.Headers = Headers
 	global.fetch = fetchInit(ivm, dispatch)
 	global.Body = bodyInit(ivm, dispatch)
-	global.FormData = formDataInit(ivm, dispatch)
+	// global.FormData = formDataInit(ivm, dispatch)
 	global.Response = responseInit(ivm, dispatch)
 	global.Request = requestInit(ivm, dispatch)
 
@@ -73,8 +76,8 @@ global.bootstrap = function bootstrap() {
 	global.cache = cache
 	global.session = new SessionStore()
 
-	// Events
-	global.fireEvent = fireEventInit(ivm, dispatch)
+	// // Events
+	global.fireEvent = fireEvent.bind(null, ivm)
 	global.addEventListener = addEventListener
 	global.dispatchEvent = dispatchEvent
 
@@ -91,8 +94,33 @@ global.bootstrap = function bootstrap() {
 	global.Middleware = Middleware
 	global.MiddlewareChain = MiddlewareChain
 
+	global.getHeapStatistics = function getHeapStatistics() {
+		return new Promise((resolve, reject) => {
+			dispatch.apply(null, ['getHeapStatistics', new ivm.Reference(function (err, heap) {
+				if (err) {
+					reject(err)
+					return
+				}
+				resolve(heap)
+			})])
+		})
+	}
+
+	if (global._log)
+		global.releasables.push(global._log)
+
 	// load all middleware
 	for (const mwReg of mwToRegister)
 		mwReg(ivm, dispatch)
+}
 
+global.teardown = function teardown() {
+	let r;
+	while (r = global.releasables.pop()) {
+		try {
+			r.release()
+		} catch (e) {
+			// fail silently
+		}
+	}
 }

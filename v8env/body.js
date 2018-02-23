@@ -9,7 +9,7 @@ const unsupportedBodyTypeError = new Error("Body type is unsupported, please use
  * @mixin
  */
 export default function bodyInit(ivm, dispatch) {
-	function _read(ref){
+	function _read(ref) {
 		let closed = false
 		return new ReadableStream({
 			start(controller) {
@@ -29,7 +29,7 @@ export default function bodyInit(ivm, dispatch) {
 						} else
 							logger.debug("unhandled event", name)
 					})
-				])	
+				])
 			},
 			cancel() {
 				logger.debug("readable stream was cancelled")
@@ -58,8 +58,6 @@ export default function bodyInit(ivm, dispatch) {
 		//     return Promise.resolve(this._stream)
 		//   if (this._body instanceof FormData)
 		//     return Promise.resolve(this._body)
-		//   if (!(this._proxy instanceof ivm.Reference))
-		//     return Promise.reject(new Error("can only get form data from native requests"))
 		//   return new Promise((resolve, reject) => {
 		//     FormData.parse(this._proxy).then((fd) => {
 		//       this._body = fd
@@ -77,13 +75,13 @@ export default function bodyInit(ivm, dispatch) {
 		 * @returns {string} The body as a string
 		 * @memberof Body
 		 */
-		this.text = async () => {
+		this.text = async function text() {
 			if (this.bodyUsed)
 				throw bodyUsedError
+			logger.debug("getting text")
 			const arr = await bufferFromStream(this.body.getReader())
-			const text = new TextDecoder('utf-8').decode(arr)
-			return text
-		}
+			return new TextDecoder('utf-8').decode(arr)
+		}.bind(this)
 
 		/**
 		 * Buffers and returns the body
@@ -91,13 +89,13 @@ export default function bodyInit(ivm, dispatch) {
 		 * @function
 		 * @memberof Body
 		 */
-		this.arrayBuffer = async () => {
+		this.arrayBuffer = async function arrayBuffer() {
 			if (this.bodyUsed)
 				throw bodyUsedError
 			const arr = await bufferFromStream(this.body.getReader())
 			this.bodyUsed = true
 			return arr.buffer
-		}
+		}.bind(this)
 
 	}
 
@@ -117,9 +115,9 @@ export default function bodyInit(ivm, dispatch) {
 		if (typeof _stream === "string") {
 			return streamFromString(_stream)
 		}
-		if (_stream instanceof FormData) {
-			return streamFromString(_stream.toString())
-		}
+		// if (_stream instanceof FormData) {
+		// 	return streamFromString(_stream.toString())
+		// }
 		logger.debug("make stream", typeof _stream, _stream.toString())
 		throw unsupportedBodyTypeError
 	}
@@ -176,13 +174,15 @@ export default function bodyInit(ivm, dispatch) {
 
 
 function concatenate(resultConstructor, ...arrays) {
-	const totalLength = arrays.reduce((total, arr) => {
-		return total + arr.length
-	}, 0);
-	const result = new resultConstructor(totalLength);
-	arrays.reduce((offset, arr) => {
+	let totalLength = 0;
+	for (let arr of arrays) {
+		totalLength += arr.length;
+	}
+	let result = new resultConstructor(totalLength);
+	let offset = 0;
+	for (let arr of arrays) {
 		result.set(arr, offset);
-		return offset + arr.length;
-	}, 0);
+		offset += arr.length;
+	}
 	return result;
 }

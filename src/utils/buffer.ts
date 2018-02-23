@@ -18,7 +18,11 @@ export function transferInto(buffer: Buffer | ArrayBuffer | null) {
   if (!buffer)
     return null
   if (buffer instanceof Buffer)
-    return (new ivm.ExternalCopy(bufferToArrayBuffer(buffer), { transferOut: buffer.byteLength > 0 })).copyInto({ transferIn: true });
+    return transferArrayBufferInto(bufferToArrayBuffer(buffer))
   else if (buffer instanceof ArrayBuffer)
-    return (new ivm.ExternalCopy(buffer, { transferOut: buffer.byteLength > 0 })).copyInto({ transferIn: true });
+    return transferArrayBufferInto(buffer)
+}
+
+function transferArrayBufferInto(buffer: ArrayBuffer) {
+  return (new ivm.ExternalCopy(buffer, { transferOut: buffer.byteLength > 0 })).copyInto({ transferIn: true });
 }

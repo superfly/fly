@@ -7,6 +7,9 @@ import 'mocha';
 import * as promiseFinally from 'promise.prototype.finally'
 promiseFinally.shim()
 
+var SegfaultHandler = require('segfault-handler');
+SegfaultHandler.registerHandler("crash.log");
+
 import { Server } from '../src/server'
 import { parseConfig } from '../src/config'
 import log from "../src/log"
@@ -28,7 +31,7 @@ export interface ServerOptions extends FileStoreOptions {
   port?: number
 }
 
-const contextStore = new DefaultContextStore()
+export const contextStore = new DefaultContextStore()
 export const cacheStore = new MemoryCacheStore("test cache")
 
 export async function startServer(cwd: string, options?: ServerOptions): Promise<http.Server> {
