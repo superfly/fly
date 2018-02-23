@@ -2,3 +2,4 @@
 --require source-map-support/register
 --recursive test/**/*.spec.ts
 --timeout 5000
+--exit
