@@ -1,3 +1,4 @@
+import SessionStore from './session_store'
 import { logger } from './logger'
 import { EventEmitter2 as EventEmitter } from 'eventemitter2'
 import { transferInto } from './utils/buffer'
@@ -95,6 +96,10 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 		callback.release()
 		body.release()
 	}
+
+	// reset the session
+	global.session = new SessionStore()
+
 	let fetchEvent = new FetchEvent('fetch', {
 		request: new Request(url, Object.assign(req, { body }))
 	}, async function (err, res) {

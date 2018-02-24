@@ -58,7 +58,7 @@ export default function registerFlyRoutes() {
 			       Some rules in production might still rely on the header value, though.
 			      */
 			if (rule.http_header_key == 'Fly-User-Id') {
-				if (!global.session.get('loggedIn')) {
+				if (!session.get('loggedIn')) {
 					return false
 				}
 			} else if (rule.http_header_key && rule.http_header_value_regex) {
@@ -97,9 +97,9 @@ export default function registerFlyRoutes() {
 				return url
 			}
 			const redirectURL = url.pathname.replace(new RegExp(rule.path_pattern), rule.redirect_url)
-			if(url.pathname == redirectURL){
+			if (url.pathname == redirectURL) {
 				return url
-			}else{
+			} else {
 				return redirectURL
 			}
 		}
