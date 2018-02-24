@@ -116,7 +116,7 @@ export class Server extends EventEmitter {
 	private async handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {
 		request.pause()
 		const startedAt = process.hrtime()
-		const requestID = mksuid()
+		const requestId = mksuid()
 		const trace = Trace.start("httpRequest")
 		if (request.url === undefined) // wtf
 			return
@@ -137,7 +137,7 @@ export class Server extends EventEmitter {
 		if (this.options.serverHeader)
 			response.setHeader("Server", this.options.serverHeader)
 
-		request.headers['x-request-id'] = requestID
+		request.headers['x-request-id'] = requestId
 
 		let app: any
 		const tapp = trace.start("getApp")
@@ -166,7 +166,7 @@ export class Server extends EventEmitter {
 		const fullURL = httpUtils.fullURL(scheme, request)
 
 		request.meta = {
-			id: requestID,
+			id: requestId,
 			app: app,
 			startedAt: startedAt,
 			originalURL: fullURL,
@@ -198,6 +198,13 @@ export class Server extends EventEmitter {
 		}
 		t.end()
 		ctx.trace = trace
+		Object.assign(ctx.logMetadata, {
+			request_id: requestId,
+			url: fullURL,
+			method: request.method,
+			remote_addr: request.connection.remoteAddress,
+			user_agent: request.headers['user-agent']
+		})
 
 		ctx.on("error", contextErrorHandler)
 
@@ -218,7 +225,7 @@ export class Server extends EventEmitter {
 		Object.assign(ctx.meta, {
 			app: app,
 
-			requestID: requestID,
+			requestId: requestId,
 			originalScheme: scheme,
 			originalHost: request.headers.host,
 			originalPath: request.url,
@@ -278,8 +285,6 @@ export class Server extends EventEmitter {
 
 					let resProm: Promise<void>
 
-
-
 					if (resBody instanceof ivm.Reference) {
 						let res = resBody.deref({ release: true }).stream
 						resProm = handleResponse(res, response)
@@ -290,8 +295,10 @@ export class Server extends EventEmitter {
 					}
 
 					resProm.then(() => {
+						trace.end()
 						reqMeta.endedAt = process.hrtime()
 						response.end() // we are done. triggers 'finish' event
+						ctx.logger.info(`${request.connection.remoteAddress} ${request.method} ${fullURL} ${response.statusCode} ${Math.round(trace.milliseconds() * 100) / 100}ms`)
 						resolve()
 						let finalResponse = {
 							status: 200,
@@ -301,9 +308,9 @@ export class Server extends EventEmitter {
 							headers: {}
 						}
 
-						finalResponse.status = res.status
-						finalResponse.statusText = res.statusText
-						finalResponse.ok = res.statusCode && res.statusCode >= 200 && res.statusCode < 400
+						finalResponse.status = response.statusCode
+						finalResponse.statusText = response.statusMessage
+						finalResponse.ok = response.statusCode && response.statusCode >= 200 && response.statusCode < 400 || false
 						finalResponse.headers = finalHeaders
 
 						ctx.fireEvent("fetchEnd", [

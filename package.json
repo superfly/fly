@@ -46,6 +46,7 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
+    "ansi-colors": "^1.1.0",
     "axios": "^0.17.1",
     "buffer": "^5.0.8",
     "bugsnag": "^2.0.1",

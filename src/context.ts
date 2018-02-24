@@ -31,6 +31,8 @@ export class Context extends EventEmitter {
 	bridge: Bridge
 	meta: ContextMetadata
 	logger: winston.LoggerInstance
+	persistentLogMetadata: any
+	logMetadata: any
 
 	timeouts: { [id: number]: NodeJS.Timer }
 	intervals: { [id: number]: NodeJS.Timer }
@@ -56,6 +58,8 @@ export class Context extends EventEmitter {
 		this.global = ctx.globalReference()
 		this.bridge = new Bridge()
 		this.logger = new winston.Logger()
+		this.persistentLogMetadata = {}
+		this.logMetadata = {}
 	}
 
 	addCallback(fn: ivm.Reference<Function>) {
@@ -213,33 +217,37 @@ export class Context extends EventEmitter {
 	async finalize() {
 		log.debug("Finalizing context.")
 
-		await new Promise((resolve) => {
-			if (this.callbacks.length === 0) {
-				return resolve()
-			}
-			log.silly("Callbacks present initially, waiting.")
-			const cbFn = () => {
+		try {
+			await new Promise((resolve) => {
 				if (this.callbacks.length === 0) {
-					this.removeListener("callbackApplied", cbFn)
-					resolve()
-					return
+					return resolve()
 				}
-				log.silly("Callbacks still present, waiting.")
+				log.silly("Callbacks present initially, waiting.")
+				const cbFn = () => {
+					if (this.callbacks.length === 0) {
+						this.removeListener("callbackApplied", cbFn)
+						resolve()
+						return
+					}
+					log.silly("Callbacks still present, waiting.")
+				}
+				this.on("callbackApplied", cbFn)
+			})
+		} finally {
+			// clear all intervals no matter what
+			for (const [id, t] of Object.entries(this.intervals)) {
+				clearInterval(t)
+				delete this.intervals[parseInt(id)] // stupid ts.
 			}
-			this.on("callbackApplied", cbFn)
-		})
-		// clear all intervals no matter what
-		for (const [id, t] of Object.entries(this.intervals)) {
-			clearInterval(t)
-			delete this.intervals[parseInt(id)] // stupid ts.
-		}
-		let rel;
-		while (rel = this.releasables.pop()) {
-			try {
-				rel.release()
-			} catch (e) {
-				log.debug("could not release!", e)
+			let rel;
+			while (rel = this.releasables.pop()) {
+				try {
+					rel.release()
+				} catch (e) {
+					// don't really care
+				}
 			}
+			this.logMetadata = {} // reset log meta data!
 		}
 	}
 }

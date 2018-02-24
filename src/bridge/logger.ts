@@ -11,8 +11,8 @@ const { Syslog } = require('winston-syslog');
 
 let defaultLogger: winston.LoggerInstance;
 
-registerBridge('log', function (ctx: Context, config: Config, lvl: string, msg: string) {
-  ctx.logger.log(lvl, msg)
+registerBridge('log', function (ctx: Context, config: Config, lvl: string, msg: string, meta: any = {}) {
+  ctx.logger.log(lvl, msg, Object.assign({}, ctx.persistentLogMetadata, ctx.logMetadata, meta))
 })
 
 enum TransportType {
@@ -50,6 +50,11 @@ registerBridge('addLogTransport', async function (
   }
   ctx.applyCallback(cb, [null, true]);
 });
+
+registerBridge('addLogMetadata', function (ctx: Context, config: Config,
+  metadata: any) {
+  Object.assign(ctx.persistentLogMetadata, metadata)
+})
 
 const localIPRegexp = /(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^::1$)|(^[fF][cCdD])/
 
