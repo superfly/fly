@@ -151,12 +151,9 @@ export class Context extends EventEmitter {
 
 		await (await this.get("bootstrap")).apply(undefined, [])
 
-		// if (config.env !== 'production') {
 		await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
 			log.log(lvl, args[0], ...args.slice(1))
 		}))
-		// 	await (await this.get("localBootstrap")).apply(undefined, [])
-		// }
 	}
 
 	async fireEvent(name: string, args: any[], opts?: any) {
