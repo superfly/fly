@@ -9,32 +9,32 @@ import CachePolicy from 'http-cache-semantics'
  */
 
 export default {
-	async match(req){
+	async match(req) {
 		const hashed = hashData(req)
 		let key = "httpcache:policy:" + hashed // first try with no vary variant
-		for(let i = 0; i < 5; i ++){
+		for (let i = 0; i < 5; i++) {
 			const policyRaw = await fly.cache.getString(key)
-			console.log("Got policy:", key, policyRaw)
-			if(!policyRaw){
+			logger.debug("Got policy:", key, policyRaw)
+			if (!policyRaw) {
 				return undefined
 			}
 			const policy = CachePolicy.fromObject(JSON.parse(policyRaw))
 
 			// if it fits i sits
-			if(policy.satisfiesWithoutRevalidation(req)){
+			if (policy.satisfiesWithoutRevalidation(req)) {
 				const headers = policy.responseHeaders()
 				const bodyKey = "httpcache:body:" + hashed
 
 				const body = await fly.cache.get(bodyKey)
-				console.log("Got body", body.constructor.name, body.byteLength)
-				return new Response(body, {status: policy._status, headers: headers})
-			//}else if(policy._headers){
+				logger.debug("Got body", body.constructor.name, body.byteLength)
+				return new Response(body, { status: policy._status, headers: headers })
+				//}else if(policy._headers){
 				// TODO: try a new vary based key
 				// policy._headers has the varies / vary values
 				// key = hashData(req, policy._headers)
 				//return undefined
-			}else{
-				return undefined 
+			} else {
+				return undefined
 			}
 		}
 		return undefined // no matches found
@@ -45,7 +45,7 @@ export default {
 		const res = await fetch(req)
 		return await cache.put(req, res)
 	},
-	async put(req, res){
+	async put(req, res) {
 		const resHeaders = {}
 		const key = hashData(req)
 
@@ -64,7 +64,7 @@ export default {
 			method: req.method,
 			headers: req.headers || {},
 		}, cacheableRes)
-		
+
 		const ttl = Math.floor(policy.timeToLive() / 1000)
 		if (policy.storable() && ttl > 0) {
 			logger.debug("Setting cache policy:", "httpcache:policy:" + key)
@@ -76,26 +76,26 @@ export default {
 }
 
 function hashData(req, vary) {
-  let toHash = ``
+	let toHash = ``
 
-  const u = normalizeURL(req.url)
+	const u = normalizeURL(req.url)
 
-  toHash += u.toString()
-  toHash += req.method
+	toHash += u.toString()
+	toHash += req.method
 
-  // TODO: cacheable cookies
-  // TODO: cache version for grand busting
+	// TODO: cacheable cookies
+	// TODO: cache version for grand busting
 
-	console.log("hashData", toHash)
-  return fly.util.md5.hash(toHash)
+	logger.debug("hashData", toHash)
+	return fly.util.md5.hash(toHash)
 }
 
 function normalizeURL(u) {
-  let url = new URL(u)
+	let url = new URL(u)
 	url.hash = ""
 	const sp = url.searchParams
 	sp.sort()
 	url.search = sp.toString()
-	
-  return url
+
+	return url
 }

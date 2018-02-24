@@ -22,7 +22,6 @@ export default function fetchInit(ivm, dispatcher) {
 				method: req.method,
 				headers: req.headers && req.headers.toJSON() || {},
 			}
-			console.log("INIT:", init)
 			return await _applyFetch(url, init, await req.arrayBuffer())
 
 		} catch (err) {
