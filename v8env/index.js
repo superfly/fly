@@ -2,7 +2,6 @@ import { fireEvent, addEventListener, dispatchEvent, FetchEvent } from "./events
 import { Middleware, MiddlewareChain } from "./middleware"
 import { FlyBackend } from "./fly-backend"
 import { ReadableStream, WritableStream, TransformStream } from 'web-streams-polyfill'
-import SessionStore from './session_store'
 
 import { TextEncoder, TextDecoder } from 'text-encoding'
 
@@ -74,7 +73,6 @@ global.bootstrap = function bootstrap() {
 
 	// oh boy
 	global.cache = cache
-	global.session = new SessionStore()
 
 	// // Events
 	global.fireEvent = fireEvent.bind(null, ivm)
