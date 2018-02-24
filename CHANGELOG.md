@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.18.0-1"></a>
+# [0.18.0-1](https://github.com/superfly/fly/compare/v0.17.0-4...v0.18.0-1) (2018-02-24)
+
+
+### Bug Fixes
+
+* **store:** inject secrets into config during config file reload ([#21](https://github.com/superfly/fly/issues/21)) ([649c9bb](https://github.com/superfly/fly/commit/649c9bb))
+* **store:** inject secrets into config during config file reload ([#21](https://github.com/superfly/fly/issues/21)) ([1c46f82](https://github.com/superfly/fly/commit/1c46f82))
+* **store:** only pull config from `config:` namespace in .fly.yml ([#20](https://github.com/superfly/fly/issues/20)) ([3d6e645](https://github.com/superfly/fly/commit/3d6e645))
+* **store:** only pull config from `config:` namespace in .fly.yml ([#20](https://github.com/superfly/fly/issues/20)) ([10b229d](https://github.com/superfly/fly/commit/10b229d))
+* remove lingering console.logs from v8env ([3caa702](https://github.com/superfly/fly/commit/3caa702))
+* reset session on every fetch event fire ([6ab2596](https://github.com/superfly/fly/commit/6ab2596))
+
+
+### Features
+
+* Allows adding transports for logging ([d76ddf7](https://github.com/superfly/fly/commit/d76ddf7))
+* Makes logging metadata easier ([5a53692](https://github.com/superfly/fly/commit/5a53692))
+
+
+
 <a name="0.18.0-0"></a>
 # [0.18.0-0](https://github.com/superfly/fly/compare/v0.17.1...v0.18.0-0) (2018-02-24)
 
