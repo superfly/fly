@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.18.0-0"></a>
+# [0.18.0-0](https://github.com/superfly/fly/compare/v0.17.1...v0.18.0-0) (2018-02-24)
+
+
+### Features
+
+* Allows adding transports for logging ([ca8c53e](https://github.com/superfly/fly/commit/ca8c53e))
+
+
+
 <a name="0.17.1"></a>
 ## [0.17.1](https://github.com/superfly/fly/compare/v0.17.0-4...v0.17.1) (2018-02-24)
 
