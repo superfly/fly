@@ -31,8 +31,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 * Allows adding transports for logging ([ca8c53e](https://github.com/superfly/fly/commit/ca8c53e))
 
-
-
 <a name="0.17.1"></a>
 ## [0.17.1](https://github.com/superfly/fly/compare/v0.17.0-4...v0.17.1) (2018-02-24)
 
