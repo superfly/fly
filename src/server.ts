@@ -298,7 +298,7 @@ export class Server extends EventEmitter {
 						trace.end()
 						reqMeta.endedAt = process.hrtime()
 						response.end() // we are done. triggers 'finish' event
-						ctx.logger.info(`${request.connection.remoteAddress} ${request.method} ${fullURL} ${response.statusCode} ${Math.round(trace.milliseconds() * 100) / 100}ms`)
+						ctx.log('info', `${request.connection.remoteAddress} ${request.method} ${fullURL} ${response.statusCode} ${Math.round(trace.milliseconds() * 100) / 100}ms`)
 						resolve()
 						let finalResponse = {
 							status: 200,

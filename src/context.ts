@@ -110,6 +110,10 @@ export class Context extends EventEmitter {
 		}
 	}
 
+	log(lvl: string, msg: string, meta: any = {}) {
+		this.logger.log(lvl, msg, Object.assign({}, this.persistentLogMetadata, this.logMetadata, meta))
+	}
+
 	addReleasable(ref: ivm.Reference<any>): ivm.Reference<any>;
 	addReleasable(ec: ivm.ExternalCopy<any>): ivm.ExternalCopy<any>;
 	addReleasable(rel: ivm.Reference<any> | ivm.ExternalCopy<any>) {
