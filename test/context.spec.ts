@@ -29,6 +29,7 @@ describe('Context', () => {
         let ctx = await createDefaultContext(this.iso)
         await ctx.finalize()
         await ctx.release()
+        console.log("heap:", this.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024))
       }
       expect(this.iso.getHeapStatisticsSync().used_heap_size).to.be.within(
         initHeap - (1024 * 1024),

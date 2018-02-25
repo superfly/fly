@@ -56,5 +56,6 @@ export async function startServer(cwd: string, options?: ServerOptions): Promise
 }
 
 before(async function () {
+  this.timeout(10000) // give this a chance
   await contextStore.getIsolate()
 })
