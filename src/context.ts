@@ -14,7 +14,7 @@ export interface Releasable {
 
 export interface ContextMetadata {
 	app?: App
-	requestID?: string
+	requestId?: string
 	originalScheme?: string
 	originalHost?: string
 	originalPath?: string
