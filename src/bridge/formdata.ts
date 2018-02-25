@@ -1,8 +1,8 @@
 import * as multiparty from 'multiparty'
-import { ivm } from '../'
+import { ivm, Context } from '../'
 import * as http from 'http'
 
-import { registerBridge, Context } from './'
+import { registerBridge } from './'
 
 registerBridge('parseFormData', function (ctx: Context) {
   return function (proxy: ivm.Reference<http.IncomingMessage>, cb: ivm.Reference<Function>) {

@@ -1,8 +1,8 @@
-import { registerBridge, Context } from '../'
+import { registerBridge } from '../'
 import { ivm } from '../../'
 import log from '../../log'
 import { Trace } from '../../trace'
-import { Config } from '../../config';
+import { Config, Context } from '../../';
 import { transferInto } from '../../utils/buffer'
 
 const errCacheStoreUndefined = new Error("cacheStore is not defined in the config.")
@@ -10,7 +10,10 @@ const errCacheStoreUndefined = new Error("cacheStore is not defined in the confi
 registerBridge('flyCacheSet', function cacheSet(ctx: Context, config: Config, key: string, value: string | ArrayBuffer | Buffer, ttl: number, callback: ivm.Reference<Function>) {
   let t = Trace.tryStart("cacheSet", ctx.trace)
   ctx.addCallback(callback)
-  let k = "cache:" + ctx.meta.get('app').id + ":" + key
+  if (!ctx.meta.app)
+    return ctx.tryCallback(callback, ["app not present, something is wrong"])
+
+  let k = "cache:" + ctx.meta.app.id + ":" + key
 
   if (!config.cacheStore)
     return ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
@@ -37,7 +40,9 @@ registerBridge('flyCacheSet', function cacheSet(ctx: Context, config: Config, ke
 registerBridge('flyCacheExpire', function cacheExpire(ctx: Context, config: Config, key: string, ttl: number, callback: ivm.Reference<Function>) {
   let t = Trace.tryStart("cacheExpire", ctx.trace)
   ctx.addCallback(callback)
-  let k = "cache:" + ctx.meta.get('app').id + ":" + key
+  if (!ctx.meta.app)
+    return ctx.tryCallback(callback, ["app not present, something is wrong"])
+  let k = "cache:" + ctx.meta.app.id + ":" + key
 
   if (!config.cacheStore) {
     ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
@@ -57,12 +62,14 @@ registerBridge('flyCacheGet',
   function cacheGet(ctx: Context, config: Config, key: string, callback: ivm.Reference<Function>) {
     let t = Trace.tryStart("cacheGet", ctx.trace)
     ctx.addCallback(callback)
+    if (!ctx.meta.app)
+      return ctx.tryCallback(callback, ["app not present, something is wrong"])
 
     if (!config.cacheStore) {
       ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
       return
     }
-    let k = "cache:" + ctx.meta.get('app').id + ":" + key
+    let k = "cache:" + ctx.meta.app.id + ":" + key
 
     config.cacheStore.get(k).then((buf) => {
       const size = buf ? buf.byteLength : 0

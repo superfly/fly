@@ -11,6 +11,7 @@ require("../cmd/server");
 require("../cmd/hostnames");
 require("../cmd/login");
 require("../cmd/fetch");
+require("../cmd/logs");
 
 import { exec } from "commandpost";
 

@@ -1,4 +1,4 @@
-import { ivm } from './'
+import { ivm, App } from './'
 import log from "./log"
 //import { conf } from './config'a
 import { Bridge } from './bridge/bridge'
@@ -6,16 +6,33 @@ import { Trace } from './trace'
 import { Config } from './config';
 import { EventEmitter } from 'events';
 
+import * as winston from 'winston'
+
 export interface Releasable {
 	release(): void
+}
+
+export interface ContextMetadata {
+	app?: App
+	requestId?: string
+	originalScheme?: string
+	originalHost?: string
+	originalPath?: string
+	originalURL?: string
+	flyDepth?: number
+
+	[key: string]: any
 }
 
 export class Context extends EventEmitter {
 	ctx: ivm.Context
 	trace: Trace | undefined
 	private global: ivm.Reference<Object>
-	bridge?: Bridge
-	meta: Map<string, any>
+	bridge: Bridge
+	meta: ContextMetadata
+	logger: winston.LoggerInstance
+	persistentLogMetadata: any
+	logMetadata: any
 
 	timeouts: { [id: number]: NodeJS.Timer }
 	intervals: { [id: number]: NodeJS.Timer }
@@ -30,7 +47,7 @@ export class Context extends EventEmitter {
 
 	constructor(ctx: ivm.Context, iso: ivm.Isolate) {
 		super()
-		this.meta = new Map<string, any>()
+		this.meta = {}
 		this.ctx = ctx
 		this.currentTimerId = 0
 		this.timeouts = {}
@@ -39,6 +56,10 @@ export class Context extends EventEmitter {
 		this.releasables = []
 		this.iso = iso
 		this.global = ctx.globalReference()
+		this.bridge = new Bridge()
+		this.logger = new winston.Logger()
+		this.persistentLogMetadata = {}
+		this.logMetadata = {}
 	}
 
 	addCallback(fn: ivm.Reference<Function>) {
@@ -128,17 +149,15 @@ export class Context extends EventEmitter {
 			return
 		}))
 
-		this.bridge = new Bridge(this, config)
-		await this.set("_dispatch", new ivm.Reference(this.bridge.dispatch.bind(this.bridge)))
+		await this.set("_dispatch", new ivm.Reference((name: string, ...args: any[]) => {
+			this.bridge.dispatch(this, config, name, ...args)
+		}))
 
 		await (await this.get("bootstrap")).apply(undefined, [])
 
-		if (config.env !== 'production') {
-			await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
-				log.log(lvl, args[0], ...args.slice(1))
-			}))
-			await (await this.get("localBootstrap")).apply(undefined, [])
-		}
+		await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
+			log.log(lvl, args[0], ...args.slice(1))
+		}))
 	}
 
 	async fireEvent(name: string, args: any[], opts?: any) {
@@ -191,40 +210,44 @@ export class Context extends EventEmitter {
 		this.callbacks = []
 		this.intervals = {}
 		this.timeouts = {}
-		this.bridge && this.bridge.dispose()
+		this.logger.close()
 		this.ctx.release()
 	}
 
 	async finalize() {
 		log.debug("Finalizing context.")
 
-		await new Promise((resolve) => {
-			if (this.callbacks.length === 0) {
-				return resolve()
-			}
-			log.silly("Callbacks present initially, waiting.")
-			const cbFn = () => {
+		try {
+			await new Promise((resolve) => {
 				if (this.callbacks.length === 0) {
-					this.removeListener("callbackApplied", cbFn)
-					resolve()
-					return
+					return resolve()
 				}
-				log.silly("Callbacks still present, waiting.")
+				log.silly("Callbacks present initially, waiting.")
+				const cbFn = () => {
+					if (this.callbacks.length === 0) {
+						this.removeListener("callbackApplied", cbFn)
+						resolve()
+						return
+					}
+					log.silly("Callbacks still present, waiting.")
+				}
+				this.on("callbackApplied", cbFn)
+			})
+		} finally {
+			// clear all intervals no matter what
+			for (const [id, t] of Object.entries(this.intervals)) {
+				clearInterval(t)
+				delete this.intervals[parseInt(id)] // stupid ts.
 			}
-			this.on("callbackApplied", cbFn)
-		})
-		// clear all intervals no matter what
-		for (const [id, t] of Object.entries(this.intervals)) {
-			clearInterval(t)
-			delete this.intervals[parseInt(id)] // stupid ts.
-		}
-		let rel;
-		while (rel = this.releasables.pop()) {
-			try {
-				rel.release()
-			} catch (e) {
-				log.debug("could not release!", e)
+			let rel;
+			while (rel = this.releasables.pop()) {
+				try {
+					rel.release()
+				} catch (e) {
+					// don't really care
+				}
 			}
+			this.logMetadata = {} // reset log meta data!
 		}
 	}
 }

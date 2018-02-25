@@ -10,6 +10,8 @@ import { App } from './app'
 import { Config } from './config';
 import log from './log';
 
+import * as winston from 'winston'
+
 export interface DefaultContextStoreOptions {
   inspect?: boolean
 }
@@ -35,8 +37,13 @@ export class DefaultContextStore implements ContextStore {
     try {
       t2 = t.start("createContext")
       const ctx = await createContext(config, iso, { inspector: !!this.options.inspect })
-      ctx.meta.set("iso", iso)
+      ctx.meta.iso = iso
       t2.end()
+
+      ctx.set('app', app.forV8())
+
+      // just reuse this logger.
+      ctx.logger.add(winston.transports.Console, { timestamp: true })
 
       t2 = t.start("compile")
       const script = await iso.compileScript(app.source, { filename: `bundle-${app.sourceHash}.js` })

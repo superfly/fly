@@ -46,7 +46,7 @@ export class FetchEvent {
 				ret.then((res) => {
 					if (res instanceof Response)
 						return this.callback(null, res)
-					console.log("weird response:", res.constructor)
+					logger.debug("weird response:", res.constructor)
 					this.callback(invalidResponseType)
 				}).catch((err) => {
 					this.callback(err)
@@ -161,21 +161,6 @@ function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
 	emitter.emitAsync('fetchEnd', event).then(() => {
 		selfCleaningCallback.apply()
 	})
-}
-
-class LogMessage {
-	constructor(level, message, timestamp = new Date) {
-		this.level = level
-		this.message = message
-		this.timestamp = timestamp
-	}
-}
-
-export class LogEvent {
-	constructor(type = "log", init = {}) {
-		this.type = type
-		this.log = new LogMessage(init.level, init.message, init.timestamp || new Date)
-	}
 }
 
 export function dispatchEvent(event) {

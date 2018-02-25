@@ -2,19 +2,6 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-<a name="0.17.1"></a>
-## [0.17.1](https://github.com/superfly/fly/compare/v0.17.0-4...v0.17.1) (2018-02-24)
-
-
-### Bug Fixes
-
-* **store:** inject secrets into config during config file reload ([#21](https://github.com/superfly/fly/issues/21)) ([649c9bb](https://github.com/superfly/fly/commit/649c9bb))
-* **store:** inject secrets into config during config file reload ([#21](https://github.com/superfly/fly/issues/21)) ([1c46f82](https://github.com/superfly/fly/commit/1c46f82))
-* **store:** only pull config from `config:` namespace in .fly.yml ([#20](https://github.com/superfly/fly/issues/20)) ([3d6e645](https://github.com/superfly/fly/commit/3d6e645))
-* **store:** only pull config from `config:` namespace in .fly.yml ([#20](https://github.com/superfly/fly/issues/20)) ([10b229d](https://github.com/superfly/fly/commit/10b229d))
-* reset session on every fetch event fire ([7141bf5](https://github.com/superfly/fly/commit/7141bf5))
-
-
 
 <a name="0.17.0"></a>
 # [0.17.0](https://github.com/superfly/fly/compare/v0.17.0-4...v0.17.0) (2018-02-23)

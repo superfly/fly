@@ -12,7 +12,7 @@ import { transferInto } from './utils/buffer'
  * @returns {Promise<Response>} - A {@linkcode Promise} that resolves to a {@linkcode Response} object
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch}
  */
-export default function fetchInit(ivm, dispatch) {
+export default function fetchInit(ivm, dispatcher) {
 	return async function fetch(url, init) {
 		logger.debug("fetch called", typeof url, typeof init)
 		try {
@@ -22,7 +22,6 @@ export default function fetchInit(ivm, dispatch) {
 				method: req.method,
 				headers: req.headers && req.headers.toJSON() || {},
 			}
-			console.log("INIT:", init)
 			return await _applyFetch(url, init, await req.arrayBuffer())
 
 		} catch (err) {
@@ -33,27 +32,20 @@ export default function fetchInit(ivm, dispatch) {
 
 	function _applyFetch(url, init, body) {
 		return new Promise(function (resolve, reject) {
-			const cbRef = new ivm.Reference(function _applyFetchCallback(err, nodeRes, nodeBody) {
-				try {
+			logger.debug("gonna fetch", url, init && JSON.stringify(init))
+			dispatcher.dispatch("fetch",
+				url,
+				new ivm.ExternalCopy(init).copyInto({ release: true }),
+				transferInto(ivm, body),
+				new ivm.Reference(function _applyFetchCallback(err, nodeRes, nodeBody) {
 					if (err != null) {
 						logger.debug("err :(", err)
 						reject(err)
 						return
 					}
 					resolve(new Response(nodeBody, nodeRes))
-				} finally {
-					cbRef.release() // releases itself
-				}
-			})
-
-			logger.debug("gonna fetch", url, init && JSON.stringify(init))
-			dispatch.apply(null, [
-				"fetch",
-				url,
-				new ivm.ExternalCopy(init).copyInto({ release: true }),
-				transferInto(ivm, body),
-				cbRef
-			])
+				})
+			)
 			logger.debug("dispatched nativefetch")
 		})
 	}

@@ -1,4 +1,4 @@
-import { App } from './'
+import { App } from '../app'
 import { Trace } from '../trace';
 
 export interface AppStore {

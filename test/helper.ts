@@ -7,9 +7,6 @@ import 'mocha';
 import * as promiseFinally from 'promise.prototype.finally'
 promiseFinally.shim()
 
-var SegfaultHandler = require('segfault-handler');
-SegfaultHandler.registerHandler("crash.log");
-
 import { Server } from '../src/server'
 import { parseConfig } from '../src/config'
 import log from "../src/log"
@@ -51,19 +48,14 @@ export async function startServer(cwd: string, options?: ServerOptions): Promise
   const server = new Server(Object.assign({}, conf, { contextStore, appStore, cacheStore }))
   const http = server.server
 
-  server.addListener("requestEnd", (req, res, trace) => {
-    log.debug(trace.report())
-  })
-
   http.on('error', (e) => { throw e })
 
-  await new Promise((resolve, reject) => {
-    http.listen(port, () => resolve())
-  })
+  await new Promise((resolve) => http.listen(port, resolve))
 
   return http
 }
 
 before(async function () {
+  this.timeout(10000) // give this a chance
   await contextStore.getIsolate()
 })
