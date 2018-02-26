@@ -45,15 +45,11 @@ export class DefaultContextStore implements ContextStore {
       // just reuse this logger.
       ctx.logger.add(winston.transports.Console, { timestamp: true })
 
-      t2 = t.start("compile")
-      const script = await iso.compileScript(app.source, { filename: `bundle-${app.sourceHash}.js` })
-      t2.end()
-      t2 = t.start("prerun")
-      await script.run(ctx.ctx)
-      t2.end()
+      await ctx.runApp(app, t)
+
       return ctx
     } catch (err) {
-      log.error("bombed somehow!", err)
+      log.error("bombed somehow!", err, err.stack)
       throw err
     }
   }

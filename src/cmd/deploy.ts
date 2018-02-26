@@ -22,7 +22,7 @@ root
             attributes: {
               source: source,
               source_hash: hash,
-              // source_map: sourceMap,
+              source_map: sourceMap,
               config: getLocalConfig(process.cwd(), "production").config || {}
             }
           }

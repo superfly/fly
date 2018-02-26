@@ -6,6 +6,7 @@ export interface ReleaseInfo {
   version: number
   source: string
   source_hash: string
+  source_map?: string
   config: any
   secrets: any
 }
@@ -40,10 +41,15 @@ export class App {
     return this.releaseInfo.source_hash
   }
 
+  get sourceMap() {
+    return this.releaseInfo.source_map
+  }
+
   forV8() {
     return new ivm.ExternalCopy({
       id: this.id,
-      config: this.config
+      config: this.config,
+      version: this.version,
     }).copyInto({ release: true })
   }
 }

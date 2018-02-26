@@ -1,8 +1,11 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import * as winston from 'winston'
 
 import glob = require('glob')
 import { root } from './root'
+
+import log from '../log'
 
 const scripts = [
   require.resolve("mocha/mocha"),
@@ -62,8 +65,8 @@ root
         const iso = new ivm.Isolate({ snapshot: v8Env.snapshot })
         const ctx = await createContext(runtimeConfig, iso)
 
-        await ctx.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
-          console.log(...args)
+        await ctx.set('_log', new ivm.Reference(function (lvl: string, msg: string, ...args: any[]) {
+          log.log(lvl, msg, ...args)
         }))
 
         const app = await appStore.getAppByHostname()
@@ -72,10 +75,18 @@ root
           ['app', app]
         ])
 
+        ctx.logger.add(winston.transports.Console, {
+          formatter: function (options: any) {
+            return options.message
+          }
+        })
+
         await ctx.set('_mocha_done', new ivm.Reference(function (failures: number) {
-          if (failures)
-            return process.exit(1)
-          process.exit()
+          ctx.finalize().then(() => ctx.release()).then(() => {
+            if (failures)
+              return process.exit(1)
+            process.exit()
+          })
         }))
 
         for (let script of scripts) {
@@ -85,7 +96,12 @@ root
 
         const bundleName = `bundle-${hash}`
         const sourceFilename = `${bundleName}.js`
-        const bundleScript = await iso.compileScript(code, { filename: sourceFilename })
+        const sourceMapFilename = `${bundleName}.map.json`
+        const bundleScript = await iso.compileScript(code + `\n;
+        sourceMaps["${sourceFilename}"] = {
+          filename: "${sourceMapFilename}",
+          map: ${sourceMap}
+        }`, { filename: sourceFilename })
         await bundleScript.run(ctx.ctx)
 
         ctx.set('app', new ivm.ExternalCopy({ id: app.id, config: app.config }).copyInto())
