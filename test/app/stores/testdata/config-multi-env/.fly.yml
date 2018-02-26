@@ -1,0 +1,18 @@
+default: &default
+  app_id: config-multi-env
+  config:
+    secrets: &secrets
+      password:
+        fromSecret: my_app_password
+
+stage: &stage
+  <<: *default
+  config:
+    option_a: val_a
+    <<: *secrets
+
+production: &production
+  <<: *default
+  config:
+    option_b: val_b
+    <<: *secrets

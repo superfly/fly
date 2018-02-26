@@ -1,14 +1,15 @@
 import { AppStore } from '../store'
 import { App, ReleaseInfo } from '../../app'
 import * as path from 'path'
-import fs = require('fs-extra')
+import * as fs from 'fs-extra'
+import * as YAML from 'js-yaml'
 
 import { buildApp } from '../../utils/build'
-import { getLocalConfig, getLocalSecrets, parseConfig } from '../config'
+import { parseConfig } from '../config'
+import { getLocalConfig, getLocalSecrets, getEnv } from './utils'
 
 import * as webpack from 'webpack'
-const MemoryFS = require('memory-fs')
-const importCwd = require('import-cwd')
+
 
 export interface FileStoreOptions {
   build?: boolean
@@ -42,6 +43,7 @@ export class FileStore implements AppStore {
       source_hash: "",
       config: {},
       secrets: {},
+      env: getEnv(),
     }, getLocalConfig(cwd), { secrets: getLocalSecrets(cwd) })
 
     if (this.options.config)

@@ -9,15 +9,18 @@ export interface ReleaseInfo {
   source_map?: string
   config: any
   secrets: any
+  env: string
 }
 
 export class App {
   id: string
+  env: string
   releaseInfo: ReleaseInfo
   private _config: any
 
   constructor(releaseInfo: ReleaseInfo) {
     this.id = releaseInfo.app_id
+    this.env = releaseInfo.env
     this.releaseInfo = releaseInfo
   }
 
@@ -50,6 +53,7 @@ export class App {
       id: this.id,
       config: this.config,
       version: this.version,
+      env: this.env
     }).copyInto({ release: true })
   }
 }
