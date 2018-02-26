@@ -3,6 +3,15 @@ import { FileStore } from '../../../src/app/stores/file'
 
 
 describe('FileStore', function() {
+  const env = Object.assign({}, process.env);
+  before(async function() {
+    process.env = env
+  })
+  after(function(done) {
+    process.env = env
+    done()
+  })
+
   describe('initialize', () => {
     it('throws error when bad working directory path is provided', async () => {
       assert.throws(() => new FileStore("badpath"), Error, /Could not find path/)
@@ -31,6 +40,16 @@ describe('FileStore', function() {
         "password": "sekret"
       })
     })
-  })
 
+    it('picks config environment', async () => {
+      process.env.FLY_ENV = 'stage'
+      let store = new FileStore(__dirname + '/testdata/config-multi-env', { noWatch: true })
+      expect(store.releaseInfo.app_id).to.equal("config-multi-env")
+      expect(store.releaseInfo.config).to.eql({
+        "option_a": "val_a",
+        "password": "sekret"
+      })
+      expect(store.releaseInfo.env).to.equal("stage")
+    })
+  })
 })

@@ -1,6 +1,5 @@
 import { create, Command } from "commandpost";
-
-import { getLocalConfig } from "../app/config"
+import { getLocalConfig } from '../app/stores/utils'
 
 import YAML = require('js-yaml')
 import fs = require('fs-extra')

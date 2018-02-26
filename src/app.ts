@@ -8,15 +8,18 @@ export interface ReleaseInfo {
   source_hash: string
   config: any
   secrets: any
+  env: string
 }
 
 export class App {
   id: string
+  env: string
   releaseInfo: ReleaseInfo
   private _config: any
 
   constructor(releaseInfo: ReleaseInfo) {
     this.id = releaseInfo.app_id
+    this.env = releaseInfo.env
     this.releaseInfo = releaseInfo
   }
 
@@ -43,7 +46,8 @@ export class App {
   forV8() {
     return new ivm.ExternalCopy({
       id: this.id,
-      config: this.config
+      config: this.config,
+      env: this.env
     }).copyInto({ release: true })
   }
 }

@@ -1,6 +1,6 @@
 import { root, getAppId } from './root'
 import { API } from './api'
-import { getLocalConfig } from '../app/config'
+import { getLocalConfig } from '../app/stores/utils'
 import { processResponse } from '../utils/cli'
 
 export interface DeployOptions { }
