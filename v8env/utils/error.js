@@ -1,22 +1,3 @@
-export function errorTransferInto(err) {
-  if (!(err instanceof Error))
-    return err.toString()
-  return {
-    __type: 'error',
-    name: err.name,
-    message: err.message,
-    stack: err.stack
-  }
-}
-export function errorTransferFrom(terr) {
-  if (terr.__type !== 'error')
-    return terr
-  let errCtor = global[terr.name] || Error;
-  const err = new errCtor(terr.message)
-  err.stack = terr.stack
-  return err
-}
-
 const parsedSourceMaps = {}
 let SourceMapConsumer;
 
