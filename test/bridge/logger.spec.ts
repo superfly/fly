@@ -45,7 +45,7 @@ describe('logger', () => {
       const msg3Str: string = msgs[2].toString()
       expect(msg3Str).to.include("error: Error: oh no")
       // sourcemap
-      expect(msg3Str).to.include("(v8env/events.js")
+      expect(msg3Str).to.include("v8env/events.js")
       expect(msg2Str).to.include("method=GET")
       expect(msg2Str).to.include("foo=bar")
     })

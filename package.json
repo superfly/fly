@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "start": "./bin/fly server ./apps/getting-started",
-    "test": "mocha",
+    "test": "node ./lib/cmd/index.js test v8env_test/**/*.spec.js && mocha",
     "coverage": "nyc npm test",
     "build": "tsc",
     "build:live": "npm run build -- -w",
