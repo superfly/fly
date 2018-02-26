@@ -7,8 +7,6 @@ import { Config } from './config';
 import { EventEmitter } from 'events';
 
 import * as winston from 'winston'
-import { writeFileSync } from 'fs';
-import { write } from 'fs-extra';
 
 export interface Releasable {
 	release(): void
@@ -262,8 +260,6 @@ export class Context extends EventEmitter {
 		const bundleName = `bundle-${app.sourceHash}`
 		const sourceFilename = `${bundleName}.js`
 		const sourceMapFilename = bundleName + '.map.json'
-
-		console.log("GOT SOURCE MAP?", !!app.sourceMap)
 
 		const source = app.sourceMap ? app.source + `\n;sourceMaps["${sourceFilename}"] = {filename: "${sourceMapFilename}", map: ${app.sourceMap}}` : app.source
 
