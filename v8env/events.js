@@ -1,7 +1,7 @@
 import SessionStore from './session_store'
 import { logger } from './logger'
 import { EventEmitter2 as EventEmitter } from 'eventemitter2'
-import { transferInto } from './utils/buffer'
+import { transferInto, proxyStream } from './utils/buffer'
 import { bodyUsedError } from './body'
 
 const invalidResponseType = new Error(`Invalid response type for 'fetch' event. Expecting a straight Response, a function returning a Promise<Response> or a Response.`)
@@ -101,7 +101,7 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 	global.session = new SessionStore()
 
 	let fetchEvent = new FetchEvent('fetch', {
-		request: new Request(url, Object.assign(req, { body }))
+		request: new Request(url, Object.assign(req, { body: fly.util.refToStream(body)  }))
 	}, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 
@@ -114,20 +114,14 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 			return selfCleaningCallback.apply(null, [bodyUsedError.toString()])
 		}
 
-		let body = null
-		if (res._stream instanceof ivm.Reference) {
-			logger.debug("Response is a proxied stream")
-			body = res._stream
-		} else {
-			body = transferInto(ivm, await res.arrayBuffer())
-		}
+		let b = transferInto(ivm, await res.arrayBuffer())
 
 		selfCleaningCallback.apply(undefined, [null,
 			new ivm.ExternalCopy({
 				headers: res.headers && res.headers.toJSON() || {},
 				status: res.status
 			}).copyInto({ release: true }),
-			body
+			b
 		])
 	})
 	let fn = emitter.listeners('fetch').slice(-1)[0]

@@ -24,12 +24,16 @@ export default function requestInit(ivm) {
 	 * @param {Object} [init]
 	 * @mixes Body
 	 */
-	class Request {
+	class Request extends Body{
 		constructor(input, init) {
 			if (arguments.length < 1) throw TypeError('Not enough arguments');
 
+			let body = null
+			if(init && init.body){
+				body = init.body
+			}
 			// logger.debug('creating request! body typeof:', typeof Body, typeof init.body)
-			Body.call(this, null);
+			super(body)
 
 			// readonly attribute ByteString method;
 			/**
@@ -59,7 +63,7 @@ export default function requestInit(ivm) {
 
 			if (input instanceof Request) {
 				if (input.bodyUsed) throw TypeError();
-				input.bodyUsed = true;
+				//input.bodyUsed = true;
 				this.method = input.method;
 				this.url = input.url;
 				this.headers = new Headers(input.headers);
@@ -94,11 +98,6 @@ export default function requestInit(ivm) {
 				this.headers = new Headers()
 			}
 
-			if ('body' in init) {
-				logger.debug("setting le body for request", typeof init.body, init.body)
-				this._stream = init.body;
-			}
-
 			if ('credentials' in init &&
 				(['omit', 'same-origin', 'include'].indexOf(init.credentials) !== -1))
 				this.credentials = init.credentials;
@@ -114,7 +113,13 @@ export default function requestInit(ivm) {
 		clone() {
 			if (this.bodyUsed)
 				throw bodyUsedError
-			const [body1, body2] = this.body.tee()
+			let body2 = this.bodySource
+
+			if(this.bodySource instanceof ReadableStream){
+				const tees = this.body.tee()
+				this.stream = this.bodySource = tees[0]
+				body2 = tees[1]
+			}
 			const cloned = new Request(this.url, {
 				body: body2,
 				remoteAddr: this.remoteAddr,
@@ -122,7 +127,6 @@ export default function requestInit(ivm) {
 				headers: this.headers,
 				credentials: this.credentials
 			})
-			this._stream = body1
 			return cloned
 		}
 	}

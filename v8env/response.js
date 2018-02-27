@@ -13,12 +13,12 @@ export default function responseInit(ivm) {
 	 * @param {String} [init.url]
 	 * @mixes Body
 	 */
-	class Response {
+	class Response extends Body{
 		constructor(body, init) {
 			if (arguments.length < 1)
 				body = '';
 
-			Body.call(this, body)
+			super(body)
 
 			init = Object(init) || {};
 
@@ -94,10 +94,13 @@ export default function responseInit(ivm) {
 		clone() {
 			if (this.bodyUsed)
 				throw bodyUsedError
-			const [body1, body2] = this.body.tee()
-			const cloned = new Response(body2, this)
-			this._stream = body1
-			return cloned
+			let body2 = this.bodySource
+			if(this.bodySource instanceof ReadableStream){
+				const tees = this.body.tee()
+				this.stream = this.bodySource = tees[0]
+				body2 = tees[1]
+			}
+			return new Response(body2, this)
 		}
 	}
 

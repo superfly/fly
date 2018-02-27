@@ -44,12 +44,12 @@ export default function bodyInit(ivm, dispatcher) {
 			writable: true
 		})
 
-		Object.defineProperty(this, "body", {
+		/*Object.defineProperty(this, "body", {
 			enumerable: false,
 			get: function () {
 				return makeStream(this._stream)
 			}
-		})
+		})*/
 
 		// this.formData =() => {
 		//   checkBodyUsed(this)

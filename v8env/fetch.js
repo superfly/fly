@@ -1,5 +1,5 @@
 import { logger } from './logger'
-import { transferInto } from './utils/buffer'
+import { transferInto, proxyStream } from './utils/buffer'
 
 /**
  * Starts the process of fetching a network request.
@@ -43,12 +43,12 @@ export default function fetchInit(ivm, dispatcher) {
 						reject(err)
 						return
 					}
-					resolve(new Response(nodeBody, nodeRes))
+					const b = fly.util.refToStream(nodeBody)
+					resolve(new Response(b, nodeRes))
 				})
 			)
 			logger.debug("dispatched nativefetch")
 		})
 	}
-
 
 }
