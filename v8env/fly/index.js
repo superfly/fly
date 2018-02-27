@@ -29,22 +29,36 @@ export default function flyInit(ivm, dispatcher) {
                   }
                 } else if (name === "error") {
                   controller.error(new Error(args[0]))
-                } else if (name === "data") {
+                /*} else if (name === "data") {
                   controller.enqueue(args[0])
-                  if((!r.locked || controller.desiredSize <= 0) && resumed){
+                  if(controller.desiredSize <= 0 && resumed){
                     resumed = false
                     dispatcher.dispatch("controlProxyStream", "pause", ref)
-                  }
+                  }//*/ //not using events, calling read manually now
                 } else
                   logger.debug("unhandled event", name)
               })
             )
           },
-          pull(){
-            if(!resumed){
-              resumed = true
-              dispatcher.dispatch("controlProxyStream", "resume", ref)
-            }
+          pull(controller){
+            //if(r.locked && !resumed){
+              if(closed){
+                return Promise.resolve(null)
+              }
+              return new Promise((resolve, reject) => {
+                resumed = true
+                dispatcher.dispatch("readProxyStream", ref, new ivm.Reference((err, data) => {
+                  if(err){
+                    controller.error(new Error(err))
+                  }
+                  if(data){
+                    controller.enqueue(data)
+                  }
+                  resolve()
+                }))
+
+              })
+            //}
           },
           cancel() {
             logger.debug("readable stream was cancelled")

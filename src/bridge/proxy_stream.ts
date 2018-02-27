@@ -48,18 +48,29 @@ registerBridge("subscribeProxyStream", function (ctx: Context, config: Config, r
   stream.on("error", function (err: Error) {
     ctx.applyCallback(cb, ["error", err.toString()])
   })
-  stream.on("data", function (data: Buffer) {
-    console.log("data length:", data.length, stream.constructor)
+  /*stream.on("data", function (data: Buffer) {
+    console.log("data length:", data.length, stream.isPaused())
     proxyable.buffered.push(data)
     console.log("Buffer length: ", proxyable.buffered.length)
     ctx.applyCallback(cb, ["data", transferInto(data)])
-  })
-  setImmediate(() => stream.resume())
+  })*/
+  //setImmediate(() => stream.resume())
 })
-registerBridge("controlProxyStream", function(ctx: Context, config: Config, method: string, ref: ivm.Reference<ProxyStream>){
- const stream = ref.deref({ release: true}).stream
- console.log("controlProxyStream:", method)
- if(stream && (method == "pause" || method == "resume")){
-   setImmediate(() => stream[method]())
- }
+registerBridge("readProxyStream", function(ctx: Context, config: Config, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>){
+  ctx.addCallback(cb)
+  const proxyable = ref.deref({ release: true })
+  const stream = proxyable.stream
+
+  // read in 1mb chunks
+  setImmediate(()=> {
+    let chunk = stream.read(1024 * 1024)
+    let length = -1
+    if(chunk && chunk.length) length = chunk.length
+    if(chunk){
+      proxyable.buffered.push(chunk)
+      chunk = transferInto(chunk)
+    }
+
+    ctx.applyCallback(cb, [null, chunk])
+  })
 })
