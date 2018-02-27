@@ -72,7 +72,6 @@ root
         const app = await appStore.getAppByHostname()
 
         ctx.meta.app = app
-        await ctx.set('app', app.forV8())
 
         ctx.logger.add(winston.transports.Console, {
           formatter: function (options: any) {
@@ -91,6 +90,8 @@ root
           await compiled.run(ctx.ctx)
         }
 
+        await ctx.set('app', app.forV8())
+
         const bundleName = `bundle-${hash}`
         const sourceFilename = `${bundleName}.js`
         const sourceMapFilename = `${bundleName}.map.json`
@@ -101,13 +102,11 @@ root
         }`, { filename: sourceFilename })
         await bundleScript.run(ctx.ctx)
 
-        ctx.set('app', new ivm.ExternalCopy({ id: app.id, config: app.config }).copyInto())
-
         const runScript = await iso.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })
         console.log("Running tests...")
         await runScript.run(ctx.ctx)
       } catch (err) {
-        console.error(err)
+        console.error(err.stack)
       }
     })
   })

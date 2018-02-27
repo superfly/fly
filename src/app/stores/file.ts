@@ -18,6 +18,7 @@ export interface FileStoreOptions {
   config?: any
   secrets?: any
   uglify?: boolean
+  env?: string
 }
 
 export class FileStore implements AppStore {
@@ -36,6 +37,8 @@ export class FileStore implements AppStore {
 
     const stat = fs.statSync(cwd)
 
+    const env = options.env || getEnv()
+
     this.releaseInfo = Object.assign({}, {
       app_id: this.cwd,
       version: 0,
@@ -43,8 +46,8 @@ export class FileStore implements AppStore {
       source_hash: "",
       config: {},
       secrets: {},
-      env: getEnv(),
-    }, getLocalConfig(cwd), { secrets: getLocalSecrets(cwd) })
+      env: env,
+    }, getLocalConfig(cwd, env), { secrets: getLocalSecrets(cwd) })
 
     if (this.options.config)
       this.releaseInfo.config = this.options.config
@@ -62,7 +65,7 @@ export class FileStore implements AppStore {
           if (event === 'change') {
             console.log("Detected .fly.yml change, updating in-memory config.")
             try {
-              this.releaseInfo.config = getLocalConfig(cwd).config || {}
+              this.releaseInfo.config = getLocalConfig(cwd, env).config || {}
               parseConfig(this.releaseInfo.config, this.releaseInfo.secrets)
             } catch (e) {
               console.error(e)
