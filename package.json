@@ -6,7 +6,7 @@
   "scripts": {
     "start": "./bin/fly server ./apps/getting-started",
     "test": "node ./lib/cmd/index.js test v8env_test/**/*.spec.js && mocha",
-    "coverage": "nyc npm test",
+    "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "build": "tsc",
     "build:live": "npm run build -- -w",
     "build:cli": "tsc bin/fly.ts",
@@ -37,6 +37,7 @@
     "@types/ws": "^4.0.0",
     "babel-eslint": "^8.2.1",
     "chai": "^4.1.2",
+    "coveralls": "^3.0.0",
     "debug": "^3.1.0",
     "nyc": "^11.3.0",
     "replay": "file:./vendor/replay",
