@@ -3,12 +3,18 @@ import { format } from 'util'
 
 export default function flyLogInit(ivm, dispatcher) {
   function log(lvl, ...args) {
-    const lastArg = args[args.length - 1]
-    const metadata = args.length > 1 && typeof lastArg === 'object' && lastArg
-    if (metadata)
-      dispatcher.dispatch('log', lvl, format(...args.slice(0, -1)), new ivm.ExternalCopy(metadata).copyInto({ release: true }))
-    else
-      dispatcher.dispatch('log', lvl, format(...args))
+    const last = args[args.length - 1]
+    let metadata = {}
+    if (typeof last === 'object') {
+      metadata = last
+      args = args.slice(0, -1)
+    }
+    dispatcher.dispatch('log',
+      lvl,
+      format(...args),
+      new ivm.ExternalCopy(metadata).copyInto({ release: true }),
+      new ivm.Reference(noop)
+    )
   }
 
   /**
@@ -36,3 +42,5 @@ export default function flyLogInit(ivm, dispatcher) {
   }
   return log
 }
+
+function noop() { }

@@ -11,8 +11,8 @@ const { Syslog } = require('winston-syslog');
 
 let defaultLogger: winston.LoggerInstance;
 
-registerBridge('log', function (ctx: Context, config: Config, lvl: string, msg: string, meta: any = {}) {
-  ctx.log(lvl, msg, meta)
+registerBridge('log', function (ctx: Context, config: Config, lvl: string, msg: string, meta: any = {}, callback: ivm.Reference<Function>) {
+  ctx.log(lvl, msg, meta, callback)
 })
 
 enum TransportType {

@@ -71,9 +71,8 @@ root
 
         const app = await appStore.getAppByHostname()
 
-        ctx.meta = new Map<string, any>([
-          ['app', app]
-        ])
+        ctx.meta.app = app
+        await ctx.set('app', app.forV8())
 
         ctx.logger.add(winston.transports.Console, {
           formatter: function (options: any) {
@@ -82,11 +81,9 @@ root
         })
 
         await ctx.set('_mocha_done', new ivm.Reference(function (failures: number) {
-          ctx.finalize().then(() => ctx.release()).then(() => {
-            if (failures)
-              return process.exit(1)
-            process.exit()
-          })
+          if (failures)
+            return process.exit(1)
+          process.exit()
         }))
 
         for (let script of scripts) {

@@ -24,6 +24,10 @@ export interface ContextMetadata {
 	[key: string]: any
 }
 
+export interface ApplyableFunction {
+	apply(self?: any, args?: any[]): void
+}
+
 export class Context extends EventEmitter {
 	ctx: ivm.Context
 	trace: Trace | undefined
@@ -110,8 +114,13 @@ export class Context extends EventEmitter {
 		}
 	}
 
-	log(lvl: string, msg: string, meta: any = {}) {
-		this.logger.log(lvl, msg, Object.assign({}, this.persistentLogMetadata, this.logMetadata, meta))
+	log(lvl: string, msg: string, meta?: any, cb?: ivm.Reference<Function>) {
+		if (cb)
+			this.addCallback(cb)
+		this.logger.log(lvl, msg, Object.assign({}, this.persistentLogMetadata, this.logMetadata, meta || {}), (error?: any, level?: string, msg?: string, meta?: any) => {
+			if (cb)
+				this.tryCallback(cb, [])
+		})
 	}
 
 	addReleasable(ref: ivm.Reference<any>): ivm.Reference<any>;
@@ -251,6 +260,7 @@ export class Context extends EventEmitter {
 					// don't really care
 				}
 			}
+			this.meta = {} // reset own meta
 			this.logMetadata = {} // reset log meta data!
 		}
 	}

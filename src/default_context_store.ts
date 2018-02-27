@@ -43,7 +43,9 @@ export class DefaultContextStore implements ContextStore {
       ctx.set('app', app.forV8())
 
       // just reuse this logger.
-      ctx.logger.add(winston.transports.Console, { timestamp: true })
+      ctx.logger.add(winston.transports.Console, {
+        timestamp: true
+      })
 
       await ctx.runApp(app, t)
 
