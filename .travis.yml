@@ -14,7 +14,7 @@ install:
 - export CXX="g++-5"
 - npm install
 script:
-- npm test
+- npm run coverage
 notifications:
   slack:
     on:
