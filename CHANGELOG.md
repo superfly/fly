@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.19.2"></a>
+## [0.19.2](https://github.com/superfly/fly/compare/v0.19.1...v0.19.2) (2018-02-27)
+
+
+### Bug Fixes
+
+* use passed env in options from app file store if any ([3ab8660](https://github.com/superfly/fly/commit/3ab8660))
+
+
+
 <a name="0.19.1"></a>
 ## [0.19.1](https://github.com/superfly/fly/compare/v0.19.0...v0.19.1) (2018-02-27)
 
