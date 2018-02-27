@@ -1,6 +1,6 @@
 let path = require('path')
 module.exports = {
-  entry: path.join(__dirname, "v8env", "index"),
+  entry: path.join(__dirname, 'v8env', 'index'),
   devtool: 'source-map',
   output: {
     filename: 'v8env.js',
@@ -10,11 +10,11 @@ module.exports = {
     path: path.join(__dirname, '/dist/')
   },
   resolve: {
-    modules: ["../node_modules"]
+    modules: ['../node_modules']
   },
   module: {
     loaders: [
-      { test: /\.tsx?/, loader: "ts-loader"}
+      {test: /\.tsx?/, loader: 'ts-loader'}
     ]
   }
 }
