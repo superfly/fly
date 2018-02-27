@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.19.0"></a>
+# [0.19.0](https://github.com/superfly/fly/compare/v0.18.1...v0.19.0) (2018-02-27)
+
+
+### Bug Fixes
+
+* **cli:** display an error message if app doesn't have logs, yet ([#28](https://github.com/superfly/fly/issues/28)) ([7e12766](https://github.com/superfly/fly/commit/7e12766))
+
+
+### Features
+
+* **store:** provide config environment as `app.env` during runtime ([#23](https://github.com/superfly/fly/issues/23)) ([1c07b5f](https://github.com/superfly/fly/commit/1c07b5f))
+* Basic source map support ([#27](https://github.com/superfly/fly/issues/27)) ([1f7301a](https://github.com/superfly/fly/commit/1f7301a))
+
+
+
 <a name="0.18.1"></a>
 ## [0.18.1](https://github.com/superfly/fly/compare/v0.17.1...v0.18.1) (2018-02-25)
 
