@@ -1,4 +1,4 @@
-[![npm version](https://img.shields.io/npm/v/@fly/fly.svg)](https://www.npmjs.com/package/@fly/fly) [![isc license](https://img.shields.io/npm/l/@fly/fly.svg)](https://github.com/superfly/fly/blob/master/LICENSE) [![Build Status](https://travis-ci.org/superfly/fly.svg?branch=master)](https://travis-ci.org/superfly/fly) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+[![npm version](https://img.shields.io/npm/v/@fly/fly.svg)](https://www.npmjs.com/package/@fly/fly) [![isc license](https://img.shields.io/npm/l/@fly/fly.svg)](https://github.com/superfly/fly/blob/master/LICENSE) [![Build Status](https://travis-ci.org/superfly/fly.svg?branch=master)](https://travis-ci.org/superfly/fly) [![Coverage Status](https://coveralls.io/repos/github/superfly/fly/badge.svg?branch=master)](https://coveralls.io/github/superfly/fly?branch=master) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
 # Fly
 
