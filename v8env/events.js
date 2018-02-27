@@ -99,7 +99,7 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 	global.session = new SessionStore()
 
 	let fetchEvent = new FetchEvent('fetch', {
-		request: new Request(url, Object.assign(req, { body: fly.util.refToStream(body)  }))
+		request: new Request(url, Object.assign(req, { body: fly.streams.refToStream(body)  }))
 	}, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 

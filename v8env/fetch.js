@@ -43,7 +43,7 @@ export default function fetchInit(ivm, dispatcher) {
 						reject(err)
 						return
 					}
-					const b = fly.util.refToStream(nodeBody)
+					const b = fly.streams.refToStream(nodeBody)
 					resolve(new Response(b, nodeRes))
 				})
 			)

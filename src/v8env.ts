@@ -123,7 +123,7 @@ export class V8Environment extends EventEmitter {
     if (hash != v8EnvHash) {
       const wasReady = this.isReady
       v8EnvCode = fs.readFileSync(v8dist).toString()
-      v8EnvHash = createHash('md5').update(v8EnvCode).digest("hex")
+      v8EnvHash = createHash('sha').update(v8EnvCode).digest("hex")
       v8EnvSourceMap = fs.readFileSync(v8mapDist).toString()
       console.log(`Loaded v8 env bundle (hash: ${v8EnvHash})`)
       this.emit('update', v8EnvCode)

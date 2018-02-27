@@ -61,7 +61,6 @@ export default function requestInit(ivm) {
 
 			if (input instanceof Request) {
 				if (input.bodyUsed) throw TypeError();
-				//input.bodyUsed = true;
 				this.method = input.method;
 				this.url = input.url;
 				this.headers = new Headers(input.headers);
