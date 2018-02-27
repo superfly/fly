@@ -6,7 +6,8 @@ import * as fs from 'fs'
 import * as webpack from 'webpack'
 
 import { EventEmitter } from 'events'
-import { ivm } from './'
+import { createHash } from 'crypto'
+import * as ivm from 'isolated-vm';
 
 const MemoryFS = require('memory-fs')
 
@@ -16,6 +17,8 @@ let v8EnvSourceMap = "";
 let v8EnvSnapshot: ivm.ExternalCopy<ArrayBuffer>;
 
 const v8EnvEntry = require.resolve("../v8env/index")
+const v8dist = path.join(__dirname, '..', 'dist', 'v8env.js')
+const v8mapDist = path.join(__dirname, '..', 'dist', 'v8env.map.js')
 
 let compiler = webpack(<any>{
   entry: v8EnvEntry,
@@ -25,7 +28,7 @@ let compiler = webpack(<any>{
     sourceMapFilename: 'v8env.map.json',
     hashFunction: 'sha1',
     hashDigestLength: 40,
-    path: '/' // memoryfs!
+    path: __dirname + '/../dist/'
   },
   resolve: {
     modules: ["../node_modules"]
@@ -37,12 +40,17 @@ let compiler = webpack(<any>{
   }
 })
 
-compiler.outputFileSystem = new MemoryFS()
+//compiler.outputFileSystem = new MemoryFS()
 
 export class V8Environment extends EventEmitter {
   constructor() {
     super()
-    this.startCodeUpdater()
+
+    if(!fs.existsSync(v8dist)){
+      this.startCompiler(() => this.bootstrap())
+    }else{
+      this.bootstrap()
+    }
   }
 
   get isReady() {
@@ -55,6 +63,13 @@ export class V8Environment extends EventEmitter {
 
   get sourceMap() {
     return v8EnvSourceMap
+  }
+  bootstrap(){
+    setImmediate(() => {
+      if (runtimeConfig.env === 'development')
+        this.startUpdater()
+      this.updateV8Env()
+    })
   }
 
   waitForReadiness() {
@@ -69,34 +84,48 @@ export class V8Environment extends EventEmitter {
     })
   }
 
-  startCodeUpdater() {
+  startCompiler(cb: Function) {
+    const callback = (err: Error, stats: any) => {
+          if(err){
+            return this.emit('error', err)
+          }
+
+          if (stats.hasErrors()) {
+            return this.emit('error', new Error(stats.toString({
+              errorDetails: true,
+              warnings: true
+            })))
+          } 
+          console.log("Compiled v8env:", stats.hash)
+          cb()
+        }
     try {
       if (runtimeConfig.env === 'development')
-        compiler.watch({}, this.updateV8Env.bind(this))
+        compiler.watch({}, callback)
       else
-        compiler.run(this.updateV8Env.bind(this))
+        compiler.run(callback)
     } catch (e) {
       this.emit('error', e)
     }
   }
 
-  updateV8Env(err: Error, stats: any) {
-    if (err) {
-      return this.emit('error', err)
+  startUpdater(){
+    try {
+      fs.watch(v8dist, (eventType, fileName) => {
+        this.updateV8Env.bind(this)
+      })
+    } catch (e) {
+      this.emit('error', e)
     }
-    if (stats.hasErrors()) {
-      return this.emit('error', new Error(stats.toString({
-        errorDetails: true,
-        warnings: true
-      })))
-    }
+  }
 
-    if (stats.hash != v8EnvHash) {
-      console.log(`Compiled new v8 env bundle (hash: ${stats.hash})`)
+  updateV8Env(hash?: string) {
+    if (hash != v8EnvHash) {
       const wasReady = this.isReady
-      v8EnvCode = compiler.outputFileSystem.data['v8env.js'].toString()
-      v8EnvSourceMap = compiler.outputFileSystem.data['v8env.map.json'].toString()
-      v8EnvHash = stats.hash
+      v8EnvCode = fs.readFileSync(v8dist).toString()
+      v8EnvHash = createHash('md5').update(v8EnvCode).digest("hex")
+      v8EnvSourceMap = fs.readFileSync(v8mapDist).toString()
+      console.log(`Loaded v8 env bundle (hash: ${v8EnvHash})`)
       this.emit('update', v8EnvCode)
       v8EnvSnapshot = ivm.Isolate.createSnapshot([{
         code: v8EnvCode + `\n;
