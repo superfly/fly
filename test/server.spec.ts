@@ -221,4 +221,16 @@ describe('Server', () => {
       expect(res.data).to.equal(`res1: hellohello\nres2: hellohello`)
     })
   })
+
+  describe("big fetch responses", () =>{
+    before(async function () {
+      this.server = await startServer("twenty-mb.js")
+    })
+    after(function (done) { this.server.close(done) }) 
+
+    it('works', async() => {
+      let res = await axios.post("http://127.0.0.1:3333/", "hello", { headers: { host: "test" } })
+      expect(res.status).to.equal(200)
+    })
+  })
 })
