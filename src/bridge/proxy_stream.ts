@@ -15,10 +15,12 @@ import { transferInto } from "../utils/buffer";
 
 export class ProxyStream {
   stream: Readable
+  buffered: Buffer[]
   private _ref: ivm.Reference<ProxyStream> | undefined
 
   constructor(base: Readable) {
     this.stream = base
+    this.buffered = []
   }
 
   get ref() {
@@ -29,7 +31,7 @@ export class ProxyStream {
   }
 }
 
-registerBridge("readProxyStream", function (ctx: Context, config: Config, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
+registerBridge("subscribeProxyStream", function (ctx: Context, config: Config, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
   ctx.addCallback(cb)
   const proxyable = ref.deref({ release: true })
   const stream = proxyable.stream
@@ -47,7 +49,17 @@ registerBridge("readProxyStream", function (ctx: Context, config: Config, ref: i
     ctx.applyCallback(cb, ["error", err.toString()])
   })
   stream.on("data", function (data: Buffer) {
+    console.log("data length:", data.length, stream.constructor)
+    proxyable.buffered.push(data)
+    console.log("Buffer length: ", proxyable.buffered.length)
     ctx.applyCallback(cb, ["data", transferInto(data)])
   })
   setImmediate(() => stream.resume())
+})
+registerBridge("controlProxyStream", function(ctx: Context, config: Config, method: string, ref: ivm.Reference<ProxyStream>){
+ const stream = ref.deref({ release: true}).stream
+ console.log("controlProxyStream:", method)
+ if(stream && (method == "pause" || method == "resume")){
+   setImmediate(() => stream[method]())
+ }
 })

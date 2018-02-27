@@ -284,7 +284,7 @@ export class Server extends EventEmitter {
 					let resProm: Promise<void>
 
 					if (resBody instanceof ivm.Reference) {
-						let res = resBody.deref({ release: true }).stream
+						let res = resBody.deref({ release: true })
 						resProm = handleResponse(res, response)
 					} else if (resBody) {
 						resProm = handleResponse(bufferToStream(Buffer.from(resBody)), response)
@@ -370,9 +370,15 @@ export class Server extends EventEmitter {
 	}
 }
 
-function handleResponse(src: Readable, dst: Writable): Promise<void> {
+function handleResponse(src: Readable | ProxyStream, dst: Writable): Promise<void> {
 	return new Promise(function (resolve, reject) {
 		setImmediate(() => {
+			if(src instanceof ProxyStream){
+				for(const c of src.buffered){
+					dst.write(c)
+				}
+				src = src.stream
+			}
 			src.pipe(dst)
 				.on("finish", function () {
 					resolve()

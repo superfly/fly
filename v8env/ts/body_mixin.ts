@@ -35,9 +35,6 @@ export default class BodyMixin implements Body{
         }
       })
     }
-    if(!this.stream){
-      console.log("no stream:", this.bodySource)
-    }
     return this.stream
   }
 

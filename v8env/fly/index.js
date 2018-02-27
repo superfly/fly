@@ -16,9 +16,10 @@ export default function flyInit(ivm, dispatcher) {
       },
       refToStream: function(ref){
         let closed = false
-        return new ReadableStream({
+        let resumed = false
+        const r = new ReadableStream({
           start(controller) {
-            dispatcher.dispatch("readProxyStream",
+            dispatcher.dispatch("subscribeProxyStream",
               ref,
               new ivm.Reference((name, ...args) => {
                 if (name === "close" || name === "end") {
@@ -30,15 +31,27 @@ export default function flyInit(ivm, dispatcher) {
                   controller.error(new Error(args[0]))
                 } else if (name === "data") {
                   controller.enqueue(args[0])
+                  if((!r.locked || controller.desiredSize <= 0) && resumed){
+                    resumed = false
+                    dispatcher.dispatch("controlProxyStream", "pause", ref)
+                  }
                 } else
                   logger.debug("unhandled event", name)
               })
             )
           },
+          pull(){
+            if(!resumed){
+              resumed = true
+              dispatcher.dispatch("controlProxyStream", "resume", ref)
+            }
+          },
           cancel() {
             logger.debug("readable stream was cancelled")
           }
-        }) 
+        })
+        r._ref = ref
+        return r 
       }
     }
   }

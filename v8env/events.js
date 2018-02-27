@@ -112,7 +112,12 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 			return selfCleaningCallback.apply(null, [(new Error("Body has already been used")).toString()])
 		}
 
-		let b = transferInto(ivm, await res.arrayBuffer())
+		let b = null
+		if(res.body && res.body._ref){
+			b = res.body._ref
+		}else{
+			b = transferInto(ivm, await res.arrayBuffer())
+		}
 
 		selfCleaningCallback.apply(undefined, [null,
 			new ivm.ExternalCopy({
