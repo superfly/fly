@@ -34,7 +34,7 @@ export default function flyInit(ivm, dispatcher) {
                   if(controller.desiredSize <= 0 && resumed){
                     resumed = false
                     dispatcher.dispatch("controlProxyStream", "pause", ref)
-                  }//*/ //not using events, calling read manually now
+                  }//*/ //not using events, calling read manually with pull for now
                 } else
                   logger.debug("unhandled event", name)
               })
@@ -50,10 +50,12 @@ export default function flyInit(ivm, dispatcher) {
                 dispatcher.dispatch("readProxyStream", ref, new ivm.Reference((err, data) => {
                   if(err){
                     controller.error(new Error(err))
+                    reject(err)
+                    return
                   }
-                  if(data){
-                    controller.enqueue(data)
-                  }
+                  // if data is blank the stream will keep pulling
+                  // readProxyStream tries a few times to minimize bridge calls
+                  controller.enqueue(data)
                   resolve()
                 }))
 

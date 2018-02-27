@@ -16,11 +16,16 @@ import { transferInto } from "../utils/buffer";
 export class ProxyStream {
   stream: Readable
   buffered: Buffer[]
+  ended: boolean
   private _ref: ivm.Reference<ProxyStream> | undefined
 
   constructor(base: Readable) {
+    this.ended = false
     this.stream = base
     this.buffered = []
+    this.stream.on("close", ()=> this.ended = true)
+    this.stream.on("end", ()=> this.ended = true)
+    this.stream.on("error", ()=> this.ended = true)
   }
 
   get ref() {
@@ -61,16 +66,24 @@ registerBridge("readProxyStream", function(ctx: Context, config: Config, ref: iv
   const proxyable = ref.deref({ release: true })
   const stream = proxyable.stream
 
-  // read in 1mb chunks
-  setImmediate(()=> {
+  let attempts = 0
+  const tryRead = function(){
+    attempts += 1
     let chunk = stream.read(1024 * 1024)
     let length = -1
-    if(chunk && chunk.length) length = chunk.length
+    if(chunk) length = chunk.byteLength
+
     if(chunk){
       proxyable.buffered.push(chunk)
       chunk = transferInto(chunk)
     }
+    if(chunk || attempts >= 10 || proxyable.ended){
+      ctx.applyCallback(cb, [null, chunk])
+    }else{
+      // wait a bit, with a backoff
+      setTimeout(tryRead, 20 * attempts)
+    }
+  }
+  setImmediate(tryRead)
 
-    ctx.applyCallback(cb, [null, chunk])
-  })
 })
