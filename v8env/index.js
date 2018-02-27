@@ -16,7 +16,7 @@ import Headers from './headers'
 import fetchInit from './fetch'
 import bodyMixin from './ts/body_mixin.ts'
 import Blob from './ts/blob.ts'
-// import formDataInit from './formdata'
+import FormData from './ts/form_data.ts'
 import responseInit from './response'
 import requestInit from './request'
 import cache from './cache'
@@ -34,13 +34,14 @@ import registerForceSSL from './middleware/force-ssl'
 import registerGoogleAnalytics from './middleware/google-analytics'
 import registerSession from './middleware/session'
 
-const mwToRegister = [registerFlyBackend, registerFlyEcho, registerFlyRoutes, registerForceSSL, registerGoogleAnalytics, registerSession]
+const mwToRegister = [registerFlyBackend, registerFlyEcho, registerFlyRoutes, registerForceSSL, registerGoogleAnalytics,
+  registerSession]
 
 global.releasables = []
 global.middleware = {}
 
 global.registerMiddleware = function registerMiddleware(type, fn) {
-	global.middleware[type] = fn
+  global.middleware[type] = fn
 }
 
 global.bootstrap = function bootstrap() {
@@ -73,8 +74,12 @@ global.bootstrap = function bootstrap() {
 	global.Headers = Headers
 	global.fetch = fetchInit(ivm, dispatcher)
 	global.Body = bodyMixin
+<<<<<<< HEAD
 	global.Blob = Blob
 	// global.FormData = formDataInit(ivm, dispatcher)
+=======
+	global.FormData = FormData
+>>>>>>> feat: Bring back FormData API
 	global.Response = responseInit(ivm, dispatcher)
 	global.Request = requestInit(ivm, dispatcher)
 
@@ -119,12 +124,12 @@ global.bootstrap = function bootstrap() {
 global.sourceMaps = {}
 
 global.teardown = function teardown() {
-	let r;
-	while (r = global.releasables.pop()) {
-		try {
-			r.release()
-		} catch (e) {
-			// fail silently
-		}
-	}
+  let r;
+  while (r = global.releasables.pop()) {
+    try {
+      r.release()
+    } catch (e) {
+      // fail silently
+    }
+  }
 }
