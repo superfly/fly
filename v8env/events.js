@@ -2,8 +2,6 @@ import SessionStore from './session_store'
 import { logger } from './logger'
 import { EventEmitter2 as EventEmitter } from 'eventemitter2'
 import { transferInto, proxyStream } from './utils/buffer'
-import { bodyUsedError } from './body'
-
 const invalidResponseType = new Error(`Invalid response type for 'fetch' event. Expecting a straight Response, a function returning a Promise<Response> or a Response.`)
 
 /**
@@ -111,7 +109,7 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 		}
 
 		if (res.bodyUsed) {
-			return selfCleaningCallback.apply(null, [bodyUsedError.toString()])
+			return selfCleaningCallback.apply(null, [(new Error("Body has already been used")).toString()])
 		}
 
 		let b = transferInto(ivm, await res.arrayBuffer())

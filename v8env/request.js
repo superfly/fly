@@ -1,8 +1,6 @@
 import { logger } from './logger'
 import CookieJar from './cookie_jar'
 
-import { bodyUsedError } from './body'
-
 export default function requestInit(ivm) {
 	function byteUpperCase(s) {
 		return String(s)
@@ -112,7 +110,7 @@ export default function requestInit(ivm) {
 
 		clone() {
 			if (this.bodyUsed)
-				throw bodyUsedError
+				throw new Error("body has already been used")
 			let body2 = this.bodySource
 
 			if(this.bodySource instanceof ReadableStream){

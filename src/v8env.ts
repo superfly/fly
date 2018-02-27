@@ -29,6 +29,11 @@ let compiler = webpack(<any>{
   },
   resolve: {
     modules: ["../node_modules"]
+  },
+  module: {
+    loaders: [
+      { test: /\.tsx?/, loader: "ts-loader"}
+    ]
   }
 })
 

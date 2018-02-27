@@ -1,5 +1,4 @@
 import CookieJar from './cookie_jar'
-import { bodyUsedError } from './body'
 
 export default function responseInit(ivm) {
 	function ushort(x) { return x & 0xFFFF; }
@@ -93,7 +92,7 @@ export default function responseInit(ivm) {
 
 		clone() {
 			if (this.bodyUsed)
-				throw bodyUsedError
+				throw new Error("Body has already been used")
 			let body2 = this.bodySource
 			if(this.bodySource instanceof ReadableStream){
 				const tees = this.body.tee()

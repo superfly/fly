@@ -14,7 +14,7 @@ import { URL } from 'whatwg-url'
 import Headers from './headers'
 
 import fetchInit from './fetch'
-import bodyMixin from './ts/body_mixin'
+import bodyMixin from './ts/body_mixin.ts'
 // import formDataInit from './formdata'
 import responseInit from './response'
 import requestInit from './request'
