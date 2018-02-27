@@ -137,8 +137,6 @@ export class Server extends EventEmitter {
 		if (this.options.serverHeader)
 			response.setHeader("Server", this.options.serverHeader)
 
-		request.headers['x-request-id'] = requestId
-
 		let app: any
 		const tapp = trace.start("getApp")
 		try {
@@ -240,7 +238,7 @@ export class Server extends EventEmitter {
 			await new Promise((resolve, reject) => { // mainly to make try...finally work
 				let reqForV8 = {
 					method: request.method,
-					headers: httpUtils.headersForWeb(request.rawHeaders),
+					headers: httpUtils.headersForWeb(request.rawHeaders.concat(['x-request-id', requestId])),
 					remoteAddr: request.connection.remoteAddress
 				}
 				const reqMeta = request.meta

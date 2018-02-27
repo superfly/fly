@@ -49,8 +49,15 @@ function compileCallback(compiler: webpack.Compiler, callback: Function) {
 
     if (stats.hash != codeHash) {
       console.log(`Compiled app bundle (hash: ${stats.hash})`)
-      callback(null, compiler.outputFileSystem.data[`bundle-${stats.hash}.js`].toString(), stats.hash, compiler.outputFileSystem.data[`bundle-${stats.hash}.map.json`].toString())
       codeHash = stats.hash
+      callback(null,
+        compiler.outputFileSystem.data[`bundle-${codeHash}.js`].toString('utf8'),
+        codeHash,
+        compiler.outputFileSystem.data[`bundle-${codeHash}.map.json`]
+          .toString('utf8')
+          .replace("\u2028", "\\u2028") // ugh.
+          .replace("\u2029", "\\u2029") // ugh.
+      )
     }
   }
 }
@@ -81,7 +88,10 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     conf.plugins = conf.plugins || []
     conf.plugins.push(new UglifyJsPlugin({
       parallel: true,
-      sourceMap: true
+      sourceMap: true,
+      uglifyOptions: {
+        output: { ascii_only: true }
+      }
     }))
   }
   return conf

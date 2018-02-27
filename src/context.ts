@@ -254,6 +254,22 @@ export class Context extends EventEmitter {
 			this.logMetadata = {} // reset log meta data!
 		}
 	}
+
+	async runApp(app: App, t?: Trace) {
+		t = t || Trace.start("runApp")
+		const bundleName = `bundle-${app.sourceHash}`
+		const sourceFilename = `${bundleName}.js`
+		const sourceMapFilename = bundleName + '.map.json'
+
+		const source = app.sourceMap ? app.source + `\n;sourceMaps["${sourceFilename}"] = {filename: "${sourceMapFilename}", map: ${app.sourceMap}}` : app.source
+
+		const tcomp = t.start("compile")
+		const script = await this.iso.compileScript(source, { filename: sourceFilename })
+		tcomp.end()
+		const trun = t.start("prerun")
+		await script.run(this.ctx)
+		trun.end()
+	}
 }
 
 export async function createContext(config: Config, iso: ivm.Isolate, opts: ivm.ContextOptions = {}): Promise<Context> {

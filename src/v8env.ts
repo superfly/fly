@@ -12,15 +12,19 @@ const MemoryFS = require('memory-fs')
 
 let v8EnvHash = "";
 let v8EnvCode = "";
+let v8EnvSourceMap = "";
 let v8EnvSnapshot: ivm.ExternalCopy<ArrayBuffer>;
 
 const v8EnvEntry = require.resolve("../v8env/index")
 
-let compiler = webpack({
+let compiler = webpack(<any>{
   entry: v8EnvEntry,
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   output: {
     filename: 'v8env.js',
+    sourceMapFilename: 'v8env.map.json',
+    hashFunction: 'sha1',
+    hashDigestLength: 40,
     path: '/' // memoryfs!
   },
   resolve: {
@@ -42,6 +46,10 @@ export class V8Environment extends EventEmitter {
 
   get snapshot() {
     return v8EnvSnapshot
+  }
+
+  get sourceMap() {
+    return v8EnvSourceMap
   }
 
   waitForReadiness() {
@@ -82,10 +90,15 @@ export class V8Environment extends EventEmitter {
       console.log(`Compiled new v8 env bundle (hash: ${stats.hash})`)
       const wasReady = this.isReady
       v8EnvCode = compiler.outputFileSystem.data['v8env.js'].toString()
+      v8EnvSourceMap = compiler.outputFileSystem.data['v8env.map.json'].toString()
       v8EnvHash = stats.hash
       this.emit('update', v8EnvCode)
       v8EnvSnapshot = ivm.Isolate.createSnapshot([{
-        code: v8EnvCode,
+        code: v8EnvCode + `\n;
+        sourceMaps["v8env.js"] = {
+          filename: "v8env.map.json",
+          map: ${v8EnvSourceMap}
+        }`,
         filename: 'v8env.js'
       }], "bootstrap();")
       this.emit('snapshot', v8EnvSnapshot)

@@ -19,6 +19,7 @@ registerBridge('fetch', fetchBridge)
 
 function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, body: ArrayBuffer, cb: ivm.Reference<Function>) {
   log.info("native fetch with url:", urlStr)
+  log.silly("fetch init: ", JSON.stringify(init))
   let t = Trace.tryStart('fetch', ctx.trace)
   ctx.addCallback(cb)
   init || (init = {})
@@ -41,8 +42,18 @@ function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, bo
   const httpAgent = u.protocol == 'http:' ? fetchAgent : fetchHttpsAgent
 
   let method = init.method || "GET"
-  let headers = init.headers || {}
-  headers['X-Fly-Depth'] = (depth + 1).toString()
+  let headers = Object.assign({},
+    // defaults
+    {
+      origin: `${ctx.meta.originalScheme}//${ctx.meta.originalHost}`
+    },
+    // user-supplied
+    init.headers || {},
+    // override
+    {
+      'x-fly-depth': (depth + 1).toString()
+    }
+  )
   let req: http.ClientRequest;
 
   let path = u.pathname
@@ -62,37 +73,38 @@ function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, bo
   })
 
 
-  setImmediate(() => {
-    req.on("response", function (res) {
-      try {
-        res.pause()
+  req.on("response", function (res: http.IncomingMessage) {
+    log.silly(`Fetch response: ${res.statusCode} ${urlStr} ${JSON.stringify(res.headers)}`)
+    try {
+      res.pause()
 
-        ctx.applyCallback(cb, [
-          null,
-          new ivm.ExternalCopy({
-            status: res.statusCode,
-            statusText: res.statusMessage,
-            ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
-            url: urlStr,
-            headers: res.headers
-          }).copyInto({ release: true }),
-          new ProxyStream(res).ref
-        ])
+      ctx.applyCallback(cb, [
+        null,
+        new ivm.ExternalCopy({
+          status: res.statusCode,
+          statusText: res.statusMessage,
+          ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
+          url: urlStr,
+          headers: res.headers
+        }).copyInto({ release: true }),
+        new ProxyStream(res).ref
+      ])
 
 
-      } catch (err) {
-        log.error("caught error", err)
-        ctx.tryCallback(cb, [err.toString()])
-      }
-    })
-
-    req.on("error", function (err) {
-      log.error("error requesting http resource", err)
+    } catch (err) {
+      log.error("caught error", err)
       ctx.tryCallback(cb, [err.toString()])
-    })
-
-    req.end(body && Buffer.from(body) || null)
+    }
   })
+
+  req.on("error", function (err) {
+    log.error("error requesting http resource", err)
+    ctx.tryCallback(cb, [err.toString()])
+  })
+
+  setImmediate(() =>
+    req.end(body && Buffer.from(body) || null)
+  )
 
   return cb
 }

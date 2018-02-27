@@ -21,6 +21,9 @@ import requestInit from './request'
 import cache from './cache'
 import timersInit from './timers'
 
+// Sets up `Error.prepareStacktrace`
+import './utils/error'
+
 import registerFlyBackend from './middleware/fly-backend'
 import registerFlyEcho from './middleware/fly-echo'
 import registerFlyRoutes from './middleware/fly-routes'
@@ -107,6 +110,8 @@ global.bootstrap = function bootstrap() {
 	for (const mwReg of mwToRegister)
 		mwReg(ivm, dispatcher)
 }
+
+global.sourceMaps = {}
 
 global.teardown = function teardown() {
 	let r;
