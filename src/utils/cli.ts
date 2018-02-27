@@ -18,9 +18,10 @@ function errorMessage(err: any): string {
   return ''
 }
 
-export function processResponse(res: any, successFn: Function): void {
+export function processResponse(res: any, successFn?: Function | undefined): void {
   if (res.status >= 200 && res.status < 299) {
-    successFn(res)
+    if (successFn)
+      successFn(res)
   } else {
     for (let errMsg of getErrorMessages(res)) {
       console.log(errMsg)
