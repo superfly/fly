@@ -16,16 +16,40 @@ import { transferInto } from "../utils/buffer";
 export class ProxyStream {
   stream: Readable
   buffered: Buffer[]
+  bufferedByteLength: number
+  tainted: boolean
   ended: boolean
   private _ref: ivm.Reference<ProxyStream> | undefined
 
   constructor(base: Readable) {
+    this.tainted = false
     this.ended = false
     this.stream = base
     this.buffered = []
+    this.bufferedByteLength = 0
     this.stream.on("close", ()=> this.ended = true)
     this.stream.on("end", ()=> this.ended = true)
     this.stream.on("error", ()=> this.ended = true)
+  }
+
+  read(size?: number): Buffer | null{
+    let chunk = this.stream.read(size)
+    if(chunk && !this.tainted) this.bufferChunk(chunk)
+    return chunk
+  }
+
+  bufferChunk(chunk: Buffer) : boolean{
+    if(this.tainted) return false
+    this.bufferedByteLength += chunk.byteLength
+    if(this.bufferedByteLength > 10 * 1024 * 1024){
+      // no longer buffering, can't be used
+      this.tainted = true
+      this.buffered = []
+      this.bufferedByteLength = 0
+    }else{
+      this.buffered.push(chunk)
+    }
+    return !this.tainted 
   }
 
   get ref() {
@@ -69,21 +93,17 @@ registerBridge("readProxyStream", function(ctx: Context, config: Config, ref: iv
   let attempts = 0
   const tryRead = function(){
     attempts += 1
-    let chunk = stream.read(1024 * 1024)
-    let length = -1
-    if(chunk) length = chunk.byteLength
-
+    let chunk = proxyable.read(1024 * 1024)
+    let data: ivm.Copy<ArrayBuffer> | null = null
     if(chunk){
-      proxyable.buffered.push(chunk)
-      chunk = transferInto(chunk)
+      data = transferInto(chunk)
     }
-    if(chunk || attempts >= 10 || proxyable.ended){
-      ctx.applyCallback(cb, [null, chunk])
+    if(data || attempts >= 10 || proxyable.ended){
+      ctx.applyCallback(cb, [null, data, proxyable.tainted])
     }else{
       // wait a bit, with a backoff
       setTimeout(tryRead, 20 * attempts)
     }
   }
   setImmediate(tryRead)
-
 })

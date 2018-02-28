@@ -33,7 +33,7 @@ export default function streamsInit(ivm, dispatcher){
             }
             return new Promise((resolve, reject) => {
               resumed = true
-              dispatcher.dispatch("readProxyStream", ref, new ivm.Reference((err, data) => {
+              dispatcher.dispatch("readProxyStream", ref, new ivm.Reference((err, data, tainted) => {
                 if(err){
                   controller.error(new Error(err))
                   reject(err)
@@ -42,6 +42,11 @@ export default function streamsInit(ivm, dispatcher){
                 // if data is blank the stream will keep pulling
                 // readProxyStream tries a few times to minimize bridge calls
                 controller.enqueue(data)
+                if(data && r._ref && tainted){
+                  // once underlying ref is tainted, we can't pass it around anymore
+                  // but we can still use it internally
+                  r._ref = undefined
+                }
                 resolve()
               }))
 
