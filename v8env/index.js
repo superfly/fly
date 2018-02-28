@@ -14,7 +14,7 @@ import { URL } from 'whatwg-url'
 import Headers from './headers'
 
 import fetchInit from './fetch'
-import bodyInit from './body'
+import bodyMixin from './ts/body_mixin.ts'
 // import formDataInit from './formdata'
 import responseInit from './response'
 import requestInit from './request'
@@ -68,7 +68,7 @@ global.bootstrap = function bootstrap() {
 	global.URL = URL
 	global.Headers = Headers
 	global.fetch = fetchInit(ivm, dispatcher)
-	global.Body = bodyInit(ivm, dispatcher)
+	global.Body = bodyMixin
 	// global.FormData = formDataInit(ivm, dispatcher)
 	global.Response = responseInit(ivm, dispatcher)
 	global.Request = requestInit(ivm, dispatcher)

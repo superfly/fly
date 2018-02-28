@@ -13,6 +13,7 @@ before_install:
 install:
 - export CXX="g++-5"
 - npm install
+- npm run build
 script:
 - npm run coverage
 notifications:

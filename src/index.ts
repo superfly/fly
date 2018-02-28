@@ -7,9 +7,10 @@ export { App, ReleaseInfo } from './app'
 export { CacheStore } from './cache_store'
 export { registerBridge } from './bridge'
 export { Trace } from './trace'
-export { v8Env } from './v8env'
 import * as ivm from 'isolated-vm'
 // export const ivm = require('isolated-vm')
 export { ivm }
+
+export { v8Env } from './v8env'
 
 export const { version } = require('../package.json')
