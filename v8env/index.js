@@ -21,6 +21,8 @@ import requestInit from './request'
 import cache from './cache'
 import timersInit from './timers'
 
+import { Document, Element } from './document'
+
 // Sets up `Error.prepareStacktrace`
 import './utils/error'
 
@@ -84,8 +86,8 @@ global.bootstrap = function bootstrap() {
 	global.FetchEvent = FetchEvent
 
 	// DOM
-	// TODO: Reenable.
-	// global.Document = require('./document')
+	global.Document = Document
+	global.Element = Element
 
 	// Fly-specific
 	global.FlyBackend = FlyBackend
