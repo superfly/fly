@@ -68,6 +68,7 @@ export class Context extends EventEmitter {
 
 	addCallback(fn: ivm.Reference<Function>) {
 		this.callbacks.push(fn)
+		log.silly("Added callback", fn)
 		this.emit("callbackAdded", fn)
 	}
 
@@ -81,6 +82,7 @@ export class Context extends EventEmitter {
 	}
 
 	async _applyCallback(fn: ivm.Reference<Function>, args: any[], opts?: any) {
+		log.silly("Applying callback", fn, args)
 		try {
 			if (this.iso.isDisposed)
 				return
@@ -237,12 +239,13 @@ export class Context extends EventEmitter {
 				}
 				log.silly("Callbacks present initially, waiting.")
 				const cbFn = () => {
+					log.silly("Callback applied handler in finalize.", this.callbacks.length)
 					if (this.callbacks.length === 0) {
 						this.removeListener("callbackApplied", cbFn)
 						resolve()
 						return
 					}
-					log.silly("Callbacks still present, waiting.")
+					log.silly("Callbacks still present, waiting.", this.callbacks.length)
 				}
 				this.on("callbackApplied", cbFn)
 			})
@@ -260,7 +263,6 @@ export class Context extends EventEmitter {
 					// don't really care
 				}
 			}
-			this.meta = {} // reset own meta
 			this.logMetadata = {} // reset log meta data!
 		}
 	}

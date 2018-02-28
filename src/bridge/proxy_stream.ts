@@ -27,29 +27,29 @@ export class ProxyStream {
     this.stream = base
     this.buffered = []
     this.bufferedByteLength = 0
-    this.stream.on("close", ()=> this.ended = true)
-    this.stream.on("end", ()=> this.ended = true)
-    this.stream.on("error", ()=> this.ended = true)
+    this.stream.on("close", () => this.ended = true)
+    this.stream.on("end", () => this.ended = true)
+    this.stream.on("error", () => this.ended = true)
   }
 
-  read(size?: number): Buffer | null{
+  read(size?: number): Buffer | null {
     let chunk = this.stream.read(size)
-    if(chunk && !this.tainted) this.bufferChunk(chunk)
+    if (chunk && !this.tainted) this.bufferChunk(chunk)
     return chunk
   }
 
-  bufferChunk(chunk: Buffer) : boolean{
-    if(this.tainted) return false
+  bufferChunk(chunk: Buffer): boolean {
+    if (this.tainted) return false
     this.bufferedByteLength += chunk.byteLength
-    if(this.bufferedByteLength > 10 * 1024 * 1024){
+    if (this.bufferedByteLength > 10 * 1024 * 1024) {
       // no longer buffering, can't be used
       this.tainted = true
       this.buffered = []
       this.bufferedByteLength = 0
-    }else{
+    } else {
       this.buffered.push(chunk)
     }
-    return !this.tainted 
+    return !this.tainted
   }
 
   get ref() {
@@ -85,25 +85,25 @@ registerBridge("subscribeProxyStream", function (ctx: Context, config: Config, r
   })*/
   //setImmediate(() => stream.resume())
 })
-registerBridge("readProxyStream", function(ctx: Context, config: Config, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>){
-  ctx.addCallback(cb)
+registerBridge("readProxyStream", function (ctx: Context, config: Config, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
   const proxyable = ref.deref({ release: true })
   const stream = proxyable.stream
 
   let attempts = 0
-  const tryRead = function(){
+  const tryRead = function () {
     attempts += 1
     let chunk = proxyable.read(1024 * 1024)
     let data: ivm.Copy<ArrayBuffer> | null = null
-    if(chunk){
+    if (chunk) {
       data = transferInto(chunk)
     }
-    if(data || attempts >= 10 || proxyable.ended){
+    ctx.addCallback(cb)
+    if (data || attempts >= 10 || proxyable.ended) {
       ctx.applyCallback(cb, [null, data, proxyable.tainted])
-    }else if(attempts >= 10 && !proxyable.ended){
+    } else if (attempts >= 10 && !proxyable.ended) {
       // wait a bit, with a backoff
       setTimeout(tryRead, 20 * attempts)
-    }else{
+    } else {
       ctx.applyCallback(cb, [null, null, proxyable.tainted])
     }
   }

@@ -37,7 +37,6 @@ export class DefaultContextStore implements ContextStore {
     try {
       t2 = t.start("createContext")
       const ctx = await createContext(config, iso, { inspector: !!this.options.inspect })
-      ctx.meta.iso = iso
       t2.end()
 
       ctx.set('app', app.forV8())
