@@ -1,5 +1,4 @@
 import { expect } from 'chai'
-// import { Element } from '../v8env/document'
 
 const html = `
 <html>
