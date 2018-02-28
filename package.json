@@ -110,7 +110,7 @@
     ],
     "exclude": [
       "**/*.d.ts",
-      "src/spec/**/*",
+      "test/**/*",
       "**/*.js"
     ],
     "reporter": [
