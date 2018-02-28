@@ -30,6 +30,11 @@ export default function requestInit(ivm) {
 			if(init && init.body){
 				body = init.body
 			}
+			if(!body && input instanceof Request){
+				if (input.bodyUsed) throw TypeError();
+				// grab request body if we can
+				body = input.bodySource
+			}
 			// logger.debug('creating request! body typeof:', typeof Body, typeof init.body)
 			super(body)
 
@@ -68,7 +73,7 @@ export default function requestInit(ivm) {
 				this.credentials = input.credentials;
 				this._stream = input._stream;
 				this.remoteAddr = input.remoteAddr;
-				logger.info("new Request remoteAddr:", this.remoteAddr)
+				logger.info("new Request remoteAddr:", this.remoteAddrget)
 				this.referrer = input.referrer;
 				this.mode = input.mode;
 			} else {
