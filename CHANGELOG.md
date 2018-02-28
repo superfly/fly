@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.20.2"></a>
+## [0.20.2](https://github.com/superfly/fly/compare/v0.20.1...v0.20.2) (2018-02-28)
+
+
+### Bug Fixes
+
+* body not cloned on `new Request(req)` ([2ec0b99](https://github.com/superfly/fly/commit/2ec0b99))
+
+
+
 <a name="0.20.1"></a>
 ## [0.20.1](https://github.com/superfly/fly/compare/v0.20.0...v0.20.1) (2018-02-28)
 
