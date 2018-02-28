@@ -16,7 +16,6 @@ let v8EnvCode = "";
 let v8EnvSourceMap = "";
 let v8EnvSnapshot: ivm.ExternalCopy<ArrayBuffer>;
 
-const v8EnvEntry = require.resolve("../v8env/index")
 const v8dist = path.join(__dirname, '..', 'dist', 'v8env.js')
 const v8mapDist = path.join(__dirname, '..', 'dist', 'v8env.map.json')
 
