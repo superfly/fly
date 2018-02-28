@@ -222,13 +222,14 @@ describe('Server', () => {
     })
   })
 
-  describe("big fetch responses", () =>{
+  describe("big fetch responses", () => {
     before(async function () {
       this.server = await startServer("twenty-mb.js")
     })
-    after(function (done) { this.server.close(done) }) 
+    after(function (done) { this.server.close(done) })
 
-    it('works', async() => {
+    it('works', async function () {
+      this.timeout(10000) // give it some leeway
       let res = await axios.post("http://127.0.0.1:3333/", "hello", { headers: { host: "test" } })
       expect(res.status).to.equal(200)
     })
