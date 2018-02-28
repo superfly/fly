@@ -1,11 +1,12 @@
 {
   "name": "@fly/fly",
-  "version": "0.19.2",
+  "version": "0.19.3-0",
   "description": "",
   "main": "lib/index.js",
   "files": [
     "lib/",
-    "dist/"
+    "dist/",
+    "v8env/testing"
   ],
   "scripts": {
     "start": "./bin/fly server ./apps/getting-started",
