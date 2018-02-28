@@ -4,7 +4,8 @@ import {
 	getOuterHTML,
 	getText,
 	getInnerHTML,
-	replaceElement
+	replaceElement,
+	getAttributeValue
 } from 'domutils'
 
 import { logger } from './logger'
@@ -13,13 +14,9 @@ const WritableParser = htmlparser.WritableStream
 
 import * as css from 'css-select'
 
-export default class Document {
+export class Node {
 	constructor(dom) {
 		this._dom = dom
-	}
-
-	getElementById(id) {
-		return this.querySelector(`#${id}`)
 	}
 
 	querySelector(selector) {
@@ -46,16 +43,25 @@ export default class Document {
 	get children() {
 		return this._dom
 	}
+}
+
+export class Document extends Node {
+	constructor(dom) {
+		super(dom)
+	}
+
+	getElementById(id) {
+		return this.querySelector(`#${id}`)
+	}
 
 	get documentElement() {
 		return new Element(this._dom)
 	}
 }
 
-class Element {
+export class Element extends Node {
 	constructor(dom) {
-		this._dom = dom
-		logger.debug("made element", this._dom.attribs)
+		super(dom)
 	}
 
 	get id() {
@@ -81,6 +87,14 @@ class Element {
 			return
 		}
 		replaceElement(this._dom, parseDOMSync(html)[0])
+	}
+
+	getAttribute(name) {
+		return getAttributeValue(this._dom, name)
+	}
+
+	setAttribute(name, value) {
+		this._dom.attribs[name] = value
 	}
 }
 
@@ -109,6 +123,8 @@ class DocumentParser {
 
 		if (stream instanceof ReadableStream)
 			stream = stream.getReader()
+		else
+			return this.parseSync(stream)
 
 		while (!fullyRead) {
 			const { done, value } = await stream.read()
@@ -119,7 +135,6 @@ class DocumentParser {
 			this.parser.write(value)
 		}
 		this.parser.end()
-		// logger.debug("done parsing!", dom.attribs)
 	}
 }
 
