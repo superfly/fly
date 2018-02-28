@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.20.1"></a>
+## [0.20.1](https://github.com/superfly/fly/compare/v0.20.0...v0.20.1) (2018-02-28)
+
+
+### Bug Fixes
+
+* contexts are never released, causing hang ([296eac8](https://github.com/superfly/fly/commit/296eac8))
+* don't clear context.meta on finalize, production needs that ([1c2ef6d](https://github.com/superfly/fly/commit/1c2ef6d))
+
+
+
 <a name="0.20.0"></a>
 # [0.20.0](https://github.com/superfly/fly/compare/v0.19.2...v0.20.0) (2018-02-28)
 
