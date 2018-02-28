@@ -100,9 +100,11 @@ registerBridge("readProxyStream", function(ctx: Context, config: Config, ref: iv
     }
     if(data || attempts >= 10 || proxyable.ended){
       ctx.applyCallback(cb, [null, data, proxyable.tainted])
-    }else{
+    }else if(attempts >= 10 && !proxyable.ended){
       // wait a bit, with a backoff
       setTimeout(tryRead, 20 * attempts)
+    }else{
+      ctx.applyCallback(cb, [null, null, proxyable.tainted])
     }
   }
   setImmediate(tryRead)
