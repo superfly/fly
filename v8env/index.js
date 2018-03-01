@@ -10,11 +10,12 @@ import { TextEncoder, TextDecoder } from 'text-encoding'
 import consoleInit from './console'
 import flyInit from './fly'
 
-import { URL } from 'whatwg-url'
+import { URL, URLSearchParams } from 'whatwg-url'
 import Headers from './headers'
 
 import fetchInit from './fetch'
 import bodyMixin from './ts/body_mixin.ts'
+import Blob from './ts/blob.ts'
 // import formDataInit from './formdata'
 import responseInit from './response'
 import requestInit from './request'
@@ -68,9 +69,11 @@ global.bootstrap = function bootstrap() {
 
 	// // Web API
 	global.URL = URL
+	global.URLSearchParams = URLSearchParams
 	global.Headers = Headers
 	global.fetch = fetchInit(ivm, dispatcher)
 	global.Body = bodyMixin
+	global.Blob = Blob
 	// global.FormData = formDataInit(ivm, dispatcher)
 	global.Response = responseInit(ivm, dispatcher)
 	global.Request = requestInit(ivm, dispatcher)
