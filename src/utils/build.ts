@@ -2,6 +2,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as webpack from 'webpack'
 
+import log from '../log'
+
 const importCwd = require('import-cwd')
 const MemoryFS = require('memory-fs')
 
@@ -50,6 +52,8 @@ function compileCallback(compiler: webpack.Compiler, callback: Function) {
     if (stats.hash != codeHash) {
       console.log(`Compiled app bundle (hash: ${stats.hash})`)
       codeHash = stats.hash
+      log.debug("Compiled size: ", compiler.outputFileSystem.data[`bundle-${codeHash}.js`].byteLength / (1024 * 1024), "MB")
+      log.debug("Compiled sourcemap size: ", compiler.outputFileSystem.data[`bundle-${codeHash}.map.json`].byteLength / (1024 * 1024), "MB")
       callback(null,
         compiler.outputFileSystem.data[`bundle-${codeHash}.js`].toString('utf8'),
         codeHash,
