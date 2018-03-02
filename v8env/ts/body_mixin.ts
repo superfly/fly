@@ -48,7 +48,7 @@ export default class BodyMixin implements Body {
   }
 
   async blob(): Promise<Blob> {
-    throw new Error("Blob not yet implemented")
+    return new Blob([await this.arrayBuffer()])
   }
 
   async formData(): Promise<FormData> {

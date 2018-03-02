@@ -41,7 +41,10 @@ export default class Blob {
             break
         }
       }
-      this.bytes = concatenate(...parts)
+      if (parts.length === 1)
+        this.bytes = parts[0]
+      else
+        this.bytes = concatenate(...parts)
     }
 
     if (options && options.type)
