@@ -134,45 +134,43 @@ export class Context extends EventEmitter {
 	}
 
 	async bootstrap(config: Config) {
-		await this.set('global', this.global.derefInto());
-		await this.set('_ivm', ivm);
-
-		await this.set('_setTimeout', new ivm.Reference((fn: ivm.Reference<Function>, timeout: number): number => {
-			const id = ++this.currentTimerId
-			this.timeouts[id] = setTimeout(() => { this.applyCallback(fn, []) }, timeout)
-			this.addCallback(fn)
-			return id
-		}))
-
-		await this.set('_clearTimeout', new ivm.Reference((id: number): void => {
-			clearTimeout(this.timeouts[id])
-			delete this.timeouts[id]
-			return
-		}))
-
-		await this.set('_setInterval', new ivm.Reference((fn: ivm.Reference<Function>, timeout: number): number => {
-			const id = ++this.currentTimerId
-			// we don't add interval callbacks because we will clear them at the very end
-			this.intervals[id] = setInterval(() => { fn.apply(null, []) }, timeout)
-			this.addReleasable(fn)
-			return id
-		}))
-
-		await this.set('_clearInterval', new ivm.Reference((id: number): void => {
-			clearInterval(this.intervals[id])
-			delete this.intervals[id]
-			return
-		}))
-
-		await this.set("_dispatch", new ivm.Reference((name: string, ...args: any[]) => {
-			this.bridge.dispatch(this, config, name, ...args)
-		}))
+		await Promise.all([
+			this.set('global', this.global.derefInto()),
+			this.set('_ivm', ivm),
+			this.set('_setTimeout', new ivm.Reference((fn: ivm.Reference<Function>, timeout: number): number => {
+				const id = ++this.currentTimerId
+				this.timeouts[id] = setTimeout(() => { this.applyCallback(fn, []) }, timeout)
+				this.addCallback(fn)
+				return id
+			})),
+			this.set('_clearTimeout', new ivm.Reference((id: number): void => {
+				clearTimeout(this.timeouts[id])
+				delete this.timeouts[id]
+				return
+			})),
+			this.set('_setInterval', new ivm.Reference((fn: ivm.Reference<Function>, timeout: number): number => {
+				const id = ++this.currentTimerId
+				// we don't add interval callbacks because we will clear them at the very end
+				this.intervals[id] = setInterval(() => { fn.apply(null, []) }, timeout)
+				this.addReleasable(fn)
+				return id
+			})),
+			this.set('_clearInterval', new ivm.Reference((id: number): void => {
+				clearInterval(this.intervals[id])
+				delete this.intervals[id]
+				return
+			})),
+			this.set("_dispatch", new ivm.Reference((name: string, ...args: any[]) => {
+				this.bridge.dispatch(this, config, name, ...args)
+			})),
+			this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
+				log.log(lvl, args[0], ...args.slice(1))
+			}))
+		])
 
 		await (await this.get("bootstrap")).apply(undefined, [])
 
-		await this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
-			log.log(lvl, args[0], ...args.slice(1))
-		}))
+		return
 	}
 
 	async fireEvent(name: string, args: any[], opts?: any) {
