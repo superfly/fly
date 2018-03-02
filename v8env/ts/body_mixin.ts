@@ -59,13 +59,13 @@ export default class BodyMixin implements Body {
     const raw = await this.text()
     const query = queryParse(raw)
     const formdata = new FormData()
-    for (let pair in query) {
-      if (Array.isArray(pair[1])) {
-        for (let val of pair[1]) {
-          formdata.append(pair[0], val)
+    for (let key in query) {
+      if (Array.isArray(query[key])) {
+        for (let val of query[key]) {
+          formdata.append(key, val)
         }
       } else {
-        formdata.append(pair[0], pair[1])
+        formdata.append(key, String(query[key]))
       }
     }
     return formdata

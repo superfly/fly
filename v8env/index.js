@@ -74,12 +74,8 @@ global.bootstrap = function bootstrap() {
 	global.Headers = Headers
 	global.fetch = fetchInit(ivm, dispatcher)
 	global.Body = bodyMixin
-<<<<<<< HEAD
 	global.Blob = Blob
-	// global.FormData = formDataInit(ivm, dispatcher)
-=======
 	global.FormData = FormData
->>>>>>> feat: Bring back FormData API
 	global.Response = responseInit(ivm, dispatcher)
 	global.Request = requestInit(ivm, dispatcher)
 
