@@ -51,6 +51,7 @@ export class DefaultContextStore implements ContextStore {
       return ctx
     } catch (err) {
       log.error("bombed somehow!", err, err.stack)
+      this.resetIsolate()
       throw err
     }
   }
