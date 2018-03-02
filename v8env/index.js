@@ -10,7 +10,7 @@ import { TextEncoder, TextDecoder } from 'text-encoding'
 import consoleInit from './console'
 import flyInit from './fly'
 
-import { URL, URLSearchParams } from 'whatwg-url'
+import { URL, URLSearchParams } from 'universal-url-lite'
 import Headers from './headers'
 
 import fetchInit from './fetch'
