@@ -9,8 +9,8 @@ const MemoryFS = require('memory-fs')
 
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
-const webpackConfPath = "./webpack.config.js";
-const webpackConfRequirePath = "./webpack.config";
+const webpackConfPath = "./webpack.fly.config.js";
+const webpackConfRequirePath = "./webpack.fly.config";
 
 export interface AppBuilderOptions {
   watch: boolean,
