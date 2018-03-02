@@ -111,7 +111,8 @@
     "exclude": [
       "**/*.d.ts",
       "test/**/*",
-      "**/*.js"
+      "**/*.js",
+      "v8env/"
     ],
     "reporter": [
       "text"

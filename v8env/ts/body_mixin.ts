@@ -1,35 +1,37 @@
-interface ReadableStreamController{
+import { parse as queryParse } from 'querystring'
+
+interface ReadableStreamController {
   enqueue(chunk: string | ArrayBuffer): void
   close(): void
 }
 declare var ReadableStream: {
   prototype: ReadableStream;
-  new(source:any | undefined): ReadableStream;
+  new(source: any | undefined): ReadableStream;
 };
 
-export type BodySource = Blob | BufferSource | 
-                  FormData | URLSearchParams | 
-                  ReadableStream | String
+export type BodySource = Blob | BufferSource |
+  FormData | URLSearchParams |
+  ReadableStream | String
 
-export default class BodyMixin implements Body{
-  private readonly bodySource : BodySource
-  private stream : ReadableStream | null
+export default class BodyMixin implements Body {
+  private readonly bodySource: BodySource
+  private stream: ReadableStream | null
 
-  constructor(obj: BodySource){
+  constructor(obj: BodySource) {
     this.bodySource = obj
     this.stream = null
   }
 
   get body(): ReadableStream | null {
-    if(this.stream){
+    if (this.stream) {
       return this.stream
     }
-    if(this.bodySource instanceof ReadableStream){
+    if (this.bodySource instanceof ReadableStream) {
       this.stream = this.bodySource
     }
-    if(typeof this.bodySource === "string"){
+    if (typeof this.bodySource === "string") {
       this.stream = new ReadableStream({
-        start(controller: ReadableStreamController){
+        start(controller: ReadableStreamController) {
           controller.enqueue(this.bodySource)
           controller.close()
         }
@@ -39,21 +41,38 @@ export default class BodyMixin implements Body{
   }
 
   get bodyUsed(): boolean {
-    if(this.body && this.body.locked){
+    if (this.body && this.body.locked) {
       return true
     }
     return false
   }
 
-  async blob(): Promise<Blob>{
+  async blob(): Promise<Blob> {
     throw new Error("Blob not yet implemented")
   }
-  async formData(): Promise<FormData>{
-    throw new Error("FormData not yet implemented")
+
+  async formData(): Promise<FormData> {
+    if (this.bodySource instanceof FormData) {
+      return this.bodySource
+    }
+
+    const raw = await this.text()
+    const query = queryParse(raw)
+    const formdata = new FormData()
+    for (let key in query) {
+      if (Array.isArray(query[key])) {
+        for (let val of query[key]) {
+          formdata.append(key, val)
+        }
+      } else {
+        formdata.append(key, String(query[key]))
+      }
+    }
+    return formdata
   }
 
-  async text(): Promise<string>{
-    if(typeof this.bodySource === "string"){
+  async text(): Promise<string> {
+    if (typeof this.bodySource === "string") {
       return this.bodySource
     }
 
@@ -61,20 +80,23 @@ export default class BodyMixin implements Body{
     return new TextDecoder('utf-8').decode(arr)
   }
 
-  async json(): Promise<any>{
+  async json(): Promise<any> {
     const raw = await this.text()
     return JSON.parse(raw)
   }
 
-  async arrayBuffer(): Promise<ArrayBuffer>{
-    if(this.bodySource instanceof ArrayBuffer){
+  async arrayBuffer(): Promise<ArrayBuffer> {
+    if (this.bodySource instanceof ArrayBuffer) {
       return this.bodySource
-    }else if(typeof this.bodySource === 'string'){
+    } else if (typeof this.bodySource === 'string') {
       const enc = new TextEncoder("utf-8")
       return <ArrayBuffer>enc.encode(this.bodySource).buffer
-    }else if(this.bodySource instanceof ReadableStream){
+    } else if (this.bodySource instanceof ReadableStream) {
       return bufferFromStream(this.bodySource.getReader())
-    }else if(!this.bodySource){
+    } else if (this.bodySource instanceof FormData) {
+      const enc = new TextEncoder("utf-8")
+      return <ArrayBuffer>enc.encode(this.bodySource.toString()).buffer
+    } else if (!this.bodySource) {
       return new ArrayBuffer(0)
     }
     console.log("Unknown type:", this.bodySource instanceof ReadableStream)
@@ -82,7 +104,7 @@ export default class BodyMixin implements Body{
   }
 }
 
-function bufferFromStream(stream:ReadableStreamReader): Promise<ArrayBuffer> {
+function bufferFromStream(stream: ReadableStreamReader): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     let parts: Array<Uint8Array> = [];
     let encoder = new TextEncoder();
@@ -98,9 +120,9 @@ function bufferFromStream(stream:ReadableStreamReader): Promise<ArrayBuffer> {
             parts.push(encoder.encode(value))
           } else if (value instanceof ArrayBuffer) {
             parts.push(new Uint8Array(value))
-          } else if (!value){
+          } else if (!value) {
             // noop for undefined
-          }else{
+          } else {
             console.log("unhandled type on stream read:", value)
             reject("unhandled type on stream read")
           }
