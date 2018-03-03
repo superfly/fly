@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.21.0"></a>
+# [0.21.0](https://github.com/superfly/fly/compare/v0.20.2...v0.21.0) (2018-03-03)
+
+
+### Bug Fixes
+
+* logs command incorrectly decided a good response was bad ([4513968](https://github.com/superfly/fly/commit/4513968))
+
+
+### Features
+
+* Add Blob implementation ([60c45e6](https://github.com/superfly/fly/commit/60c45e6))
+* Bring back FormData API ([#34](https://github.com/superfly/fly/issues/34)) ([e68dbdd](https://github.com/superfly/fly/commit/e68dbdd))
+* use webpack.fly.config.js instead of webpack.config.js ([2d26c85](https://github.com/superfly/fly/commit/2d26c85))
+
+
+
 <a name="0.20.2"></a>
 ## [0.20.2](https://github.com/superfly/fly/compare/v0.20.1...v0.20.2) (2018-02-28)
 
