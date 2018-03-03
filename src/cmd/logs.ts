@@ -2,6 +2,8 @@ import { root, getAppId } from './root'
 import { API } from './api'
 import { processResponse } from '../utils/cli'
 
+import log from '../log'
+
 import colors = require('ansi-colors')
 
 export interface LogsOptions { }
@@ -15,6 +17,7 @@ root
   })
 
 async function continuouslyGetLogs(appID: string) {
+  log.silly("continuously get logs for app id:", appID)
   let lastNextToken: string | undefined;
   while (true) {
     try {
@@ -60,7 +63,7 @@ async function getLogs(appID: string, nextToken?: string): Promise<[any[], strin
   const res = await API.get(`/api/v1/apps/${appID}/logs`, {
     params: { next_token: nextToken }
   })
-  if (res.data.data && res.data.data.meta) {
+  if (res.data.data && res.data.meta) {
     return [res.data.data, res.data.meta.next_token]
   }
   // no data that we want, likely an error, continuouslyGetLogs will catch and
