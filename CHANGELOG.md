@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.22.0-0"></a>
+# [0.22.0-0](https://github.com/superfly/fly/compare/v0.21.0...v0.22.0-0) (2018-03-04)
+
+
+### Features
+
+* Change app naming scheme to be simpler ([#39](https://github.com/superfly/fly/issues/39)) ([be16113](https://github.com/superfly/fly/commit/be16113))
+
+
+
 <a name="0.21.0"></a>
 # [0.21.0](https://github.com/superfly/fly/compare/v0.20.2...v0.21.0) (2018-03-03)
 
