@@ -47,7 +47,7 @@ open http://localhost:3000
 By default, fly will read your a `.fly.yml` file in your current working directory.
 
 ```yaml
-app_id: my-app-id
+app: my-app-name
 config:
   foo: bar
 ```
@@ -56,7 +56,7 @@ config:
 
 Located in your `.fly.yml` file.
 
-- `app_id` - the fly.io app id, can be ommitted, useful for deployment purposes
+- `app` - the fly.io app name, can be ommitted, useful for deployment purposes
 - `config` - arbitrary settings for your applications, accessible in your code via the global variable `app.config`
 
 #### Server configuration

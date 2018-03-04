@@ -1,4 +1,4 @@
-import { root, getAppId } from './root'
+import { root, getAppName } from './root'
 import { API } from './api'
 import { getLocalConfig } from '../app/stores/utils'
 import { processResponse } from '../utils/cli'
@@ -11,13 +11,13 @@ root
   .description("Deploy your local Fly app.")
   .action((opts, args, rest) => {
     const { buildApp } = require('../utils/build')
-    const appID = getAppId("production")
-    console.log("Deploying", appID)
+    const appName = getAppName("production")
+    console.log("Deploying", appName)
     buildApp(process.cwd(), { watch: false, uglify: true }, async (err: Error, source: string, hash: string, sourceMap: string) => {
       try {
         if (err)
           throw err
-        const res = await API.post(`/api/v1/apps/${appID}/releases`, {
+        const res = await API.post(`/api/v1/apps/${appName}/releases`, {
           data: {
             attributes: {
               source: source,

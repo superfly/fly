@@ -1,4 +1,4 @@
-app_id: routes-app
+app: routes-app
 config:
   backends:
     - id: 1

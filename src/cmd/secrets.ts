@@ -1,5 +1,5 @@
 import fs = require('fs')
-import { root, getAppId } from './root'
+import { root, getAppName } from './root'
 import { API } from './api'
 import { processResponse } from '../utils/cli'
 
@@ -22,7 +22,7 @@ secrets
   .usage("fly secrets set <key> [value]")
   .action(async (opts, args, rest) => {
     try {
-      const appID = getAppId()
+      const appName = getAppName()
 
       const value = opts.filename ?
         fs.readFileSync(opts.filename[0]).toString() :
@@ -31,7 +31,7 @@ secrets
       if (!value)
         throw new Error("Either a value or --from-file needs to be provided.")
 
-      const res = await API.patch(`/api/v1/apps/${appID}/secrets`, {
+      const res = await API.patch(`/api/v1/apps/${appName}/secrets`, {
         data: {
           attributes: {
             key: args.key,

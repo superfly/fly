@@ -1,5 +1,5 @@
 default: &default
-  app_id: config-multi-env
+  app: config-multi-env
   config:
     secrets: &secrets
       password:
