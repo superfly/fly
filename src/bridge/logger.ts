@@ -34,7 +34,7 @@ registerBridge('addLogTransport', async function (
       case TransportType.Syslog:
         const ip = await resolveHostname(options.host)
         ctx.logger.add(Syslog, Object.assign(options, {
-          app_name: ctx.meta.app && ctx.meta.app.id || "app",
+          app_name: ctx.meta.app && ctx.meta.app.name || "app",
           host: ip,
           protocol: 'udp4'
         }));

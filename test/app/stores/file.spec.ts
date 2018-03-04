@@ -2,12 +2,12 @@ import { expect, assert } from 'chai'
 import { FileStore } from '../../../src/app/stores/file'
 
 
-describe('FileStore', function() {
+describe('FileStore', function () {
   const env = Object.assign({}, process.env);
-  before(async function() {
+  before(async function () {
     process.env = env
   })
-  after(function(done) {
+  after(function (done) {
     process.env = env
     done()
   })
@@ -29,12 +29,12 @@ describe('FileStore', function() {
 
     it('loads app with config file', async () => {
       let store = new FileStore(__dirname + '/testdata/config-no-secrets', { noWatch: true })
-      expect(store.releaseInfo.app_id).to.equal("config-no-secrets")
+      expect(store.releaseInfo.name).to.equal("config-no-secrets")
     })
 
     it('interpolates secrets correctly', async () => {
       let store = new FileStore(__dirname + '/testdata/config-and-secrets', { noWatch: true })
-      expect(store.releaseInfo.app_id).to.equal("config-and-secrets")
+      expect(store.releaseInfo.name).to.equal("config-and-secrets")
       expect(store.releaseInfo.config).to.eql({
         "option_a": "val_a",
         "password": "sekret"
@@ -44,7 +44,7 @@ describe('FileStore', function() {
     it('picks config environment', async () => {
       process.env.FLY_ENV = 'stage'
       let store = new FileStore(__dirname + '/testdata/config-multi-env', { noWatch: true })
-      expect(store.releaseInfo.app_id).to.equal("config-multi-env")
+      expect(store.releaseInfo.name).to.equal("config-multi-env")
       expect(store.releaseInfo.config).to.eql({
         "option_a": "val_a",
         "password": "sekret"

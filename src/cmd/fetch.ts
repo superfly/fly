@@ -1,4 +1,4 @@
-import { root, getAppId } from './root'
+import { root, getAppName } from './root'
 import { API } from './api'
 import { processResponse } from '../utils/cli'
 
@@ -10,8 +10,8 @@ root
   .description("Fetch your Fly app locally.")
   .action(async (opts, args, rest) => {
     try {
-      const appID = getAppId()
-      const res = await API.get(`/api/v1/apps/${appID}/source`)
+      const appName = getAppName()
+      const res = await API.get(`/api/v1/apps/${appName}/source`)
       processResponse(res, (res: any) => {
         console.log(res.data.data.attributes.source)
       })

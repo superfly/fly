@@ -1,4 +1,4 @@
-app_id: config-and-secrets
+app: config-and-secrets
 config:
   option_a: val_a
   password:

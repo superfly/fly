@@ -13,7 +13,7 @@ registerBridge('flyCacheSet', function cacheSet(ctx: Context, config: Config, ke
   if (!ctx.meta.app)
     return ctx.tryCallback(callback, ["app not present, something is wrong"])
 
-  let k = "cache:" + ctx.meta.app.id + ":" + key
+  let k = "cache:" + ctx.meta.app.name + ":" + key
 
   if (!config.cacheStore)
     return ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
@@ -42,7 +42,7 @@ registerBridge('flyCacheExpire', function cacheExpire(ctx: Context, config: Conf
   ctx.addCallback(callback)
   if (!ctx.meta.app)
     return ctx.tryCallback(callback, ["app not present, something is wrong"])
-  let k = "cache:" + ctx.meta.app.id + ":" + key
+  let k = "cache:" + ctx.meta.app.name + ":" + key
 
   if (!config.cacheStore) {
     ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
@@ -69,7 +69,7 @@ registerBridge('flyCacheGet',
       ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
       return
     }
-    let k = "cache:" + ctx.meta.app.id + ":" + key
+    let k = "cache:" + ctx.meta.app.name + ":" + key
 
     config.cacheStore.get(k).then((buf) => {
       const size = buf ? buf.byteLength : 0

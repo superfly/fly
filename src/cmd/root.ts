@@ -7,17 +7,14 @@ import path = require('path')
 
 const { version } = require('../../package.json')
 
-export interface RootOptions {
+export interface CommonOptions {
   app?: string[]
   env?: string[]
   token: string[]
 }
 
-export interface RootArgs {
-}
-
 export const root =
-  create<RootOptions, RootArgs>("fly")
+  create<CommonOptions, any>("fly")
     .version(version, "-v, --version")
     .description("Fly CLI")
     .option("-a, --app <id>", "App to use for commands.")
@@ -43,22 +40,22 @@ export function getToken() {
   return token
 }
 
-export const fullAppMatch = /([a-z0-9_.-]+)\/([a-z0-9_.-]+)/i
+export const fullAppMatch = /([a-z0-9_.-]+)/i
 
-export function getAppId(env = "production") {
+export function getAppName(env = "production") {
   const cwd = process.cwd()
   env = root.parsedOpts.env && root.parsedOpts.env[0] || process.env.FLY_ENV || env || "production"
   const conf = getLocalConfig(cwd, env)
-  const appId = root.parsedOpts.app && root.parsedOpts.app[0] || conf.app_id
+  const appName = root.parsedOpts.app && root.parsedOpts.app[0] || conf.app || conf.app_id
 
-  if (!appId) {
-    throw new Error("--app option or app_id (in your .fly.yml) needs to be set.")
+  if (!appName) {
+    throw new Error("--app option or app (in your .fly.yml) needs to be set.")
   }
 
-  if (!appId.match(fullAppMatch))
+  if (!appName.match(fullAppMatch))
     throw new Error("app parameter needs to match a full org/app name (ie: your-org/app-name)")
 
-  return appId
+  return appName
 }
 
 export function homeConfigPath() {

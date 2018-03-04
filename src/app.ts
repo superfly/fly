@@ -2,7 +2,7 @@ import { parseConfig } from './app/config'
 import { ivm } from './';
 
 export interface ReleaseInfo {
-  app_id: string
+  name: string
   version: number
   source: string
   source_hash: string
@@ -13,13 +13,13 @@ export interface ReleaseInfo {
 }
 
 export class App {
-  id: string
+  name: string
   env: string
   releaseInfo: ReleaseInfo
   private _config: any
 
   constructor(releaseInfo: ReleaseInfo) {
-    this.id = releaseInfo.app_id
+    this.name = releaseInfo.name
     this.env = releaseInfo.env
     this.releaseInfo = releaseInfo
   }
@@ -50,7 +50,7 @@ export class App {
 
   forV8() {
     return new ivm.ExternalCopy({
-      id: this.id,
+      name: this.name,
       config: this.config,
       version: this.version,
       env: this.env

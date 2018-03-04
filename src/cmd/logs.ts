@@ -1,4 +1,4 @@
-import { root, getAppId } from './root'
+import { root, getAppName } from './root'
 import { API } from './api'
 import { processResponse } from '../utils/cli'
 
@@ -13,22 +13,22 @@ root
   .subCommand<LogsOptions, LogsArgs>("logs")
   .description("Logs from your app.")
   .action(async (opts, args, rest) => {
-    continuouslyGetLogs(getAppId())
+    continuouslyGetLogs(getAppName())
   })
 
-async function continuouslyGetLogs(appID: string) {
-  log.silly("continuously get logs for app id:", appID)
+async function continuouslyGetLogs(appName: string) {
+  log.silly("continuously get logs for app id:", appName)
   let lastNextToken: string | undefined;
   while (true) {
     try {
-      const [logs, nextToken] = await getLogs(appID, lastNextToken)
+      const [logs, nextToken] = await getLogs(appName, lastNextToken)
       lastNextToken = nextToken
       showLogs(logs)
     } catch (e) {
       if (e.response)
         processResponse(e.response)
       else
-        console.log(e)
+        console.log(e.stack)
       break;
     }
     await sleep(5000) // give it a rest!
@@ -59,8 +59,8 @@ async function showLogs(logs: Log[]) {
   }
 }
 
-async function getLogs(appID: string, nextToken?: string): Promise<[any[], string | undefined]> {
-  const res = await API.get(`/api/v1/apps/${appID}/logs`, {
+async function getLogs(appName: string, nextToken?: string): Promise<[any[], string | undefined]> {
+  const res = await API.get(`/api/v1/apps/${appName}/logs`, {
     params: { next_token: nextToken }
   })
   if (res.data.data && res.data.meta) {
