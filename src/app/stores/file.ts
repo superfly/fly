@@ -40,10 +40,10 @@ export class FileStore implements AppStore {
     const env = options.env || getEnv()
 
     const localConf = getLocalConfig(cwd, env)
-    localConf.name = localConf.app
+    localConf.app = localConf.app
 
     this.releaseInfo = Object.assign({}, {
-      name: this.cwd,
+      app: this.cwd,
       version: 0,
       source: "",
       source_hash: "",

@@ -29,12 +29,12 @@ describe('FileStore', function () {
 
     it('loads app with config file', async () => {
       let store = new FileStore(__dirname + '/testdata/config-no-secrets', { noWatch: true })
-      expect(store.releaseInfo.name).to.equal("config-no-secrets")
+      expect(store.releaseInfo.app).to.equal("config-no-secrets")
     })
 
     it('interpolates secrets correctly', async () => {
       let store = new FileStore(__dirname + '/testdata/config-and-secrets', { noWatch: true })
-      expect(store.releaseInfo.name).to.equal("config-and-secrets")
+      expect(store.releaseInfo.app).to.equal("config-and-secrets")
       expect(store.releaseInfo.config).to.eql({
         "option_a": "val_a",
         "password": "sekret"
@@ -44,7 +44,7 @@ describe('FileStore', function () {
     it('picks config environment', async () => {
       process.env.FLY_ENV = 'stage'
       let store = new FileStore(__dirname + '/testdata/config-multi-env', { noWatch: true })
-      expect(store.releaseInfo.name).to.equal("config-multi-env")
+      expect(store.releaseInfo.app).to.equal("config-multi-env")
       expect(store.releaseInfo.config).to.eql({
         "option_a": "val_a",
         "password": "sekret"
