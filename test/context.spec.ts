@@ -7,7 +7,7 @@ describe('Context', () => {
   describe('no leaks!', () => {
     before(async function () {
       await v8Env.waitForReadiness()
-      this.iso = new ivm.Isolate({ memoryLimit: 96, snapshot: v8Env.snapshot })
+      this.iso = new ivm.Isolate({ memoryLimit: 128, snapshot: v8Env.snapshot })
       this.ctx = await createDefaultContext(this.iso)
     })
     after(async function () {
@@ -24,6 +24,7 @@ describe('Context', () => {
     })
 
     it('does not leak (in a major way) when creating contexts profusely', async function () {
+      this.timeout(10000)
       const initHeap = this.iso.getHeapStatisticsSync().used_heap_size
       for (let i = 0; i < 200; i++) {
         let ctx = await createDefaultContext(this.iso)
