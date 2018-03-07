@@ -26,7 +26,7 @@ registerBridge('flyModifyImage', function imageOperation(ctx: Context, config: C
   let t = Trace.tryStart("modifyImage", ctx.trace)
   ctx.addCallback(callback)
   if(!(data instanceof ArrayBuffer)){
-    ctx.tryCallback(callback, ["image must be an ArrayBuffer"])
+    ctx.applyCallback(callback, ["image must be an ArrayBuffer"])
     return
   }else{
     log.debug("data is arraybuffer")
@@ -38,7 +38,7 @@ registerBridge('flyModifyImage', function imageOperation(ctx: Context, config: C
   try{
     image = <sharpImage>sharp(Buffer.from(data))
   }catch(err){
-    ctx.tryCallback(callback, ["Error reading image buffer: " + err.toSring()])
+    ctx.applyCallback(callback, ["Error reading image buffer: " + err.toSring()])
     return
   }
   try{
@@ -51,20 +51,19 @@ registerBridge('flyModifyImage', function imageOperation(ctx: Context, config: C
       }
     }
   }catch(err){
-    ctx.tryCallback(callback, [err.toString()])
+    ctx.applyCallback(callback, [err.toString()])
     return 
   }
 
   const inSize = data.byteLength
-  //log.debug(image)
   image.toBuffer((err, d, info) => {
     if(err){
       log.debug("sending error:", err)
-      ctx.tryCallback(callback, [err.toString()])
+      ctx.applyCallback(callback, [err.toString()])
       return
     }
     t.end({operations: ops.length, output: info.format, inSize: inSize, outSize: d.byteLength})
-    ctx.tryCallback(callback, [null, transferInto(d), new ivm.ExternalCopy(info).copyInto({release: true})])
+    ctx.applyCallback(callback, [null, transferInto(d), new ivm.ExternalCopy(info).copyInto({release: true})])
   })
 })
 

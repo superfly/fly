@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 
 const logo = require("./fixtures/logo.png")
-const Image = fly.experimental.Image
+const Image = fly.Image
 describe("Image", () => {
   it("resizes and converts an image", async() => {
     const img = new Image(logo)
