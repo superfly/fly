@@ -33,6 +33,30 @@ export default function initImage(ivm:any, dispatcher:any){
   return Image
 }
 
+const gravity = {
+  center: 0,
+  centre: 0,
+  north: 1,
+  east: 2,
+  south: 3,
+  west: 4,
+  northeast: 5,
+  southeast: 6,
+  southwest: 7,
+  northwest: 8
+};
+
+const strategy = {
+  entropy: 16,
+  attention: 17
+}
+
+const kernel = {
+  nearest: 'nearest',
+  cubic: 'cubic',
+  lanczos2: 'lanczos2',
+  lanczos3: 'lanczos3'
+}
 export class Image{
   data: ArrayBuffer
   operations: ImageOperation[]
@@ -48,6 +72,21 @@ export class Image{
 
   resize(...args:any[]){
     this.operations.push({name: "resize", args: args})
+    return this
+  }
+
+  crop(...args:any[]){
+    this.operations.push({name: "crop", args: args})
+    return this
+  }
+
+  embed(...args:any[]){
+    this.operations.push({name: "embed", args: args})
+    return this
+  }
+
+  withoutEnlargement(...args:any[]){
+    this.operations.push({name: "withoutEnlargement", args: args})
     return this
   }
 
@@ -79,5 +118,15 @@ export class Image{
     const i = new Image(result.data)
     i.info = result.info
     return i 
+  }
+
+  static get strategy(){
+    return strategy
+  }
+  static get gravity(){
+    return gravity
+  }
+  static get kernel(){
+    return kernel
   }
 }

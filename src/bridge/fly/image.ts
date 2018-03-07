@@ -17,6 +17,9 @@ interface imageOperation{
 }
 const allowedOperations:Map<string, imageOperation> = new Map([
   ["resize", sharp.prototype.resize],
+  ["crop", sharp.prototype.crop],
+  ["embed", sharp.prototype.embed],
+  ["withoutEnlargement", sharp.prototype.withoutEnlargement],
   ["withMetadata", sharp.prototype.withMetadata],
   ["png", sharp.prototype.png],
   ["webp", sharp.prototype.webp]
