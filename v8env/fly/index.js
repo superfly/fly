@@ -2,7 +2,7 @@ import flyCacheInit from './cache'
 import flyLogInit from './log'
 import SparkMD5 from 'spark-md5'
 import initStreams from './streams'
-import initImage from '../ts/fly/image.ts' 
+import initImage from '../ts/fly/image.ts'
 
 /**
  * @namespace fly
@@ -18,6 +18,6 @@ export default function flyInit(ivm, dispatcher) {
       }
     },
     streams: initStreams(ivm, dispatcher),
-    Image: initImage(ivm, dispatcher) 
+    Image: initImage(ivm, dispatcher)
   }
 }
