@@ -20,6 +20,7 @@ const allowedOperations: Map<string, imageOperation> = new Map([
   ["resize", sharp.prototype.resize],
   ["crop", sharp.prototype.crop],
   ["embed", sharp.prototype.embed],
+  ["background", sharp.prototype.background],
   ["withoutEnlargement", sharp.prototype.withoutEnlargement],
   ["withMetadata", sharp.prototype.withMetadata],
   ["png", sharp.prototype.png],

@@ -85,6 +85,11 @@ export class Image {
     return this
   }
 
+  background(...args: any[]) {
+    this.operations.push({ name: "background", args: args })
+    return this
+  }
+
   withoutEnlargement(...args: any[]) {
     this.operations.push({ name: "withoutEnlargement", args: args })
     return this
