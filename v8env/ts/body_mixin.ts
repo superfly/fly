@@ -1,21 +1,13 @@
 import { parse as queryParse } from 'querystring'
-
-interface ReadableStreamController {
-  enqueue(chunk: string | ArrayBuffer): void
-  close(): void
-}
-declare var ReadableStream: {
-  prototype: ReadableStream;
-  new(source: any | undefined): ReadableStream;
-};
+import { ReadableStream, ReadableStreamController } from 'web-streams-polyfill'
 
 export type BodySource = Blob | BufferSource |
   FormData | URLSearchParams |
-  ReadableStream | String
+  ReadableStream | string
 
 export default class BodyMixin implements Body {
-  private readonly bodySource: BodySource
-  private stream: ReadableStream | null
+  protected bodySource: BodySource
+  protected stream: ReadableStream | null
 
   constructor(obj: BodySource) {
     this.bodySource = obj
