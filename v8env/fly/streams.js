@@ -1,6 +1,6 @@
 import { logger } from '../logger'
 
-export default function streamsInit(ivm, dispatcher) {
+export default function initStreams(ivm, dispatcher) {
   return {
     refToStream(ref) {
       let closed = false
