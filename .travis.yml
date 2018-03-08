@@ -15,7 +15,7 @@ install:
 - npm install
 - npm run build
 script:
-- npm run coverage
+- npm run test
 notifications:
   slack:
     on:
