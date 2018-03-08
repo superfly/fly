@@ -47,21 +47,6 @@ export class FileAppStore implements AppStore {
     else
       this.release = getLocalRelease(cwd, env, { noWatch: options.noWatch })
 
-    // const localConf = getLocalConfig(cwd, env)
-    // const config = localConf.config
-
-    // config.app = config.app || config.app_id
-
-    // this.release = {
-    //   app: this.cwd,
-    //   version: 0,
-    //   source: "",
-    //   source_hash: "",
-    //   config: config,
-    //   secrets: {},
-    //   env: env,
-    // }
-
     if (this.options.config)
       this.release.config = this.options.config
     if (this.options.secrets)

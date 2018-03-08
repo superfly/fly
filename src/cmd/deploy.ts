@@ -44,7 +44,7 @@ root
               console.log(`Bundle size: ${buf.byteLength / (1024 * 1024)}MB`)
               const gz = pako.gzip(buf)
               console.log(`Bundle compressed size: ${gz.byteLength / (1024 * 1024)}MB`)
-              const hash = createHash("sha1")
+              const hash = createHash("sha1") // we need to verify the upload is :+1:
               hash.update(buf)
 
               const res = API.post(`/api/v1/apps/${appName}/releases`, gz, {
@@ -67,46 +67,6 @@ root
           console.log(`Deploying v${res.data.data.attributes.version} globally, should be updated in a few seconds.`)
         })
 
-        // packer.pause()
-
-        // let chunks: Buffer[] = []
-
-        // packer.on('data', (chunk) => {
-        //   console.log("got chunk")
-        //   if (chunk instanceof Buffer)
-        //     return chunks.push(chunk)
-        //   chunks.push(Buffer.from(chunk))
-        // })
-
-        // packer.on("end", () => {
-        //   console.log("end")
-        // })
-
-        // packer.on("close", () => {
-        //   console.log("close")
-        // })
-
-        // console.log("after ething")
-
-        // log.debug("Packing files:", entries)
-
-        // if (err)
-        //   throw err
-        // const res = await API.post(`/api/v1/apps/${appName}/releases`, {
-        //   data: {
-        //     attributes: {
-        //       source: source,
-        //       source_hash: hash,
-        //       source_map: sourceMap,
-        //       config: getLocalConfig(process.cwd(), "production").config || {}
-        //     }
-        //   }
-        // }, {
-        //     timeout: 60000
-        //   })
-        // processResponse(res, (res: any) => {
-        //   console.log(`Deploying v${res.data.data.attributes.version} globally, should be updated in a few seconds.`)
-        // })
       } catch (e) {
         if (e.response)
           console.log(e.response.data)
