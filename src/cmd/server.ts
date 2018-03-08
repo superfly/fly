@@ -23,7 +23,7 @@ root
   .option("--uglify", "uglify your code like we'll use in production (warning: slow!)")
   .action((opts, args, rest) => {
     const { parseConfig } = require('../config')
-    const { FileStore } = require('../app/stores/file')
+    const { FileAppStore } = require('../file_app_store')
     const { Server } = require('../server')
     const { DefaultContextStore } = require('../default_context_store');
 
@@ -38,7 +38,7 @@ root
 
     if (opts.port && opts.port.length) { conf.port = opts.port }
 
-    conf.appStore = new FileStore(cwd, { build: true, uglify: opts.uglify, env: "development" })
+    conf.appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env: "development" })
 
     if (!!opts.inspect) {
       conf.contextStore = new DefaultContextStore({ inspect: true })

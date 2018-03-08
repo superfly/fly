@@ -1,6 +1,6 @@
-import { AppStore } from './app/store'
+import { AppStore } from './app_store'
 import { CacheStore } from './cache_store'
-import { MemoryCacheStore } from './caches/memory'
+import { MemoryCacheStore } from './memory_cache_store'
 import { ContextStore } from './context_store'
 
 export interface Config {

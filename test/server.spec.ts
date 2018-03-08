@@ -222,6 +222,19 @@ describe('Server', () => {
     })
   })
 
+  describe("fetch file://", () => {
+    before(async function () {
+      this.server = await startServer("files")
+    })
+    after(function (done) { this.server.close(done) })
+
+    it('works', async function () {
+      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
+      expect(res.status).to.equal(200)
+      expect(res.data).to.equal("foo bar")
+    })
+  })
+
   describe("big fetch responses", () => {
     before(async function () {
       this.server = await startServer("twenty-mb.js")

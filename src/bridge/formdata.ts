@@ -1,6 +1,7 @@
 import * as multiparty from 'multiparty'
 import { ivm, Context } from '../'
 import * as http from 'http'
+import log from '../log'
 
 import { registerBridge } from './'
 
@@ -33,11 +34,11 @@ registerBridge('parseFormData', function (ctx: Context) {
         let value = ""
         do {
           let read = part.read()
-          console.log("read stuff", typeof read, read instanceof Buffer)
+          log.debug("read stuff", typeof read, read instanceof Buffer)
           if (!read)
             break
           value += read.toString()
-          console.log("read:", value)
+          log.debug("read:", value)
           cb.apply(undefined, ["part", part.name, value])
         } while (!readDone)
       });

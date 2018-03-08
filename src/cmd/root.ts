@@ -1,5 +1,5 @@
 import { create, Command } from "commandpost";
-import { getLocalConfig } from '../app/stores/utils'
+import { getLocalRelease } from '../utils/local'
 
 import YAML = require('js-yaml')
 import fs = require('fs-extra')
@@ -42,11 +42,11 @@ export function getToken() {
 
 export const fullAppMatch = /([a-z0-9_.-]+)/i
 
-export function getAppName(env = "production") {
+export function getAppName(env?: string) {
   const cwd = process.cwd()
-  env = root.parsedOpts.env && root.parsedOpts.env[0] || process.env.FLY_ENV || env || "production"
-  const conf = getLocalConfig(cwd, env)
-  const appName = root.parsedOpts.app && root.parsedOpts.app[0] || conf.app || conf.app_id
+  env = process.env.FLY_ENV || env || root.parsedOpts.env && root.parsedOpts.env[0] || "production"
+  const release = getLocalRelease(cwd, env, { noWatch: true })
+  const appName = root.parsedOpts.app && root.parsedOpts.app[0] || release.app
 
   if (!appName) {
     throw new Error("--app option or app (in your .fly.yml) needs to be set.")

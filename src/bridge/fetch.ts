@@ -10,20 +10,58 @@ import { transferInto } from '../utils/buffer'
 import { ProxyStream } from './proxy_stream'
 
 import { Trace } from '../trace'
+import { FileNotFound } from '../file_store';
 
 
 const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
 
-registerBridge('fetch', fetchBridge)
-
-function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, body: ArrayBuffer, cb: ivm.Reference<Function>) {
+registerBridge('fetch', function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, body: ArrayBuffer, cb: ivm.Reference<Function>) {
   log.info("native fetch with url:", urlStr)
   log.silly("fetch init: ", JSON.stringify(init))
   let t = Trace.tryStart('fetch', ctx.trace)
   ctx.addCallback(cb)
   init || (init = {})
   const u = parseURL(urlStr)
+
+  if (u.protocol === 'file:') {
+    if (!ctx.meta.app) {
+      ctx.tryCallback(cb, ["no app configured, should not happen!"])
+      return
+    }
+    if (!ctx.meta.app.fileStore) {
+      ctx.tryCallback(cb, ["no file store configured, should not happen!"])
+      return
+    }
+
+    if (init.method && init.method != 'GET') {
+      ctx.tryCallback(cb, ["only GET allowed on file:// URIs"])
+      return
+    }
+
+    try {
+      ctx.meta.app.fileStore.createReadStream(urlStr.replace("file://", "")).then((stream) => {
+        stream.pause()
+        ctx.applyCallback(cb, [null,
+          new ivm.ExternalCopy({
+            status: 200,
+            statusText: "OK",
+            ok: true,
+            url: urlStr,
+            headers: {}
+          }).copyInto({ release: true }),
+          new ProxyStream(stream).ref
+        ])
+      }).catch((err) => {
+        ctx.tryCallback(cb, [err.toString()])
+      })
+    } catch (e) {
+      // Might throw FileNotFound
+      ctx.tryCallback(cb, [e.toString()])
+    }
+    return
+  }
+
   let depth = ctx.meta.flyDepth || 0
 
   log.silly("fetch depth: ", depth)
@@ -107,4 +145,4 @@ function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, bo
   )
 
   return cb
-}
+})

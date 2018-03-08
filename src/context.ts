@@ -7,6 +7,7 @@ import { Config } from './config';
 import { EventEmitter } from 'events';
 
 import * as winston from 'winston'
+import { FileStore } from './file_store';
 
 export interface Releasable {
 	release(): void
@@ -267,9 +268,8 @@ export class Context extends EventEmitter {
 
 	async runApp(app: App, t?: Trace) {
 		t = t || Trace.start("runApp")
-		const bundleName = `bundle-${app.sourceHash}`
-		const sourceFilename = `${bundleName}.js`
-		const sourceMapFilename = bundleName + '.map.json'
+		const sourceFilename = 'bundle.js'
+		const sourceMapFilename = 'bundle.map.json'
 
 		const source = app.sourceMap ? app.source + `\n;sourceMaps["${sourceFilename}"] = {filename: "${sourceMapFilename}", map: ${app.sourceMap}}` : app.source
 

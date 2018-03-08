@@ -11,6 +11,7 @@ import { Config } from './config';
 import log from './log';
 
 import * as winston from 'winston'
+import { LocalFileStore } from './local_file_store';
 
 export interface DefaultContextStoreOptions {
   inspect?: boolean

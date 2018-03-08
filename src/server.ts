@@ -9,7 +9,7 @@ import { Trace } from './trace';
 import mksuid from "mksuid"
 import * as httpUtils from './utils/http'
 import { Readable, Writable, Transform } from 'stream'
-import { AppStore } from './app/store'
+import { AppStore } from './app_store'
 import { Context } from './context'
 import { App } from './app'
 
@@ -373,8 +373,8 @@ export class Server extends EventEmitter {
 function handleResponse(src: Readable | ProxyStream, dst: Writable): Promise<void> {
 	return new Promise(function (resolve, reject) {
 		setImmediate(() => {
-			if(src instanceof ProxyStream){
-				for(const c of src.buffered){
+			if (src instanceof ProxyStream) {
+				for (const c of src.buffered) {
 					dst.write(c)
 				}
 				src = src.stream
