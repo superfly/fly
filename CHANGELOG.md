@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.24.0-0"></a>
+# [0.24.0-0](https://github.com/superfly/fly/compare/v0.23.0...v0.24.0-0) (2018-03-08)
+
+
+### Bug Fixes
+
+* forgot a mention of FileStore -> FileAppStore ([8f0469a](https://github.com/superfly/fly/commit/8f0469a))
+
+
+### Features
+
+* Include files in releases ([7984650](https://github.com/superfly/fly/commit/7984650))
+
+
+
 <a name="0.23.0"></a>
 # [0.23.0](https://github.com/superfly/fly/compare/v0.22.0...v0.23.0) (2018-03-08)
 
