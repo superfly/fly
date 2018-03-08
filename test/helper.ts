@@ -16,15 +16,15 @@ axios.defaults.validateStatus = undefined
 
 import http = require('http')
 
-import { FileStore, FileStoreOptions } from '../src/app/stores/file'
+import { FileAppStore, FileAppStoreOptions } from '../src/file_app_store'
 import { DefaultContextStore } from '../src/default_context_store';
-import { MemoryCacheStore } from '../src/caches/memory';
+import { MemoryCacheStore } from '../src/memory_cache_store';
 
 const Replay = require('replay');
 Replay.fixtures = './test/fixtures/replay';
 Replay.headers.push(/^fly-/);
 
-export interface ServerOptions extends FileStoreOptions {
+export interface ServerOptions extends FileAppStoreOptions {
   port?: number
 }
 
@@ -33,9 +33,9 @@ export const cacheStore = new MemoryCacheStore("test cache")
 
 export async function startServer(cwd: string, options?: ServerOptions): Promise<http.Server> {
   options || (options = {})
-  Object.assign(options, { build: false, noWatch: true })
+  Object.assign(options, { build: false, noWatch: true, noReleaseReuse: true })
   cwd = `./test/fixtures/apps/${cwd}`
-  let appStore = new FileStore(cwd, options)
+  let appStore = new FileAppStore(cwd, options)
   let port = options.port
   if (!port || port == 0) {
     port = 3333

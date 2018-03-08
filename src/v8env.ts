@@ -9,8 +9,6 @@ import { EventEmitter } from 'events'
 import { createHash } from 'crypto'
 import * as ivm from 'isolated-vm';
 
-const MemoryFS = require('memory-fs')
-
 let v8EnvHash = "";
 let v8EnvCode = "";
 let v8EnvSourceMap = "";
@@ -19,16 +17,14 @@ let v8EnvSnapshot: ivm.ExternalCopy<ArrayBuffer>;
 const v8dist = path.join(__dirname, '..', 'dist', 'v8env.js')
 const v8mapDist = path.join(__dirname, '..', 'dist', 'v8env.map.json')
 
-//compiler.outputFileSystem = new MemoryFS()
-
 export class V8Environment extends EventEmitter {
   bootstrapped: boolean
   constructor() {
     super()
     this.bootstrapped = false
-    if(!fs.existsSync(v8dist)){
+    if (!fs.existsSync(v8dist)) {
       throw new Error("v8env not found, please run npm build to generate it")
-    }else{
+    } else {
       this.bootstrap()
     }
   }
@@ -44,7 +40,7 @@ export class V8Environment extends EventEmitter {
   get sourceMap() {
     return v8EnvSourceMap
   }
-  bootstrap(){
+  bootstrap() {
     setImmediate(() => {
       if (runtimeConfig.env === 'development' && !this.bootstrapped)
         this.startUpdater()
@@ -65,14 +61,14 @@ export class V8Environment extends EventEmitter {
     })
   }
 
-  startUpdater(){
+  startUpdater() {
     try {
       console.log("Watching for changes:", v8dist)
       let fsTimeout = false
       fs.watch(v8dist, (eventType, fileName) => {
         fs.readFile(v8dist, (err, data) => {
           const s = data.toString()
-          if(data && data.byteLength > 0){
+          if (data && data.byteLength > 0) {
             v8Env.updateV8Env(data.toString())
           }
         })
@@ -83,10 +79,10 @@ export class V8Environment extends EventEmitter {
   }
 
   updateV8Env(code?: string) {
-    if(!code){
+    if (!code) {
       code = fs.readFileSync(v8dist).toString()
     }
-    const hash =createHash('sha').update(code).digest("hex") 
+    const hash = createHash('sha').update(code).digest("hex")
     if (hash != v8EnvHash) {
       const wasReady = this.isReady
       v8EnvCode = code

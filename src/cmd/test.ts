@@ -29,7 +29,7 @@ root
   .action((opts, args, rest) => {
     const { ivm } = require('../')
     const { v8Env } = require('../v8env')
-    const { FileStore } = require('../app/stores/file')
+    const { FileAppStore } = require('../file_app_store')
     const { getWebpackConfig, buildAppWithConfig } = require('../utils/build')
     const { createContext } = require('../context')
     const { runtimeConfig } = require("../config")
@@ -54,7 +54,7 @@ root
     let conf = getWebpackConfig(cwd)
     conf.entry = paths
 
-    const appStore = new FileStore(cwd, { noWatch: true, noSource: true, env: "test" })
+    const appStore = new FileAppStore(cwd, { noWatch: true, noSource: true, env: "test" })
 
     buildAppWithConfig(conf, { watch: false }, async (err: Error, code: string, hash: string, sourceMap: string) => {
       if (err)

@@ -1,55 +1,68 @@
-import { parseConfig } from './app/config'
+import { applySecrets } from './utils/app'
 import { ivm } from './';
+import { FileStore } from './file_store';
 
-export interface ReleaseInfo {
+export interface Release {
   app: string
   version: number
   source: string
   source_hash: string
   source_map?: string
   config: any
+  hash?: string
   secrets: any
   env: string
+  files?: string[]
 }
 
 export class App {
-  releaseInfo: ReleaseInfo
+  release: Release
   private _config: any
 
-  constructor(releaseInfo: ReleaseInfo) {
-    this.releaseInfo = releaseInfo
+  fileStore?: FileStore
+
+  constructor(release: Release) {
+    this.release = release
   }
 
   get name() {
-    return this.releaseInfo.app
+    return this.release.app
   }
 
   get env() {
-    return this.releaseInfo.env
+    return this.release.env
+  }
+
+  get files() {
+    return this.release.files
   }
 
   get config() {
     if (this._config)
       return this._config
-    this._config = this.releaseInfo.config
-    parseConfig(this._config, this.releaseInfo.secrets)
+    this._config = this.release.config
+    applySecrets(this._config, this.release.secrets)
     return this._config
   }
 
   get source() {
-    return this.releaseInfo.source
+    return this.release.source
   }
 
   get version() {
-    return this.releaseInfo.version
+    return this.release.version
+  }
+
+  get hash() {
+    return this.release.hash
   }
 
   get sourceHash() {
-    return this.releaseInfo.source_hash
+    return this.release.source_hash
   }
 
   get sourceMap() {
-    return this.releaseInfo.source_map
+    return this.release.source_map
   }
 
   forV8() {

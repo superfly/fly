@@ -1,12 +1,7 @@
-import path = require('path')
-import YAML = require('js-yaml')
-import fs = require('fs-extra')
-
 const fromSecretKey = 'fromSecret'
-const fromEnvKey = 'fromEnv'
 const defaultKey = 'default'
 
-export function parseConfig(config: any, secrets: any) {
+export function applySecrets(config: any, secrets: any) {
   if (!config)
     return
   for (const k of Object.keys(config)) {
@@ -17,7 +12,7 @@ export function parseConfig(config: any, secrets: any) {
         } else
           throw new Error(`Expected secret '${config[k][fromSecretKey]}' to be defined in secrets`)
       } else
-        parseConfig(config[k], secrets)
+        applySecrets(config[k], secrets)
     }
   }
 }

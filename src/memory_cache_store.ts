@@ -1,4 +1,4 @@
-import { CacheStore } from '../cache_store'
+import { CacheStore } from './cache_store'
 import * as IORedis from 'ioredis'
 
 const Redis = require('ioredis-mock')

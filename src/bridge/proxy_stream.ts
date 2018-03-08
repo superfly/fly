@@ -77,13 +77,6 @@ registerBridge("subscribeProxyStream", function (ctx: Context, config: Config, r
   stream.on("error", function (err: Error) {
     ctx.applyCallback(cb, ["error", err.toString()])
   })
-  /*stream.on("data", function (data: Buffer) {
-    console.log("data length:", data.length, stream.isPaused())
-    proxyable.buffered.push(data)
-    console.log("Buffer length: ", proxyable.buffered.length)
-    ctx.applyCallback(cb, ["data", transferInto(data)])
-  })*/
-  //setImmediate(() => stream.resume())
 })
 registerBridge("readProxyStream", function (ctx: Context, config: Config, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
   const proxyable = ref.deref({ release: true })

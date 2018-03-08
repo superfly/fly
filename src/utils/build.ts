@@ -4,9 +4,6 @@ import * as webpack from 'webpack'
 
 import log from '../log'
 
-const importCwd = require('import-cwd')
-const MemoryFS = require('memory-fs')
-
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const webpackConfPath = "./webpack.fly.config.js";
@@ -24,7 +21,6 @@ export function buildApp(cwd: string, opts: AppBuilderOptions, callback: Functio
 export function buildAppWithConfig(config: webpack.Configuration, opts: AppBuilderOptions, callback: Function) {
   console.log("Compiling app w/ options:", opts)
   let compiler = webpack(config)
-  compiler.outputFileSystem = new MemoryFS() // save in memory
 
   const cb = compileCallback(compiler, callback)
 
@@ -51,13 +47,15 @@ function compileCallback(compiler: webpack.Compiler, callback: Function) {
 
     if (stats.hash != codeHash) {
       console.log(`Compiled app bundle (hash: ${stats.hash})`)
+      const source = fs.readFileSync('.fly/build/bundle.js')
+      const sourceMap = fs.readFileSync('.fly/build/bundle.map.json')
       codeHash = stats.hash
-      log.debug("Compiled size: ", compiler.outputFileSystem.data[`bundle-${codeHash}.js`].byteLength / (1024 * 1024), "MB")
-      log.debug("Compiled sourcemap size: ", compiler.outputFileSystem.data[`bundle-${codeHash}.map.json`].byteLength / (1024 * 1024), "MB")
+      log.debug("Compiled size: ", source.byteLength / (1024 * 1024), "MB")
+      log.debug("Compiled sourcemap size: ", sourceMap.byteLength / (1024 * 1024), "MB")
       callback(null,
-        compiler.outputFileSystem.data[`bundle-${codeHash}.js`].toString('utf8'),
+        source.toString('utf8'),
         codeHash,
-        compiler.outputFileSystem.data[`bundle-${codeHash}.map.json`]
+        sourceMap
           .toString('utf8')
           .replace("\u2028", "\\u2028") // ugh.
           .replace("\u2029", "\\u2029") // ugh.
@@ -70,7 +68,7 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
   let conf;
   if (fs.existsSync(path.join(cwd, webpackConfPath))) {
     console.log(`Using Webpack config ${webpackConfPath}`)
-    conf = importCwd(webpackConfRequirePath)
+    conf = require(path.join(cwd, webpackConfPath))
   } else {
     console.log("Generating Webpack config...")
     conf = {
@@ -82,11 +80,11 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
   }
   conf.devtool = 'source-map'
   conf.output = {
-    filename: 'bundle-[hash].js',
-    path: '/',
+    filename: 'bundle.js',
+    path: path.resolve(cwd, '.fly/build'),
     hashFunction: 'sha1',
     hashDigestLength: 40,
-    sourceMapFilename: 'bundle-[hash].map.json'
+    sourceMapFilename: 'bundle.map.json',
   }
   if (opts && opts.uglify) {
     conf.plugins = conf.plugins || []
