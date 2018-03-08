@@ -8,7 +8,7 @@ import log from '../log'
 import * as tar from 'tar-fs'
 import * as glob from 'glob'
 import { Readable } from 'stream';
-import { createWriteStream, readFileSync } from 'fs';
+import { createWriteStream, readFileSync, existsSync } from 'fs';
 import { createHash } from 'crypto';
 
 import * as pako from 'pako'
@@ -31,8 +31,9 @@ root
       try {
         const entries = [
           '.fly.yml',
-          ...glob.sync('.fly/*/**.{js,json}')
-        ].concat(...release.files.map((f) => glob.sync(f)))
+          ...glob.sync('.fly/*/**.{js,json}'),
+          ...release.files
+        ].filter((f) => existsSync(f))
 
         const res = await new Promise((resolve, reject) => {
           const packer: Readable = tar.pack('.', {
