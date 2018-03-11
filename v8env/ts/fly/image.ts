@@ -24,7 +24,6 @@ export default function initImage(ivm: any, dispatcher: any) {
             reject(err)
             return
           }
-          console.log("Image info:", info)
           resolve({ data: data, info: info })
         })
       )
