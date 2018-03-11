@@ -27,16 +27,62 @@ const allowedOperations: Map<string, imageOperation> = new Map([
   ["webp", sharp.prototype.webp]
 ])
 
+const metadataFields = [
+  "format",
+  "width",
+  "height",
+  "number",
+  "space",
+  "channels",
+  "density",
+  "hasProfile",
+  "hasAlpha",
+  "orientation"
+]
+
+interface Metadata {
+  [key: string]: any
+}
+function extractMetadata(meta: any): any {
+  const info: Metadata = {}
+  for (const f of metadataFields) {
+    info[f] = meta[f]
+  }
+  return info
+}
+registerBridge('flyImageMetadata', function imageMetadata(ctx: Context, config: Config, data: ivm.Reference<Buffer>, callback: ivm.Reference<Function>) {
+  let t = Trace.tryStart("imageMetadata", ctx.trace)
+  ctx.addCallback(callback)
+  if (!(data instanceof ArrayBuffer)) {
+    ctx.applyCallback(callback, ["image must be an ArrayBuffer"])
+    return
+  }
+
+  let image: sharpImage
+  try {
+    image = <sharpImage>sharp(Buffer.from(data))
+  } catch (err) {
+    ctx.applyCallback(callback, ["Error reading image buffer: " + err.toSring()])
+    return
+  }
+
+  image.metadata((err, metadata) => {
+    if (err) {
+      ctx.applyCallback(callback, [err.toString()])
+      return
+    }
+    const info = extractMetadata(metadata)
+    t.end({ size: data.byteLength, width: metadata.width, height: metadata.height })
+    ctx.applyCallback(callback, [null, new ivm.ExternalCopy(info).copyInto({ release: true })])
+  })
+})
 registerBridge('flyModifyImage', function imageOperation(ctx: Context, config: Config, data: ivm.Reference<Buffer>, ops: any[], callback: ivm.Reference<Function>) {
   let t = Trace.tryStart("modifyImage", ctx.trace)
   ctx.addCallback(callback)
   if (!(data instanceof ArrayBuffer)) {
     ctx.applyCallback(callback, ["image must be an ArrayBuffer"])
     return
-  } else {
-    log.debug("data is arraybuffer")
   }
-  log.debug("flyModifyImage:", data.byteLength)
 
   let image: sharpImage
   let originalInfo: any
@@ -61,12 +107,13 @@ registerBridge('flyModifyImage', function imageOperation(ctx: Context, config: C
   }
 
   const inSize = data.byteLength
-  image.toBuffer((err, d, info) => {
+  image.toBuffer((err, d, metadata) => {
     if (err) {
       log.debug("sending error:", err)
       ctx.applyCallback(callback, [err.toString()])
       return
     }
+    const info = extractMetadata(metadata)
     t.end({ operations: ops.length, output: info.format, inSize: inSize, outSize: d.byteLength })
     ctx.applyCallback(callback, [null, transferInto(d), new ivm.ExternalCopy(info).copyInto({ release: true })])
   })

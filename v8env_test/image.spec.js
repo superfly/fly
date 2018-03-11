@@ -3,9 +3,16 @@ import { expect } from 'chai'
 const logo = require("./fixtures/logo.png")
 const Image = fly.Image
 describe("Image", () => {
-  it("resize()", async() => {
+  it("metadata()", async () => {
     const img = new Image(logo)
-    const img2 = await img.resize(128, null, {kernel: 'nearest'}).webp().toImage()
+    const meta = await img.metadata()
+    expect(meta.width).to.eq(256)
+    expect(meta.format).to.eq("png")
+  })
+
+  it("resize()", async () => {
+    const img = new Image(logo)
+    const img2 = await img.resize(128, null, { kernel: 'nearest' }).webp().toImage()
     expect(img2.data.byteLength).to.be.lessThan(logo.byteLength)
     expect(img2.info.width).to.eq(128)
     expect(img2.info.format).to.eq("webp")
@@ -24,13 +31,13 @@ describe("Image", () => {
     expect(img2.info.height).to.eq(64)
   })
 
-  it("errors with bad ops", async ()=> {
+  it("errors with bad ops", async () => {
     let err = null
-    try{
+    try {
       const img = new Image(logo)
-      img.operations.push({name: "naughty", args: []})
+      img.operations.push({ name: "naughty", args: [] })
       const p = await img.toBuffer()
-    }catch(e){
+    } catch (e) {
       err = e
     }
     expect(err).to.not.be.null
@@ -40,14 +47,14 @@ describe("Image", () => {
   it("errors with bad data", async () => {
     let err = null
     const buf = new ArrayBuffer(10)
-    for(var i = 0; i < 10; i ++){
+    for (var i = 0; i < 10; i++) {
       buf[i] = i
     }
-    try{
+    try {
       let img = new Image(buf)
       img = img.resize(20)
       const p = await img.toBuffer()
-    }catch(e){
+    } catch (e) {
       err = e
     }
 
