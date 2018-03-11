@@ -243,9 +243,14 @@ export class Server extends EventEmitter {
 				}
 				const reqMeta = request.meta
 
+
 				let fetchCallback = (err: any, res: any, resBody: ArrayBuffer | ivm.Reference<ProxyStream>) => {
 					if (cbCalled) {
 						return // this can't happen twice
+					}
+					const writeHead = function writeHead(status: number) {
+						ctx.logMetadata.status = status
+						response.writeHead(status)
 					}
 					cbCalled = true
 					t.end()
@@ -253,7 +258,7 @@ export class Server extends EventEmitter {
 
 					if (err) {
 						log.error("error from fetch callback:", err)
-						response.writeHead(500)
+						writeHead(500)
 						response.end("Error: " + err)
 						// release ctx
 						if (this.config.contextStore)
@@ -279,7 +284,7 @@ export class Server extends EventEmitter {
 					if (this.options.serverHeader)
 						response.setHeader("Server", this.options.serverHeader)
 
-					response.writeHead(res.status)
+					writeHead(res.status)
 
 					let resProm: Promise<void>
 
