@@ -43,26 +43,35 @@ export default function registerGoogleAnalytics() {
       const fullURL = req.url; // original url
       logger.debug("full url:", fullURL)
 
-      addEventListener(
-        "fetchEnd",
-        fetchEnd(fullURL, trackingID, clientID, userID)
-      );
+      // addEventListener(
+      //   "fetchEnd",
+      //   fetchEnd(fullURL, trackingID, clientID, userID)
+      // );
 
       logger.debug("(ga) awaiting response")
-      const res = await next(req);
-      logger.debug("(ga) got res", typeof res, res instanceof Response)
+      let err = null;
+      let res = null;
+      try {
+        res = await next(req);
+        logger.debug("(ga) got res", typeof res, res instanceof Response)
 
-      // TODO: implement
-      if (htmlContentType.test(res.headers.get("content-type"))) {
-        logger.debug("MATCHED TEXT/HTML")
-        addEventListener("responseChunk", responseChunk(trackingID, clientID, userID))
-        // let html = await res.text()
-        // if (bodyEndTagRegex.test(html)) {
-        //   res.body = html.replace("</body>", `${gaJS(trackingID, clientID, userID)}</body>`)
+        // TODO: implement
+        // if (htmlContentType.test(res.headers.get("content-type"))) {
+        //   logger.debug("MATCHED TEXT/HTML")
+        //   addEventListener("responseChunk", responseChunk(trackingID, clientID, userID))
+        //   let html = await res.text()
+        //   if (bodyEndTagRegex.test(html)) {
+        //     res.body = html.replace("</body>", `${gaJS(trackingID, clientID, userID)}</body>`)
+        //   }
         // }
-      }
 
-      return res;
+        return res;
+      } catch (e) {
+        err = e
+        throw e
+      } finally {
+        setTimeout(fetchEnd(req, res, err, fullURL, trackingID, clientID, userID), 1)
+      }
     };
 
     function responseChunk(trackingID, clientID, userID) {
@@ -77,14 +86,11 @@ export default function registerGoogleAnalytics() {
       };
     }
 
-    function fetchEnd(fullURL, trackingID, clientID, userID) {
-      return async function (event) {
+    function fetchEnd(req, res, err, fullURL, trackingID, clientID, userID) {
+      return async function () {
         logger.debug("in fetch end")
         // throw new Error("waaaaaa")
-        const req = event.request,
-          res = event.response,
-          err = event.error,
-          success = res.ok,
+        const success = res.ok,
           ua = req.headers.get("user-agent"),
           remoteAddr = req.remoteAddr.split(":")[0];
 
@@ -144,16 +150,13 @@ export default function registerGoogleAnalytics() {
           }
         }
 
-        let gaRes = await fetch(gaCollectURL, {
+        await fetch(gaCollectURL, {
           method: "POST",
           headers: {
             "content-type": "application/x-www-form-urlencoded"
           },
           body: form
         });
-        logger.debug("gaRes:", JSON.stringify(gaRes))
-        logger.debug("ga body:", await gaRes.text())
-        logger.debug("done with fetch end");
       };
     }
 

@@ -19,9 +19,11 @@ export interface DefaultContextStoreOptions {
 export class DefaultContextStore {
   isolate?: ivm.Isolate
   options: DefaultContextStoreOptions
+  inFlight: Context[]
 
   constructor(opts: DefaultContextStoreOptions = {}) {
     this.options = opts
+    this.inFlight = []
     v8Env.on('snapshot', this.resetIsolate.bind(this))
   }
 
@@ -37,6 +39,7 @@ export class DefaultContextStore {
     try {
       t2 = t.start("createContext")
       const ctx = await createContext(iso, bridge, { inspector: !!this.options.inspect })
+      this.inFlight.push(ctx)
       t2.end()
 
       ctx.set('app', app.forV8())
@@ -56,10 +59,21 @@ export class DefaultContextStore {
     }
   }
 
+  drain() {
+    return Promise.all(
+      this.inFlight.map((ctx, i) =>
+        ctx.finalize().then(() => this.inFlight.splice(i, 1))
+      )
+    )
+  }
+
   putContext(ctx: Context) {
+    const i = this.inFlight.indexOf(ctx)
     ctx.finalize().then(() => {
       ctx.release()
       log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
+      if (i >= 0)
+        this.inFlight.splice(i, 1)
     })
   }
 

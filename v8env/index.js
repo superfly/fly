@@ -18,7 +18,6 @@ import bodyMixin from './ts/body_mixin.ts'
 import Blob from './ts/blob.ts'
 import FormData from './ts/form_data.ts'
 import responseInit from './response'
-import requestInit from './request'
 import cache from './cache'
 import timersInit from './timers'
 
@@ -35,13 +34,13 @@ import registerGoogleAnalytics from './middleware/google-analytics'
 import registerSession from './middleware/session'
 
 const mwToRegister = [registerFlyBackend, registerFlyEcho, registerFlyRoutes, registerForceSSL, registerGoogleAnalytics,
-  registerSession]
+	registerSession]
 
 global.releasables = []
 global.middleware = {}
 
 global.registerMiddleware = function registerMiddleware(type, fn) {
-  global.middleware[type] = fn
+	global.middleware[type] = fn
 }
 
 global.bootstrap = function bootstrap() {
@@ -77,7 +76,7 @@ global.bootstrap = function bootstrap() {
 	global.Blob = Blob
 	global.FormData = FormData
 	global.Response = responseInit(ivm, dispatcher)
-	global.Request = requestInit(ivm, dispatcher)
+	global.Request = require('./request').Request
 
 	// oh boy
 	global.cache = cache
@@ -120,12 +119,12 @@ global.bootstrap = function bootstrap() {
 global.sourceMaps = {}
 
 global.teardown = function teardown() {
-  let r;
-  while (r = global.releasables.pop()) {
-    try {
-      r.release()
-    } catch (e) {
-      // fail silently
-    }
-  }
+	let r;
+	while (r = global.releasables.pop()) {
+		try {
+			r.release()
+		} catch (e) {
+			// fail silently
+		}
+	}
 }

@@ -4,11 +4,9 @@ import axios from 'axios'
 import { stringify } from 'querystring'
 
 
-describe('form-data', () => {
-  before(async function() {
-    this.server = await startServer('form-data.js')
-  })
-  after(function(done) { this.server.close(done) })
+describe('form-data', function () {
+  before(startServer('form-data.js'))
+  after(function (done) { this.server.close(done) })
 
   it('modifies query params before going upstream', async () => {
     const params = stringify({

@@ -5,15 +5,14 @@ import { App } from '../src';
 
 describe('FileAppStore', function () {
   const env = Object.assign({}, process.env);
-  before(async function () {
+  before(function () {
     process.env = env
   })
-  after(function (done) {
+  after(function () {
     process.env = env
-    done()
   })
 
-  describe('initialize', () => {
+  describe('initialize', function () {
     it('throws error when bad working directory path is provided', async () => {
       assert.throws(() => new FileAppStore("badpath"), Error, /Could not find path/)
     })

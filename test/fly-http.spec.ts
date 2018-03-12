@@ -1,12 +1,10 @@
 import { expect } from 'chai'
-import { startServer } from './helper'
+import { startServer, stopServer } from './helper'
 import axios from 'axios'
 
-describe('fly.http', () => {
-  before(async function () {
-    this.server = await startServer('fly-http.js', { config: {} })
-  })
-  after(function (done) { this.server.close(done) })
+describe('fly.http', function () {
+  before(startServer('fly-http.js', { config: {} }))
+  after(stopServer)
 
   it("matches a defined route", async () => {
     let res = await axios.get("http://127.0.0.1:3333/", {

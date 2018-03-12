@@ -1,14 +1,16 @@
 import { expect } from 'chai'
-import { startServer } from './helper'
+import { startServer, stopServer, makeServer } from './helper'
 import axios from 'axios'
 
-describe('fly-backend', () => {
-  before(async function () {
-    this.server = await startServer('fly-backend')
-    this.backendServer = await startServer('echo-server.js', { port: 3334 })
+describe('fly-backend', function () {
+  before(startServer('fly-backend'))
+  before(function (done) {
+    this.backendServer = makeServer('echo-server.js')
+    this.backendServer.listen(3334, done)
   })
+  after(stopServer)
   after(function (done) {
-    Promise.all([this.server.close(), this.backendServer.close()]).then(() => done())
+    this.backendServer.close(done)
   })
 
   it('sets host,x-forwarded-* headers', async () => {

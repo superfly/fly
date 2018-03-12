@@ -5,7 +5,6 @@ import * as net from 'net';
 import * as fs from 'fs';
 import log from './log'
 import { Trace } from './trace';
-import mksuid from "mksuid"
 import * as httpUtils from './utils/http'
 import { Readable, Writable, Transform } from 'stream'
 import { Context } from './context'
@@ -16,7 +15,7 @@ import { DefaultContextStore } from './default_context_store';
 
 import { bufferToStream, transferInto } from './utils/buffer'
 import { ProxyStream } from './bridge/proxy_stream';
-import mKsuid from 'mksuid';
+const KSUID = require('ksuid');
 import { TLSSocket } from 'tls';
 import { FileAppStore } from './file_app_store';
 import { Bridge } from './bridge/bridge';
@@ -50,7 +49,7 @@ export interface RequestMeta {
 
 declare module 'http' {
 	interface IncomingMessage {
-		meta: RequestMeta
+		protocol: string
 	}
 }
 
@@ -94,6 +93,8 @@ export class Server extends http.Server {
 			return
 		}
 
+		request.protocol = 'http:'
+
 		const app = this.appStore.app;
 
 		if (!app.source) {
@@ -124,8 +125,6 @@ export class Server extends http.Server {
 
 		ctx.on("error", contextErrorHandler)
 
-		request.meta = {}
-
 		try {
 			await handleRequest(app, ctx, request, response, trace)
 		} catch (err) {
@@ -139,9 +138,13 @@ export class Server extends http.Server {
 		log.error("critical error:", err)
 		if (response.finished)
 			return
-		response.statusCode = 500
+		response.writeHead(500)
 		response.end("Critical error.")
 		request.destroy() // stop everything I guess.
+	}
+
+	shutdown() {
+		return this.contextStore.drain()
 	}
 
 }
@@ -177,15 +180,13 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 		}
 	}
 
-	if (!req.meta.id) req.meta.id = mKsuid()
-	let protocol = req.connection instanceof TLSSocket ? 'https:' : 'http:'
-	const fullURL = httpUtils.fullURL(protocol, req)
+	const fullURL = httpUtils.fullURL(req.protocol, req)
 
 	Object.assign(ctx.meta, {
 		app: app,
 
-		requestId: req.meta.id,
-		originalScheme: protocol,
+		requestId: req.headers['x-request-id'],
+		originalScheme: req.protocol,
 		originalHost: req.headers.host,
 		originalPath: req.url,
 		originalURL: fullURL,
@@ -198,10 +199,9 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 	return new Promise((resolve, reject) => { // mainly to make try...finally work
 		let reqForV8 = {
 			method: req.method,
-			headers: httpUtils.headersForWeb(req.rawHeaders.concat(['x-request-id', <string>req.meta.id])),
+			headers: req.headers,
 			remoteAddr: req.connection.remoteAddress
 		}
-		const reqMeta = req.meta
 
 		let fetchCallback = (err: any, v8res: any, resBody: ArrayBuffer | ivm.Reference<ProxyStream>) => {
 			if (cbCalled) {
@@ -213,12 +213,11 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 
 			if (err) {
 				log.error("error from fetch callback:", err)
-				res.writeHead(500)
+				res.writeHead(500);
+				// function signatures are weird
 				res.end("Error: " + err)
 				return
 			}
-
-			let finalHeaders: http.OutgoingHttpHeaders = {}
 
 			for (let n in v8res.headers) {
 				try {
@@ -230,7 +229,6 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 					const val = v8res.headers[n]
 
 					res.setHeader(niceName, val)
-					finalHeaders[niceName] = val
 				} catch (err) {
 					log.error("error setting header", err)
 				}
@@ -245,43 +243,18 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 
 			if (resBody instanceof ivm.Reference) {
 				let resStream = resBody.deref({ release: true })
-				resProm = handleResponse(resStream, res)
+				resProm = handleResponse(resStream, <Writable>res)
 			} else if (resBody) {
-				resProm = handleResponse(bufferToStream(Buffer.from(resBody)), res)
+				resProm = handleResponse(bufferToStream(Buffer.from(resBody)), <Writable>res)
 			} else {
 				resProm = Promise.resolve()
 			}
 
 			resProm.then(() => {
 				trace.end()
-				reqMeta.endedAt = process.hrtime()
 				res.end() // we are done. triggers 'finish' event
 				ctx.log('info', `${req.connection.remoteAddress} ${req.method} ${fullURL} ${res.statusCode} ${Math.round(trace.milliseconds() * 100) / 100}ms`)
 				resolve()
-				let finalResponse = {
-					status: 200,
-					statusText: "OK",
-					ok: true,
-					url: fullURL,
-					headers: {}
-				}
-
-				finalResponse.status = res.statusCode
-				finalResponse.statusText = res.statusMessage
-				finalResponse.ok = res.statusCode && res.statusCode >= 200 && res.statusCode < 400 || false
-				finalResponse.headers = finalHeaders
-
-				ctx.fireEvent("fetchEnd", [
-					fullURL,
-					new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
-					new ivm.ExternalCopy(finalResponse),
-					null,
-					new ivm.Reference(() => { // done callback
-						log.silly("finished all fetchEnd")
-						// if (this.config.contextStore)
-						// 	this.config.contextStore.putContext(ctx)
-					})
-				]).catch(reject)
 			})
 		}
 

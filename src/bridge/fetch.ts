@@ -93,6 +93,12 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
       'x-fly-depth': (depth + 1).toString()
     }
   )
+
+  for (const name of Object.keys(headers)) {
+    if (name.startsWith(':'))
+      delete headers[name]
+  }
+
   let req: http.ClientRequest;
 
   let path = u.pathname

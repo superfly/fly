@@ -1,12 +1,12 @@
 import { expect } from 'chai'
-import { startServer } from '../helper'
+import { startServer, stopServer } from '../helper'
 import axios, { AxiosResponse } from 'axios'
 import { createSocket } from 'dgram';
 
-describe('logger', () => {
-  describe('syslog', () => {
+describe('logger', function () {
+  describe('syslog', function () {
+    before(startServer('bridge/logger/syslog.js'))
     before(async function () {
-      this.server = await startServer('bridge/logger/syslog.js')
       this.udpServer = await new Promise((resolve, reject) => {
         const socket = createSocket('udp4');
         socket.unref()
@@ -14,12 +14,10 @@ describe('logger', () => {
       })
     })
 
-    after(async function () {
-      await Promise.all([
-        new Promise((resolve) => { this.server.close(resolve) }),
-        new Promise((resolve) => { this.udpServer.close(resolve) })
-      ])
+    after(function (done) {
+      this.udpServer.close(done)
     })
+    after(stopServer)
 
     it('send a datagram to the defined syslog server', async function () {
       let msgs: Buffer[] = []

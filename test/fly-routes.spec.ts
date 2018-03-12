@@ -1,13 +1,11 @@
 import { expect } from 'chai'
-import { startServer } from './helper'
+import { startServer, stopServer } from './helper'
 import axios from 'axios'
 
-describe('fly-routes', () => {
-  describe('with no rules', () => {
-    before(async function () {
-      this.server = await startServer('fly-routes', { config: {} })
-    })
-    after(function (done) { this.server.close(done) })
+describe('fly-routes', function () {
+  describe('with no rules', function () {
+    before(startServer('fly-routes', { config: {} }))
+    after(stopServer)
 
     it('returns 404', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { 'Host': "test" } })
@@ -15,11 +13,9 @@ describe('fly-routes', () => {
     })
   })
 
-  describe('with rules', () => {
-    before(async function () {
-      this.server = await startServer('fly-routes')
-    })
-    after(function (done) { this.server.close(done) })
+  describe('with rules', function () {
+    before(startServer('fly-routes'))
+    after(stopServer)
 
     it('matches a redirect rule with absolute url rewrite', async () => {
       let res = await axios.get("http://127.0.0.1:3333/github", {

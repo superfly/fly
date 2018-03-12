@@ -3,8 +3,8 @@ import { createContext, ivm, v8Env } from "../src";
 import { expect } from 'chai'
 import { Bridge } from '../src/bridge/bridge';
 
-describe('Context', () => {
-  describe('no leaks!', () => {
+describe('Context', function () {
+  describe('no leaks!', function () {
     before(async function () {
       await v8Env.waitForReadiness()
       this.iso = new ivm.Isolate({ memoryLimit: 128, snapshot: v8Env.snapshot })

@@ -91,6 +91,7 @@
     "ioredis-mock": "^3.6.1",
     "isolated-vm": "1.0.2",
     "js-yaml": "^3.10.0",
+    "ksuid": "^0.4.0",
     "mksuid": "0.0.3",
     "mocha": "^4.0.1",
     "pako": "^1.0.6",

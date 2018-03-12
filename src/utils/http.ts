@@ -1,4 +1,5 @@
 import * as http from 'http'
+import { Http2ServerRequest } from 'http2'
 import log from '../log'
 
 export function headersForWeb(headers: any[]): string[][] {
@@ -14,7 +15,7 @@ export function headersForWeb(headers: any[]): string[][] {
   return webHeaders
 }
 
-export function fullURL(proto: string, req: http.IncomingMessage): string {
+export function fullURL(proto: string, req: http.IncomingMessage | Http2ServerRequest): string {
   return `${proto}//${req.headers.host}${req.url}`
 }
 
