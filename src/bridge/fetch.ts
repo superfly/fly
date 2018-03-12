@@ -5,7 +5,7 @@ import log from "../log"
 import * as http from 'http'
 import * as https from 'https'
 import { URL, parse as parseURL, format as formatURL } from 'url'
-import { headersForWeb, fullURL } from '../utils/http'
+import { fullURL } from '../utils/http'
 import { transferInto } from '../utils/buffer'
 import { ProxyStream } from './proxy_stream'
 
@@ -93,11 +93,6 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
       'x-fly-depth': (depth + 1).toString()
     }
   )
-
-  for (const name of Object.keys(headers)) {
-    if (name.startsWith(':'))
-      delete headers[name]
-  }
 
   let req: http.ClientRequest;
 

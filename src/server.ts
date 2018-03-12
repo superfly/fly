@@ -225,10 +225,9 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 					if (/^server$/i.test(n))
 						continue
 
-					const niceName = httpUtils.normalizeHeader(n)
 					const val = v8res.headers[n]
 
-					res.setHeader(niceName, val)
+					res.setHeader(n, val)
 				} catch (err) {
 					log.error("error setting header", err)
 				}
