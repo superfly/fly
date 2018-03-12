@@ -13,6 +13,12 @@ require("../cmd/login");
 require("../cmd/fetch");
 require("../cmd/logs");
 
+var SegfaultHandler = require('segfault-handler');
+SegfaultHandler.registerHandler("crash.log");
+
+process.on('uncaughtException', err => console.error('uncaught exception:', err.stack));
+process.on('unhandledRejection', err => console.error('unhandled rejection:', err.stack));
+
 import { exec } from "commandpost";
 
 exec(root, process.argv)

@@ -196,18 +196,18 @@ describe('Server', () => {
     })
   })
 
-  describe('server header', () => {
-    before(async function () {
-      this.server = await startServer("basic.js")
-    })
-    after(function (done) { this.server.close(done) })
+  // describe('server header', () => {
+  //   before(async function () {
+  //     this.server = await startServer("basic.js")
+  //   })
+  //   after(function (done) { this.server.close(done) })
 
-    it('replaces server header', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/")
-      expect(res.status).to.equal(200)
-      expect(res.headers['server']).include("fly")
-    })
-  })
+  //   it('replaces server header', async () => {
+  //     let res = await axios.get("http://127.0.0.1:3333/")
+  //     expect(res.status).to.equal(200)
+  //     expect(res.headers['server']).include("fly")
+  //   })
+  // })
 
   describe('cloning bodies', () => {
     before(async function () {

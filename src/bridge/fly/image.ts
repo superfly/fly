@@ -1,12 +1,13 @@
 import { registerBridge } from '../'
 import { ivm } from '../../'
 import { Trace } from '../../trace'
-import { Config, Context } from '../../'
+import { Context } from '../../'
 import { transferInto } from '../../utils/buffer'
 
 import log from "../../log"
 
 import * as sharp from 'sharp'
+import { Bridge } from '../bridge';
 
 interface sharpImage extends sharp.SharpInstance {
   options: any
@@ -27,7 +28,7 @@ const allowedOperations: Map<string, imageOperation> = new Map([
   ["webp", sharp.prototype.webp]
 ])
 
-registerBridge('flyModifyImage', function imageOperation(ctx: Context, config: Config, data: ivm.Reference<Buffer>, ops: any[], callback: ivm.Reference<Function>) {
+registerBridge('flyModifyImage', function imageOperation(ctx: Context, bridge: Bridge, data: ivm.Reference<Buffer>, ops: any[], callback: ivm.Reference<Function>) {
   let t = Trace.tryStart("modifyImage", ctx.trace)
   ctx.addCallback(callback)
   if (!(data instanceof ArrayBuffer)) {

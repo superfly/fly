@@ -1,23 +1,22 @@
 import { ivm } from './'
 import { Context } from './context'
-import { ContextStore } from './context_store'
 import { v8Env } from './v8env'
 import { Trace } from './trace'
 
 import { createContext } from './context'
 
 import { App } from './app'
-import { Config } from './config';
 import log from './log';
 
 import * as winston from 'winston'
 import { LocalFileStore } from './local_file_store';
+import { Bridge } from './bridge/bridge';
 
 export interface DefaultContextStoreOptions {
   inspect?: boolean
 }
 
-export class DefaultContextStore implements ContextStore {
+export class DefaultContextStore {
   isolate?: ivm.Isolate
   options: DefaultContextStoreOptions
 
@@ -26,7 +25,7 @@ export class DefaultContextStore implements ContextStore {
     v8Env.on('snapshot', this.resetIsolate.bind(this))
   }
 
-  async getContext(config: Config, app: App, trace?: Trace): Promise<Context> {
+  async getContext(app: App, bridge: Bridge, trace?: Trace): Promise<Context> {
     const t = trace || Trace.start("acquireContext")
     let t2 = t.start("getIsolate")
     const iso = await this.getIsolate()
@@ -37,7 +36,7 @@ export class DefaultContextStore implements ContextStore {
 
     try {
       t2 = t.start("createContext")
-      const ctx = await createContext(config, iso, { inspector: !!this.options.inspect })
+      const ctx = await createContext(iso, bridge, { inspector: !!this.options.inspect })
       t2.end()
 
       ctx.set('app', app.forV8())

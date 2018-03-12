@@ -6,6 +6,7 @@ import glob = require('glob')
 import { root } from './root'
 
 import log from '../log'
+import { Bridge } from '../bridge/bridge'
 
 const scripts = [
   require.resolve("mocha/mocha"),
@@ -32,7 +33,6 @@ root
     const { FileAppStore } = require('../file_app_store')
     const { getWebpackConfig, buildAppWithConfig } = require('../utils/build')
     const { createContext } = require('../context')
-    const { runtimeConfig } = require("../config")
 
     const cwd = process.cwd()
 
@@ -63,13 +63,13 @@ root
       try {
         await v8Env.waitForReadiness()
         const iso = new ivm.Isolate({ snapshot: v8Env.snapshot })
-        const ctx = await createContext(runtimeConfig, iso)
+        const ctx = await createContext(iso, new Bridge())
 
         await ctx.set('_log', new ivm.Reference(function (lvl: string, msg: string, ...args: any[]) {
           log.log(lvl, msg, ...args)
         }))
 
-        const app = await appStore.getAppByHostname()
+        const app = appStore.app
 
         ctx.meta.app = app
 

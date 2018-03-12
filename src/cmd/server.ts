@@ -8,6 +8,7 @@ import { Trace } from '../trace';
 import { ivm } from '../';
 
 import * as WebSocket from 'ws';
+import { DefaultContextStore } from '../default_context_store';
 
 interface ServerOptions {
   port?: string
@@ -22,34 +23,26 @@ root
   .option("--inspect", "use the v8 inspector on your fly app")
   .option("--uglify", "uglify your code like we'll use in production (warning: slow!)")
   .action((opts, args, rest) => {
-    const { parseConfig } = require('../config')
     const { FileAppStore } = require('../file_app_store')
     const { Server } = require('../server')
     const { DefaultContextStore } = require('../default_context_store');
 
-    var SegfaultHandler = require('segfault-handler');
-    SegfaultHandler.registerHandler("crash.log");
-
-    process.on('uncaughtException', err => log.error('uncaught exception:', err, err.stack));
-    process.on('unhandledRejection', err => log.error('unhandled rejection:', err, err.stack));
-
     const cwd = process.cwd()
-    let conf = parseConfig(cwd)
 
-    if (opts.port && opts.port.length) { conf.port = opts.port }
+    const port = opts.port && opts.port[0] || 3000
 
-    conf.appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env: "development" })
+    const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env: "development" })
 
+    let contextStore: DefaultContextStore;
     if (!!opts.inspect) {
-      conf.contextStore = new DefaultContextStore({ inspect: true })
-      startInspector(conf.contextStore)
+      contextStore = new DefaultContextStore({ inspect: true })
+      startInspector(contextStore)
+    } else {
+      contextStore = new DefaultContextStore
     }
 
-    const server = new Server(conf, !!opts.inspect ? { fetchDispatchTimeout: 0, fetchEndTimeout: 0 } : {})
-    server.addListener("requestEnd", (req: IncomingMessage, res: ServerResponse, trace: Trace) => {
-      log.debug(trace.report())
-    })
-    server.start()
+    const server = new Server({ contextStore, appStore })
+    server.listen(port)
   })
 
 async function startInspector(ctxStore: any) {

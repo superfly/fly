@@ -1,11 +1,9 @@
-import { AppStore } from './app_store'
 import { App, Release } from './app'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import * as YAML from 'js-yaml'
 
 import { buildApp } from './utils/build'
-import { parseConfig } from './config'
 import { getEnv, getLocalRelease, LocalRelease } from './utils/local'
 
 import * as webpack from 'webpack'
@@ -22,7 +20,7 @@ export interface FileAppStoreOptions {
   noReleaseReuse?: boolean
 }
 
-export class FileAppStore implements AppStore {
+export class FileAppStore {
   cwd: string
 
   release: LocalRelease
@@ -75,11 +73,7 @@ export class FileAppStore implements AppStore {
     })
   }
 
-  async getAppByHostname(hostname: string) {
-    const app = new App(this.release)
-    app.fileStore = new LocalFileStore(this.cwd, this.release)
-    return app
+  get app() {
+    return new App(this.release)
   }
-
-  stop() { }
 }

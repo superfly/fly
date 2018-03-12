@@ -1,7 +1,7 @@
 import './helper'
 import { createContext, ivm, v8Env } from "../src";
-import { parseConfig } from '../src/config';
 import { expect } from 'chai'
+import { Bridge } from '../src/bridge/bridge';
 
 describe('Context', () => {
   describe('no leaks!', () => {
@@ -39,6 +39,8 @@ describe('Context', () => {
   })
 })
 
+const bridge = new Bridge()
+
 async function createDefaultContext(iso: ivm.Isolate) {
-  return createContext(parseConfig(process.cwd()), iso)
+  return createContext(iso, bridge)
 }

@@ -8,7 +8,6 @@ import * as promiseFinally from 'promise.prototype.finally'
 promiseFinally.shim()
 
 import { Server } from '../src/server'
-import { parseConfig } from '../src/config'
 import log from "../src/log"
 import * as fs from 'fs'
 import axios from 'axios'
@@ -19,6 +18,8 @@ import http = require('http')
 import { FileAppStore, FileAppStoreOptions } from '../src/file_app_store'
 import { DefaultContextStore } from '../src/default_context_store';
 import { MemoryCacheStore } from '../src/memory_cache_store';
+import { Bridge } from '../src/bridge/bridge';
+import { LocalFileStore } from '../src/local_file_store';
 
 const Replay = require('replay');
 Replay.fixtures = './test/fixtures/replay';
@@ -31,7 +32,7 @@ export interface ServerOptions extends FileAppStoreOptions {
 export const contextStore = new DefaultContextStore()
 export const cacheStore = new MemoryCacheStore("test cache")
 
-export async function startServer(cwd: string, options?: ServerOptions): Promise<http.Server> {
+export async function startServer(cwd: string, options?: ServerOptions): Promise<Server> {
   options || (options = {})
   Object.assign(options, { build: false, noWatch: true, noReleaseReuse: true })
   cwd = `./test/fixtures/apps/${cwd}`
@@ -41,18 +42,14 @@ export async function startServer(cwd: string, options?: ServerOptions): Promise
     port = 3333
   }
 
-  let conf = parseConfig(cwd)
+  const bridge = new Bridge({ cacheStore: cacheStore, fileStore: new LocalFileStore(cwd, appStore.release) })
+  const server = new Server({ appStore, contextStore, bridge })
 
-  conf.appStore = appStore
+  server.on('error', (e) => { throw e })
 
-  const server = new Server(Object.assign({}, conf, { contextStore, appStore, cacheStore }))
-  const http = server.server
+  await new Promise((resolve) => server.listen(port, resolve))
 
-  http.on('error', (e) => { throw e })
-
-  await new Promise((resolve) => http.listen(port, resolve))
-
-  return http
+  return server
 }
 
 before(async function () {
