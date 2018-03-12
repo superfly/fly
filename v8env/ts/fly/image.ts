@@ -3,15 +3,39 @@ export interface ImageOperation {
   args: any[]
 }
 
+export interface ImageMetadata {
+  /** Number of pixels wide */
+  width?: number;
+  /** Number of pixels high */
+  height?: number;
+  /** Name of colour space interpretation e.g. srgb, rgb, cmyk, lab, b-w ... */
+  space?: string;
+  /** Number of bands e.g. 3 for sRGB, 4 for CMYK */
+  channels?: number;
+  /** Number of pixels per inch (DPI), if present */
+  density?: number;
+  /** Boolean indicating the presence of an embedded ICC profile */
+  hasProfile?: boolean;
+  /** Boolean indicating the presence of an alpha transparency channel */
+  hasAlpha?: boolean;
+  /** Number value of the EXIF Orientation header, if present */
+  orientation?: number;
+
+  format?: string;
+}
 export interface ImageOperationResult {
-  data: ArrayBuffer,
-  info: any
+  info: ImageMetadata
+  data: ArrayBuffer
 }
 
 interface ImageOperationFunction {
   (image: Image): Promise<ImageOperationResult>
 }
+interface ImageMetadataFunction {
+  (image: Image): Promise<ImageMetadata>
+}
 let modifyImage: ImageOperationFunction
+let imageMetadata: ImageMetadataFunction
 
 export default function initImage(ivm: any, dispatcher: any) {
   modifyImage = async function modifyImage(image: Image): Promise<ImageOperationResult> {
@@ -24,8 +48,21 @@ export default function initImage(ivm: any, dispatcher: any) {
             reject(err)
             return
           }
-          console.log("Image info:", info)
           resolve({ data: data, info: info })
+        })
+      )
+    })
+  }
+  imageMetadata = async function imageMetadata(image: Image): Promise<ImageMetadata> {
+    return new Promise<ImageMetadata>((resolve, reject) => {
+      dispatcher.dispatch("flyImageMetadata",
+        new ivm.ExternalCopy(image.data).copyInto({ release: true }),
+        new ivm.Reference((err: string, metadata: any) => {
+          if (err) {
+            reject(err)
+            return
+          }
+          resolve(metadata)
         })
       )
     })
@@ -60,7 +97,7 @@ const kernel = {
 export class Image {
   data: ArrayBuffer
   operations: ImageOperation[]
-  info: any
+  info: ImageMetadata | null
   constructor(data: ArrayBuffer) {
     if (!(data instanceof ArrayBuffer)) {
       throw new Error("Data must be an ArrayBuffer")
@@ -68,6 +105,7 @@ export class Image {
     //console.log("data:", data.constructor)
     this.data = data
     this.operations = []
+    this.info = null
   }
 
   resize(...args: any[]) {
@@ -108,6 +146,10 @@ export class Image {
   withMetadata(...args: any[]) {
     this.operations.push({ name: "withMedata", args: args })
     return this
+  }
+
+  async metadata(): Promise<ImageMetadata> {
+    return await imageMetadata(this)
   }
 
   async toBuffer(): Promise<ImageOperationResult> {

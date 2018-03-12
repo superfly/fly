@@ -104,7 +104,7 @@ export class Server extends http.Server {
 		}
 
 		const contextErrorHandler = (err: Error) => {
-			this.handleCriticalError(err, request, response)
+			handleCriticalError(err, request, response)
 		}
 
 		let t = trace.start("acquireContext")
@@ -112,7 +112,7 @@ export class Server extends http.Server {
 		try {
 			ctx = await this.contextStore.getContext(app, this.bridge, t)
 		} catch (err) {
-			this.handleCriticalError(err, request, response)
+			handleCriticalError(err, request, response)
 			return
 		}
 		t.end()
@@ -132,15 +132,6 @@ export class Server extends http.Server {
 		} finally {
 			log.debug(trace.report())
 		}
-	}
-
-	handleCriticalError(err: Error, request: http.IncomingMessage, response: http.ServerResponse) {
-		log.error("critical error:", err)
-		if (response.finished)
-			return
-		response.writeHead(500)
-		response.end("Critical error.")
-		request.destroy() // stop everything I guess.
 	}
 
 	shutdown() {
@@ -213,8 +204,7 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 
 			if (err) {
 				log.error("error from fetch callback:", err)
-				res.writeHead(500);
-				// function signatures are weird
+				writeHead(ctx, res, 500)
 				res.end("Error: " + err)
 				return
 			}
@@ -236,7 +226,7 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 			for (let n of hopHeaders)
 				res.removeHeader(n)
 
-			res.writeHead(v8res.status)
+			writeHead(ctx, res, v8res.status)
 
 			let resProm: Promise<void>
 
@@ -264,4 +254,18 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 			new ivm.Reference(fetchCallback)
 		]).catch(reject)
 	})
+}
+
+function handleCriticalError(err: Error, req: http.IncomingMessage, res: http.ServerResponse) {
+	log.error("critical error:", err)
+	if (res.finished)
+		return
+	res.writeHead(500)
+	res.end("Critical error.")
+	req.destroy() // stop everything I guess.
+}
+
+function writeHead(ctx: Context, res: http.ServerResponse, status: number) {
+	ctx.logMetadata.status = status
+	res.writeHead(status)
 }
