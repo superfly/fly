@@ -15,11 +15,11 @@ import { DefaultContextStore } from './default_context_store';
 
 import { bufferToStream, transferInto } from './utils/buffer'
 import { ProxyStream } from './bridge/proxy_stream';
-const KSUID = require('ksuid');
 import { TLSSocket } from 'tls';
 import { FileAppStore } from './file_app_store';
 import { Bridge } from './bridge/bridge';
 import { LocalFileStore } from './local_file_store';
+import { randomBytes } from 'crypto';
 
 const defaultFetchDispatchTimeout = 1000
 const defaultFetchEndTimeout = 5000
@@ -124,6 +124,8 @@ export class Server extends http.Server {
 		})
 
 		ctx.on("error", contextErrorHandler)
+
+		request.headers['x-request-id'] = randomBytes(12).toString('hex')
 
 		try {
 			await handleRequest(app, ctx, request, response, trace)
