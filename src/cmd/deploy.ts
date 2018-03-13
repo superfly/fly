@@ -12,6 +12,7 @@ import { createWriteStream, readFileSync, existsSync } from 'fs';
 import { createHash } from 'crypto';
 
 import * as pako from 'pako'
+import { AxiosResponse } from 'axios';
 
 export interface DeployOptions { }
 export interface DeployArgs { }
@@ -35,7 +36,7 @@ root
           ...release.files
         ].filter((f) => existsSync(f))
 
-        const res = await new Promise((resolve, reject) => {
+        const res = await new Promise<AxiosResponse<any>>((resolve, reject) => {
           const packer: Readable = tar.pack('.', {
             entries: entries,
             dereference: true,

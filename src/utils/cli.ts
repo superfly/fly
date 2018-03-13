@@ -1,3 +1,4 @@
+import colors = require('ansi-colors')
 import { getToken } from "../cmd/root";
 
 function getErrorMessages(res: any): string[] {
@@ -31,7 +32,7 @@ export function processResponse(res: any, successFn?: Function | undefined): voi
     if (res.status == 401) // TODO: Store and use `refresh_token` to automatically fix this predicament
       return console.log("Please login again with `fly login`, your token is probably expired.")
     for (let errMsg of getErrorMessages(res)) {
-      console.log(errMsg)
+      console.error(colors.red("Error:"), errMsg)
     }
   }
 }
