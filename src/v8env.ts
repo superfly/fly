@@ -1,5 +1,3 @@
-import { runtimeConfig } from './config'
-
 import * as path from 'path'
 import * as fs from 'fs'
 
@@ -42,7 +40,7 @@ export class V8Environment extends EventEmitter {
   }
   bootstrap() {
     setImmediate(() => {
-      if (runtimeConfig.env === 'development' && !this.bootstrapped)
+      if (process.env.NODE_ENV === 'development' && !this.bootstrapped)
         this.startUpdater()
       this.updateV8Env()
       this.bootstrapped = true

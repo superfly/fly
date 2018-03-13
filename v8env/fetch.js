@@ -1,5 +1,5 @@
 import { logger } from './logger'
-import { transferInto, proxyStream } from './utils/buffer'
+import { transferInto } from './utils/buffer'
 
 /**
  * Starts the process of fetching a network request.

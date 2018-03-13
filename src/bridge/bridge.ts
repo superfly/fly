@@ -1,14 +1,14 @@
 import './proxy_stream'
 import './fetch'
 import './heap'
-import './formdata'
 import './logger'
 import './fly/cache'
 import './fly/image'
-import { ivm } from '../'
+import { ivm, CacheStore, FileStore } from '../'
 
 import { catalog, BridgeFunction } from './'
-import { Config, Context } from '../';
+import { Context } from '../';
+import { MemoryCacheStore } from '../memory_cache_store';
 
 const errNoSuchBridgeFn = new Error("Attempted to call a unregistered bridge function.")
 
@@ -16,20 +16,29 @@ interface IterableIterator<T> extends Iterator<T> {
   [Symbol.iterator](): IterableIterator<T>;
 }
 
+export interface BridgeOptions {
+  cacheStore?: CacheStore
+  fileStore?: FileStore
+}
+
 export class Bridge {
+  cacheStore: CacheStore
+  fileStore?: FileStore
   functions: Map<string, BridgeFunction>
 
-  constructor() {
+  constructor(opts: BridgeOptions = {}) {
+    this.cacheStore = opts.cacheStore || new MemoryCacheStore()
+    this.fileStore = opts.fileStore
     this.functions = new Map<string, BridgeFunction>(Array.from(catalog.entries(), ([n, fn]) =>
       <[string, BridgeFunction]>[n, fn]
     ))
   }
 
-  dispatch(ctx: Context, config: Config, name: string, ...args: any[]) {
+  dispatch(ctx: Context, name: string, ...args: any[]) {
     const fn = this.functions.get(name)
     if (!fn)
       throw errNoSuchBridgeFn
-    fn(ctx, config, ...args)
+    fn(ctx, this, ...args)
   }
 
   set(name: string, fn: BridgeFunction) {

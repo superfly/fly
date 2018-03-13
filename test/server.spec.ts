@@ -1,13 +1,11 @@
 import { expect } from 'chai'
-import { startServer } from './helper'
+import { startServer, stopServer, drainContexts } from './helper'
 import axios from 'axios'
 
-describe('Server', () => {
-  describe('basic app', () => {
-    before(async function () {
-      this.server = await startServer('basic.js')
-    })
-    after(function (done) { this.server.close(done) })
+describe('Server', function () {
+  describe('basic app', function () {
+    before(startServer('basic.js'))
+    after(stopServer)
 
     it('returns the correct response', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { 'Host': "test" } })
@@ -17,11 +15,9 @@ describe('Server', () => {
     })
   })
 
-  describe('basic fetch app', () => {
-    before(async function () {
-      this.server = await startServer("basic-fetch.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe('basic fetch app', function () {
+    before(startServer('basic-fetch.js'))
+    after(stopServer)
 
     it('may fetch responses externally', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -32,11 +28,9 @@ describe('Server', () => {
   })
 
   // same test as above, but reads fetch response into context
-  describe('basic fetch and read app', () => {
-    before(async function () {
-      this.server = await startServer("basic-fetch-and-read.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe('basic fetch and read app', function () {
+    before(startServer('basic-fetch-and-read.js'))
+    after(stopServer)
 
     it('may fetch responses externally', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -46,50 +40,33 @@ describe('Server', () => {
     })
   })
 
-  describe('basic transform app', () => {
-    // before(async function () {
-    //   this.server = await startServer("basic-transform.js")
-    // })
-    // after(function (done) { this.server.close(done) })
-
-    it('transforms the content')
-    // , async () => {
-    //   let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-    //   expect(res.status).to.equal(200);
-    //   expect(res.data).to.equal(`foo baz`)
-    // })
-  })
-
-  describe('basic chain with google-analytics', () => {
-    before(async function () {
-      this.server = await startServer("basic-google-analytics.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe('basic chain with google-analytics', function () {
+    before(startServer("basic-google-analytics.js"))
+    after(stopServer)
+    after(drainContexts)
 
     it("doesn't bomb", async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
+      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test", 'user-agent': 'predictable-agent' } })
       expect(res.status).to.equal(200);
     })
   })
 
-  // describe('dom selector', () => {
-  //   before(async function () {
-  //     this.server = await startServer("dom-selector.js")
-  //   })
-  //   after(function (done) { this.server.close(done) })
+  describe('dom selector', function () {
+    before(startServer("dom-selector.js"))
+    after(stopServer)
 
-  //   it('selects the dom', async () => {
-  //     let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-  //     expect(res.status).to.equal(200);
-  //     expect(res.data).to.equal(`<span>empty-ish span</span><div id="woot2">nice2!</div>`);
-  //   })
-  // })
+    it('selects the dom', async () => {
+      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
+      expect(res.status).to.equal(200);
+      expect(res.data).to.equal(`<span>empty-ish span</span><div id="woot2">nice2!</div>`);
+    })
+  })
 
-  // describe('dom streaming selector', () => {
-  //   before(async function () {
-  //     this.server = await startServer("streaming-dom-selector.js")
+  // describe('dom streaming selector', function() {
+  //   before(
+  //     startServer("streaming-dom-selector.js")
   //   })
-  //   after(function (done) { this.server.close(done) })
+  //   after(stopServer)
 
   //   it('selects the dom', async () => {
   //     let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -98,11 +75,9 @@ describe('Server', () => {
   //   })
   // })
 
-  describe('cookies', () => {
-    before(async function () {
-      this.server = await startServer("basic-cookies.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe('cookies', function () {
+    before(startServer("basic-cookies.js"))
+    after(stopServer)
 
     it('returns the cookie value', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test", cookie: 'foo=bar;hello=world;' } })
@@ -112,11 +87,9 @@ describe('Server', () => {
     })
   })
 
-  describe('fetch relative path', () => {
-    before(async function () {
-      this.server = await startServer("fetch-relative-path.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe('fetch relative path', function () {
+    before(startServer("fetch-relative-path.js"))
+    after(stopServer)
 
     it('resolves relative paths to the original url properties', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -125,11 +98,9 @@ describe('Server', () => {
     })
   })
 
-  describe('fetch absolute path', () => {
-    before(async function () {
-      this.server = await startServer("fetch-absolute-path.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe('fetch absolute path', function () {
+    before(startServer("fetch-absolute-path.js"))
+    after(stopServer)
 
     it('resolves absolute paths with explicit port number', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -138,11 +109,9 @@ describe('Server', () => {
     })
   })
 
-  describe('fetch recursive', () => {
-    before(async function () {
-      this.server = await startServer("fetch-recursive.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe('fetch recursive', function () {
+    before(startServer("fetch-recursive.js"))
+    after(stopServer)
 
     it('returns an error', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -151,11 +120,9 @@ describe('Server', () => {
     })
   })
 
-  describe('cache', () => {
-    before(async function () {
-      this.server = await startServer("cache.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe('cache', function () {
+    before(startServer("cache.js"))
+    after(stopServer)
 
     it('adds and matches cache', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -164,11 +131,9 @@ describe('Server', () => {
     })
   })
 
-  describe('can POST', () => {
-    before(async function () {
-      this.server = await startServer("basic-post.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe('can POST', function () {
+    before(startServer("basic-post.js"))
+    after(stopServer)
 
     it('posts body and all', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -177,11 +142,9 @@ describe('Server', () => {
     })
   })
 
-  describe('set-cookie', () => {
-    before(async function () {
-      this.server = await startServer("set-cookie.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe('set-cookie', function () {
+    before(startServer("set-cookie.js"))
+    after(stopServer)
 
     it('does not merge headers', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -196,24 +159,9 @@ describe('Server', () => {
     })
   })
 
-  describe('server header', () => {
-    before(async function () {
-      this.server = await startServer("basic.js")
-    })
-    after(function (done) { this.server.close(done) })
-
-    it('replaces server header', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/")
-      expect(res.status).to.equal(200)
-      expect(res.headers['server']).include("fly")
-    })
-  })
-
-  describe('cloning bodies', () => {
-    before(async function () {
-      this.server = await startServer("clone.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe('cloning bodies', function () {
+    before(startServer("clone.js"))
+    after(stopServer)
 
     it('can clone both requests and responses', async () => {
       let res = await axios.post("http://127.0.0.1:3333/", "hello", { headers: { host: "test" } })
@@ -222,11 +170,9 @@ describe('Server', () => {
     })
   })
 
-  describe("fetch file://", () => {
-    before(async function () {
-      this.server = await startServer("files")
-    })
-    after(function (done) { this.server.close(done) })
+  describe("fetch file://", function () {
+    before(startServer("files"))
+    after(stopServer)
 
     it('works', async function () {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -235,11 +181,9 @@ describe('Server', () => {
     })
   })
 
-  describe("big fetch responses", () => {
-    before(async function () {
-      this.server = await startServer("twenty-mb.js")
-    })
-    after(function (done) { this.server.close(done) })
+  describe("big fetch responses", function () {
+    before(startServer("twenty-mb.js"))
+    after(stopServer)
 
     it('works', async function () {
       this.timeout(30000) // give it some leeway

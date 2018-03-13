@@ -1,12 +1,10 @@
 import { expect } from 'chai'
-import { startServer, cacheStore } from './helper'
+import { startServer, cacheStore, stopServer } from './helper'
 import axios from 'axios'
 
-describe('Cache API', () => {
-  before(async function () {
-    this.server = await startServer('fly-cache')
-  })
-  after(function (done) { this.server.close(done) })
+describe('Cache API', function () {
+  before(startServer('fly-cache'))
+  after(stopServer)
 
   it('sets a value', async () => {
     let path = "cache-api/" + Math.random().toString()

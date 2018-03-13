@@ -1,6 +1,5 @@
 import { applySecrets } from './utils/app'
 import { ivm } from './';
-import { FileStore } from './file_store';
 
 export interface Release {
   app: string
@@ -18,8 +17,6 @@ export interface Release {
 export class App {
   release: Release
   private _config: any
-
-  fileStore?: FileStore
 
   constructor(release: Release) {
     this.release = release

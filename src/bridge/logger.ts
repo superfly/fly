@@ -1,17 +1,18 @@
 import log from '../log'
 import * as winston from 'winston';
 
-import { Config, ivm } from '..';
+import { ivm } from '..';
 
 import { registerBridge } from '.';
 import { Context } from '../context';
 import { isIP } from 'net';
 import { lookup } from 'dns';
+import { Bridge } from './bridge';
 const { Syslog } = require('winston-syslog');
 
 let defaultLogger: winston.LoggerInstance;
 
-registerBridge('log', function (ctx: Context, config: Config, lvl: string, msg: string, meta: any = {}, callback: ivm.Reference<Function>) {
+registerBridge('log', function (ctx: Context, bridge: Bridge, lvl: string, msg: string, meta: any = {}, callback: ivm.Reference<Function>) {
   ctx.log(lvl, msg, meta, callback)
 })
 
@@ -20,7 +21,7 @@ enum TransportType {
 }
 
 registerBridge('addLogTransport', async function (
-  ctx: Context, config: Config,
+  ctx: Context, bridge: Bridge,
   type: TransportType, options: any, cb: ivm.Reference<Function>) {
   ctx.addCallback(cb);
 
@@ -51,7 +52,7 @@ registerBridge('addLogTransport', async function (
   ctx.applyCallback(cb, [null, true]);
 });
 
-registerBridge('addLogMetadata', function (ctx: Context, config: Config,
+registerBridge('addLogMetadata', function (ctx: Context, bridge: Bridge,
   metadata: any) {
   Object.assign(ctx.persistentLogMetadata, metadata)
 })

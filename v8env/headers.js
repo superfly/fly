@@ -150,15 +150,14 @@ function fill(headers, init) {
 		});
 	} else {
 		init = Object(init);
-		Object.keys(init)
-			.forEach(function (key) {
-				if (Array.isArray(init[key])) {
-					init[key].forEach(function (v) {
-						headers.append(key, v);
-					})
-				} else {
-					headers.append(key, init[key]);
-				}
-			});
+		for (const name of Object.keys(init)) {
+			if (Array.isArray(init[name])) {
+				init[name].forEach(function (v) {
+					headers.append(name, v);
+				})
+			} else {
+				headers.set(name, init[name]);
+			}
+		}
 	}
 }

@@ -1,22 +1,23 @@
 import { registerBridge } from './'
 
-import { ivm, Config, Context } from '../'
+import { ivm, Context } from '../'
 import log from "../log"
 import * as http from 'http'
 import * as https from 'https'
 import { URL, parse as parseURL, format as formatURL } from 'url'
-import { headersForWeb, fullURL } from '../utils/http'
+import { fullURL } from '../utils/http'
 import { transferInto } from '../utils/buffer'
 import { ProxyStream } from './proxy_stream'
 
 import { Trace } from '../trace'
 import { FileNotFound } from '../file_store';
+import { Bridge } from './bridge';
 
 
 const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
 
-registerBridge('fetch', function fetchBridge(ctx: Context, config: Config, urlStr: string, init: any, body: ArrayBuffer, cb: ivm.Reference<Function>) {
+registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer, cb: ivm.Reference<Function>) {
   log.info("native fetch with url:", urlStr)
   log.silly("fetch init: ", JSON.stringify(init))
   let t = Trace.tryStart('fetch', ctx.trace)
@@ -29,7 +30,7 @@ registerBridge('fetch', function fetchBridge(ctx: Context, config: Config, urlSt
       ctx.tryCallback(cb, ["no app configured, should not happen!"])
       return
     }
-    if (!ctx.meta.app.fileStore) {
+    if (!bridge.fileStore) {
       ctx.tryCallback(cb, ["no file store configured, should not happen!"])
       return
     }
@@ -40,7 +41,7 @@ registerBridge('fetch', function fetchBridge(ctx: Context, config: Config, urlSt
     }
 
     try {
-      ctx.meta.app.fileStore.createReadStream(urlStr.replace("file://", "")).then((stream) => {
+      bridge.fileStore.createReadStream(urlStr.replace("file://", "")).then((stream) => {
         stream.pause()
         ctx.applyCallback(cb, [null,
           new ivm.ExternalCopy({
@@ -92,6 +93,7 @@ registerBridge('fetch', function fetchBridge(ctx: Context, config: Config, urlSt
       'x-fly-depth': (depth + 1).toString()
     }
   )
+
   let req: http.ClientRequest;
 
   let path = u.pathname

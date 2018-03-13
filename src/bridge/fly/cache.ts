@@ -2,12 +2,13 @@ import { registerBridge } from '../'
 import { ivm } from '../../'
 import log from '../../log'
 import { Trace } from '../../trace'
-import { Config, Context } from '../../';
+import { Context } from '../../';
 import { transferInto } from '../../utils/buffer'
+import { Bridge } from '../bridge';
 
 const errCacheStoreUndefined = new Error("cacheStore is not defined in the config.")
 
-registerBridge('flyCacheSet', function cacheSet(ctx: Context, config: Config, key: string, value: string | ArrayBuffer | Buffer, ttl: number, callback: ivm.Reference<Function>) {
+registerBridge('flyCacheSet', function cacheSet(ctx: Context, bridge: Bridge, key: string, value: string | ArrayBuffer | Buffer, ttl: number, callback: ivm.Reference<Function>) {
   let t = Trace.tryStart("cacheSet", ctx.trace)
   ctx.addCallback(callback)
   if (!ctx.meta.app)
@@ -15,7 +16,7 @@ registerBridge('flyCacheSet', function cacheSet(ctx: Context, config: Config, ke
 
   let k = "cache:" + ctx.meta.app.name + ":" + key
 
-  if (!config.cacheStore)
+  if (!bridge.cacheStore)
     return ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
 
   let size = 0
@@ -26,7 +27,7 @@ registerBridge('flyCacheSet', function cacheSet(ctx: Context, config: Config, ke
   } else {
     size = value.length
   }
-  config.cacheStore.set(k, value, ttl).then((ok) => {
+  bridge.cacheStore.set(k, value, ttl).then((ok) => {
     t.end({ size: size, key: key })
     ctx.tryCallback(callback, [null, ok])
   }).catch((err) => {
@@ -37,19 +38,19 @@ registerBridge('flyCacheSet', function cacheSet(ctx: Context, config: Config, ke
   return
 })
 
-registerBridge('flyCacheExpire', function cacheExpire(ctx: Context, config: Config, key: string, ttl: number, callback: ivm.Reference<Function>) {
+registerBridge('flyCacheExpire', function cacheExpire(ctx: Context, bridge: Bridge, key: string, ttl: number, callback: ivm.Reference<Function>) {
   let t = Trace.tryStart("cacheExpire", ctx.trace)
   ctx.addCallback(callback)
   if (!ctx.meta.app)
     return ctx.tryCallback(callback, ["app not present, something is wrong"])
   let k = "cache:" + ctx.meta.app.name + ":" + key
 
-  if (!config.cacheStore) {
+  if (!bridge.cacheStore) {
     ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
     return
   }
 
-  config.cacheStore.expire(k, ttl).then((ok) => {
+  bridge.cacheStore.expire(k, ttl).then((ok) => {
     t.end({ key: key })
     ctx.applyCallback(callback, [null, ok])
   }).catch((err) => {
@@ -59,19 +60,19 @@ registerBridge('flyCacheExpire', function cacheExpire(ctx: Context, config: Conf
 })
 
 registerBridge('flyCacheGet',
-  function cacheGet(ctx: Context, config: Config, key: string, callback: ivm.Reference<Function>) {
+  function cacheGet(ctx: Context, bridge: Bridge, key: string, callback: ivm.Reference<Function>) {
     let t = Trace.tryStart("cacheGet", ctx.trace)
     ctx.addCallback(callback)
     if (!ctx.meta.app)
       return ctx.tryCallback(callback, ["app not present, something is wrong"])
 
-    if (!config.cacheStore) {
+    if (!bridge.cacheStore) {
       ctx.tryCallback(callback, [errCacheStoreUndefined.toString()])
       return
     }
     let k = "cache:" + ctx.meta.app.name + ":" + key
 
-    config.cacheStore.get(k).then((buf) => {
+    bridge.cacheStore.get(k).then((buf) => {
       const size = buf ? buf.byteLength : 0
       t.end({ size: size, key: key })
       ctx.applyCallback(callback, [null, transferInto(buf)])

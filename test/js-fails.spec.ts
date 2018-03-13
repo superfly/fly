@@ -1,17 +1,15 @@
 import { expect } from 'chai';
-import { startServer, cacheStore, contextStore } from './helper'
+import { startServer, cacheStore, contextStore, stopServer } from './helper'
 import axios from 'axios'
 
-describe('JS Fails', () => {
-  describe('bad js syntax', () => {
+describe('JS Fails', function () {
+  describe('bad js syntax', function () {
     let fixtures = ["bad-syntax", "not-async", "void-returns", "no-respondwith", "no-fetch-listener", "not-a-response", "async-fetch-handler"];
     fixtures.forEach(f => {
       let bad = f
-      describe(bad, () => {
-        before(async function () {
-          this.server = await startServer(`fails/${bad}.js`)
-        })
-        after(function (done) { this.server.close(done) })
+      describe(bad, function () {
+        before(startServer(`fails/${bad}.js`))
+        after(stopServer)
 
         it('returns an error', async () => {
           let res = await axios.get("http://127.0.0.1:3333/", { headers: { 'Host': "test" } })
@@ -20,13 +18,13 @@ describe('JS Fails', () => {
       })
     });
   })
-  describe('races', () => {
-    describe("setTimeout fires after response", () => {
-      before(async function () {
-        await cacheStore.set("cache:test-app-id:long-wait-after-response", "no")
-        this.server = await startServer(`fails/async-app`)
+  describe('races', function () {
+    describe("setTimeout fires after response", function () {
+      before(function () {
+        return cacheStore.set("cache:test-app-id:long-wait-after-response", "no")
       })
-      after(function (done) { this.server.close(done) })
+      before(startServer(`fails/async-app`))
+      after(stopServer)
 
       it('should write to cache after response', async () => {
         const cacheValue = Date.now().toString()
@@ -52,11 +50,11 @@ describe('JS Fails', () => {
     })
   })
 
-  // describe("out of band error in context", () => {
-  //   before(async function () {
-  //     this.server = await startServer(`fails/after-dispose.js`)
+  // describe("out of band error in context", function() {
+  //   before(
+  //     startServer(`fails/after-dispose.js`)
   //   })
-  //   after(function (done) { this.server.close(done) })
+  //   after(stopServer)
 
   //   it('returns a 500', function (done) {
   //     axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } }).then((res) => {

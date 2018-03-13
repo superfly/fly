@@ -1,7 +1,8 @@
 import { registerBridge } from './'
 import { Readable } from "stream";
-import { ivm, Config, Context } from "../";
+import { ivm, Context } from "../";
 import { transferInto } from "../utils/buffer";
+import { Bridge } from './bridge';
 
 // get stream from http or whatever
 // pass reference back to v8
@@ -60,8 +61,8 @@ export class ProxyStream {
   }
 }
 
-registerBridge("subscribeProxyStream", function (ctx: Context, config: Config, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
-  ctx.addCallback(cb)
+registerBridge("subscribeProxyStream", function (ctx: Context, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
+  // ctx.addCallback(cb)
   const proxyable = ref.deref({ release: true })
   const stream = proxyable.stream
   if (!stream) {
@@ -78,7 +79,7 @@ registerBridge("subscribeProxyStream", function (ctx: Context, config: Config, r
     ctx.applyCallback(cb, ["error", err.toString()])
   })
 })
-registerBridge("readProxyStream", function (ctx: Context, config: Config, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
+registerBridge("readProxyStream", function (ctx: Context, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
   const proxyable = ref.deref({ release: true })
   const stream = proxyable.stream
 
@@ -88,9 +89,9 @@ registerBridge("readProxyStream", function (ctx: Context, config: Config, ref: i
     let chunk = proxyable.read(1024 * 1024)
     let data: ivm.Copy<ArrayBuffer> | null = null
     if (chunk) {
+      ctx.addCallback(cb)
       data = transferInto(chunk)
     }
-    ctx.addCallback(cb)
     if (data || attempts >= 10 || proxyable.ended) {
       ctx.applyCallback(cb, [null, data, proxyable.tainted])
     } else if (attempts >= 10 && !proxyable.ended) {

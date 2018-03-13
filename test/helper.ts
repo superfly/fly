@@ -8,7 +8,6 @@ import * as promiseFinally from 'promise.prototype.finally'
 promiseFinally.shim()
 
 import { Server } from '../src/server'
-import { parseConfig } from '../src/config'
 import log from "../src/log"
 import * as fs from 'fs'
 import axios from 'axios'
@@ -19,6 +18,9 @@ import http = require('http')
 import { FileAppStore, FileAppStoreOptions } from '../src/file_app_store'
 import { DefaultContextStore } from '../src/default_context_store';
 import { MemoryCacheStore } from '../src/memory_cache_store';
+import { Bridge } from '../src/bridge/bridge';
+import { LocalFileStore } from '../src/local_file_store';
+import { IHookCallbackContext } from 'mocha';
 
 const Replay = require('replay');
 Replay.fixtures = './test/fixtures/replay';
@@ -28,31 +30,44 @@ export interface ServerOptions extends FileAppStoreOptions {
   port?: number
 }
 
+process.on("uncaughtException", function (err) {
+  console.error(err.stack)
+})
+
+process.on("unhandledRejection", function (err) {
+  console.error(err.stack)
+})
+
 export const contextStore = new DefaultContextStore()
 export const cacheStore = new MemoryCacheStore("test cache")
 
-export async function startServer(cwd: string, options?: ServerOptions): Promise<http.Server> {
-  options || (options = {})
-  Object.assign(options, { build: false, noWatch: true, noReleaseReuse: true })
-  cwd = `./test/fixtures/apps/${cwd}`
-  let appStore = new FileAppStore(cwd, options)
+export function startServer(cwd: string, options: ServerOptions = {}) {
   let port = options.port
   if (!port || port == 0) {
     port = 3333
   }
+  return function (this: IHookCallbackContext, done: MochaDone) {
+    this.server = makeServer(cwd, options)
+    this.server.on('error', (e: Error) => { throw e })
+    this.server.listen(port, done)
+  }
+}
 
-  let conf = parseConfig(cwd)
+export function stopServer(this: IHookCallbackContext, done: MochaDone) {
+  this.server.close(done)
+}
 
-  conf.appStore = appStore
+export function drainContexts(this: IHookCallbackContext, done: MochaDone) {
+  contextStore.drain().then(() => done()).catch(done)
+}
 
-  const server = new Server(Object.assign({}, conf, { contextStore, appStore, cacheStore }))
-  const http = server.server
+export function makeServer(cwd: string, options: ServerOptions = {}) {
+  Object.assign(options, { build: false, noWatch: true, noReleaseReuse: true })
+  cwd = `./test/fixtures/apps/${cwd}`
+  let appStore = new FileAppStore(cwd, options)
 
-  http.on('error', (e) => { throw e })
-
-  await new Promise((resolve) => http.listen(port, resolve))
-
-  return http
+  const bridge = new Bridge({ cacheStore: cacheStore, fileStore: new LocalFileStore(cwd, appStore.release) })
+  return new Server({ appStore, contextStore, bridge })
 }
 
 before(async function () {

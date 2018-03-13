@@ -1,13 +1,11 @@
 import { ivm, App } from './'
 import log from "./log"
 //import { conf } from './config'a
-import { Bridge } from './bridge/bridge'
+import { Bridge, BridgeOptions } from './bridge/bridge'
 import { Trace } from './trace'
-import { Config } from './config';
 import { EventEmitter } from 'events';
 
 import * as winston from 'winston'
-import { FileStore } from './file_store';
 
 export interface Releasable {
 	release(): void
@@ -33,7 +31,6 @@ export class Context extends EventEmitter {
 	ctx: ivm.Context
 	trace: Trace | undefined
 	private global: ivm.Reference<Object>
-	bridge: Bridge
 	meta: ContextMetadata
 	logger: winston.LoggerInstance
 	persistentLogMetadata: any
@@ -61,7 +58,6 @@ export class Context extends EventEmitter {
 		this.releasables = []
 		this.iso = iso
 		this.global = ctx.globalReference()
-		this.bridge = new Bridge()
 		this.logger = new winston.Logger()
 		this.persistentLogMetadata = {}
 		this.logMetadata = {}
@@ -134,7 +130,7 @@ export class Context extends EventEmitter {
 		return rel
 	}
 
-	async bootstrap(config: Config) {
+	async bootstrap(bridge: Bridge) {
 		await Promise.all([
 			this.set('global', this.global.derefInto()),
 			this.set('_ivm', ivm),
@@ -162,7 +158,7 @@ export class Context extends EventEmitter {
 				return
 			})),
 			this.set("_dispatch", new ivm.Reference((name: string, ...args: any[]) => {
-				this.bridge.dispatch(this, config, name, ...args)
+				bridge.dispatch(this, name, ...args)
 			})),
 			this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
 				log.log(lvl, args[0], ...args.slice(1))
@@ -282,8 +278,8 @@ export class Context extends EventEmitter {
 	}
 }
 
-export async function createContext(config: Config, iso: ivm.Isolate, opts: ivm.ContextOptions = {}): Promise<Context> {
+export async function createContext(iso: ivm.Isolate, bridge: Bridge, opts: ivm.ContextOptions = {}): Promise<Context> {
 	let ctx = new Context(await iso.createContext(opts), iso)
-	await ctx.bootstrap(config)
+	await ctx.bootstrap(bridge)
 	return ctx
 }
