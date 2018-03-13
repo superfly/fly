@@ -132,6 +132,7 @@ export class Server extends http.Server {
 		} catch (err) {
 			log.error("error handling request:", err.stack)
 		} finally {
+			this.contextStore.putContext(ctx)
 			trace.end()
 			log.debug(trace.report())
 		}
