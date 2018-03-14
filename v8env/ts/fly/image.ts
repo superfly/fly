@@ -1,103 +1,24 @@
-export interface ImageOperation {
-  name: string,
-  args: any[]
-}
+/**
+ * The Fly image API.
+ * @module fly
+ */
 
-export interface ImageMetadata {
-  /** Number of pixels wide */
-  width?: number;
-  /** Number of pixels high */
-  height?: number;
-  /** Name of colour space interpretation e.g. srgb, rgb, cmyk, lab, b-w ... */
-  space?: string;
-  /** Number of bands e.g. 3 for sRGB, 4 for CMYK */
-  channels?: number;
-  /** Number of pixels per inch (DPI), if present */
-  density?: number;
-  /** Boolean indicating the presence of an embedded ICC profile */
-  hasProfile?: boolean;
-  /** Boolean indicating the presence of an alpha transparency channel */
-  hasAlpha?: boolean;
-  /** Number value of the EXIF Orientation header, if present */
-  orientation?: number;
-
-  format?: string;
-}
-export interface ImageOperationResult {
-  info: ImageMetadata
-  data: ArrayBuffer
-}
-
-interface ImageOperationFunction {
-  (image: Image): Promise<ImageOperationResult>
-}
-interface ImageMetadataFunction {
-  (image: Image): Promise<ImageMetadata>
-}
-let modifyImage: ImageOperationFunction
-let imageMetadata: ImageMetadataFunction
-
-export default function initImage(ivm: any, dispatcher: any) {
-  modifyImage = async function modifyImage(image: Image): Promise<ImageOperationResult> {
-    return new Promise<ImageOperationResult>((resolve, reject) => {
-      dispatcher.dispatch("flyModifyImage",
-        new ivm.ExternalCopy(image.data).copyInto({ release: true }),
-        new ivm.ExternalCopy(image.operations).copyInto({ release: true }),
-        new ivm.Reference((err: string, data: ArrayBuffer, info: any) => {
-          if (err) {
-            reject(err)
-            return
-          }
-          resolve({ data: data, info: info })
-        })
-      )
-    })
-  }
-  imageMetadata = async function imageMetadata(image: Image): Promise<ImageMetadata> {
-    return new Promise<ImageMetadata>((resolve, reject) => {
-      dispatcher.dispatch("flyImageMetadata",
-        new ivm.ExternalCopy(image.data).copyInto({ release: true }),
-        new ivm.Reference((err: string, metadata: any) => {
-          if (err) {
-            reject(err)
-            return
-          }
-          resolve(metadata)
-        })
-      )
-    })
-  }
-  return Image
-}
-
-const gravity = {
-  center: 0,
-  centre: 0,
-  north: 1,
-  east: 2,
-  south: 3,
-  west: 4,
-  northeast: 5,
-  southeast: 6,
-  southwest: 7,
-  northwest: 8
-};
-
-const strategy = {
-  entropy: 16,
-  attention: 17
-}
-
-const kernel = {
-  nearest: 'nearest',
-  cubic: 'cubic',
-  lanczos2: 'lanczos2',
-  lanczos3: 'lanczos3'
-}
+/**
+ * A class for modifying images. This uses operations from [Sharp](http://sharp.pixelplumbing.com/en/stable/) under the hood.
+ * @module fly
+ */
 export class Image {
+  /** @hidden */
   data: ArrayBuffer
-  operations: ImageOperation[]
-  info: ImageMetadata | null
+  /** @hidden */
+  operations: Image.Operation[]
+  /** @hidden */
+  info: Image.Metadata | null
+
+  /**
+   * Constructs a new Image from raw Buffer data
+   * @param data Raw image data from `fetch` or `cache` or somewhere else.
+   */
   constructor(data: ArrayBuffer) {
     if (!(data instanceof ArrayBuffer)) {
       throw new Error("Data must be an ArrayBuffer")
@@ -108,8 +29,18 @@ export class Image {
     this.info = null
   }
 
-  resize(...args: any[]) {
-    this.operations.push({ name: "resize", args: args })
+  /**
+   * Resize image to `width` x `height`. By default, the resized image is center 
+   * cropped to the exact size specified. 
+   * @param width Width in pixels of the resulting image.
+   * Pass `undefined` or `null` to auto-scale the width to match the height.
+   * @param height Height in pixels of the resulting image. 
+   * Pass `undefind` or `null` to auto-scale the height to match the width.
+   * @param options Resize options
+   * @returns {fly.Image}
+   */
+  resize(width?: number, height?: number, options?: Image.ResizeOptions) {
+    this.operations.push({ name: "resize", args: [width, height, options] })
     return this
   }
 
@@ -148,11 +79,11 @@ export class Image {
     return this
   }
 
-  async metadata(): Promise<ImageMetadata> {
+  async metadata(): Promise<Image.Metadata> {
     return await imageMetadata(this)
   }
 
-  async toBuffer(): Promise<ImageOperationResult> {
+  async toBuffer(): Promise<Image.OperationResult> {
     if (!modifyImage) {
       throw new Error("Image operations not enabled")
     }
@@ -166,14 +97,131 @@ export class Image {
     i.info = result.info
     return i
   }
+}
 
-  static get strategy() {
-    return strategy
+export namespace Image {
+  /** @hidden */
+  export interface Operation {
+    name: string,
+    args: any[]
   }
-  static get gravity() {
-    return gravity
+
+  export interface Metadata {
+    /** Number of pixels wide */
+    width?: number;
+    /** Number of pixels high */
+    height?: number;
+    /** Name of colour space interpretation e.g. srgb, rgb, cmyk, lab, b-w ... */
+    space?: string;
+    /** Number of bands e.g. 3 for sRGB, 4 for CMYK */
+    channels?: number;
+    /** Number of pixels per inch (DPI), if present */
+    density?: number;
+    /** Boolean indicating the presence of an embedded ICC profile */
+    hasProfile?: boolean;
+    /** Boolean indicating the presence of an alpha transparency channel */
+    hasAlpha?: boolean;
+    /** Number value of the EXIF Orientation header, if present */
+    orientation?: number;
+
+    format?: string;
   }
-  static get kernel() {
-    return kernel
+  export interface OperationResult {
+    info: Image.Metadata
+    data: ArrayBuffer
+  }
+
+  export interface ResizeOptions {
+    /**
+     * the kernel to use for image reduction.
+     *  (optional, default `'lanczos3'`)
+     */
+    kernel?: kernel,
+    /**
+     * take greater advantage of the JPEG 
+     * and WebP shrink-on-load feature, which can lead to a slight moiré pattern on 
+     * some images. (optional, default `true`)
+     */
+    fastShrinkOnLoad?: boolean
+
+  }
+}
+/** @hidden */
+interface OperationFunction {
+  (image: Image): Promise<Image.OperationResult>
+}
+/** @hidden */
+interface MetadataFunction {
+  (image: Image): Promise<Image.Metadata>
+}
+/**
+ * @hidden
+ */
+let modifyImage: OperationFunction
+/**
+ * @hidden
+ */
+let imageMetadata: MetadataFunction
+
+/**
+ * @hidden 
+ */
+export default function initImage(ivm: any, dispatcher: any) {
+  modifyImage = async function modifyImage(image: Image): Promise<Image.OperationResult> {
+    return new Promise<Image.OperationResult>((resolve, reject) => {
+      dispatcher.dispatch("flyModifyImage",
+        new ivm.ExternalCopy(image.data).copyInto({ release: true }),
+        new ivm.ExternalCopy(image.operations).copyInto({ release: true }),
+        new ivm.Reference((err: string, data: ArrayBuffer, info: any) => {
+          if (err) {
+            reject(err)
+            return
+          }
+          resolve({ data: data, info: info })
+        })
+      )
+    })
+  }
+  imageMetadata = async function imageMetadata(image: Image): Promise<Image.Metadata> {
+    return new Promise<Image.Metadata>((resolve, reject) => {
+      dispatcher.dispatch("flyImageMetadata",
+        new ivm.ExternalCopy(image.data).copyInto({ release: true }),
+        new ivm.Reference((err: string, metadata: any) => {
+          if (err) {
+            reject(err)
+            return
+          }
+          resolve(metadata)
+        })
+      )
+    })
+  }
+  return Image
+}
+
+export namespace Image {
+  export enum gravity {
+    center = 0,
+    centre = 0,
+    north = 1,
+    east = 2,
+    south = 3,
+    west = 4,
+    northeast = 5,
+    southeast = 6,
+    southwest = 7,
+    northwest = 8
+  };
+
+  export enum strategy {
+    entropy = 16,
+    attention = 17
+  }
+
+  export enum kernel {
+    nearest = 'nearest',
+    cubic = 'cubic',
+    lanczos2 = 'lanczos2',
+    lanczos3 = 'lanczos3'
   }
 }

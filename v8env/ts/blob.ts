@@ -1,7 +1,13 @@
+/** 
+ * @module fly
+ * @private
+ */
 import { TextEncoder } from "text-encoding";
 
+/** @hidden */
 export type BlobPart = BufferSource | USVString | Blob
 
+/** @hidden */
 export default class Blob {
   readonly size: number;
   readonly type: string;
@@ -60,6 +66,7 @@ export default class Blob {
   }
 }
 
+/** @hidden */
 function concatenate(...arrays: Uint8Array[]): Uint8Array {
   let totalLength = 0;
   for (let arr of arrays) {

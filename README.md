@@ -25,11 +25,11 @@ npm install --save-dev @fly/fly
 Write javascript code to a file (`index.js`):
 
 ```js
-// fly.http.respondWith is just a convenient wrapper
-// around addEventListener('fetch', function(event){})
 fly.http.respondWith(function(request){
   return new Response("Hello! We support whirled peas.", { status: 200})
 })
+// if you'd prefer to be service worker compatibility, this is alos supported:
+// around addEventListener('fetch', function(event){})
 ```
 
 Start the fly server:

@@ -1,7 +1,12 @@
+/**
+ * @module fly
+ * @private
+ */
 import { stringify } from 'querystring'
 
 /**
  * Class representing a fetch response.
+ * @hidden
  */
 export default class FormData {
   private _data: Map<string, string[]>

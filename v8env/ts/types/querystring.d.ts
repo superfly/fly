@@ -1,3 +1,8 @@
+/**
+ * @module fly
+ * @private
+ */
+/** @hidden */
 declare module "querystring" {
   export interface StringifyOptions {
     encodeURIComponent?: Function;
