@@ -62,12 +62,16 @@ export class App {
     return this.release.source_map
   }
 
-  forV8() {
-    return new ivm.ExternalCopy({
+  asJSON() {
+    return {
       name: this.name,
       config: this.config,
       version: this.version,
       env: this.env
-    }).copyInto({ release: true })
+    }
+  }
+
+  forV8() {
+    return new ivm.ExternalCopy(this.asJSON()).copyInto({ release: true })
   }
 }
