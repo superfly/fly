@@ -52,13 +52,18 @@ function compileCallback(compiler: webpack.Compiler, callback: Function) {
       codeHash = stats.hash
       log.debug("Compiled size: ", source.byteLength / (1024 * 1024), "MB")
       log.debug("Compiled sourcemap size: ", sourceMap.byteLength / (1024 * 1024), "MB")
+
+      const sanitizedSourceMap = sourceMap
+        .toString('utf8')
+        .replace("\u2028", "\\u2028") // ugh.
+        .replace("\u2029", "\\u2029")
+
+      fs.writeFileSync('.fly/build/bundle.map.json', sanitizedSourceMap)
+
       callback(null,
         source.toString('utf8'),
         codeHash,
-        sourceMap
-          .toString('utf8')
-          .replace("\u2028", "\\u2028") // ugh.
-          .replace("\u2029", "\\u2029") // ugh.
+        sanitizedSourceMap
       )
     }
   }
