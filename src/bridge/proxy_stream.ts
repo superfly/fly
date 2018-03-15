@@ -62,11 +62,11 @@ export class ProxyStream {
 }
 
 registerBridge("subscribeProxyStream", function (ctx: Context, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
-  ctx.addCallback(cb)
+  ctx.addReleasable(cb)
   const proxyable = ref.deref({ release: true })
   const stream = proxyable.stream
   if (!stream) {
-    ctx.applyCallback(cb, ["end"])
+    ctx.tryCallback(cb, ["end"])
     return
   }
   stream.on("close", function () {
@@ -79,6 +79,7 @@ registerBridge("subscribeProxyStream", function (ctx: Context, bridge: Bridge, r
     ctx.tryCallback(cb, ["error", err.toString()])
   })
 })
+
 registerBridge("readProxyStream", function (ctx: Context, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
   const proxyable = ref.deref({ release: true })
   const stream = proxyable.stream
