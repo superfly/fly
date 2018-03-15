@@ -6,7 +6,8 @@
   "files": [
     "lib/",
     "dist/",
-    "v8env/testing"
+    "v8env/testing",
+    "doc/"
   ],
   "scripts": {
     "start": "./bin/fly server ./apps/getting-started",
@@ -20,8 +21,9 @@
     "build:v8env": "webpack --config webpack.v8.config.js",
     "build:cli": "tsc bin/fly.ts",
     "build:cli:live": "npm run build:cli -- -w",
-    "prepublishOnly": "npm run build",
-    "release": "standard-version"
+    "prepublishOnly": "npm run build && npm run doc:v8env",
+    "release": "standard-version",
+    "doc:v8env": "./node_modules/.bin/typedoc --tsconfig ./v8env/ts/tsconfig.json"
   },
   "bin": {
     "fly": "lib/cmd/index.js"
@@ -70,6 +72,8 @@
     "to-arraybuffer": "^1.0.1",
     "ts-loader": "^3.2.0",
     "ts-node": "^3.3.0",
+    "typedoc": "^0.11.1",
+    "typedoc-plugin-external-module-name": "github:superfly/typedoc-plugin-external-module-name",
     "typescript": "^2.7.2",
     "url-parse": "^1.2.0",
     "url-search-params": "^0.10.0",

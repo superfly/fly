@@ -1,18 +1,25 @@
+/** @module fly
+ * @private
+ */
 import { parse as queryParse } from 'querystring'
 
+/** @hidden */
 interface ReadableStreamController {
   enqueue(chunk: string | ArrayBuffer): void
   close(): void
 }
+/** @hidden */
 declare var ReadableStream: {
   prototype: ReadableStream;
   new(source: any | undefined): ReadableStream;
 };
 
+/** @hidden */
 export type BodySource = Blob | BufferSource |
   FormData | URLSearchParams |
   ReadableStream | String
 
+/** @hidden */
 export default class BodyMixin implements Body {
   private readonly bodySource: BodySource
   private stream: ReadableStream | null
@@ -104,6 +111,7 @@ export default class BodyMixin implements Body {
   }
 }
 
+/** @hidden */
 function bufferFromStream(stream: ReadableStreamReader): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     let parts: Array<Uint8Array> = [];
@@ -135,6 +143,7 @@ function bufferFromStream(stream: ReadableStreamReader): Promise<ArrayBuffer> {
     })()
   })
 }
+/** @hidden */
 function concatenate(...arrays: Uint8Array[]): ArrayBuffer {
   let totalLength = 0;
   for (let arr of arrays) {

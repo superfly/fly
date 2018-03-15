@@ -1,8 +1,13 @@
+/**
+ * @module fly
+ * @private
+ */
 // Type definitions for text-encoding
 // Project: https://github.com/inexorabletash/text-encoding
 // Definitions by: MIZUNE Pine <https://github.com/pine613>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
+/** @hidden */
 declare namespace TextEncoding {
     interface TextDecoderOptions {
         fatal?: boolean;
@@ -35,12 +40,12 @@ declare namespace TextEncoding {
 
     interface TextEncoderStatic {
         (utfLabel?: string, options?: TextEncoderOptions): TextEncoder;
-        new (utfLabel?: string, options?: TextEncoderOptions): TextEncoder;
+        new(utfLabel?: string, options?: TextEncoderOptions): TextEncoder;
     }
 
     interface TextDecoderStatic {
         (label?: string, options?: TextDecoderOptions): TextDecoder;
-        new (label?: string, options?: TextDecoderOptions): TextDecoder;
+        new(label?: string, options?: TextDecoderOptions): TextDecoder;
     }
 
     interface TextEncodingStatic {
@@ -49,12 +54,16 @@ declare namespace TextEncoding {
     }
 }
 
+/** @hidden */
 declare var TextDecoder: TextEncoding.TextDecoderStatic;
 
+/** @hidden */
 declare var TextEncoder: TextEncoding.TextEncoderStatic;
 
+/** @hidden */
 declare var TextEncoding: TextEncoding.TextEncodingStatic;
 
+/** @hidden */
 declare module "text-encoding" {
     export = TextEncoding;
 }
