@@ -100,7 +100,7 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
   if (u.query != null) {
     path = path + "?" + u.query
   }
-  req = httpFn({
+  const reqOptions: any = {
     agent: httpAgent,
     protocol: u.protocol,
     path: path,
@@ -110,7 +110,11 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
     method: method,
     headers: headers,
     timeout: 5000
-  })
+  }
+  if (httpFn == https.request) {
+    reqOptions.servername = reqOptions.hostname
+  }
+  req = httpFn(reqOptions)
 
 
   req.on("response", function (res: http.IncomingMessage) {
