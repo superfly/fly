@@ -62,7 +62,7 @@ export class ProxyStream {
 }
 
 registerBridge("subscribeProxyStream", function (ctx: Context, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
-  // ctx.addCallback(cb)
+  ctx.addCallback(cb)
   const proxyable = ref.deref({ release: true })
   const stream = proxyable.stream
   if (!stream) {
@@ -70,13 +70,13 @@ registerBridge("subscribeProxyStream", function (ctx: Context, bridge: Bridge, r
     return
   }
   stream.on("close", function () {
-    ctx.applyCallback(cb, ["close"])
+    ctx.tryCallback(cb, ["close"])
   })
   stream.on("end", function () {
-    ctx.applyCallback(cb, ["end"])
+    ctx.tryCallback(cb, ["end"])
   })
   stream.on("error", function (err: Error) {
-    ctx.applyCallback(cb, ["error", err.toString()])
+    ctx.tryCallback(cb, ["error", err.toString()])
   })
 })
 registerBridge("readProxyStream", function (ctx: Context, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
@@ -89,9 +89,9 @@ registerBridge("readProxyStream", function (ctx: Context, bridge: Bridge, ref: i
     let chunk = proxyable.read(1024 * 1024)
     let data: ivm.Copy<ArrayBuffer> | null = null
     if (chunk) {
-      ctx.addCallback(cb)
       data = transferInto(chunk)
     }
+    ctx.addCallback(cb)
     if (data || attempts >= 10 || proxyable.ended) {
       ctx.applyCallback(cb, [null, data, proxyable.tainted])
     } else if (attempts >= 10 && !proxyable.ended) {

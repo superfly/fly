@@ -70,6 +70,7 @@ export class DefaultContextStore {
   putContext(ctx: Context) {
     const i = this.inFlight.indexOf(ctx)
     ctx.finalize().then(() => {
+      log.debug("Context finalized.")
       ctx.release()
       log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
       if (i >= 0)
