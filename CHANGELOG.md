@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.26.1"></a>
+## [0.26.1](https://github.com/superfly/fly/compare/v0.26.0...v0.26.1) (2018-03-15)
+
+
+### Bug Fixes
+
+* optional callback may prevent context from finalizing ([f4353cc](https://github.com/superfly/fly/commit/f4353cc))
+
+
+
 <a name="0.26.0"></a>
 # [0.26.0](https://github.com/superfly/fly/compare/v0.24.1...v0.26.0) (2018-03-15)
 
