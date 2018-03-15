@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.26.0"></a>
+# [0.26.0](https://github.com/superfly/fly/compare/v0.24.1...v0.26.0) (2018-03-15)
+
+
+### Bug Fixes
+
+* end httpRequest trace [ci skip] ([0718f06](https://github.com/superfly/fly/commit/0718f06))
+* lingering callback was causing a memory leak ([054f75f](https://github.com/superfly/fly/commit/054f75f))
+* more red in CLI errors messages [ci skip] ([3ec39b3](https://github.com/superfly/fly/commit/3ec39b3))
+* rewrite source map file to remove unsupported characters ([68fea9e](https://github.com/superfly/fly/commit/68fea9e))
+
+
+### Features
+
+* API docs published with npm ([#44](https://github.com/superfly/fly/issues/44)) ([be7e013](https://github.com/superfly/fly/commit/be7e013))
+* Image.metadata() returns a promise with image info ([5ddde44](https://github.com/superfly/fly/commit/5ddde44))
+* Simplify and reorganize for more flexibility ([#43](https://github.com/superfly/fly/issues/43)) ([14dca88](https://github.com/superfly/fly/commit/14dca88))
+
+
+
 <a name="0.25.0"></a>
 # [0.25.0](https://github.com/superfly/fly/compare/v0.24.1...v0.25.0) (2018-03-13)
 
