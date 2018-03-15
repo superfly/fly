@@ -150,7 +150,7 @@ export default function registerGoogleAnalytics() {
           }
         }
 
-        await fetch(gaCollectURL, {
+        fetch(gaCollectURL, {
           method: "POST",
           headers: {
             "content-type": "application/x-www-form-urlencoded"
