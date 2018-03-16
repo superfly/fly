@@ -2,7 +2,6 @@
  * @module fly
  * @private
  */
-import { TextEncoder } from "text-encoding";
 
 /** @hidden */
 export type BlobPart = BufferSource | USVString | Blob

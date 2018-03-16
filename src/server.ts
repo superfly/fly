@@ -123,7 +123,7 @@ export class Server extends http.Server {
 			user_agent: request.headers['user-agent']
 		})
 
-		ctx.on("error", contextErrorHandler)
+		ctx.once("error", contextErrorHandler)
 
 		request.headers['x-request-id'] = randomBytes(12).toString('hex')
 
@@ -132,6 +132,7 @@ export class Server extends http.Server {
 		} catch (err) {
 			log.error("error handling request:", err.stack)
 		} finally {
+			ctx.removeListener('error', contextErrorHandler)
 			this.contextStore.putContext(ctx)
 			trace.end()
 			log.debug(trace.report())

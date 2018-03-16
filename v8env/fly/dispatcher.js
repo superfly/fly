@@ -1,14 +1,13 @@
 import { logger } from '../logger'
 
 export default function dispatcherInit(ivm, dispatch) {
+  releasables.push(dispatch)
   return {
     dispatch(name, ...args) {
       logger.debug("dispatching", name)
       for (const arg of args)
-        if (arg instanceof ivm.Reference)
-          global.releasables.push(arg)
-        else if (arg instanceof ivm.ExternalCopy)
-          global.releasables.push(arg)
+        if (arg && typeof arg.release === 'function')
+          releasables.push(arg)
 
       dispatch.apply(null, [name, ...args])
         .then(() => {

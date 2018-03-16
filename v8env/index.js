@@ -1,6 +1,6 @@
 import dispatcherInit from './fly/dispatcher'
 
-import { fireEvent, addEventListener, dispatchEvent, FetchEvent } from "./events"
+import { fireEvent, addEventListener, dispatchEvent, FetchEvent, emitter } from "./events"
 import { Middleware, MiddlewareChain } from "./middleware"
 import { FlyBackend } from "./fly-backend"
 import { ReadableStream, WritableStream, TransformStream } from 'web-streams-polyfill'
@@ -10,7 +10,7 @@ import { TextEncoder, TextDecoder } from 'text-encoding'
 import consoleInit from './console'
 import flyInit from './fly'
 
-import { URL, URLSearchParams } from 'universal-url-lite'
+import { URL, URLSearchParams } from 'universal-url-lite'//'whatwg-url'
 import Headers from './headers'
 
 import fetchInit from './fetch'
@@ -40,7 +40,7 @@ global.releasables = []
 global.middleware = {}
 
 global.registerMiddleware = function registerMiddleware(type, fn) {
-	global.middleware[type] = fn
+	middleware[type] = fn
 }
 
 global.bootstrap = function bootstrap() {
@@ -54,7 +54,6 @@ global.bootstrap = function bootstrap() {
 	delete global._dispatch
 
 	global.fly = flyInit(ivm, dispatcher)
-	global.releasables.push(global._dispatch)
 
 	global.console = consoleInit(ivm, dispatcher)
 	timersInit(ivm)
@@ -120,11 +119,18 @@ global.sourceMaps = {}
 
 global.teardown = function teardown() {
 	let r;
-	while (r = global.releasables.pop()) {
+	while (r = releasables.pop()) {
 		try {
 			r.release()
 		} catch (e) {
 			// fail silently
 		}
 	}
+	emitter.removeAllListeners()
+	global.sourceMaps = {}
+	global.teardown = null
+
+	// violent
+	// for (const prop of Object.getOwnPropertyNames(global))
+	// 	try { global[prop] = null } catch (e) { }
 }

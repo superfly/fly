@@ -60,7 +60,7 @@ export class FetchEvent {
 	}
 }
 
-const emitter = new EventEmitter()
+export const emitter = new EventEmitter()
 
 export function addEventListener(name, fn) {
 	emitter.addListener(name, fn)
@@ -82,8 +82,10 @@ export function fireEvent(ivm, name, ...args) {
 	} catch (err) {
 		logger.debug(err.message, err.stack)
 		let cb = args[args.length - 1] // should be the last arg
-		if (cb instanceof ivm.Reference)
+		if (cb instanceof ivm.Reference) {
 			cb.apply(undefined, [err.toString()])
+			cb.release()
+		}
 	}
 }
 
@@ -99,7 +101,7 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 	global.session = new SessionStore()
 
 	let fetchEvent = new FetchEvent('fetch', {
-		request: new Request(url, Object.assign(req, { body: fly.streams.refToStream(body)  }))
+		request: new Request(url, Object.assign(req, { body: fly.streams.refToStream(body) }))
 	}, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 
@@ -113,9 +115,9 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 		}
 
 		let b = null
-		if(res.body && res.body._ref){
+		if (res.body && res.body._ref) {
 			b = res.body._ref
-		}else{
+		} else {
 			b = transferInto(ivm, await res.arrayBuffer())
 		}
 

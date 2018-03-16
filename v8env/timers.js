@@ -1,14 +1,16 @@
 export default function timersInit(ivm) {
   global.setTimeout = (function (st, ivm) {
-    global.releasables.push(st)
+    releasables.push(st)
     return function (cb, ms) {
-      return st.apply(null, [new ivm.Reference(cb), ms])
+      const ref = new ivm.Reference(cb)
+      releasables.push(ref)
+      return st.apply(null, [ref, ms])
     }
   })(global._setTimeout, ivm)
   delete global._setTimeout
 
   global.clearTimeout = (function (ct) {
-    global.releasables.push(ct)
+    releasables.push(ct)
     return function (id) {
       return ct.apply(null, [id])
     }
@@ -16,15 +18,17 @@ export default function timersInit(ivm) {
   delete global._clearTimeout
 
   global.setInterval = (function (si, ivm) {
-    global.releasables.push(si)
+    releasables.push(si)
     return function (cb, ms) {
-      return si.apply(null, [new ivm.Reference(cb), ms])
+      const ref = new ivm.Reference(cb)
+      releasables.push(ref)
+      return si.apply(null, [ref, ms])
     }
   })(global._setInterval, ivm)
   delete global._setInterval
 
   global.clearInterval = (function (ci) {
-    global.releasables.push(ci)
+    releasables.push(ci)
     return function (id) {
       return ci.apply(null, [id])
     }

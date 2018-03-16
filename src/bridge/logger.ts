@@ -13,6 +13,7 @@ const { Syslog } = require('winston-syslog');
 let defaultLogger: winston.LoggerInstance;
 
 registerBridge('log', function (ctx: Context, bridge: Bridge, lvl: string, msg: string, meta: any = {}, callback: ivm.Reference<Function>) {
+  ctx.addReleasable(callback)
   ctx.log(lvl, msg, meta, callback)
 })
 

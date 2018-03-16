@@ -116,9 +116,20 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
   }
   req = httpFn(reqOptions)
 
+  req.once("response", handleResponse)
 
-  req.on("response", function (res: http.IncomingMessage) {
+  req.on("error", handleError)
+
+  setImmediate(() =>
+    req.end(body && Buffer.from(body) || null)
+  )
+
+  return cb
+
+  function handleResponse(res: http.IncomingMessage) {
     log.silly(`Fetch response: ${res.statusCode} ${urlStr} ${JSON.stringify(res.headers)}`)
+    req.removeListener('response', handleResponse)
+    req.removeListener('error', handleError)
     try {
       res.pause()
 
@@ -134,21 +145,16 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
         new ProxyStream(res).ref
       ])
 
-
     } catch (err) {
       log.error("caught error", err)
       ctx.tryCallback(cb, [err.toString()])
     }
-  })
+  }
 
-  req.on("error", function (err) {
+  function handleError(err: Error) {
     log.error("error requesting http resource", err)
     ctx.tryCallback(cb, [err.toString()])
-  })
-
-  setImmediate(() =>
-    req.end(body && Buffer.from(body) || null)
-  )
-
-  return cb
+    req.removeListener('response', handleResponse)
+    req.removeListener('error', handleError)
+  }
 })

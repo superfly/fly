@@ -28,9 +28,9 @@ export class ProxyStream {
     this.stream = base
     this.buffered = []
     this.bufferedByteLength = 0
-    this.stream.on("close", () => this.ended = true)
-    this.stream.on("end", () => this.ended = true)
-    this.stream.on("error", () => this.ended = true)
+    this.stream.once("close", () => this.ended = true)
+    this.stream.once("end", () => this.ended = true)
+    this.stream.once("error", () => this.ended = true)
   }
 
   read(size?: number): Buffer | null {
@@ -69,15 +69,20 @@ registerBridge("subscribeProxyStream", function (ctx: Context, bridge: Bridge, r
     ctx.tryCallback(cb, ["end"])
     return
   }
-  stream.on("close", function () {
+  stream.once("close", streamClose)
+  stream.once("end", streamEnd)
+  stream.on("error", streamError)
+
+  function streamClose() {
     ctx.tryCallback(cb, ["close"])
-  })
-  stream.on("end", function () {
+    stream.removeAllListeners()
+  }
+  function streamEnd() {
     ctx.tryCallback(cb, ["end"])
-  })
-  stream.on("error", function (err: Error) {
+  }
+  function streamError(err: Error) {
     ctx.tryCallback(cb, ["error", err.toString()])
-  })
+  }
 })
 
 registerBridge("readProxyStream", function (ctx: Context, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {

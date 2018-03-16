@@ -64,6 +64,7 @@ export class Context extends EventEmitter {
 	}
 
 	addCallback(fn: ivm.Reference<Function>) {
+		this.addReleasable(fn)
 		this.callbacks.push(fn)
 		log.silly("Added callback", fn)
 		this.emit("callbackAdded", fn)
@@ -84,9 +85,7 @@ export class Context extends EventEmitter {
 			if (this.iso.isDisposed)
 				return
 			for (const arg of args)
-				if (arg instanceof ivm.Reference)
-					this.addReleasable(arg)
-				else if (arg instanceof ivm.ExternalCopy)
+				if (arg && typeof arg.release === 'function')
 					this.addReleasable(arg)
 			try {
 				return await fn.apply(null, args, opts)
@@ -96,7 +95,6 @@ export class Context extends EventEmitter {
 				throw err
 			}
 		} finally {
-			this.addReleasable(fn)
 			const i = this.callbacks.indexOf(fn)
 			if (i >= 0) {
 				this.callbacks.splice(i, 1)
@@ -177,15 +175,11 @@ export class Context extends EventEmitter {
 			if (!this.fireEventFn)
 				this.fireEventFn = await this.global.get("fireEvent") // bypass releasable
 			for (const arg of args)
-				if (arg instanceof ivm.Reference)
-					this.addReleasable(arg)
-				else if (arg instanceof ivm.ExternalCopy)
+				if (arg && typeof arg.release === 'function')
 					this.addReleasable(arg)
 			log.silly("Firing event", name)
 			const ret = await this.fireEventFn.apply(null, [name, ...args], opts)
-			if (ret instanceof ivm.Reference)
-				this.addReleasable(ret)
-			else if (ret instanceof ivm.ExternalCopy)
+			if (ret && typeof ret.release === 'function')
 				this.addReleasable(ret)
 			return ret
 		} catch (err) {
@@ -203,10 +197,8 @@ export class Context extends EventEmitter {
 	async set(name: any, value: any): Promise<boolean> {
 		if (this.iso.isDisposed)
 			throw new Error("Isolate is disposed or disposing.")
-		const ret = await this.global.set(name, value)
-		if (value instanceof ivm.Reference)
-			this.addReleasable(value)
-		else if (value instanceof ivm.ExternalCopy)
+		const ret = this.global.set(name, value)
+		if (value && typeof value.release === 'function')
 			this.addReleasable(value)
 		return ret
 	}
@@ -255,6 +247,7 @@ export class Context extends EventEmitter {
 				try {
 					rel.release()
 				} catch (e) {
+					console.error("RELEASE ERROR:", e.stack)
 					// don't really care
 				}
 			}
