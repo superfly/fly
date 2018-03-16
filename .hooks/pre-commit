@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# generate docs if v8env changes
+if git diff --cached --name-only | grep v8env
+then
+  echo "Generating v8env docs"
+  npm run doc:v8env
+  git add docs
+fi

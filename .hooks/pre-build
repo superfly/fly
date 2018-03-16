@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# fail if v8env changed and docs aren't committed
+if git diff-tree --no-commit-id --name-only -r HEAD | grep v8env/
+then
+  echo "Generating v8env docs"
+  npm run doc:v8env
+  if git diff --name-only | grep v8env/
+  then
+    echo "This commit has changes to v8env, but the docs haven't been committed"
+    exit 1
+  fi
+fi
