@@ -4,6 +4,7 @@
   "description": "",
   "main": "lib/index.js",
   "files": [
+    "apps/",
     "lib/",
     "dist/",
     "v8env/testing",
