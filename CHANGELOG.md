@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.26.2"></a>
+## [0.26.2](https://github.com/superfly/fly/compare/v0.26.0...v0.26.2) (2018-03-16)
+
+
+### Bug Fixes
+
+* Including getting-started app in npm ([db5e501](https://github.com/superfly/fly/commit/db5e501))
+* optional callback may prevent context from finalizing ([b264d6c](https://github.com/superfly/fly/commit/b264d6c))
+* send sni with https fetch requests ([de6aac5](https://github.com/superfly/fly/commit/de6aac5))
+* tracked down a plugged a memory leak ([e860ff1](https://github.com/superfly/fly/commit/e860ff1))
+
+
+
 <a name="0.26.1"></a>
 ## [0.26.1](https://github.com/superfly/fly/compare/v0.26.0...v0.26.1) (2018-03-15)
 
