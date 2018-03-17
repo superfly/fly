@@ -263,8 +263,19 @@ export class Context extends EventEmitter {
 		const source = app.sourceMap ? app.source + `\n;sourceMaps["${sourceFilename}"] = {filename: "${sourceMapFilename}", map: ${app.sourceMap}}` : app.source
 
 		const tcomp = t.start("compile")
-		const script = await this.iso.compileScript(source, { filename: sourceFilename })
-		tcomp.end()
+		let script: ivm.Script
+		try {
+			script = await this.iso.compileScript(source, { filename: sourceFilename })
+		} catch (err) {
+			if (err instanceof SyntaxError && source != app.source) {
+				log.error("App + sourcemap is invalid, trying again without sourcemap")
+				script = await this.iso.compileScript(app.source, { filename: sourceFilename }) // this can rethrow
+			} else {
+				throw err
+			}
+		} finally {
+			tcomp.end()
+		}
 		const trun = t.start("prerun")
 		await script.run(this.ctx)
 		trun.end()
