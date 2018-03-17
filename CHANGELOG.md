@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.24.2"></a>
+## [0.24.2](https://github.com/superfly/fly/compare/v0.24.1...v0.24.2) (2018-03-17)
+
+
+### Bug Fixes
+
+* app with invalid sourcemap still runs ([a24d8c7](https://github.com/superfly/fly/commit/a24d8c7))
+
+
+
 <a name="0.24.1"></a>
 ## [0.24.1](https://github.com/superfly/fly/compare/v0.24.0...v0.24.1) (2018-03-08)
 
