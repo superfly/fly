@@ -19,12 +19,12 @@ import Blob from './ts/blob.ts'
 import FormData from './ts/form_data.ts'
 import responseInit from './response'
 import cache from './cache'
-import timersInit from './timers'
+import timersInit, { setTimeout, clearTimeout, setInterval, clearInterval } from './timers'
 
 import { Document, Element } from './document'
 
 // Sets up `Error.prepareStacktrace`
-import './utils/error'
+// import './utils/error'
 
 import registerFlyBackend from './middleware/fly-backend'
 import registerFlyEcho from './middleware/fly-echo'
@@ -57,6 +57,7 @@ global.bootstrap = function bootstrap() {
 
 	global.console = consoleInit(ivm, dispatcher)
 	timersInit(ivm)
+	Object.assign(global, { setTimeout, clearTimeout, setInterval, clearInterval })
 
 	// // Web primitives (?)
 	global.ReadableStream = ReadableStream
@@ -115,7 +116,7 @@ global.bootstrap = function bootstrap() {
 		mwReg(ivm, dispatcher)
 }
 
-global.sourceMaps = {}
+// global.sourceMaps = {}
 
 global.teardown = function teardown() {
 	let r;
@@ -127,7 +128,7 @@ global.teardown = function teardown() {
 		}
 	}
 	emitter.removeAllListeners()
-	global.sourceMaps = {}
+	// global.sourceMaps = {}
 	global.teardown = null
 
 	// violent

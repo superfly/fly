@@ -13,6 +13,6 @@ export const logger = {
 }
 
 function flyLog(lvl, message) {
-  if (global._log)
-    global._log.apply(null, [lvl, message]);
+  if (typeof _log !== 'undefined')
+    _log.apply(null, [lvl, message]);
 }

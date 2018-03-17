@@ -260,8 +260,8 @@ export class Context extends EventEmitter {
 		const sourceFilename = 'bundle.js'
 		const sourceMapFilename = 'bundle.map.json'
 
-		const source = app.sourceMap ? app.source + `\n;sourceMaps["${sourceFilename}"] = {filename: "${sourceMapFilename}", map: ${app.sourceMap}}` : app.source
-
+		// const source = app.sourceMap ? app.source + `\n;sourceMaps["${sourceFilename}"] = {filename: "${sourceMapFilename}", map: ${app.sourceMap}}` : app.source
+		const source = app.source
 		const tcomp = t.start("compile")
 		const script = await this.iso.compileScript(source, { filename: sourceFilename })
 		tcomp.end()

@@ -1,5 +1,14 @@
+let st, ct, si, ci;
+
+export {
+  st as setTimeout,
+  ct as clearTimeout,
+  si as setInterval,
+  ci as clearInterval
+}
+
 export default function timersInit(ivm) {
-  global.setTimeout = (function (st, ivm) {
+  st = (function (st, ivm) {
     releasables.push(st)
     return function (cb, ms) {
       const ref = new ivm.Reference(cb)
@@ -9,7 +18,7 @@ export default function timersInit(ivm) {
   })(global._setTimeout, ivm)
   delete global._setTimeout
 
-  global.clearTimeout = (function (ct) {
+  ct = (function (ct) {
     releasables.push(ct)
     return function (id) {
       return ct.apply(null, [id])
@@ -17,7 +26,7 @@ export default function timersInit(ivm) {
   })(global._clearTimeout)
   delete global._clearTimeout
 
-  global.setInterval = (function (si, ivm) {
+  si = (function (si, ivm) {
     releasables.push(si)
     return function (cb, ms) {
       const ref = new ivm.Reference(cb)
@@ -27,7 +36,7 @@ export default function timersInit(ivm) {
   })(global._setInterval, ivm)
   delete global._setInterval
 
-  global.clearInterval = (function (ci) {
+  ci = (function (ci) {
     releasables.push(ci)
     return function (id) {
       return ci.apply(null, [id])

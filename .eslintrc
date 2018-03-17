@@ -22,6 +22,7 @@
     "valid-typeof": "warn"
   },
   "globals": {
+    "releasables": true,
     "_ivm": true,
     "_log": true,
     "cache": true,

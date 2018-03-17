@@ -5,7 +5,7 @@
 import { format } from 'util'
 
 /** @hidden */
-declare var global: any
+declare var _log: any
 
 /** @hidden */
 export const logger = {
@@ -22,6 +22,6 @@ export const logger = {
 
 /** @hidden */
 function flyLog(lvl: string, message: string) {
-  if (global._log)
-    global._log.apply(null, [lvl, message]);
+  if (typeof _log !== 'undefined')
+    _log.apply(null, [lvl, message]);
 }

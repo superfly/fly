@@ -11,13 +11,13 @@ export class SingleUpstreamBackend {
 		url = setBackendURL(this, url)
 		breq.url = url.toString()
 
-		if(breq.url == req.url){
-			return new Response("Can't do recursive proxy", {status: 500})
+		if (breq.url == req.url) {
+			return new Response("Can't do recursive proxy", { status: 500 })
 		}
 
 		breq.headers.delete('accept-encoding')
 		setRequestHeaders(req, breq, this.headers)
-		return global.fetch(breq)
+		return fetch(breq)
 	}
 }
 
@@ -33,9 +33,9 @@ function setBackendURL(backend, url) {
 }
 
 function setRequestHeaders(req, breq, headers) {
-	if (global.overrideHost) {
-		breq.headers.set('host', global.overrideHost)
-		breq.headers.set('x-forwarded-host', global.overrideHost)
+	if (overrideHost) {
+		breq.headers.set('host', overrideHost)
+		breq.headers.set('x-forwarded-host', overrideHost)
 	}
 	let url = new URL(req.url)
 	breq.headers.set('x-forwarded-proto', url.protocol.slice(0, url.protocol.length - 1))
