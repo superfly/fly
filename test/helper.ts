@@ -57,10 +57,6 @@ export function stopServer(this: IHookCallbackContext, done: MochaDone) {
   this.server.close(done)
 }
 
-export function drainContexts(this: IHookCallbackContext, done: MochaDone) {
-  contextStore.drain().then(() => done()).catch(done)
-}
-
 export function makeServer(cwd: string, options: ServerOptions = {}) {
   Object.assign(options, { build: false, noWatch: true, noReleaseReuse: true })
   cwd = `./test/fixtures/apps/${cwd}`

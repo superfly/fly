@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { startServer, stopServer, drainContexts } from './helper'
+import { startServer, stopServer } from './helper'
 import axios from 'axios'
 
 describe('Server', function () {
@@ -43,7 +43,6 @@ describe('Server', function () {
   describe('basic chain with google-analytics', function () {
     before(startServer("basic-google-analytics.js"))
     after(stopServer)
-    after(drainContexts)
 
     it("doesn't bomb", async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test", 'user-agent': 'predictable-agent' } })

@@ -19,11 +19,11 @@ export interface DefaultContextStoreOptions {
 export class DefaultContextStore {
   isolate?: ivm.Isolate
   options: DefaultContextStoreOptions
-  inFlight: Context[]
+  private mutex: Mutex
 
   constructor(opts: DefaultContextStoreOptions = {}) {
     this.options = opts
-    this.inFlight = []
+    this.mutex = new Mutex
     v8Env.on('snapshot', this.resetIsolate.bind(this))
   }
 
@@ -37,9 +37,9 @@ export class DefaultContextStore {
       throw new Error("no isolate, something is very wrong")
 
     try {
+      await this.mutex.lock()
       t2 = t.start("createContext")
       const ctx = await createContext(iso, bridge, { inspector: !!this.options.inspect })
-      this.inFlight.push(ctx)
       t2.end()
 
       ctx.set('app', app.forV8())
@@ -56,25 +56,17 @@ export class DefaultContextStore {
       log.error("bombed somehow!", err, err.stack)
       this.resetIsolate()
       throw err
+    } finally {
+      this.mutex.release()
     }
   }
 
-  drain() {
-    return Promise.all(
-      this.inFlight.map((ctx, i) =>
-        ctx.finalize().then(() => this.inFlight.splice(i, 1))
-      )
-    )
-  }
-
   putContext(ctx: Context) {
-    const i = this.inFlight.indexOf(ctx)
     ctx.finalize().then(() => {
       log.debug("Context finalized.")
-      ctx.release()
-      log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
-      if (i >= 0)
-        this.inFlight.splice(i, 1)
+      ctx.release().then(() => {
+        log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
+      })
     })
   }
 
@@ -97,5 +89,35 @@ export class DefaultContextStore {
       memoryLimit: 128,
       inspector: !!this.options.inspect
     })
+  }
+}
+
+class Mutex {
+  queue: Array<[Function, Function]>
+  locked: boolean
+  constructor() {
+    this.queue = [];
+    this.locked = false;
+  }
+
+  lock() {
+    return new Promise((resolve, reject) => {
+      if (this.locked) {
+        this.queue.push([resolve, reject]);
+      } else {
+        this.locked = true;
+        resolve();
+      }
+    });
+  }
+
+  release() {
+    if (this.queue.length > 0) {
+      const item = this.queue.shift();
+      if (item)
+        item[0]();
+    } else {
+      this.locked = false;
+    }
   }
 }

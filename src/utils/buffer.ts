@@ -25,5 +25,5 @@ export function transferInto(buffer: Buffer | ArrayBuffer | null): ivm.Copy<Arra
 }
 
 function transferArrayBufferInto(buffer: ArrayBuffer) {
-  return (new ivm.ExternalCopy(buffer)).copyInto({release: true});
+  return (new ivm.ExternalCopy(buffer, { transferOut: true })).copyInto({ release: true, transferIn: true });
 }

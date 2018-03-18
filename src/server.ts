@@ -139,10 +139,6 @@ export class Server extends http.Server {
 		}
 	}
 
-	shutdown() {
-		return this.contextStore.drain()
-	}
-
 }
 
 function handleResponse(src: Readable | ProxyStream, dst: Writable): Promise<void> {
