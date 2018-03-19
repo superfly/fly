@@ -5,14 +5,13 @@ import { Middleware, MiddlewareChain } from "./middleware"
 import { FlyBackend } from "./fly-backend"
 import { ReadableStream, WritableStream, TransformStream } from 'web-streams-polyfill'
 
-import { TextEncoder, TextDecoder } from 'text-encoding'
-
 import consoleInit from './console'
 import flyInit from './fly'
 
 import { URL, URLSearchParams } from 'universal-url-lite'//'whatwg-url'
 import Headers from './headers'
 
+import textEncodingInit, { TextEncoder, TextDecoder } from './text-encoding'
 import fetchInit from './fetch'
 import bodyMixin from './ts/body_mixin.ts'
 import Blob from './ts/blob.ts'
@@ -64,6 +63,7 @@ global.bootstrap = function bootstrap() {
 	global.WritableStream = WritableStream
 	global.TransformStream = TransformStream
 
+	textEncodingInit(ivm, dispatcher)
 	global.TextEncoder = TextEncoder
 	global.TextDecoder = TextDecoder
 
@@ -119,6 +119,14 @@ global.bootstrap = function bootstrap() {
 	// load all middleware
 	for (const mwReg of mwToRegister)
 		mwReg(ivm, dispatcher)
+}
+
+global.finalizers = []
+
+global.finalize = function finalize() {
+	while (finalizers.length) {
+		try { finalizers.shift()() } catch (e) { }
+	}
 }
 
 global.teardown = global.release = function release() {

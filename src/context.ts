@@ -156,7 +156,7 @@ export class Context extends EventEmitter {
 				return
 			})),
 			this.set("_dispatch", new ivm.Reference((name: string, ...args: any[]) => {
-				bridge.dispatch(this, name, ...args)
+				return bridge.dispatch(this, name, ...args)
 			})),
 			this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
 				log.log(lvl, args[0], ...args.slice(1))
@@ -253,6 +253,10 @@ export class Context extends EventEmitter {
 				this.on("callbackApplied", cbFn)
 			})
 		} finally {
+			const finalizeFn = await this.global.get("finalize")
+			await finalizeFn.apply(null, [])
+			finalizeFn.release()
+
 			// clear all intervals no matter what
 			for (const [id, t] of Object.entries(this.intervals)) {
 				clearInterval(t)

@@ -6,4 +6,4 @@ export function registerBridge(name: string, fn: BridgeFunction) {
   catalog.set(name, fn)
 }
 
-export type BridgeFunction = (ctx: Context, bridge: Bridge, ...args: any[]) => void
+export type BridgeFunction = (ctx: Context, bridge: Bridge, ...args: any[]) => any
