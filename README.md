@@ -2,9 +2,13 @@
 
 # Fly
 
-Basic engine running fly.io edge apps
+The fly.io Edge Application runtime. This is a Javascript runtime meant to power proxy servers, and give developers powerful caching, content modification, and routing tools.
 
-## Installation
+The runtime is based on v8, with a proxy-appropriate set of Javascript libraries. There are built in APIs for manipulating HTML and Image content, low level caching, and HTTP requests/responses. When possible, we use WhatWG standards (like `fetch`, `Request`, `Response`, `Cache`, `Stream`).
+
+## Usage
+
+### Installation
 
 Install globally:
 
@@ -18,7 +22,6 @@ or as a `devDependency` in your project:
 npm install --save-dev @fly/fly
 ```
 
-## Usage
 
 ### Hello World!
 
@@ -64,7 +67,7 @@ By default, fly will read your a `.fly.yml` file in your current working directo
 app: my-app-name
 config:
   foo: bar
-file:
+files:
   - path/to/file
 ```
 
