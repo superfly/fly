@@ -39,7 +39,7 @@ export class Context extends EventEmitter {
 	timeouts: { [id: number]: NodeJS.Timer }
 	intervals: { [id: number]: NodeJS.Timer }
 	callbacks: ivm.Reference<Function>[]
-	fireEventFn?: ivm.Reference<Function>
+	fireFetchEventFn?: ivm.Reference<Function>
 
 	releasables: Releasable[]
 
@@ -168,17 +168,17 @@ export class Context extends EventEmitter {
 		return
 	}
 
-	async fireEvent(name: string, args: any[], opts?: any) {
+	async fireFetchEvent(args: any[], opts?: any) {
 		if (this.iso.isDisposed)
 			throw new Error("Isolate is disposed or disposing.")
 		try {
-			if (!this.fireEventFn)
-				this.fireEventFn = await this.global.get("fireEvent") // bypass releasable
+			if (!this.fireFetchEventFn)
+				this.fireFetchEventFn = await this.global.get("fireFetchEvent") // bypass releasable
 			for (const arg of args)
 				if (arg && typeof arg.release === 'function')
 					this.addReleasable(arg)
-			log.silly("Firing event", name)
-			const ret = await this.fireEventFn.apply(null, [name, ...args], opts)
+			log.silly("Firing fetch event")
+			const ret = await this.fireFetchEventFn.apply(null, args, opts)
 			if (ret && typeof ret.release === 'function')
 				this.addReleasable(ret)
 			return ret
@@ -207,7 +207,7 @@ export class Context extends EventEmitter {
 		const teardownFn = await this.global.get("teardown")
 		await teardownFn.apply(null, [])
 		teardownFn.release()
-		this.fireEventFn && this.fireEventFn.release()
+		this.fireFetchEventFn && this.fireFetchEventFn.release()
 		this.global.release()
 		this.callbacks = []
 		this.intervals = {}
@@ -260,7 +260,6 @@ export class Context extends EventEmitter {
 		const sourceFilename = 'bundle.js'
 		const sourceMapFilename = 'bundle.map.json'
 
-		// const source = app.sourceMap ? app.source + `\n;sourceMaps["${sourceFilename}"] = {filename: "${sourceMapFilename}", map: ${app.sourceMap}}` : app.source
 		const source = app.source
 		const tcomp = t.start("compile")
 		let script: ivm.Script

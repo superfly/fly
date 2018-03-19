@@ -248,7 +248,7 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 			})
 		}
 
-		ctx.fireEvent("fetch", [
+		ctx.fireFetchEvent([
 			fullURL,
 			new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
 			new ProxyStream(req).ref,

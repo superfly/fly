@@ -1,6 +1,6 @@
 import dispatcherInit from './fly/dispatcher'
 
-import { fireEvent, addEventListener, dispatchEvent, FetchEvent, emitter } from "./events"
+import { fireFetchEvent, addEventListener, dispatchEvent, FetchEvent, emitter } from "./events"
 import { Middleware, MiddlewareChain } from "./middleware"
 import { FlyBackend } from "./fly-backend"
 import { ReadableStream, WritableStream, TransformStream } from 'web-streams-polyfill'
@@ -82,7 +82,7 @@ global.bootstrap = function bootstrap() {
 	global.cache = cache
 
 	// // Events
-	global.fireEvent = fireEvent.bind(null, ivm)
+	global.fireFetchEvent = fireFetchEvent.bind(null, ivm)
 	global.addEventListener = addEventListener
 	global.dispatchEvent = dispatchEvent
 
@@ -116,8 +116,6 @@ global.bootstrap = function bootstrap() {
 		mwReg(ivm, dispatcher)
 }
 
-// global.sourceMaps = {}
-
 global.teardown = function teardown() {
 	let r;
 	while (r = releasables.pop()) {
@@ -128,7 +126,6 @@ global.teardown = function teardown() {
 		}
 	}
 	emitter.removeAllListeners()
-	// global.sourceMaps = {}
 	global.teardown = null
 
 	// violent

@@ -95,11 +95,7 @@ root
         const bundleName = `bundle-${hash}`
         const sourceFilename = `${bundleName}.js`
         const sourceMapFilename = `${bundleName}.map.json`
-        const bundleScript = await iso.compileScript(code + `\n;
-        sourceMaps["${sourceFilename}"] = {
-          filename: "${sourceMapFilename}",
-          map: ${sourceMap}
-        }`, { filename: sourceFilename })
+        const bundleScript = await iso.compileScript(code, { filename: sourceFilename })
         await bundleScript.run(ctx.ctx)
 
         const runScript = await iso.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })

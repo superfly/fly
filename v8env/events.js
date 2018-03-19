@@ -1,7 +1,7 @@
 import SessionStore from './session_store'
 import { logger } from './logger'
 import { EventEmitter2 as EventEmitter } from 'eventemitter2'
-import { transferInto, proxyStream } from './utils/buffer'
+import { transferInto } from './utils/buffer'
 const invalidResponseType = new Error(`Invalid response type for 'fetch' event. Expecting a straight Response, a function returning a Promise<Response> or a Response.`)
 
 /**
@@ -66,30 +66,7 @@ export function addEventListener(name, fn) {
 	emitter.addListener(name, fn)
 }
 
-export function fireEvent(ivm, name, ...args) {
-	args.unshift(ivm)
-	try {
-		switch (name) {
-			case "fetch":
-				fireFetchEvent.apply(undefined, args)
-				break
-			case "fetchEnd":
-				fireFetchEndEvent.apply(undefined, args)
-				break
-			default:
-				throw new Error(`unknown event listener: ${name}`)
-		}
-	} catch (err) {
-		logger.debug(err.message, err.stack)
-		let cb = args[args.length - 1] // should be the last arg
-		if (cb instanceof ivm.Reference) {
-			cb.apply(undefined, [err.toString()])
-			cb.release()
-		}
-	}
-}
-
-function fireFetchEvent(ivm, url, req, body, callback) {
+export function fireFetchEvent(ivm, url, req, body, callback) {
 	logger.debug("handling request event")
 	let selfCleaningCallback = function selfCleaningCallback(...args) {
 		callback.apply(null, args)
@@ -138,28 +115,6 @@ function fireFetchEvent(ivm, url, req, body, callback) {
 
 	if (!fetchEvent.respondWithEntered)
 		return selfCleaningCallback.apply(null, ["respondWith was not called for FetchEvent"])
-}
-
-function fireFetchEndEvent(ivm, url, nodeReq, nodeRes, err, done) {
-	let selfCleaningCallback = function selfCleaningCallback(...args) {
-		done.apply(null, args)
-		done.release()
-	}
-	const listeners = emitter.listeners('fetchEnd')
-	if (listeners.length === 0)
-		return selfCleaningCallback.apply()
-	const req = new Request(url, nodeReq)
-	const res = new Response("", nodeRes)
-
-	let event = {
-		request: req,
-		response: res,
-		error: err
-	}
-
-	emitter.emitAsync('fetchEnd', event).then(() => {
-		selfCleaningCallback.apply()
-	})
 }
 
 export function dispatchEvent(event) {
