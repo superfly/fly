@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.26.4-0"></a>
+## [0.26.4-0](https://github.com/superfly/fly/compare/v0.26.3...v0.26.4-0) (2018-03-19)
+
+
+### Bug Fixes
+
+* don't need to keep track of most releasables in v8, just release them on the spot ([2d9f53f](https://github.com/superfly/fly/commit/2d9f53f))
+
+
+
 <a name="0.26.3"></a>
 ## [0.26.3](https://github.com/superfly/fly/compare/v0.26.3-0...v0.26.3) (2018-03-19)
 
