@@ -33,9 +33,9 @@ function setBackendURL(backend, url) {
 }
 
 function setRequestHeaders(req, breq, headers) {
-	if (overrideHost) {
-		breq.headers.set('host', overrideHost)
-		breq.headers.set('x-forwarded-host', overrideHost)
+	if (global.overrideHost) {
+		breq.headers.set('host', global.overrideHost)
+		breq.headers.set('x-forwarded-host', global.overrideHost)
 	}
 	let url = new URL(req.url)
 	breq.headers.set('x-forwarded-proto', url.protocol.slice(0, url.protocol.length - 1))
