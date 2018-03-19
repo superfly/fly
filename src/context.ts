@@ -203,6 +203,22 @@ export class Context extends EventEmitter {
 		return ret
 	}
 
+	async runApp(app: App, t?: Trace) {
+		t = t || Trace.start("runApp")
+		const sourceFilename = 'bundle.js'
+		const sourceMapFilename = 'bundle.map.json'
+
+		const source = app.source
+
+		const tcomp = t.start("compile")
+		const script = await this.iso.compileScript(source, { filename: sourceFilename })
+		tcomp.end()
+
+		const trun = t.start("prerun")
+		await script.run(this.ctx)
+		trun.end()
+	}
+
 	async release() {
 		const teardownFn = await this.global.get("teardown")
 		await teardownFn.apply(null, [])
@@ -253,31 +269,6 @@ export class Context extends EventEmitter {
 			}
 			this.logMetadata = {} // reset log meta data!
 		}
-	}
-
-	async runApp(app: App, t?: Trace) {
-		t = t || Trace.start("runApp")
-		const sourceFilename = 'bundle.js'
-		const sourceMapFilename = 'bundle.map.json'
-
-		const source = app.source
-		const tcomp = t.start("compile")
-		let script: ivm.Script
-		try {
-			script = await this.iso.compileScript(source, { filename: sourceFilename })
-		} catch (err) {
-			if (err instanceof SyntaxError && source != app.source) {
-				log.error("App + sourcemap is invalid, trying again without sourcemap")
-				script = await this.iso.compileScript(app.source, { filename: sourceFilename }) // this can rethrow
-			} else {
-				throw err
-			}
-		} finally {
-			tcomp.end()
-		}
-		const trun = t.start("prerun")
-		await script.run(this.ctx)
-		trun.end()
 	}
 }
 

@@ -6,27 +6,33 @@ export default function initStreams(ivm, dispatcher) {
       let closed = false
       const r = new ReadableStream({
         start(controller) {
+          const cb = new ivm.Reference(function (name, ...args) {
+            logger.debug("GOT EVENT:", name)
+            if (name === "close" || name === "end") {
+              cb.release()
+              if (!closed) {
+                closed = true
+                controller.close()
+              }
+            } else if (name === "error") {
+              cb.release()
+              controller.error(new Error(args[0]))
+              /*} else if (name === "data") {
+                controller.enqueue(args[0])
+                if(controller.desiredSize <= 0 && resumed){
+                  resumed = false
+                  dispatcher.dispatch("controlProxyStream", "pause", ref)
+                }//*/ //not using events, calling read manually with pull for now
+            } else
+              logger.debug("unhandled event", name)
+          })
           dispatcher.dispatch("subscribeProxyStream",
             ref,
-            new ivm.Reference(function (name, ...args) {
-              logger.debug("GOT EVENT:", name)
-              if (name === "close" || name === "end") {
-                if (!closed) {
-                  closed = true
-                  controller.close()
-                }
-              } else if (name === "error") {
-                controller.error(new Error(args[0]))
-                /*} else if (name === "data") {
-                  controller.enqueue(args[0])
-                  if(controller.desiredSize <= 0 && resumed){
-                    resumed = false
-                    dispatcher.dispatch("controlProxyStream", "pause", ref)
-                  }//*/ //not using events, calling read manually with pull for now
-              } else
-                logger.debug("unhandled event", name)
-            })
-          )
+            cb
+          ).catch((err) => {
+            try { cb.release() } catch (e) { }
+            controller.error(err)
+          })
         },
         pull(controller) {
           //if(r.locked && !resumed){
@@ -34,7 +40,8 @@ export default function initStreams(ivm, dispatcher) {
             return Promise.resolve(null)
           }
           return new Promise((resolve, reject) => {
-            dispatcher.dispatch("readProxyStream", ref, new ivm.Reference((err, data, tainted) => {
+            const cb = new ivm.Reference((err, data, tainted) => {
+              cb.release()
               if (err) {
                 controller.error(new Error(err))
                 reject(err)
@@ -49,7 +56,12 @@ export default function initStreams(ivm, dispatcher) {
                 r._ref = undefined
               }
               resolve()
-            }))
+            })
+
+            dispatcher.dispatch("readProxyStream", ref, cb).catch((err) => {
+              try { cb.release() } catch (e) { }
+              controller.error(err)
+            })
 
           })
           //}

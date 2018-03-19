@@ -101,13 +101,18 @@ global.bootstrap = function bootstrap() {
 
 	global.getHeapStatistics = function getHeapStatistics() {
 		return new Promise((resolve, reject) => {
-			dispatcher.dispatch('getHeapStatistics', new ivm.Reference(function (err, heap) {
+			const cb = new ivm.Reference(function (err, heap) {
+				cb.release()
 				if (err) {
 					reject(err)
 					return
 				}
 				resolve(heap)
-			}))
+			})
+			dispatcher.dispatch('getHeapStatistics', cb).catch((err) => {
+				try { cb.release() } catch (e) { }
+				reject(err)
+			})
 		})
 	}
 
@@ -116,19 +121,18 @@ global.bootstrap = function bootstrap() {
 		mwReg(ivm, dispatcher)
 }
 
-global.teardown = function teardown() {
-	let r;
-	while (r = releasables.pop()) {
-		try {
-			r.release()
-		} catch (e) {
-			// fail silently
-		}
-	}
+global.teardown = global.release = function release() {
+	releaseReleasables()
 	emitter.removeAllListeners()
-	global.teardown = null
 
 	// violent
 	// for (const prop of Object.getOwnPropertyNames(global))
 	// 	try { global[prop] = null } catch (e) { }
+}
+
+function releaseReleasables() {
+	let r;
+	while (r = releasables.pop()) {
+		try { r.release() } catch (e) { }
+	}
 }

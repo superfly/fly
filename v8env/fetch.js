@@ -33,20 +33,25 @@ export default function fetchInit(ivm, dispatcher) {
 	function _applyFetch(url, init, body) {
 		return new Promise(function (resolve, reject) {
 			logger.debug("gonna fetch", url, init && JSON.stringify(init))
+			const cb = new ivm.Reference(function _applyFetchCallback(err, nodeRes, nodeBody) {
+				cb.release()
+				if (err != null) {
+					logger.debug("err :(", err)
+					reject(err)
+					return
+				}
+				const b = fly.streams.refToStream(nodeBody)
+				resolve(new Response(b, nodeRes))
+			})
 			dispatcher.dispatch("fetch",
 				url,
 				new ivm.ExternalCopy(init).copyInto({ release: true }),
 				transferInto(ivm, body),
-				new ivm.Reference(function _applyFetchCallback(err, nodeRes, nodeBody) {
-					if (err != null) {
-						logger.debug("err :(", err)
-						reject(err)
-						return
-					}
-					const b = fly.streams.refToStream(nodeBody)
-					resolve(new Response(b, nodeRes))
-				})
-			)
+				cb
+			).catch((err) => {
+				try { cb.release() } catch (e) { }
+				reject(err)
+			})
 			logger.debug("dispatched nativefetch")
 		})
 	}

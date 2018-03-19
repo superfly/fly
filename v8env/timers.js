@@ -11,9 +11,13 @@ export default function timersInit(ivm) {
   st = (function (st, ivm) {
     releasables.push(st)
     return function (cb, ms) {
-      const ref = new ivm.Reference(cb)
-      releasables.push(ref)
-      return st.apply(null, [ref, ms])
+      const ref = new ivm.Reference(function () {
+        ref.release()
+        cb()
+      })
+      return st.apply(null, [ref, ms]).catch(() => {
+        try { ref.release() } catch (e) { }
+      })
     }
   })(global._setTimeout, ivm)
   delete global._setTimeout
@@ -29,9 +33,11 @@ export default function timersInit(ivm) {
   si = (function (si, ivm) {
     releasables.push(si)
     return function (cb, ms) {
-      const ref = new ivm.Reference(cb)
+      const ref = new ivm.Reference(cb) // can't self-release, may run multiple times.
       releasables.push(ref)
-      return si.apply(null, [ref, ms])
+      return si.apply(null, [ref, ms]).catch(() => {
+        try { ref.release() } catch (e) { }
+      })
     }
   })(global._setInterval, ivm)
   delete global._setInterval

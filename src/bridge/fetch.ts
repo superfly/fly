@@ -18,7 +18,7 @@ const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
 
 registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer, cb: ivm.Reference<Function>) {
-  log.info("native fetch with url:", urlStr)
+  log.debug("native fetch with url:", urlStr)
   log.silly("fetch init: ", JSON.stringify(init))
   let t = Trace.tryStart('fetch', ctx.trace)
   ctx.addCallback(cb)

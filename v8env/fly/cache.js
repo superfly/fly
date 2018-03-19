@@ -52,15 +52,18 @@ export default function flyCacheInit(ivm, dispatcher) {
       }
 
       return new Promise(function cacheSetPromise(resolve, reject) {
-        dispatcher.dispatch("flyCacheSet", key, value, ttl,
-          new ivm.Reference(function cacheSetCallback(err, ok) {
-            if (err != null) {
-              reject(err)
-              return
-            }
-            resolve(ok)
-          })
-        )
+        const cb = new ivm.Reference(function cacheSetCallback(err, ok) {
+          cb.release()
+          if (err != null) {
+            reject(err)
+            return
+          }
+          resolve(ok)
+        })
+        dispatcher.dispatch("flyCacheSet", key, value, ttl, cb).catch((err) => {
+          try { cb.release() } catch (e) { }
+          reject(err)
+        })
       })
     },
     /**
@@ -74,15 +77,18 @@ export default function flyCacheInit(ivm, dispatcher) {
     expire(key, ttl) {
       logger.debug("cache expire:", ttl)
       return new Promise(function cacheExpirePromise(resolve, reject) {
-        dispatcher.dispatch("flyCacheExpire", key, ttl,
-          new ivm.Reference(function cacheExpireCallback(err, value) {
-            if (err != null) {
-              reject(err)
-              return
-            }
-            resolve(value)
-          })
-        )
+        const cb = new ivm.Reference(function cacheExpireCallback(err, value) {
+          cb.release()
+          if (err != null) {
+            reject(err)
+            return
+          }
+          resolve(value)
+        })
+        dispatcher.dispatch("flyCacheExpire", key, ttl, cb).catch((err) => {
+          try { cb.release() } catch (e) { }
+          reject(err)
+        })
       })
     }
   }
@@ -91,15 +97,18 @@ export default function flyCacheInit(ivm, dispatcher) {
     logger.debug("cache get: " + key)
 
     return new Promise(function cacheGetPromise(resolve, reject) {
-      dispatcher.dispatch("flyCacheGet", key,
-        new ivm.Reference(function cacheGetCallback(err, value) {
-          if (err != null) {
-            reject(err)
-            return
-          }
-          resolve(value)
-        })
-      )
+      const cb = new ivm.Reference(function cacheGetCallback(err, value) {
+        cb.release()
+        if (err != null) {
+          reject(err)
+          return
+        }
+        resolve(value)
+      })
+      dispatcher.dispatch("flyCacheGet", key, cb).catch((err) => {
+        try { cb.release() } catch (e) { }
+        reject(err)
+      })
     })
   }
 }

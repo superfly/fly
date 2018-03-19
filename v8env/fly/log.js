@@ -12,8 +12,7 @@ export default function flyLogInit(ivm, dispatcher) {
     dispatcher.dispatch('log',
       lvl,
       format(...args),
-      new ivm.ExternalCopy(metadata).copyInto({ release: true }),
-      new ivm.Reference(noop)
+      new ivm.ExternalCopy(metadata).copyInto({ release: true })
     )
   }
 
@@ -23,12 +22,16 @@ export default function flyLogInit(ivm, dispatcher) {
    * @param {Object} options 
    */
   log.addTransport = function addTransport(name, options) {
+    const cb = new ivm.Reference(function (err, added) {
+      cb.release()
+      logger.debug("added log transport... maybe!", err, added)
+    })
     dispatcher.dispatch('addLogTransport', name,
       new ivm.ExternalCopy(options).copyInto({ release: true }),
-      new ivm.Reference(function (err, added) {
-        logger.debug("added log transport... maybe!", err, added)
-      })
-    )
+      cb
+    ).catch(() => {
+      try { cb.release() } catch (e) { }
+    })
   }
 
   /**
@@ -42,5 +45,3 @@ export default function flyLogInit(ivm, dispatcher) {
   }
   return log
 }
-
-function noop() { }
