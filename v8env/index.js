@@ -131,8 +131,7 @@ global.teardown = global.release = function release() {
 }
 
 function releaseReleasables() {
-	let r;
-	while (r = releasables.pop()) {
-		try { r.release() } catch (e) { }
+	while (releasables.length) {
+		try { releasables.shift().release() } catch (e) { }
 	}
 }
