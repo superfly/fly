@@ -45,15 +45,11 @@ export class DefaultContextStore {
     if (!iso)
       throw new Error("no isolate, something is very wrong")
 
-    log.silly("isolate ref count:", iso.referenceCount)
-
     try {
       await this.mutex.lock()
       t2 = t.start("createContext")
       const ctx = await createContext(iso, bridge, { inspector: !!this.options.inspect })
       t2.end()
-
-      log.silly("ref count after create context:", iso.referenceCount)
 
       ctx.set('app', app.forV8())
       ctx.logger.add(winston.transports.Console, {
@@ -66,11 +62,7 @@ export class DefaultContextStore {
       if (!script)
         script = this.scripts[appKey] = await iso.compileScript(app.source, { filename: 'bundle.js' })
 
-      log.silly("ref count after create script:", iso.referenceCount)
-
       await script.run(ctx.ctx)
-
-      log.silly("ref count after run script:", iso.referenceCount)
 
       // await ctx.runApp(app, t)
 
@@ -86,7 +78,6 @@ export class DefaultContextStore {
 
   async putContext(ctx: Context) {
     await ctx.finalize()
-    log.silly("Context finalized. Ref count:", ctx.isoRefCount)
     await ctx.release()
     log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
   }

@@ -226,7 +226,6 @@ export class Context extends EventEmitter {
 	}
 
 	async release() {
-		log.silly("Releasing context. Ref count:", this.isoRefCount)
 		try {
 			const teardownFn = await this.global.get("teardown")
 			await teardownFn.apply(null, [])
@@ -240,18 +239,10 @@ export class Context extends EventEmitter {
 			this.ctx.release()
 		} catch (err) {
 			log.error("error releasing context:", err.stack)
-		} finally {
-			log.silly("Released. Ref count:", this.isoRefCount)
 		}
 	}
 
-	get isoRefCount() {
-		return this.iso.referenceCount
-	}
-
 	async finalize() {
-		log.silly("Finalizing context. Ref count:", this.isoRefCount)
-
 		try {
 			await new Promise((resolve) => {
 				if (this.callbacks.length === 0) {
@@ -291,8 +282,6 @@ export class Context extends EventEmitter {
 
 export async function createContext(iso: ivm.Isolate, bridge: Bridge, opts: ivm.ContextOptions = {}): Promise<Context> {
 	let ctx = new Context(await iso.createContext(opts), iso)
-	log.silly("ref count before bootstrap:", iso.referenceCount)
 	await ctx.bootstrap(bridge)
-	log.silly("ref count after bootstrap:", iso.referenceCount)
 	return ctx
 }
