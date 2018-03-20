@@ -4,7 +4,7 @@ let flyFetchHandler = null
 
 function ensureFetchEvent() {
   if (!fetchEventBound) {
-    global.addEventListener("fetch", handleFetch)
+    addEventListener("fetch", handleFetch)
     fetchEventBound = true
   }
 }
