@@ -2,6 +2,7 @@ import SessionStore from './session_store'
 import { logger } from './logger'
 import { EventEmitter2 as EventEmitter } from 'eventemitter2'
 import { transferInto } from './utils/buffer'
+
 const invalidResponseType = new Error(`Invalid response type for 'fetch' event. Expecting a straight Response, a function returning a Promise<Response> or a Response.`)
 
 /**
@@ -71,14 +72,17 @@ export function fireFetchEvent(ivm, url, req, body, callback) {
 	let selfCleaningCallback = function selfCleaningCallback(...args) {
 		callback.apply(null, args)
 		callback.release()
-		body.release()
+		if (body)
+			body.release()
 	}
 
 	// reset the session
 	global.session = new SessionStore()
 
 	let fetchEvent = new FetchEvent('fetch', {
-		request: new Request(url, Object.assign(req, { body: fly.streams.refToStream(body) }))
+		request: new Request(url, Object.assign(req, {
+			body: body && fly.streams.refToStream(body) || null
+		}))
 	}, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 
@@ -95,7 +99,11 @@ export function fireFetchEvent(ivm, url, req, body, callback) {
 		if (res.body && res.body._ref) {
 			b = res.body._ref
 		} else {
-			b = transferInto(ivm, await res.arrayBuffer())
+			logger.debug("body source type:", res.bodySource.constructor.name)
+			if (typeof res.bodySource === 'string')
+				b = res.bodySource
+			else
+				b = transferInto(ivm, await res.arrayBuffer())
 		}
 
 		selfCleaningCallback.apply(undefined, [null,

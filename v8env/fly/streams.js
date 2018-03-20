@@ -9,13 +9,14 @@ export default function initStreams(ivm, dispatcher) {
           const cb = new ivm.Reference(function (name, ...args) {
             logger.debug("GOT EVENT:", name)
             if (name === "close" || name === "end") {
-              cb.release()
+              try { cb.release() } catch (e) { }
               if (!closed) {
                 closed = true
                 controller.close()
               }
             } else if (name === "error") {
-              cb.release()
+              try { cb.release() } catch (e) { }
+              logger.error("error in stream:", args[0])
               controller.error(new Error(args[0]))
               /*} else if (name === "data") {
                 controller.enqueue(args[0])
@@ -53,6 +54,7 @@ export default function initStreams(ivm, dispatcher) {
               if (data && r._ref && tainted) {
                 // once underlying ref is tainted, we can't pass it around anymore
                 // but we can still use it internally
+                try { r._ref.release() } catch (e) { }
                 r._ref = undefined
               }
               resolve()
@@ -67,6 +69,7 @@ export default function initStreams(ivm, dispatcher) {
           //}
         },
         cancel() {
+          try { r._ref.release() } catch (e) { }
           logger.debug("readable stream was cancelled")
         }
       })

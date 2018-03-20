@@ -16,14 +16,23 @@ export interface DefaultContextStoreOptions {
   inspect?: boolean
 }
 
+export interface GetContextTask {
+  app: App,
+  bridge: Bridge,
+  trace?: Trace
+}
+
 export class DefaultContextStore {
   isolate?: ivm.Isolate
   options: DefaultContextStoreOptions
+  scripts: { [key: string]: ivm.Script }
   private mutex: Mutex
 
   constructor(opts: DefaultContextStoreOptions = {}) {
     this.options = opts
     this.mutex = new Mutex
+    this.scripts = {}
+
     v8Env.on('snapshot', this.resetIsolate.bind(this))
   }
 
@@ -36,20 +45,34 @@ export class DefaultContextStore {
     if (!iso)
       throw new Error("no isolate, something is very wrong")
 
+    log.silly("isolate ref count:", iso.referenceCount)
+
     try {
       await this.mutex.lock()
       t2 = t.start("createContext")
       const ctx = await createContext(iso, bridge, { inspector: !!this.options.inspect })
       t2.end()
 
-      ctx.set('app', app.forV8())
+      log.silly("ref count after create context:", iso.referenceCount)
 
-      // just reuse this logger.
+      ctx.set('app', app.forV8())
       ctx.logger.add(winston.transports.Console, {
         timestamp: true
       })
 
-      await ctx.runApp(app, t)
+      const appKey = `${app.name}:${app.version}`
+      log.debug("Using script for:", appKey)
+      let script = this.scripts[appKey]
+      if (!script)
+        script = this.scripts[appKey] = await iso.compileScript(app.source, { filename: 'bundle.js' })
+
+      log.silly("ref count after create script:", iso.referenceCount)
+
+      await script.run(ctx.ctx)
+
+      log.silly("ref count after run script:", iso.referenceCount)
+
+      // await ctx.runApp(app, t)
 
       return ctx
     } catch (err) {
@@ -61,13 +84,11 @@ export class DefaultContextStore {
     }
   }
 
-  putContext(ctx: Context) {
-    ctx.finalize().then(() => {
-      log.debug("Context finalized.")
-      ctx.release().then(() => {
-        log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
-      })
-    })
+  async putContext(ctx: Context) {
+    await ctx.finalize()
+    log.silly("Context finalized. Ref count:", ctx.isoRefCount)
+    await ctx.release()
+    log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
   }
 
   async getIsolate() {
@@ -84,6 +105,7 @@ export class DefaultContextStore {
       if (!this.isolate.isDisposed) {
         this.isolate.dispose()
       }
+    this.scripts = {}
     this.isolate = new ivm.Isolate({
       snapshot: v8Env.snapshot,
       memoryLimit: 128,

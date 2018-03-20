@@ -59,6 +59,11 @@ export interface ServerOptions {
 	bridge?: Bridge
 }
 
+export interface RequestTask {
+	request: http.IncomingMessage
+	response: http.ServerResponse
+}
+
 export class Server extends http.Server {
 	options: ServerOptions
 
@@ -141,22 +146,7 @@ export class Server extends http.Server {
 
 }
 
-function handleResponse(src: Readable | ProxyStream, dst: Writable): Promise<void> {
-	return new Promise(function (resolve, reject) {
-		setImmediate(() => {
-			if (src instanceof ProxyStream) {
-				for (const c of src.buffered) {
-					dst.write(c)
-				}
-				src = src.stream
-			}
-			src.pipe(dst)
-				.on("finish", function () {
-					resolve()
-				}).on("error", reject)
-		})
-	})
-}
+type V8ResponseBody = null | string | ArrayBuffer | Buffer | ivm.Reference<ProxyStream>
 
 export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage, res: http.ServerResponse, ptrace?: Trace) {
 
@@ -195,7 +185,7 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 			remoteAddr: req.connection.remoteAddress
 		}
 
-		let fetchCallback = (err: any, v8res: any, resBody: ArrayBuffer | ivm.Reference<ProxyStream>) => {
+		let fetchCallback = (err: any, v8res: any, resBody: V8ResponseBody) => {
 			if (cbCalled) {
 				return // this can't happen twice
 			}
@@ -229,31 +219,48 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 
 			writeHead(ctx, res, v8res.status)
 
-			let resProm: Promise<void>
-
-			if (resBody instanceof ivm.Reference) {
-				let resStream = resBody.deref({ release: true })
-				resProm = handleResponse(resStream, <Writable>res)
-			} else if (resBody) {
-				resProm = handleResponse(bufferToStream(Buffer.from(resBody)), <Writable>res)
-			} else {
-				resProm = Promise.resolve()
-			}
-
-			resProm.then(() => {
+			handleResponse(resBody, <Writable>res).then(() => {
 				trace.end()
-				res.end() // we are done. triggers 'finish' event
+				if (!res.finished)
+					res.end() // we are done. triggers 'finish' event
 				ctx.log('info', `${req.connection.remoteAddress} ${req.method} ${fullURL} ${res.statusCode} ${Math.round(trace.milliseconds() * 100) / 100}ms`)
-				resolve()
-			})
+			}).then(() => resolve()).catch((e) => reject(e))
 		}
 
 		ctx.fireFetchEvent([
 			fullURL,
 			new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
-			new ProxyStream(req).ref,
+			req.method === 'GET' || req.method === 'HEAD' ? null : new ProxyStream(req).ref,
 			new ivm.Reference(fetchCallback)
 		]).catch(reject)
+	})
+}
+
+function handleResponse(src: V8ResponseBody, dst: Writable): Promise<void> {
+	if (!src)
+		return Promise.resolve()
+
+	if (src instanceof ivm.Reference)
+		return handleResponseStream(src.deref({ release: true }), dst)
+
+	if (src instanceof ArrayBuffer)
+		src = Buffer.from(src)
+
+	dst.end(src) // string or ArrayBuffer
+	return Promise.resolve()
+}
+
+function handleResponseStream(src: ProxyStream, dst: Writable): Promise<void> {
+	return new Promise(function (resolve, reject) {
+		setImmediate(() => {
+			for (const c of src.buffered) {
+				dst.write(c)
+			}
+			src.stream.pipe(dst)
+				.on("finish", function () {
+					resolve()
+				}).on("error", reject)
+		})
 	})
 }
 

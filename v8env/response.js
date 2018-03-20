@@ -1,6 +1,6 @@
 import CookieJar from './cookie_jar'
 
-export default function responseInit(ivm) {
+export default function responseInit() {
 	function ushort(x) { return x & 0xFFFF; }
 
 	/**
@@ -12,7 +12,7 @@ export default function responseInit(ivm) {
 	 * @param {String} [init.url]
 	 * @mixes Body
 	 */
-	class Response extends Body{
+	class Response extends Body {
 		constructor(body, init) {
 			if (arguments.length < 1)
 				body = '';
@@ -94,7 +94,7 @@ export default function responseInit(ivm) {
 			if (this.bodyUsed)
 				throw new Error("Body has already been used")
 			let body2 = this.bodySource
-			if(this.bodySource instanceof ReadableStream){
+			if (this.bodySource instanceof ReadableStream) {
 				const tees = this.body.tee()
 				this.stream = this.bodySource = tees[0]
 				body2 = tees[1]

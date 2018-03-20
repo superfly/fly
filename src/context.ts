@@ -163,7 +163,12 @@ export class Context extends EventEmitter {
 			}))
 		])
 
-		await (await this.get("bootstrap")).apply(undefined, [])
+		const bootstrapFn = await this.get("bootstrap")
+		try {
+			await bootstrapFn.apply()
+		} finally {
+			bootstrapFn.release()
+		}
 
 		return
 	}
@@ -205,6 +210,7 @@ export class Context extends EventEmitter {
 
 	async runApp(app: App, t?: Trace) {
 		t = t || Trace.start("runApp")
+
 		const sourceFilename = 'bundle.js'
 		const sourceMapFilename = 'bundle.map.json'
 
@@ -220,20 +226,31 @@ export class Context extends EventEmitter {
 	}
 
 	async release() {
-		const teardownFn = await this.global.get("teardown")
-		await teardownFn.apply(null, [])
-		teardownFn.release()
-		this.fireFetchEventFn && this.fireFetchEventFn.release()
-		this.global.release()
-		this.callbacks = []
-		this.intervals = {}
-		this.timeouts = {}
-		this.logger.close()
-		this.ctx.release()
+		log.silly("Releasing context. Ref count:", this.isoRefCount)
+		try {
+			const teardownFn = await this.global.get("teardown")
+			await teardownFn.apply(null, [])
+			teardownFn.release()
+			this.fireFetchEventFn && this.fireFetchEventFn.release()
+			this.global.release()
+			this.callbacks = []
+			this.intervals = {}
+			this.timeouts = {}
+			this.logger.close()
+			this.ctx.release()
+		} catch (err) {
+			log.error("error releasing context:", err.stack)
+		} finally {
+			log.silly("Released. Ref count:", this.isoRefCount)
+		}
+	}
+
+	get isoRefCount() {
+		return this.iso.referenceCount
 	}
 
 	async finalize() {
-		log.debug("Finalizing context.")
+		log.silly("Finalizing context. Ref count:", this.isoRefCount)
 
 		try {
 			await new Promise((resolve) => {
@@ -263,7 +280,7 @@ export class Context extends EventEmitter {
 				try {
 					rel.release()
 				} catch (e) {
-					console.error("RELEASE ERROR:", e.stack)
+					// console.error("RELEASE ERROR:", e.stack)
 					// don't really care
 				}
 			}
@@ -274,6 +291,8 @@ export class Context extends EventEmitter {
 
 export async function createContext(iso: ivm.Isolate, bridge: Bridge, opts: ivm.ContextOptions = {}): Promise<Context> {
 	let ctx = new Context(await iso.createContext(opts), iso)
+	log.silly("ref count before bootstrap:", iso.referenceCount)
 	await ctx.bootstrap(bridge)
+	log.silly("ref count after bootstrap:", iso.referenceCount)
 	return ctx
 }
