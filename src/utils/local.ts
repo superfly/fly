@@ -56,7 +56,7 @@ export class LocalRelease extends EventEmitter implements Release {
     this.config = conf.config || {}
     this.secrets = this.getSecrets()
 
-    this.app = conf.app || conf.app_id || ""
+    this.app = conf.app || conf.app_id || cwd
     this.version = 0
     this.source = ""
     this.hash = ""

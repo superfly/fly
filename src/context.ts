@@ -163,7 +163,12 @@ export class Context extends EventEmitter {
 			}))
 		])
 
-		await (await this.get("bootstrap")).apply(undefined, [])
+		const bootstrapFn = await this.get("bootstrap")
+		try {
+			await bootstrapFn.apply()
+		} finally {
+			bootstrapFn.release()
+		}
 
 		return
 	}
@@ -205,6 +210,7 @@ export class Context extends EventEmitter {
 
 	async runApp(app: App, t?: Trace) {
 		t = t || Trace.start("runApp")
+
 		const sourceFilename = 'bundle.js'
 		const sourceMapFilename = 'bundle.map.json'
 
@@ -220,21 +226,23 @@ export class Context extends EventEmitter {
 	}
 
 	async release() {
-		const teardownFn = await this.global.get("teardown")
-		await teardownFn.apply(null, [])
-		teardownFn.release()
-		this.fireFetchEventFn && this.fireFetchEventFn.release()
-		this.global.release()
-		this.callbacks = []
-		this.intervals = {}
-		this.timeouts = {}
-		this.logger.close()
-		this.ctx.release()
+		try {
+			const teardownFn = await this.global.get("teardown")
+			await teardownFn.apply(null, [])
+			teardownFn.release()
+			this.fireFetchEventFn && this.fireFetchEventFn.release()
+			this.global.release()
+			this.callbacks = []
+			this.intervals = {}
+			this.timeouts = {}
+			this.logger.close()
+			this.ctx.release()
+		} catch (err) {
+			log.error("error releasing context:", err.stack)
+		}
 	}
 
 	async finalize() {
-		log.debug("Finalizing context.")
-
 		try {
 			await new Promise((resolve) => {
 				if (this.callbacks.length === 0) {
@@ -267,7 +275,7 @@ export class Context extends EventEmitter {
 				try {
 					rel.release()
 				} catch (e) {
-					console.error("RELEASE ERROR:", e.stack)
+					// console.error("RELEASE ERROR:", e.stack)
 					// don't really care
 				}
 			}

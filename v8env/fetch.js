@@ -22,6 +22,10 @@ export default function fetchInit(ivm, dispatcher) {
 				method: req.method,
 				headers: req.headers && req.headers.toJSON() || {},
 			}
+			if (!req.bodySource)
+				return await _applyFetch(url, init, null)
+			else if (typeof req.bodySource === 'string')
+				return await _applyFetch(url, init, req.bodySource)
 			return await _applyFetch(url, init, await req.arrayBuffer())
 
 		} catch (err) {
@@ -40,7 +44,9 @@ export default function fetchInit(ivm, dispatcher) {
 					reject(err)
 					return
 				}
-				const b = fly.streams.refToStream(nodeBody)
+				let b = nodeBody;
+				if (nodeBody instanceof ivm.Reference)
+					b = fly.streams.refToStream(nodeBody)
 				resolve(new Response(b, nodeRes))
 			})
 			dispatcher.dispatch("fetch",

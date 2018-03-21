@@ -16,14 +16,23 @@ export interface DefaultContextStoreOptions {
   inspect?: boolean
 }
 
+export interface GetContextTask {
+  app: App,
+  bridge: Bridge,
+  trace?: Trace
+}
+
 export class DefaultContextStore {
   isolate?: ivm.Isolate
   options: DefaultContextStoreOptions
+  scripts: { [key: string]: ivm.Script }
   private mutex: Mutex
 
   constructor(opts: DefaultContextStoreOptions = {}) {
     this.options = opts
     this.mutex = new Mutex
+    this.scripts = {}
+
     v8Env.on('snapshot', this.resetIsolate.bind(this))
   }
 
@@ -43,13 +52,19 @@ export class DefaultContextStore {
       t2.end()
 
       ctx.set('app', app.forV8())
-
-      // just reuse this logger.
       ctx.logger.add(winston.transports.Console, {
         timestamp: true
       })
 
-      await ctx.runApp(app, t)
+      const appKey = `${app.name}:${app.version}`
+      log.debug("Using script for:", appKey)
+      let script = this.scripts[appKey]
+      if (!script)
+        script = this.scripts[appKey] = await iso.compileScript(app.source, { filename: 'bundle.js' })
+
+      await script.run(ctx.ctx)
+
+      // await ctx.runApp(app, t)
 
       return ctx
     } catch (err) {
@@ -61,13 +76,10 @@ export class DefaultContextStore {
     }
   }
 
-  putContext(ctx: Context) {
-    ctx.finalize().then(() => {
-      log.debug("Context finalized.")
-      ctx.release().then(() => {
-        log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
-      })
-    })
+  async putContext(ctx: Context) {
+    await ctx.finalize()
+    await ctx.release()
+    log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
   }
 
   async getIsolate() {
@@ -84,6 +96,7 @@ export class DefaultContextStore {
       if (!this.isolate.isDisposed) {
         this.isolate.dispose()
       }
+    this.scripts = {}
     this.isolate = new ivm.Isolate({
       snapshot: v8Env.snapshot,
       memoryLimit: 128,

@@ -17,7 +17,7 @@ import { Bridge } from './bridge';
 const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
 
-registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer, cb: ivm.Reference<Function>) {
+registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
   log.debug("native fetch with url:", urlStr)
   log.silly("fetch init: ", JSON.stringify(init))
   let t = Trace.tryStart('fetch', ctx.trace)
@@ -120,9 +120,12 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
 
   req.on("error", handleError)
 
-  setImmediate(() =>
-    req.end(body && Buffer.from(body) || null)
-  )
+  setImmediate(function () {
+    if (body instanceof ArrayBuffer)
+      req.end(Buffer.from(body))
+    else
+      req.end(!!body ? body : null)
+  })
 
   return cb
 
@@ -142,7 +145,7 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
           url: urlStr,
           headers: res.headers
         }).copyInto({ release: true }),
-        new ProxyStream(res).ref
+        res.method === 'GET' || res.method === 'HEAD' ? null : new ProxyStream(res).ref
       ])
 
     } catch (err) {
