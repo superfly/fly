@@ -1,6 +1,6 @@
 import { Dispatcher } from "./types/dispatcher";
 
-import { transferInto } from './utils/buffer.ts';
+import { transferInto } from './utils/buffer';
 
 type CryptoData = BufferSource | string
 

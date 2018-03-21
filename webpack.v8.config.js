@@ -10,11 +10,12 @@ module.exports = {
     path: path.join(__dirname, '/dist/')
   },
   resolve: {
-    modules: ["../node_modules"]
+    modules: ["../node_modules"],
+    extensions: [".ts", ".tsx", ".js"]
   },
   module: {
     loaders: [
-      { test: /\.tsx?/, loader: "ts-loader"}
+      { test: /\.tsx?/, loader: "ts-loader" }
     ]
   }
 }
