@@ -31,6 +31,10 @@ export class V8Environment extends EventEmitter {
     return !!v8Env && !!v8EnvSnapshot
   }
 
+  get source() {
+    return v8EnvCode
+  }
+
   get snapshot() {
     return v8EnvSnapshot
   }
