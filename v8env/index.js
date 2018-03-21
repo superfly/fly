@@ -16,6 +16,7 @@ import fetchInit from './fetch'
 import bodyMixin from './ts/body_mixin.ts'
 import Blob from './ts/blob.ts'
 import FormData from './ts/form_data.ts'
+import cryptoInit, { crypto } from './ts/crypto.ts'
 import responseInit from './response'
 import cache from './cache'
 import timersInit, { setTimeout, clearTimeout, setInterval, clearInterval } from './timers'
@@ -23,7 +24,7 @@ import timersInit, { setTimeout, clearTimeout, setInterval, clearInterval } from
 import { Document, Element } from './document'
 
 // Sets up `Error.prepareStacktrace`
-// import './utils/error'
+import errorsInit from './utils/error'
 
 import registerFlyBackend from './middleware/fly-backend'
 import registerFlyEcho from './middleware/fly-echo'
@@ -52,6 +53,8 @@ global.bootstrap = function bootstrap() {
 	const dispatcher = dispatcherInit(ivm, global._dispatch)
 	delete global._dispatch
 
+	errorsInit(ivm, dispatcher)
+
 	global.fly = flyInit(ivm, dispatcher)
 
 	global.console = consoleInit(ivm, dispatcher)
@@ -68,6 +71,8 @@ global.bootstrap = function bootstrap() {
 	global.TextDecoder = TextDecoder
 
 	// // Web API
+	cryptoInit(ivm, dispatcher)
+	global.crypto = crypto
 	global.URL = URL
 	global.URLSearchParams = URLSearchParams
 	global.Headers = Headers

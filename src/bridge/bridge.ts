@@ -5,6 +5,8 @@ import './logger'
 import './fly/cache'
 import './fly/image'
 import './text-encoding'
+import './crypto'
+import './error'
 import { ivm, CacheStore, FileStore } from '../'
 
 import { catalog, BridgeFunction } from './'

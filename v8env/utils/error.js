@@ -1,29 +1,12 @@
-const parsedSourceMaps = {}
-let SourceMapConsumer;
+import { logger } from '../logger'
+let originalPositionFor;
 
-// lazily parse source map
-function getSourceMap(sourceFilename) {
-  if (parsedSourceMaps[sourceFilename])
-    return parsedSourceMaps[sourceFilename]
-
-  const sm = global.sourceMaps[sourceFilename]
-  if (!sm)
-    return
-
-  if (typeof SourceMapConsumer === 'undefined')
-    SourceMapConsumer = require('source-map').SourceMapConsumer
-
-  const mapped = {
-    url: sm.filename,
-    map: new SourceMapConsumer(sm.map)
+export default function errorsInit(ivm, dispatcher) {
+  originalPositionFor = function (source, position) {
+    return dispatcher.dispatchSync("SourceMapConsumer.originalPositionFor", source, new ivm.ExternalCopy(position).copyInto({ release: true }))
   }
-
-  parsedSourceMaps[sourceFilename] = mapped
-
-  return mapped
+  Error.prepareStackTrace = prepareStackTrace
 }
-
-Error.prepareStackTrace = prepareStackTrace
 
 function prepareStackTrace(error, stack) {
   return error + stack.map(function (frame) {
@@ -72,26 +55,12 @@ function wrapCallSite(frame) {
 
 
 function mapSourcePosition(position) {
-  const sourceMap = getSourceMap(position.source);
-
-  // Resolve the source URL relative to the URL of the source map
-  if (sourceMap && sourceMap.map) {
-    let originalPosition = sourceMap.map.originalPositionFor(position);
-
-    // Only return the original position if a matching line was found. If no
-    // matching line is found then we return position instead, which will cause
-    // the stack trace to print the path and line for the compiled file. It is
-    // better to give a precise location in the compiled file than a vague
-    // location in the original file.
-    if (originalPosition.source !== null) {
-      // Wanted to make stack traces nicer, but it works best with exception
-      // reporters with the webpack:// prefix...
-      // originalPosition.source = originalPosition.source.replace("webpack:///", "")
-      return originalPosition;
-    }
+  try {
+    return originalPositionFor(position.source, position)
+  } catch (e) {
+    logger.error("error getting original source position", e.stack)
+    return position
   }
-
-  return position;
 }
 
 // This is copied almost verbatim from the V8 source code at

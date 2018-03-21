@@ -87,7 +87,7 @@ function hashData(req, vary) {
 	// TODO: cache version for grand busting
 
 	logger.debug("hashData", toHash)
-	return fly.util.md5.hash(toHash)
+	return crypto.subtle.digestSync("sha-1", toHash, "hex")
 }
 
 function normalizeURL(u) {
