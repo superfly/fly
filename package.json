@@ -8,7 +8,7 @@
     "lib/",
     "dist/",
     "v8env/testing",
-    "doc/"
+    "docs/"
   ],
   "scripts": {
     "start": "./bin/fly server ./apps/getting-started",
