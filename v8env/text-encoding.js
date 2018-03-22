@@ -1,45 +1,29 @@
 import { transferInto } from "./utils/buffer";
 
-let newTextDecoder,
-  textDecode,
-  newTextEncoder,
+let textDecode,
   textEncode;
 
 export class TextEncoder {
-  constructor() {
-    this._encode = newTextEncoder()
-  }
+  constructor() { }
   encode(input) {
-    return textEncode(this._encode, input)
+    return textEncode(input)
   }
 }
 
 export class TextDecoder {
-  constructor() {
-    this._decode = newTextDecoder()
-  }
+  constructor(encoding) { this.encoding = encoding }
   decode(input) {
-    return textDecode(this._decode, input)
+    return textDecode(input, this.encoding)
   }
 }
 
 export default function textEncodingInit(ivm, dispatcher) {
-  newTextDecoder = function newTextDecoder() {
-    const ref = dispatcher.dispatchSync("TextDecoder.decode")
-    finalizers.push(ref.release)
-    return ref
-  }
-  textDecode = function textDecode(ref, input) {
-    return ref.applySyncPromise(null, [transferInto(ivm, input)])
+  textDecode = function textDecode(input, encoding) {
+    return dispatcher.dispatchSync("TextDecoder.decode", transferInto(ivm, input), encoding)
   }
 
-  newTextEncoder = function newTextEncoder(encoding) {
-    const ref = dispatcher.dispatchSync("TextEncoder.encode", encoding)
-    finalizers.push(ref.release)
-    return ref
-  }
-  textEncode = function textEncode(ref, input) {
-    return ref.applySyncPromise(null, [input])
+  textEncode = function textEncode(input) {
+    return dispatcher.dispatchSync("TextEncoder.encode", input)
   }
 
   return {

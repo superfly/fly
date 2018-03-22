@@ -9,20 +9,18 @@ import { Bridge } from './bridge';
 import { TextEncoder, TextDecoder } from 'util'
 import { transferInto } from '../utils/buffer';
 
-registerBridge("TextDecoder.decode", async function (ctx: Context, bridge: Bridge) {
-  const tdp = new TextDecoderProxy
-  return new ivm.Reference(tdp.decode.bind(tdp))
+registerBridge("TextDecoder.decode", async function (ctx: Context, bridge: Bridge, buf: ArrayBuffer, encoding?: string) {
+  return new TextDecoderProxy(encoding).decode(buf)
 })
 
-registerBridge("TextEncoder.encode", async function (ctx: Context, bridge: Bridge) {
-  const tep = new TextEncoderProxy
-  return new ivm.Reference(tep.encode.bind(tep))
+registerBridge("TextEncoder.encode", async function (ctx: Context, bridge: Bridge, data: string) {
+  return new TextEncoderProxy().encode(data)
 })
 
 class TextDecoderProxy {
   td: TextDecoder
-  constructor() {
-    this.td = new TextDecoder()
+  constructor(encoding?: string) {
+    this.td = new TextDecoder(encoding)
   }
 
   async decode(input: ArrayBuffer | DataView | TypedArray) {

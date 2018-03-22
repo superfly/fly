@@ -261,9 +261,14 @@ export class Context extends EventEmitter {
 				this.on("callbackApplied", cbFn)
 			})
 		} finally {
-			const finalizeFn = await this.global.get("finalize")
-			await finalizeFn.apply(null, [])
-			finalizeFn.release()
+
+			try {
+				const finalizeFn = await this.global.get("finalize")
+				await finalizeFn.apply(null, [])
+				finalizeFn.release()
+			} catch (e) {
+
+			}
 
 			// clear all intervals no matter what
 			for (const [id, t] of Object.entries(this.intervals)) {
