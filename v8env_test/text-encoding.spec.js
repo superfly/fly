@@ -3,7 +3,6 @@ import { expect } from 'chai'
 describe("TextDecoder", () => {
   it("can be instantiated", () => {
     const td = new TextDecoder()
-    expect(td._decode).not.to.be.undefined
   })
 
   it("decodes", () => {
@@ -15,7 +14,6 @@ describe("TextDecoder", () => {
 describe("TextEncoder", () => {
   it("can be instantiated", () => {
     const te = new TextEncoder()
-    expect(te._encode).not.to.be.undefined
   })
 
   it("encodes", () => {
