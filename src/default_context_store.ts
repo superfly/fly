@@ -95,7 +95,6 @@ export class DefaultContextStore {
     if (this.isolate && !this.isolate.isDisposed)
       return this.isolate
     log.info("Getting a new isolate.")
-    await v8Env.waitForReadiness()
     this.resetIsolate()
     return this.isolate
   }

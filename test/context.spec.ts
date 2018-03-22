@@ -6,7 +6,7 @@ import { Bridge } from '../src/bridge/bridge';
 describe('Context', function () {
   describe('no leaks!', function () {
     before(async function () {
-      await v8Env.waitForReadiness()
+      // await v8Env.waitForReadiness()
       this.iso = new ivm.Isolate({ memoryLimit: 128, snapshot: v8Env.snapshot })
       this.ctx = await createDefaultContext(this.iso)
     })
