@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.26.6"></a>
+## [0.26.6](https://github.com/superfly/fly/compare/v0.26.5...v0.26.6) (2018-03-23)
+
+
+### Bug Fixes
+
+* allow longer fetch timeout ([74ffa30](https://github.com/superfly/fly/commit/74ffa30))
+
+
+
 <a name="0.26.5"></a>
 ## [0.26.5](https://github.com/superfly/fly/compare/v0.26.5-0...v0.26.5) (2018-03-22)
 
