@@ -4,6 +4,7 @@ import './heap'
 import './logger'
 import './fly/cache'
 import './fly/image'
+import './timers'
 import { ivm, CacheStore, FileStore } from '../'
 
 import { catalog, BridgeFunction } from './'
