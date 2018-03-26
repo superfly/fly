@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.27.0-1"></a>
+# [0.27.0-1](https://github.com/superfly/fly/compare/v0.26.6...v0.27.0-1) (2018-03-26)
+
+
+
+<a name="0.27.0-0"></a>
+# [0.27.0-0](https://github.com/superfly/fly/compare/v0.26.5-0...v0.27.0-0) (2018-03-21)
+
+
+### Features
+
+* lighter v8env through native text-encoding, basic Web Crypto API support (digest), bring back source maps, now with far less bloat ([37080d7](https://github.com/superfly/fly/commit/37080d7))
+
+
+
 <a name="0.27.0-0"></a>
 # [0.27.0-0](https://github.com/superfly/fly/compare/v0.26.5-0...v0.27.0-0) (2018-03-21)
 
