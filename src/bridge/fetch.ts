@@ -100,7 +100,7 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
   if (u.query != null) {
     path = path + "?" + u.query
   }
-  const reqOptions: any = {
+  const reqOptions: https.RequestOptions = {
     agent: httpAgent,
     protocol: u.protocol,
     path: path,
@@ -109,7 +109,7 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
     port: u.port,
     method: method,
     headers: headers,
-    timeout: 5000
+    timeout: 60 * 1000
   }
   if (httpFn == https.request) {
     reqOptions.servername = reqOptions.hostname
