@@ -128,33 +128,60 @@ export class Context extends EventEmitter {
 		return rel
 	}
 
+	setTimeout(fn: ivm.Reference<Function>, timeout: number) {
+		const id = ++this.currentTimerId
+		this.timeouts[id] = setTimeout(() => { this.applyCallback(fn, []) }, timeout)
+		this.addCallback(fn)
+		return id
+	}
+
+	clearTimeout(id: number) {
+		clearTimeout(this.timeouts[id])
+		delete this.timeouts[id]
+		return
+	}
+
+	setInterval(fn: ivm.Reference<Function>, every: number) {
+		const id = ++this.currentTimerId
+		// we don't add interval callbacks because we will clear them at the very end
+		this.intervals[id] = setInterval(() => { fn.apply(null, []) }, every)
+		this.addReleasable(fn)
+		return id
+	}
+
+	clearInterval(id: number) {
+		clearInterval(this.intervals[id])
+		delete this.intervals[id]
+		return
+	}
+
 	async bootstrap(bridge: Bridge) {
 		await Promise.all([
 			this.set('global', this.global.derefInto()),
 			this.set('_ivm', ivm),
-			this.set('_setTimeout', new ivm.Reference((fn: ivm.Reference<Function>, timeout: number): number => {
-				const id = ++this.currentTimerId
-				this.timeouts[id] = setTimeout(() => { this.applyCallback(fn, []) }, timeout)
-				this.addCallback(fn)
-				return id
-			})),
-			this.set('_clearTimeout', new ivm.Reference((id: number): void => {
-				clearTimeout(this.timeouts[id])
-				delete this.timeouts[id]
-				return
-			})),
-			this.set('_setInterval', new ivm.Reference((fn: ivm.Reference<Function>, timeout: number): number => {
-				const id = ++this.currentTimerId
-				// we don't add interval callbacks because we will clear them at the very end
-				this.intervals[id] = setInterval(() => { fn.apply(null, []) }, timeout)
-				this.addReleasable(fn)
-				return id
-			})),
-			this.set('_clearInterval', new ivm.Reference((id: number): void => {
-				clearInterval(this.intervals[id])
-				delete this.intervals[id]
-				return
-			})),
+			// this.set('_setTimeout', new ivm.Reference((fn: ivm.Reference<Function>, timeout: number): number => {
+			// 	const id = ++this.currentTimerId
+			// 	this.timeouts[id] = setTimeout(() => { this.applyCallback(fn, []) }, timeout)
+			// 	this.addCallback(fn)
+			// 	return id
+			// })),
+			// this.set('_clearTimeout', new ivm.Reference((id: number): void => {
+			// 	clearTimeout(this.timeouts[id])
+			// 	delete this.timeouts[id]
+			// 	return
+			// })),
+			// this.set('_setInterval', new ivm.Reference((fn: ivm.Reference<Function>, timeout: number): number => {
+			// 	const id = ++this.currentTimerId
+			// 	// we don't add interval callbacks because we will clear them at the very end
+			// 	this.intervals[id] = setInterval(() => { fn.apply(null, []) }, timeout)
+			// 	this.addReleasable(fn)
+			// 	return id
+			// })),
+			// this.set('_clearInterval', new ivm.Reference((id: number): void => {
+			// 	clearInterval(this.intervals[id])
+			// 	delete this.intervals[id]
+			// 	return
+			// })),
 			this.set("_dispatch", new ivm.Reference((name: string, ...args: any[]) => {
 				return bridge.dispatch(this, name, ...args)
 			})),

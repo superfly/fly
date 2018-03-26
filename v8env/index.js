@@ -58,10 +58,10 @@ global.bootstrap = function bootstrap() {
 	global.fly = flyInit(ivm, dispatcher)
 
 	global.console = consoleInit(ivm, dispatcher)
-	timersInit(ivm)
+	timersInit(ivm, dispatcher)
 	Object.assign(global, { setTimeout, clearTimeout, setInterval, clearInterval })
 
-	// // Web primitives (?)
+	// Web primitives (?)
 	global.ReadableStream = ReadableStream
 	global.WritableStream = WritableStream
 	global.TransformStream = TransformStream
@@ -70,7 +70,7 @@ global.bootstrap = function bootstrap() {
 	global.TextEncoder = TextEncoder
 	global.TextDecoder = TextDecoder
 
-	// // Web API
+	// Web API
 	cryptoInit(ivm, dispatcher)
 	global.crypto = crypto
 	global.URL = URL
@@ -86,7 +86,7 @@ global.bootstrap = function bootstrap() {
 	// oh boy
 	global.cache = cache
 
-	// // Events
+	// Events
 	global.fireFetchEvent = fireFetchEvent.bind(null, ivm)
 	global.addEventListener = addEventListener
 	global.dispatchEvent = dispatchEvent
