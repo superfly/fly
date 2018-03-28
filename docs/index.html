@@ -64,14 +64,16 @@
 			<div class="tsd-panel tsd-typography">
 				<p><a href="https://www.npmjs.com/package/@fly/fly"><img src="https://img.shields.io/npm/v/@fly/fly.svg" alt="npm version"></a> <a href="https://github.com/superfly/fly/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/@fly/fly.svg" alt="isc license"></a> <a href="https://travis-ci.org/superfly/fly"><img src="https://travis-ci.org/superfly/fly.svg?branch=master" alt="Build Status"></a> <a href="https://conventionalcommits.org"><img src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg" alt="Conventional Commits"></a></p>
 				<h1 id="fly">Fly</h1>
-				<p>Basic engine running fly.io edge apps</p>
-				<h2 id="installation">Installation</h2>
+				<p>The fly.io Edge Application runtime is an open core Javascript environment built for proxy servers. It gives developers powerful caching, content modification, and routing tools.</p>
+				<p>The runtime is based on v8, with a proxy-appropriate set of Javascript libraries. There are built in APIs for manipulating HTML and Image content, low level caching, and HTTP requests/responses. When possible, we use WhatWG standards (like <code>fetch</code>, <code>Request</code>, <code>Response</code>, <code>Cache</code>, <code>Stream</code>).</p>
+				<p>You can <a href="#hello-world-">use it locally</a> for development and testing, and <a href="#deployment">deploy it to the Fly&#39;s fleet</a> of edge servers for production use. </p>
+				<h2 id="usage">Usage</h2>
+				<h3 id="installation">Installation</h3>
 				<p>Install globally:</p>
 				<pre><code><span class="hljs-built_in">npm</span> install -g @fly/fly
 </code></pre><p>or as a <code>devDependency</code> in your project:</p>
 				<pre><code><span class="hljs-built_in">npm</span> install --save-dev @fly/fly
-</code></pre><h2 id="usage">Usage</h2>
-				<h3 id="hello-world-">Hello World!</h3>
+</code></pre><h3 id="hello-world-">Hello World!</h3>
 				<p>Write javascript code to a file (<code>index.js</code>):</p>
 				<pre><code class="lang-js">fly.http.respondWith(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">request</span>)</span>{
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Response(<span class="hljs-string">"Hello! We support whirled peas."</span>, { <span class="hljs-attr">status</span>: <span class="hljs-number">200</span>})
@@ -98,7 +100,7 @@
 <span class="hljs-attr">app:</span> <span class="hljs-string">my-app-name</span>
 <span class="hljs-attr">config:</span>
 <span class="hljs-attr">  foo:</span> <span class="hljs-string">bar</span>
-<span class="hljs-attr">file:</span>
+<span class="hljs-attr">files:</span>
 <span class="hljs-bullet">  -</span> <span class="hljs-string">path/to/file</span>
 </code></pre>
 				<p>Properties:</p>
@@ -202,9 +204,18 @@ describe(<span class="hljs-string">"MyModule"</span>, ()=&gt;{
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/fetch.html">fetch</a>
+						<a href="modules/_crypto_.html">"crypto"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_types_dispatcher_d_.html">"types/dispatcher.d"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_buffer_.html">"utils/buffer"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/fetch.html">fetch</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-private">
 						<a href="modules/fly.html">fly</a>
 					</li>
 				</ul>

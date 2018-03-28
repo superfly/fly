@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>kernel | @fly/fly</title>
+	<title>Dispatcher | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,79 +54,110 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/fly.html">fly</a>
+					<a href="../modules/_types_dispatcher_d_.html">&quot;types/dispatcher.d&quot;</a>
 				</li>
 				<li>
-					<a href="../classes/fly.image.html">Image</a>
-				</li>
-				<li>
-					<a href="fly.image.kernel.html">kernel</a>
+					<a href="_types_dispatcher_d_.dispatcher.html">Dispatcher</a>
 				</li>
 			</ul>
-			<h1>Enumeration kernel</h1>
+			<h1>Class Dispatcher</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">Dispatcher</span>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Enumeration members</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="fly.image.kernel.html#cubic" class="tsd-kind-icon">cubic</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="fly.image.kernel.html#lanczos2" class="tsd-kind-icon">lanczos2</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="fly.image.kernel.html#lanczos3" class="tsd-kind-icon">lanczos3</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="fly.image.kernel.html#nearest" class="tsd-kind-icon">nearest</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_types_dispatcher_d_.dispatcher.html#dispatch" class="tsd-kind-icon">dispatch</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_types_dispatcher_d_.dispatcher.html#dispatchsync" class="tsd-kind-icon">dispatch<wbr>Sync</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Enumeration members</h2>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="cubic" class="tsd-anchor"></a>
-					<h3>cubic</h3>
-					<div class="tsd-signature tsd-kind-icon">cubic<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;cubic&quot;</span></div>
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="dispatch" class="tsd-anchor"></a>
+					<h3>dispatch</h3>
+					<div class="tsd-signature tsd-kind-icon">dispatch<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/c0736ed/v8env/ts/fly/image.ts#L223">fly/image.ts:223</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/c0736ed/v8env/ts/types/dispatcher.d.ts#L3">types/dispatcher.d.ts:3</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>name: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="lanczos2" class="tsd-anchor"></a>
-					<h3>lanczos2</h3>
-					<div class="tsd-signature tsd-kind-icon">lanczos2<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;lanczos2&quot;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="dispatchsync" class="tsd-anchor"></a>
+					<h3>dispatch<wbr>Sync</h3>
+					<div class="tsd-signature tsd-kind-icon">dispatch<wbr>Sync<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/c0736ed/v8env/ts/fly/image.ts#L224">fly/image.ts:224</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/c0736ed/v8env/ts/types/dispatcher.d.ts#L2">types/dispatcher.d.ts:2</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="lanczos3" class="tsd-anchor"></a>
-					<h3>lanczos3</h3>
-					<div class="tsd-signature tsd-kind-icon">lanczos3<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;lanczos3&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/c0736ed/v8env/ts/fly/image.ts#L225">fly/image.ts:225</a></li>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>name: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+									</li>
+								</ul>
+							</li>
 						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="nearest" class="tsd-anchor"></a>
-					<h3>nearest</h3>
-					<div class="tsd-signature tsd-kind-icon">nearest<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;nearest&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/c0736ed/v8env/ts/fly/image.ts#L222">fly/image.ts:222</a></li>
-						</ul>
-					</aside>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -139,7 +170,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_crypto_.html">"crypto"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_types_dispatcher_d_.html">"types/dispatcher.d"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -148,7 +179,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/fetch.html">fetch</a>
 					</li>
-					<li class="current tsd-kind-external-module tsd-is-private">
+					<li class=" tsd-kind-external-module tsd-is-private">
 						<a href="../modules/fly.html">fly</a>
 					</li>
 				</ul>
@@ -158,75 +189,13 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/fly.image.html" class="tsd-kind-icon">Image</a>
+						<a href="_types_dispatcher_d_.dispatcher.html" class="tsd-kind-icon">Dispatcher</a>
 						<ul>
-							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="fly.image.gravity.html" class="tsd-kind-icon">gravity</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_types_dispatcher_d_.dispatcher.html#dispatch" class="tsd-kind-icon">dispatch</a>
 							</li>
-							<li class="current tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="fly.image.kernel.html" class="tsd-kind-icon">kernel</a>
-								<ul>
-									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="fly.image.kernel.html#cubic" class="tsd-kind-icon">cubic</a>
-									</li>
-									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="fly.image.kernel.html#lanczos2" class="tsd-kind-icon">lanczos2</a>
-									</li>
-									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="fly.image.kernel.html#lanczos3" class="tsd-kind-icon">lanczos3</a>
-									</li>
-									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="fly.image.kernel.html#nearest" class="tsd-kind-icon">nearest</a>
-									</li>
-								</ul>
-							</li>
-							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="fly.image.strategy.html" class="tsd-kind-icon">strategy</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="../interfaces/fly.image.metadata.html" class="tsd-kind-icon">Metadata</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="../interfaces/fly.image.operationresult.html" class="tsd-kind-icon">Operation<wbr>Result</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="../interfaces/fly.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a>
-							</li>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#background" class="tsd-kind-icon">background</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#crop" class="tsd-kind-icon">crop</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#embed" class="tsd-kind-icon">embed</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#metadata-1" class="tsd-kind-icon">metadata</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#png" class="tsd-kind-icon">png</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#resize" class="tsd-kind-icon">resize</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#tobuffer" class="tsd-kind-icon">to<wbr>Buffer</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#toimage" class="tsd-kind-icon">to<wbr>Image</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#webp" class="tsd-kind-icon">webp</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#withmetadata" class="tsd-kind-icon">with<wbr>Metadata</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#withoutenlargement" class="tsd-kind-icon">without<wbr>Enlargement</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_types_dispatcher_d_.dispatcher.html#dispatchsync" class="tsd-kind-icon">dispatch<wbr>Sync</a>
 							</li>
 						</ul>
 					</li>
