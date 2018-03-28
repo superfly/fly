@@ -159,29 +159,6 @@ export class Context extends EventEmitter {
 		await Promise.all([
 			this.set('global', this.global.derefInto()),
 			this.set('_ivm', ivm),
-			// this.set('_setTimeout', new ivm.Reference((fn: ivm.Reference<Function>, timeout: number): number => {
-			// 	const id = ++this.currentTimerId
-			// 	this.timeouts[id] = setTimeout(() => { this.applyCallback(fn, []) }, timeout)
-			// 	this.addCallback(fn)
-			// 	return id
-			// })),
-			// this.set('_clearTimeout', new ivm.Reference((id: number): void => {
-			// 	clearTimeout(this.timeouts[id])
-			// 	delete this.timeouts[id]
-			// 	return
-			// })),
-			// this.set('_setInterval', new ivm.Reference((fn: ivm.Reference<Function>, timeout: number): number => {
-			// 	const id = ++this.currentTimerId
-			// 	// we don't add interval callbacks because we will clear them at the very end
-			// 	this.intervals[id] = setInterval(() => { fn.apply(null, []) }, timeout)
-			// 	this.addReleasable(fn)
-			// 	return id
-			// })),
-			// this.set('_clearInterval', new ivm.Reference((id: number): void => {
-			// 	clearInterval(this.intervals[id])
-			// 	delete this.intervals[id]
-			// 	return
-			// })),
 			this.set("_dispatch", new ivm.Reference((name: string, ...args: any[]) => {
 				return bridge.dispatch(this, name, ...args)
 			})),
@@ -262,7 +239,6 @@ export class Context extends EventEmitter {
 			this.callbacks = []
 			this.intervals = {}
 			this.timeouts = {}
-			this.logger.close()
 			this.ctx.release()
 		} catch (err) {
 			log.error("error releasing context:", err.stack)
