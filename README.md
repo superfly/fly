@@ -1,4 +1,5 @@
 [![npm version](https://img.shields.io/npm/v/@fly/fly.svg)](https://www.npmjs.com/package/@fly/fly) [![isc license](https://img.shields.io/npm/l/@fly/fly.svg)](https://github.com/superfly/fly/blob/master/LICENSE) [![Build Status](https://travis-ci.org/superfly/fly.svg?branch=master)](https://travis-ci.org/superfly/fly) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsuperfly%2Ffly.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsuperfly%2Ffly?ref=badge_shield)
 
 # Fly
 
@@ -198,3 +199,7 @@ Using `fly deploy`, here's what happens:
 - Your code, source map and `files` are added to a simple tarball, gzipped and uploaded to the fly.io API using your token
 - We create a "release" for your app, those are immutable, changing anything (by using `fly deploy` or `fly secrets set`) will trigger a new release which will be deployed automatically
 - Your code is distributed instantly(-ish) across our global fleet of servers
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsuperfly%2Ffly.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsuperfly%2Ffly?ref=badge_large)
