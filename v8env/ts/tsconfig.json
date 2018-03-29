@@ -64,6 +64,11 @@
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
   },
   "typedocOptions": {
-    "json": "./docs/lib.json"
+    "json": "./docs/lib.json",
+    "includeDeclarations": true,
+    "excludeExternals": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "mode": "modules"
   }
 }
