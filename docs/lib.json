@@ -1,0 +1,1672 @@
+{
+	"id": 0,
+	"name": "@fly/fly",
+	"kind": 0,
+	"flags": {},
+	"children": [
+		{
+			"id": 1,
+			"name": "\"blob\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isPrivate": true,
+				"isExported": true
+			},
+			"originalName": "/Users/kurt/code/fly.io/core/v8env/ts/blob.ts",
+			"comment": {
+				"tags": [
+					{
+						"tag": "module",
+						"text": "fly"
+					}
+				]
+			},
+			"sources": [
+				{
+					"fileName": "blob.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 19,
+			"name": "\"body_mixin\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/kurt/code/fly.io/core/v8env/ts/body_mixin.ts",
+			"sources": [
+				{
+					"fileName": "body_mixin.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 111,
+			"name": "\"fly/image\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/kurt/code/fly.io/core/v8env/ts/fly/image.ts",
+			"comment": {
+				"shortText": "The Fly image API.",
+				"tags": [
+					{
+						"tag": "module",
+						"text": "fly\n"
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 112,
+					"name": "Image",
+					"kind": 128,
+					"kindString": "Class",
+					"flags": {
+						"isExported": true
+					},
+					"comment": {
+						"shortText": "A class for modifying images. This uses operations from [Sharp](http://sharp.pixelplumbing.com/en/stable/) under the hood.",
+						"tags": [
+							{
+								"tag": "module",
+								"text": "fly\n"
+							}
+						]
+					},
+					"children": [
+						{
+							"id": 182,
+							"name": "gravity",
+							"kind": 4,
+							"kindString": "Enumeration",
+							"flags": {
+								"isStatic": true,
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 183,
+									"name": "center",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 204,
+											"character": 10
+										}
+									],
+									"defaultValue": "0"
+								},
+								{
+									"id": 184,
+									"name": "centre",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 205,
+											"character": 10
+										}
+									],
+									"defaultValue": "0"
+								},
+								{
+									"id": 186,
+									"name": "east",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 207,
+											"character": 8
+										}
+									],
+									"defaultValue": "2"
+								},
+								{
+									"id": 185,
+									"name": "north",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 206,
+											"character": 9
+										}
+									],
+									"defaultValue": "1"
+								},
+								{
+									"id": 189,
+									"name": "northeast",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 210,
+											"character": 13
+										}
+									],
+									"defaultValue": "5"
+								},
+								{
+									"id": 192,
+									"name": "northwest",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 213,
+											"character": 13
+										}
+									],
+									"defaultValue": "8"
+								},
+								{
+									"id": 187,
+									"name": "south",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 208,
+											"character": 9
+										}
+									],
+									"defaultValue": "3"
+								},
+								{
+									"id": 190,
+									"name": "southeast",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 211,
+											"character": 13
+										}
+									],
+									"defaultValue": "6"
+								},
+								{
+									"id": 191,
+									"name": "southwest",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 212,
+											"character": 13
+										}
+									],
+									"defaultValue": "7"
+								},
+								{
+									"id": 188,
+									"name": "west",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 209,
+											"character": 8
+										}
+									],
+									"defaultValue": "4"
+								}
+							],
+							"groups": [
+								{
+									"title": "Enumeration members",
+									"kind": 16,
+									"children": [
+										183,
+										184,
+										186,
+										185,
+										189,
+										192,
+										187,
+										190,
+										191,
+										188
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 203,
+									"character": 21
+								}
+							]
+						},
+						{
+							"id": 196,
+							"name": "kernel",
+							"kind": 4,
+							"kindString": "Enumeration",
+							"flags": {
+								"isStatic": true,
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 198,
+									"name": "cubic",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 223,
+											"character": 9
+										}
+									],
+									"defaultValue": "\"cubic\""
+								},
+								{
+									"id": 199,
+									"name": "lanczos2",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 224,
+											"character": 12
+										}
+									],
+									"defaultValue": "\"lanczos2\""
+								},
+								{
+									"id": 200,
+									"name": "lanczos3",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 225,
+											"character": 12
+										}
+									],
+									"defaultValue": "\"lanczos3\""
+								},
+								{
+									"id": 197,
+									"name": "nearest",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 222,
+											"character": 11
+										}
+									],
+									"defaultValue": "\"nearest\""
+								}
+							],
+							"groups": [
+								{
+									"title": "Enumeration members",
+									"kind": 16,
+									"children": [
+										198,
+										199,
+										200,
+										197
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 221,
+									"character": 20
+								}
+							]
+						},
+						{
+							"id": 193,
+							"name": "strategy",
+							"kind": 4,
+							"kindString": "Enumeration",
+							"flags": {
+								"isStatic": true,
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 195,
+									"name": "attention",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 218,
+											"character": 13
+										}
+									],
+									"defaultValue": "17"
+								},
+								{
+									"id": 194,
+									"name": "entropy",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 217,
+											"character": 11
+										}
+									],
+									"defaultValue": "16"
+								}
+							],
+							"groups": [
+								{
+									"title": "Enumeration members",
+									"kind": 16,
+									"children": [
+										195,
+										194
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 216,
+									"character": 22
+								}
+							]
+						},
+						{
+							"id": 160,
+							"name": "Metadata",
+							"kind": 256,
+							"kindString": "Interface",
+							"flags": {
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 164,
+									"name": "channels",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Number of bands e.g. 3 for sRGB, 4 for CMYK"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 117,
+											"character": 12
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "number"
+											}
+										]
+									}
+								},
+								{
+									"id": 165,
+									"name": "density",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Number of pixels per inch (DPI), if present"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 119,
+											"character": 11
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "number"
+											}
+										]
+									}
+								},
+								{
+									"id": 169,
+									"name": "format",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 127,
+											"character": 10
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "string"
+											}
+										]
+									}
+								},
+								{
+									"id": 167,
+									"name": "hasAlpha",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Boolean indicating the presence of an alpha transparency channel"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 123,
+											"character": 12
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "true"
+											},
+											{
+												"type": "intrinsic",
+												"name": "false"
+											}
+										]
+									}
+								},
+								{
+									"id": 166,
+									"name": "hasProfile",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Boolean indicating the presence of an embedded ICC profile"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 121,
+											"character": 14
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "true"
+											},
+											{
+												"type": "intrinsic",
+												"name": "false"
+											}
+										]
+									}
+								},
+								{
+									"id": 162,
+									"name": "height",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Number of pixels high"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 113,
+											"character": 10
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "number"
+											}
+										]
+									}
+								},
+								{
+									"id": 168,
+									"name": "orientation",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Number value of the EXIF Orientation header, if present"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 125,
+											"character": 15
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "number"
+											}
+										]
+									}
+								},
+								{
+									"id": 163,
+									"name": "space",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Name of colour space interpretation e.g. srgb, rgb, cmyk, lab, b-w ..."
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 115,
+											"character": 9
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "string"
+											}
+										]
+									}
+								},
+								{
+									"id": 161,
+									"name": "width",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Number of pixels wide"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 111,
+											"character": 9
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "number"
+											}
+										]
+									}
+								}
+							],
+							"groups": [
+								{
+									"title": "Properties",
+									"kind": 1024,
+									"children": [
+										164,
+										165,
+										169,
+										167,
+										166,
+										162,
+										168,
+										163,
+										161
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 109,
+									"character": 27
+								}
+							]
+						},
+						{
+							"id": 170,
+							"name": "OperationResult",
+							"kind": 256,
+							"kindString": "Interface",
+							"flags": {
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 172,
+									"name": "data",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 131,
+											"character": 8
+										}
+									],
+									"type": {
+										"type": "reference",
+										"name": "ArrayBuffer"
+									}
+								},
+								{
+									"id": 171,
+									"name": "info",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 130,
+											"character": 8
+										}
+									],
+									"type": {
+										"type": "reference",
+										"name": "Metadata",
+										"id": 160
+									}
+								}
+							],
+							"groups": [
+								{
+									"title": "Properties",
+									"kind": 1024,
+									"children": [
+										172,
+										171
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 129,
+									"character": 34
+								}
+							]
+						},
+						{
+							"id": 173,
+							"name": "ResizeOptions",
+							"kind": 256,
+							"kindString": "Interface",
+							"flags": {
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 175,
+									"name": "fastShrinkOnLoad",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "take greater advantage of the JPEG\nand WebP shrink-on-load feature, which can lead to a slight moiré pattern on\nsome images. (optional, default `true`)"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 145,
+											"character": 20
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "true"
+											},
+											{
+												"type": "intrinsic",
+												"name": "false"
+											}
+										]
+									}
+								},
+								{
+									"id": 174,
+									"name": "kernel",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "the kernel to use for image reduction.\n (optional, default `'lanczos3'`)"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 139,
+											"character": 10
+										}
+									],
+									"type": {
+										"type": "reference",
+										"name": "kernel",
+										"id": 174
+									}
+								}
+							],
+							"groups": [
+								{
+									"title": "Properties",
+									"kind": 1024,
+									"children": [
+										175,
+										174
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 134,
+									"character": 32
+								}
+							]
+						},
+						{
+							"id": 116,
+							"name": "constructor",
+							"kind": 512,
+							"kindString": "Constructor",
+							"flags": {
+								"isExported": true
+							},
+							"comment": {
+								"shortText": "Constructs a new Image from raw Buffer data"
+							},
+							"signatures": [
+								{
+									"id": 117,
+									"name": "new Image",
+									"kind": 16384,
+									"kindString": "Constructor signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Constructs a new Image from raw Buffer data"
+									},
+									"parameters": [
+										{
+											"id": 118,
+											"name": "data",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"shortText": "Raw image data from `fetch` or `cache` or somewhere else.\n"
+											},
+											"type": {
+												"type": "reference",
+												"name": "ArrayBuffer"
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"name": "Image",
+										"id": 112
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 16,
+									"character": 29
+								}
+							]
+						},
+						{
+							"id": 130,
+							"name": "background",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 131,
+									"name": "background",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 132,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 57,
+									"character": 12
+								}
+							]
+						},
+						{
+							"id": 124,
+							"name": "crop",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 125,
+									"name": "crop",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 126,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 47,
+									"character": 6
+								}
+							]
+						},
+						{
+							"id": 127,
+							"name": "embed",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 128,
+									"name": "embed",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 129,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 52,
+									"character": 7
+								}
+							]
+						},
+						{
+							"id": 145,
+							"name": "metadata",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 146,
+									"name": "metadata",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "reference",
+												"name": "Metadata",
+												"id": 160
+											}
+										]
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 82,
+									"character": 16
+								}
+							]
+						},
+						{
+							"id": 136,
+							"name": "png",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 137,
+									"name": "png",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 138,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 67,
+									"character": 5
+								}
+							]
+						},
+						{
+							"id": 119,
+							"name": "resize",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 120,
+									"name": "resize",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Resize image to `width` x `height`. By default, the resized image is center\ncropped to the exact size specified.",
+										"returns": "\n"
+									},
+									"parameters": [
+										{
+											"id": 121,
+											"name": "width",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isOptional": true
+											},
+											"comment": {
+												"text": "Width in pixels of the resulting image.\nPass `undefined` or `null` to auto-scale the width to match the height."
+											},
+											"type": {
+												"type": "union",
+												"types": [
+													{
+														"type": "intrinsic",
+														"name": "undefined"
+													},
+													{
+														"type": "intrinsic",
+														"name": "number"
+													}
+												]
+											}
+										},
+										{
+											"id": 122,
+											"name": "height",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isOptional": true
+											},
+											"comment": {
+												"text": "Height in pixels of the resulting image.\nPass `undefind` or `null` to auto-scale the height to match the width."
+											},
+											"type": {
+												"type": "union",
+												"types": [
+													{
+														"type": "intrinsic",
+														"name": "undefined"
+													},
+													{
+														"type": "intrinsic",
+														"name": "number"
+													}
+												]
+											}
+										},
+										{
+											"id": 123,
+											"name": "options",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isOptional": true
+											},
+											"comment": {
+												"text": "Resize options"
+											},
+											"type": {
+												"type": "reference",
+												"name": "Image.ResizeOptions",
+												"id": 173
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 42,
+									"character": 8
+								}
+							]
+						},
+						{
+							"id": 147,
+							"name": "toBuffer",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 148,
+									"name": "toBuffer",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "reference",
+												"name": "OperationResult",
+												"id": 170
+											}
+										]
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 86,
+									"character": 16
+								}
+							]
+						},
+						{
+							"id": 149,
+							"name": "toImage",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 150,
+									"name": "toImage",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "reference",
+												"name": "Image",
+												"id": 112
+											}
+										]
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 94,
+									"character": 15
+								}
+							]
+						},
+						{
+							"id": 139,
+							"name": "webp",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 140,
+									"name": "webp",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 141,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 72,
+									"character": 6
+								}
+							]
+						},
+						{
+							"id": 142,
+							"name": "withMetadata",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 143,
+									"name": "withMetadata",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 144,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 77,
+									"character": 14
+								}
+							]
+						},
+						{
+							"id": 133,
+							"name": "withoutEnlargement",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 134,
+									"name": "withoutEnlargement",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 135,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 62,
+									"character": 20
+								}
+							]
+						}
+					],
+					"groups": [
+						{
+							"title": "Enumerations",
+							"kind": 4,
+							"children": [
+								182,
+								196,
+								193
+							]
+						},
+						{
+							"title": "Interfaces",
+							"kind": 256,
+							"children": [
+								160,
+								170,
+								173
+							]
+						},
+						{
+							"title": "Constructors",
+							"kind": 512,
+							"children": [
+								116
+							]
+						},
+						{
+							"title": "Methods",
+							"kind": 2048,
+							"children": [
+								130,
+								124,
+								127,
+								145,
+								136,
+								119,
+								147,
+								149,
+								139,
+								142,
+								133
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "fly/image.ts",
+							"line": 10,
+							"character": 18
+						},
+						{
+							"fileName": "fly/image.ts",
+							"line": 102,
+							"character": 22
+						},
+						{
+							"fileName": "fly/image.ts",
+							"line": 202,
+							"character": 22
+						}
+					]
+				}
+			],
+			"groups": [
+				{
+					"title": "Classes",
+					"kind": 128,
+					"children": [
+						112
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "fly/image.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 59,
+			"name": "\"form_data\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/kurt/code/fly.io/core/v8env/ts/form_data.ts",
+			"sources": [
+				{
+					"fileName": "form_data.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 92,
+			"name": "\"logger\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/kurt/code/fly.io/core/v8env/ts/logger.ts",
+			"sources": [
+				{
+					"fileName": "logger.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		}
+	],
+	"groups": [
+		{
+			"title": "External modules",
+			"kind": 1,
+			"children": [
+				1,
+				19,
+				111,
+				59,
+				92
+			]
+		}
+	]
+}

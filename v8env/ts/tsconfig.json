@@ -64,12 +64,6 @@
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
   },
   "typedocOptions": {
-    "out": "./docs/",
-    "includeDeclarations": true,
-    "excludeExternals": true,
-    "excludePrivate": true,
-    "excludeProtected": true,
-    "plugins": "@fly/typedoc-plugin-external-module-name",
-    "mode": "modules"
+    "json": "./docs/lib.json"
   }
 }
