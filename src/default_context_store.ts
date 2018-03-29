@@ -56,7 +56,7 @@ export class DefaultContextStore {
         timestamp: true
       })
 
-      const appKey = `${app.name}:${app.version}`
+      const appKey = `${app.name}:${app.sourceHash}`
       log.debug("Using script for:", appKey)
       let script = this.scripts[appKey]
       if (!script)
