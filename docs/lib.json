@@ -1,0 +1,4734 @@
+{
+	"id": 0,
+	"name": "@fly/fly",
+	"kind": 0,
+	"flags": {},
+	"children": [
+		{
+			"id": 1,
+			"name": "\"blob\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isPrivate": true,
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/blob.ts",
+			"comment": {
+				"tags": [
+					{
+						"tag": "module",
+						"text": "fly"
+					}
+				]
+			},
+			"sources": [
+				{
+					"fileName": "blob.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 18,
+			"name": "\"body_mixin\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/body_mixin.ts",
+			"sources": [
+				{
+					"fileName": "body_mixin.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 73,
+			"name": "\"crypto\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/crypto.ts",
+			"children": [
+				{
+					"id": 74,
+					"name": "CryptoData",
+					"kind": 4194304,
+					"kindString": "Type alias",
+					"flags": {},
+					"sources": [
+						{
+							"fileName": "crypto.ts",
+							"line": 5,
+							"character": 15
+						}
+					],
+					"type": {
+						"type": "union",
+						"types": [
+							{
+								"type": "reference",
+								"name": "BufferSource"
+							},
+							{
+								"type": "intrinsic",
+								"name": "string"
+							}
+						]
+					}
+				},
+				{
+					"id": 75,
+					"name": "digestHash",
+					"kind": 32,
+					"kindString": "Variable",
+					"flags": {
+						"isLet": true
+					},
+					"sources": [
+						{
+							"fileName": "crypto.ts",
+							"line": 7,
+							"character": 14
+						}
+					],
+					"type": {
+						"type": "reflection",
+						"declaration": {
+							"id": 76,
+							"name": "__type",
+							"kind": 65536,
+							"kindString": "Type literal",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 77,
+									"name": "__call",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 78,
+											"name": "algo",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"type": {
+												"type": "intrinsic",
+												"name": "string"
+											}
+										},
+										{
+											"id": 79,
+											"name": "data",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"type": {
+												"type": "reference",
+												"name": "CryptoData",
+												"id": 74
+											}
+										},
+										{
+											"id": 80,
+											"name": "encoding",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isOptional": true
+											},
+											"type": {
+												"type": "union",
+												"types": [
+													{
+														"type": "intrinsic",
+														"name": "undefined"
+													},
+													{
+														"type": "intrinsic",
+														"name": "string"
+													}
+												]
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "union",
+												"types": [
+													{
+														"type": "reference",
+														"name": "ArrayBuffer"
+													},
+													{
+														"type": "intrinsic",
+														"name": "string"
+													}
+												]
+											}
+										]
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "crypto.ts",
+									"line": 7,
+									"character": 15
+								}
+							]
+						}
+					}
+				},
+				{
+					"id": 81,
+					"name": "digestHashSync",
+					"kind": 32,
+					"kindString": "Variable",
+					"flags": {
+						"isLet": true
+					},
+					"sources": [
+						{
+							"fileName": "crypto.ts",
+							"line": 8,
+							"character": 18
+						}
+					],
+					"type": {
+						"type": "reflection",
+						"declaration": {
+							"id": 82,
+							"name": "__type",
+							"kind": 65536,
+							"kindString": "Type literal",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 83,
+									"name": "__call",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 84,
+											"name": "algo",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"type": {
+												"type": "intrinsic",
+												"name": "string"
+											}
+										},
+										{
+											"id": 85,
+											"name": "data",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"type": {
+												"type": "reference",
+												"name": "CryptoData",
+												"id": 74
+											}
+										},
+										{
+											"id": 86,
+											"name": "encoding",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isOptional": true
+											},
+											"type": {
+												"type": "union",
+												"types": [
+													{
+														"type": "intrinsic",
+														"name": "undefined"
+													},
+													{
+														"type": "intrinsic",
+														"name": "string"
+													}
+												]
+											}
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "reference",
+												"name": "ArrayBuffer"
+											},
+											{
+												"type": "intrinsic",
+												"name": "string"
+											}
+										]
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "crypto.ts",
+									"line": 8,
+									"character": 19
+								}
+							]
+						}
+					}
+				},
+				{
+					"id": 87,
+					"name": "cryptoInit",
+					"kind": 64,
+					"kindString": "Function",
+					"flags": {
+						"isExported": true
+					},
+					"signatures": [
+						{
+							"id": 88,
+							"name": "cryptoInit",
+							"kind": 4096,
+							"kindString": "Call signature",
+							"flags": {},
+							"parameters": [
+								{
+									"id": 89,
+									"name": "ivm",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "intrinsic",
+										"name": "any"
+									}
+								},
+								{
+									"id": 90,
+									"name": "dispatcher",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Dispatcher",
+										"id": 57
+									}
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "void"
+							}
+						}
+					],
+					"sources": [
+						{
+							"fileName": "crypto.ts",
+							"line": 10,
+							"character": 34
+						}
+					]
+				},
+				{
+					"id": 91,
+					"name": "crypto",
+					"kind": 2097152,
+					"kindString": "Object literal",
+					"flags": {
+						"isExported": true,
+						"isConst": true
+					},
+					"children": [
+						{
+							"id": 92,
+							"name": "subtle",
+							"kind": 2097152,
+							"kindString": "Object literal",
+							"flags": {
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 93,
+									"name": "digest",
+									"kind": 64,
+									"kindString": "Function",
+									"flags": {
+										"isExported": true
+									},
+									"signatures": [
+										{
+											"id": 94,
+											"name": "digest",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"parameters": [
+												{
+													"id": 95,
+													"name": "algo",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"type": {
+														"type": "intrinsic",
+														"name": "string"
+													}
+												},
+												{
+													"id": 96,
+													"name": "buf",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"type": {
+														"type": "reference",
+														"name": "CryptoData",
+														"id": 74
+													}
+												},
+												{
+													"id": 97,
+													"name": "encoding",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {
+														"isOptional": true
+													},
+													"type": {
+														"type": "union",
+														"types": [
+															{
+																"type": "intrinsic",
+																"name": "undefined"
+															},
+															{
+																"type": "intrinsic",
+																"name": "string"
+															}
+														]
+													}
+												}
+											],
+											"type": {
+												"type": "reference",
+												"name": "Promise",
+												"typeArguments": [
+													{
+														"type": "union",
+														"types": [
+															{
+																"type": "intrinsic",
+																"name": "string"
+															},
+															{
+																"type": "reference",
+																"name": "ArrayBuffer"
+															}
+														]
+													}
+												]
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "crypto.ts",
+											"line": 22,
+											"character": 10
+										}
+									]
+								},
+								{
+									"id": 98,
+									"name": "digestSync",
+									"kind": 64,
+									"kindString": "Function",
+									"flags": {
+										"isExported": true
+									},
+									"signatures": [
+										{
+											"id": 99,
+											"name": "digestSync",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"parameters": [
+												{
+													"id": 100,
+													"name": "algo",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"type": {
+														"type": "intrinsic",
+														"name": "string"
+													}
+												},
+												{
+													"id": 101,
+													"name": "buf",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"type": {
+														"type": "reference",
+														"name": "CryptoData",
+														"id": 74
+													}
+												},
+												{
+													"id": 102,
+													"name": "encoding",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {
+														"isOptional": true
+													},
+													"type": {
+														"type": "union",
+														"types": [
+															{
+																"type": "intrinsic",
+																"name": "undefined"
+															},
+															{
+																"type": "intrinsic",
+																"name": "string"
+															}
+														]
+													}
+												}
+											],
+											"type": {
+												"type": "union",
+												"types": [
+													{
+														"type": "intrinsic",
+														"name": "string"
+													},
+													{
+														"type": "reference",
+														"name": "ArrayBuffer"
+													}
+												]
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "crypto.ts",
+											"line": 25,
+											"character": 14
+										}
+									]
+								}
+							],
+							"groups": [
+								{
+									"title": "Functions",
+									"kind": 64,
+									"children": [
+										93,
+										98
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "crypto.ts",
+									"line": 21,
+									"character": 8
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "object"
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Object literals",
+							"kind": 2097152,
+							"children": [
+								92
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "crypto.ts",
+							"line": 20,
+							"character": 19
+						}
+					],
+					"type": {
+						"type": "intrinsic",
+						"name": "object"
+					}
+				}
+			],
+			"groups": [
+				{
+					"title": "Type aliases",
+					"kind": 4194304,
+					"children": [
+						74
+					]
+				},
+				{
+					"title": "Variables",
+					"kind": 32,
+					"children": [
+						75,
+						81
+					]
+				},
+				{
+					"title": "Functions",
+					"kind": 64,
+					"children": [
+						87
+					]
+				},
+				{
+					"title": "Object literals",
+					"kind": 2097152,
+					"children": [
+						91
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "crypto.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 154,
+			"name": "\"fly/image\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/fly/image.ts",
+			"comment": {
+				"shortText": "The Fly image API.",
+				"tags": [
+					{
+						"tag": "module",
+						"text": "fly\n"
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 155,
+					"name": "Image",
+					"kind": 128,
+					"kindString": "Class",
+					"flags": {
+						"isExported": true
+					},
+					"comment": {
+						"shortText": "A class for modifying images. This uses operations from [Sharp](http://sharp.pixelplumbing.com/en/stable/) under the hood.",
+						"tags": [
+							{
+								"tag": "module",
+								"text": "fly\n"
+							}
+						]
+					},
+					"children": [
+						{
+							"id": 225,
+							"name": "gravity",
+							"kind": 4,
+							"kindString": "Enumeration",
+							"flags": {
+								"isStatic": true,
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 226,
+									"name": "center",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 204,
+											"character": 10
+										}
+									],
+									"defaultValue": "0"
+								},
+								{
+									"id": 227,
+									"name": "centre",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 205,
+											"character": 10
+										}
+									],
+									"defaultValue": "0"
+								},
+								{
+									"id": 229,
+									"name": "east",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 207,
+											"character": 8
+										}
+									],
+									"defaultValue": "2"
+								},
+								{
+									"id": 228,
+									"name": "north",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 206,
+											"character": 9
+										}
+									],
+									"defaultValue": "1"
+								},
+								{
+									"id": 232,
+									"name": "northeast",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 210,
+											"character": 13
+										}
+									],
+									"defaultValue": "5"
+								},
+								{
+									"id": 235,
+									"name": "northwest",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 213,
+											"character": 13
+										}
+									],
+									"defaultValue": "8"
+								},
+								{
+									"id": 230,
+									"name": "south",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 208,
+											"character": 9
+										}
+									],
+									"defaultValue": "3"
+								},
+								{
+									"id": 233,
+									"name": "southeast",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 211,
+											"character": 13
+										}
+									],
+									"defaultValue": "6"
+								},
+								{
+									"id": 234,
+									"name": "southwest",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 212,
+											"character": 13
+										}
+									],
+									"defaultValue": "7"
+								},
+								{
+									"id": 231,
+									"name": "west",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 209,
+											"character": 8
+										}
+									],
+									"defaultValue": "4"
+								}
+							],
+							"groups": [
+								{
+									"title": "Enumeration members",
+									"kind": 16,
+									"children": [
+										226,
+										227,
+										229,
+										228,
+										232,
+										235,
+										230,
+										233,
+										234,
+										231
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 203,
+									"character": 21
+								}
+							]
+						},
+						{
+							"id": 239,
+							"name": "kernel",
+							"kind": 4,
+							"kindString": "Enumeration",
+							"flags": {
+								"isStatic": true,
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 241,
+									"name": "cubic",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 223,
+											"character": 9
+										}
+									],
+									"defaultValue": "\"cubic\""
+								},
+								{
+									"id": 242,
+									"name": "lanczos2",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 224,
+											"character": 12
+										}
+									],
+									"defaultValue": "\"lanczos2\""
+								},
+								{
+									"id": 243,
+									"name": "lanczos3",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 225,
+											"character": 12
+										}
+									],
+									"defaultValue": "\"lanczos3\""
+								},
+								{
+									"id": 240,
+									"name": "nearest",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 222,
+											"character": 11
+										}
+									],
+									"defaultValue": "\"nearest\""
+								}
+							],
+							"groups": [
+								{
+									"title": "Enumeration members",
+									"kind": 16,
+									"children": [
+										241,
+										242,
+										243,
+										240
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 221,
+									"character": 20
+								}
+							]
+						},
+						{
+							"id": 236,
+							"name": "strategy",
+							"kind": 4,
+							"kindString": "Enumeration",
+							"flags": {
+								"isStatic": true,
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 238,
+									"name": "attention",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 218,
+											"character": 13
+										}
+									],
+									"defaultValue": "17"
+								},
+								{
+									"id": 237,
+									"name": "entropy",
+									"kind": 16,
+									"kindString": "Enumeration member",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 217,
+											"character": 11
+										}
+									],
+									"defaultValue": "16"
+								}
+							],
+							"groups": [
+								{
+									"title": "Enumeration members",
+									"kind": 16,
+									"children": [
+										238,
+										237
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 216,
+									"character": 22
+								}
+							]
+						},
+						{
+							"id": 203,
+							"name": "Metadata",
+							"kind": 256,
+							"kindString": "Interface",
+							"flags": {
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 207,
+									"name": "channels",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Number of bands e.g. 3 for sRGB, 4 for CMYK"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 117,
+											"character": 12
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "number"
+											}
+										]
+									}
+								},
+								{
+									"id": 208,
+									"name": "density",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Number of pixels per inch (DPI), if present"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 119,
+											"character": 11
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "number"
+											}
+										]
+									}
+								},
+								{
+									"id": 212,
+									"name": "format",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 127,
+											"character": 10
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "string"
+											}
+										]
+									}
+								},
+								{
+									"id": 210,
+									"name": "hasAlpha",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Boolean indicating the presence of an alpha transparency channel"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 123,
+											"character": 12
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "true"
+											},
+											{
+												"type": "intrinsic",
+												"name": "false"
+											}
+										]
+									}
+								},
+								{
+									"id": 209,
+									"name": "hasProfile",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Boolean indicating the presence of an embedded ICC profile"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 121,
+											"character": 14
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "true"
+											},
+											{
+												"type": "intrinsic",
+												"name": "false"
+											}
+										]
+									}
+								},
+								{
+									"id": 205,
+									"name": "height",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Number of pixels high"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 113,
+											"character": 10
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "number"
+											}
+										]
+									}
+								},
+								{
+									"id": 211,
+									"name": "orientation",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Number value of the EXIF Orientation header, if present"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 125,
+											"character": 15
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "number"
+											}
+										]
+									}
+								},
+								{
+									"id": 206,
+									"name": "space",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Name of colour space interpretation e.g. srgb, rgb, cmyk, lab, b-w ..."
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 115,
+											"character": 9
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "string"
+											}
+										]
+									}
+								},
+								{
+									"id": 204,
+									"name": "width",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "Number of pixels wide"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 111,
+											"character": 9
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "number"
+											}
+										]
+									}
+								}
+							],
+							"groups": [
+								{
+									"title": "Properties",
+									"kind": 1024,
+									"children": [
+										207,
+										208,
+										212,
+										210,
+										209,
+										205,
+										211,
+										206,
+										204
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 109,
+									"character": 27
+								}
+							]
+						},
+						{
+							"id": 213,
+							"name": "OperationResult",
+							"kind": 256,
+							"kindString": "Interface",
+							"flags": {
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 215,
+									"name": "data",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 131,
+											"character": 8
+										}
+									],
+									"type": {
+										"type": "reference",
+										"name": "ArrayBuffer"
+									}
+								},
+								{
+									"id": 214,
+									"name": "info",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 130,
+											"character": 8
+										}
+									],
+									"type": {
+										"type": "reference",
+										"name": "Metadata",
+										"id": 203
+									}
+								}
+							],
+							"groups": [
+								{
+									"title": "Properties",
+									"kind": 1024,
+									"children": [
+										215,
+										214
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 129,
+									"character": 34
+								}
+							]
+						},
+						{
+							"id": 216,
+							"name": "ResizeOptions",
+							"kind": 256,
+							"kindString": "Interface",
+							"flags": {
+								"isExported": true
+							},
+							"children": [
+								{
+									"id": 218,
+									"name": "fastShrinkOnLoad",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "take greater advantage of the JPEG\nand WebP shrink-on-load feature, which can lead to a slight moiré pattern on\nsome images. (optional, default `true`)"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 145,
+											"character": 20
+										}
+									],
+									"type": {
+										"type": "union",
+										"types": [
+											{
+												"type": "intrinsic",
+												"name": "undefined"
+											},
+											{
+												"type": "intrinsic",
+												"name": "true"
+											},
+											{
+												"type": "intrinsic",
+												"name": "false"
+											}
+										]
+									}
+								},
+								{
+									"id": 217,
+									"name": "kernel",
+									"kind": 1024,
+									"kindString": "Property",
+									"flags": {
+										"isExported": true,
+										"isOptional": true
+									},
+									"comment": {
+										"shortText": "the kernel to use for image reduction.\n (optional, default `'lanczos3'`)"
+									},
+									"sources": [
+										{
+											"fileName": "fly/image.ts",
+											"line": 139,
+											"character": 10
+										}
+									],
+									"type": {
+										"type": "reference",
+										"name": "kernel",
+										"id": 217
+									}
+								}
+							],
+							"groups": [
+								{
+									"title": "Properties",
+									"kind": 1024,
+									"children": [
+										218,
+										217
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 134,
+									"character": 32
+								}
+							]
+						},
+						{
+							"id": 159,
+							"name": "constructor",
+							"kind": 512,
+							"kindString": "Constructor",
+							"flags": {
+								"isExported": true
+							},
+							"comment": {
+								"shortText": "Constructs a new Image from raw Buffer data"
+							},
+							"signatures": [
+								{
+									"id": 160,
+									"name": "new Image",
+									"kind": 16384,
+									"kindString": "Constructor signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Constructs a new Image from raw Buffer data"
+									},
+									"parameters": [
+										{
+											"id": 161,
+											"name": "data",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"shortText": "Raw image data from `fetch` or `cache` or somewhere else.\n"
+											},
+											"type": {
+												"type": "reference",
+												"name": "ArrayBuffer"
+											}
+										}
+									],
+									"type": {
+										"type": "reference",
+										"name": "Image",
+										"id": 155
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 16,
+									"character": 29
+								}
+							]
+						},
+						{
+							"id": 173,
+							"name": "background",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 174,
+									"name": "background",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 175,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 57,
+									"character": 12
+								}
+							]
+						},
+						{
+							"id": 167,
+							"name": "crop",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 168,
+									"name": "crop",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 169,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 47,
+									"character": 6
+								}
+							]
+						},
+						{
+							"id": 170,
+							"name": "embed",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 171,
+									"name": "embed",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 172,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 52,
+									"character": 7
+								}
+							]
+						},
+						{
+							"id": 188,
+							"name": "metadata",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 189,
+									"name": "metadata",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "reference",
+												"name": "Metadata",
+												"id": 203
+											}
+										]
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 82,
+									"character": 16
+								}
+							]
+						},
+						{
+							"id": 179,
+							"name": "png",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 180,
+									"name": "png",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 181,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 67,
+									"character": 5
+								}
+							]
+						},
+						{
+							"id": 162,
+							"name": "resize",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 163,
+									"name": "resize",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Resize image to `width` x `height`. By default, the resized image is center\ncropped to the exact size specified.",
+										"returns": "\n"
+									},
+									"parameters": [
+										{
+											"id": 164,
+											"name": "width",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isOptional": true
+											},
+											"comment": {
+												"text": "Width in pixels of the resulting image.\nPass `undefined` or `null` to auto-scale the width to match the height."
+											},
+											"type": {
+												"type": "union",
+												"types": [
+													{
+														"type": "intrinsic",
+														"name": "undefined"
+													},
+													{
+														"type": "intrinsic",
+														"name": "number"
+													}
+												]
+											}
+										},
+										{
+											"id": 165,
+											"name": "height",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isOptional": true
+											},
+											"comment": {
+												"text": "Height in pixels of the resulting image.\nPass `undefind` or `null` to auto-scale the height to match the width."
+											},
+											"type": {
+												"type": "union",
+												"types": [
+													{
+														"type": "intrinsic",
+														"name": "undefined"
+													},
+													{
+														"type": "intrinsic",
+														"name": "number"
+													}
+												]
+											}
+										},
+										{
+											"id": 166,
+											"name": "options",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isOptional": true
+											},
+											"comment": {
+												"text": "Resize options"
+											},
+											"type": {
+												"type": "reference",
+												"name": "Image.ResizeOptions",
+												"id": 216
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 42,
+									"character": 8
+								}
+							]
+						},
+						{
+							"id": 190,
+							"name": "toBuffer",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 191,
+									"name": "toBuffer",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "reference",
+												"name": "OperationResult",
+												"id": 213
+											}
+										]
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 86,
+									"character": 16
+								}
+							]
+						},
+						{
+							"id": 192,
+							"name": "toImage",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 193,
+									"name": "toImage",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "reference",
+												"name": "Image",
+												"id": 155
+											}
+										]
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 94,
+									"character": 15
+								}
+							]
+						},
+						{
+							"id": 182,
+							"name": "webp",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 183,
+									"name": "webp",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 184,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 72,
+									"character": 6
+								}
+							]
+						},
+						{
+							"id": 185,
+							"name": "withMetadata",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 186,
+									"name": "withMetadata",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 187,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 77,
+									"character": 14
+								}
+							]
+						},
+						{
+							"id": 176,
+							"name": "withoutEnlargement",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {
+								"isExported": true
+							},
+							"signatures": [
+								{
+									"id": 177,
+									"name": "withoutEnlargement",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"parameters": [
+										{
+											"id": 178,
+											"name": "args",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {
+												"isRest": true
+											},
+											"type": {
+												"type": "array",
+												"elementType": {
+													"type": "intrinsic",
+													"name": "any"
+												}
+											}
+										}
+									],
+									"type": {
+										"type": "unknown",
+										"name": "this"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "fly/image.ts",
+									"line": 62,
+									"character": 20
+								}
+							]
+						}
+					],
+					"groups": [
+						{
+							"title": "Enumerations",
+							"kind": 4,
+							"children": [
+								225,
+								239,
+								236
+							]
+						},
+						{
+							"title": "Interfaces",
+							"kind": 256,
+							"children": [
+								203,
+								213,
+								216
+							]
+						},
+						{
+							"title": "Constructors",
+							"kind": 512,
+							"children": [
+								159
+							]
+						},
+						{
+							"title": "Methods",
+							"kind": 2048,
+							"children": [
+								173,
+								167,
+								170,
+								188,
+								179,
+								162,
+								190,
+								192,
+								182,
+								185,
+								176
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "fly/image.ts",
+							"line": 10,
+							"character": 18
+						},
+						{
+							"fileName": "fly/image.ts",
+							"line": 102,
+							"character": 22
+						},
+						{
+							"fileName": "fly/image.ts",
+							"line": 202,
+							"character": 22
+						}
+					]
+				}
+			],
+			"groups": [
+				{
+					"title": "Classes",
+					"kind": 128,
+					"children": [
+						155
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "fly/image.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 103,
+			"name": "\"form_data\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/form_data.ts",
+			"sources": [
+				{
+					"fileName": "form_data.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 135,
+			"name": "\"logger\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/logger.ts",
+			"sources": [
+				{
+					"fileName": "logger.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 56,
+			"name": "\"types/dispatcher.d\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/types/dispatcher.d.ts",
+			"children": [
+				{
+					"id": 57,
+					"name": "Dispatcher",
+					"kind": 128,
+					"kindString": "Class",
+					"flags": {
+						"isExported": true
+					},
+					"children": [
+						{
+							"id": 63,
+							"name": "dispatch",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isExported": true
+							},
+							"sources": [
+								{
+									"fileName": "types/dispatcher.d.ts",
+									"line": 3,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "reflection",
+								"declaration": {
+									"id": 64,
+									"name": "__type",
+									"kind": 65536,
+									"kindString": "Type literal",
+									"flags": {},
+									"signatures": [
+										{
+											"id": 65,
+											"name": "__call",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"parameters": [
+												{
+													"id": 66,
+													"name": "name",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"type": {
+														"type": "intrinsic",
+														"name": "string"
+													}
+												},
+												{
+													"id": 67,
+													"name": "args",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {
+														"isRest": true
+													},
+													"type": {
+														"type": "array",
+														"elementType": {
+															"type": "intrinsic",
+															"name": "any"
+														}
+													}
+												}
+											],
+											"type": {
+												"type": "reference",
+												"name": "Promise",
+												"typeArguments": [
+													{
+														"type": "intrinsic",
+														"name": "any"
+													}
+												]
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "types/dispatcher.d.ts",
+											"line": 3,
+											"character": 11
+										}
+									]
+								}
+							}
+						},
+						{
+							"id": 58,
+							"name": "dispatchSync",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isExported": true
+							},
+							"sources": [
+								{
+									"fileName": "types/dispatcher.d.ts",
+									"line": 2,
+									"character": 14
+								}
+							],
+							"type": {
+								"type": "reflection",
+								"declaration": {
+									"id": 59,
+									"name": "__type",
+									"kind": 65536,
+									"kindString": "Type literal",
+									"flags": {},
+									"signatures": [
+										{
+											"id": 60,
+											"name": "__call",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"parameters": [
+												{
+													"id": 61,
+													"name": "name",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"type": {
+														"type": "intrinsic",
+														"name": "string"
+													}
+												},
+												{
+													"id": 62,
+													"name": "args",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {
+														"isRest": true
+													},
+													"type": {
+														"type": "array",
+														"elementType": {
+															"type": "intrinsic",
+															"name": "any"
+														}
+													}
+												}
+											],
+											"type": {
+												"type": "intrinsic",
+												"name": "any"
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "types/dispatcher.d.ts",
+											"line": 2,
+											"character": 15
+										}
+									]
+								}
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Properties",
+							"kind": 1024,
+							"children": [
+								63,
+								58
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "types/dispatcher.d.ts",
+							"line": 1,
+							"character": 23
+						}
+					]
+				}
+			],
+			"groups": [
+				{
+					"title": "Classes",
+					"kind": 128,
+					"children": [
+						57
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "types/dispatcher.d.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 244,
+			"name": "\"types/fetch.d\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/types/fetch.d.ts",
+			"comment": {
+				"tags": [
+					{
+						"tag": "module",
+						"text": "fetch\n"
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 245,
+					"name": "RequestInit",
+					"kind": 256,
+					"kindString": "Interface",
+					"flags": {},
+					"children": [
+						{
+							"id": 247,
+							"name": "body",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 15,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "reference",
+										"name": "Blob"
+									},
+									{
+										"type": "reference",
+										"name": "BufferSource"
+									},
+									{
+										"type": "reference",
+										"name": "FormData"
+									},
+									{
+										"type": "intrinsic",
+										"name": "string"
+									},
+									{
+										"type": "intrinsic",
+										"name": "null"
+									}
+								]
+							}
+						},
+						{
+							"id": 248,
+							"name": "cache",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 16,
+									"character": 7
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "RequestCache"
+							}
+						},
+						{
+							"id": 249,
+							"name": "credentials",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 17,
+									"character": 13
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "RequestCredentials"
+							}
+						},
+						{
+							"id": 250,
+							"name": "headers",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 18,
+									"character": 9
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "HeadersInit"
+							}
+						},
+						{
+							"id": 251,
+							"name": "integrity",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 19,
+									"character": 11
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "intrinsic",
+										"name": "undefined"
+									},
+									{
+										"type": "intrinsic",
+										"name": "string"
+									}
+								]
+							}
+						},
+						{
+							"id": 252,
+							"name": "keepalive",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 20,
+									"character": 11
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "intrinsic",
+										"name": "undefined"
+									},
+									{
+										"type": "intrinsic",
+										"name": "true"
+									},
+									{
+										"type": "intrinsic",
+										"name": "false"
+									}
+								]
+							}
+						},
+						{
+							"id": 253,
+							"name": "method",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 21,
+									"character": 8
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "intrinsic",
+										"name": "undefined"
+									},
+									{
+										"type": "intrinsic",
+										"name": "string"
+									}
+								]
+							}
+						},
+						{
+							"id": 254,
+							"name": "mode",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 22,
+									"character": 6
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "RequestMode"
+							}
+						},
+						{
+							"id": 255,
+							"name": "redirect",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 23,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "RequestRedirect"
+							}
+						},
+						{
+							"id": 256,
+							"name": "referrer",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 24,
+									"character": 10
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "intrinsic",
+										"name": "undefined"
+									},
+									{
+										"type": "intrinsic",
+										"name": "string"
+									}
+								]
+							}
+						},
+						{
+							"id": 257,
+							"name": "referrerPolicy",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 25,
+									"character": 16
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "ReferrerPolicy"
+							}
+						},
+						{
+							"id": 246,
+							"name": "signal",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {
+								"isOptional": true
+							},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 14,
+									"character": 8
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "AbortSignal"
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Properties",
+							"kind": 1024,
+							"children": [
+								247,
+								248,
+								249,
+								250,
+								251,
+								252,
+								253,
+								254,
+								255,
+								256,
+								257,
+								246
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "types/fetch.d.ts",
+							"line": 13,
+							"character": 21
+						}
+					]
+				},
+				{
+					"id": 258,
+					"name": "Response",
+					"kind": 256,
+					"kindString": "Interface",
+					"flags": {},
+					"children": [
+						{
+							"id": 285,
+							"name": "Object",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "Provides functionality common to all JavaScript objects."
+							},
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.es5.d.ts",
+									"line": 257,
+									"character": 20
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "ObjectConstructor"
+							}
+						},
+						{
+							"id": 259,
+							"name": "body",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 29,
+									"character": 15
+								}
+							],
+							"type": {
+								"type": "union",
+								"types": [
+									{
+										"type": "reference",
+										"name": "ReadableStream"
+									},
+									{
+										"type": "intrinsic",
+										"name": "null"
+									}
+								]
+							}
+						},
+						{
+							"id": 286,
+							"name": "bodyUsed",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.dom.d.ts",
+									"line": 13912,
+									"character": 21
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "boolean"
+							},
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Body.bodyUsed"
+							}
+						},
+						{
+							"id": 269,
+							"name": "constructor",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"comment": {
+								"shortText": "The initial value of Object.prototype.constructor is the standard built-in Object constructor."
+							},
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.es5.d.ts",
+									"line": 112,
+									"character": 15
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "Function"
+							},
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Object.constructor"
+							}
+						},
+						{
+							"id": 260,
+							"name": "headers",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 30,
+									"character": 18
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "Headers"
+							}
+						},
+						{
+							"id": 261,
+							"name": "ok",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 31,
+									"character": 13
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "boolean"
+							}
+						},
+						{
+							"id": 266,
+							"name": "redirected",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 36,
+									"character": 21
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "boolean"
+							}
+						},
+						{
+							"id": 262,
+							"name": "status",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 32,
+									"character": 17
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "number"
+							}
+						},
+						{
+							"id": 263,
+							"name": "statusText",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 33,
+									"character": 21
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "string"
+							}
+						},
+						{
+							"id": 264,
+							"name": "type",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 34,
+									"character": 15
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "ResponseType"
+							}
+						},
+						{
+							"id": 265,
+							"name": "url",
+							"kind": 1024,
+							"kindString": "Property",
+							"flags": {},
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 35,
+									"character": 14
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "string"
+							}
+						},
+						{
+							"id": 287,
+							"name": "arrayBuffer",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 288,
+									"name": "arrayBuffer",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "reference",
+												"name": "ArrayBuffer"
+											}
+										]
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "Body.arrayBuffer"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.dom.d.ts",
+									"line": 13913,
+									"character": 15
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Body.arrayBuffer"
+							}
+						},
+						{
+							"id": 289,
+							"name": "blob",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 290,
+									"name": "blob",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "reference",
+												"name": "Blob"
+											}
+										]
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "Body.blob"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.dom.d.ts",
+									"line": 13914,
+									"character": 8
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Body.blob"
+							}
+						},
+						{
+							"id": 267,
+							"name": "clone",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 268,
+									"name": "clone",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Response"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "types/fetch.d.ts",
+									"line": 37,
+									"character": 7
+								}
+							]
+						},
+						{
+							"id": 295,
+							"name": "formData",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 296,
+									"name": "formData",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "reference",
+												"name": "FormData"
+											}
+										]
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "Body.formData"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.dom.d.ts",
+									"line": 13917,
+									"character": 12
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Body.formData"
+							}
+						},
+						{
+							"id": 276,
+							"name": "hasOwnProperty",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 277,
+									"name": "hasOwnProperty",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Determines whether an object has a property with the specified name."
+									},
+									"parameters": [
+										{
+											"id": 278,
+											"name": "v",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"text": "A property name.\n"
+											},
+											"type": {
+												"type": "intrinsic",
+												"name": "string"
+											}
+										}
+									],
+									"type": {
+										"type": "intrinsic",
+										"name": "boolean"
+									},
+									"overwrites": {
+										"type": "reference",
+										"name": "Object.hasOwnProperty"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "Object.hasOwnProperty"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.es5.d.ts",
+									"line": 127,
+									"character": 18
+								}
+							],
+							"overwrites": {
+								"type": "reference",
+								"name": "Object.hasOwnProperty"
+							},
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Object.hasOwnProperty"
+							}
+						},
+						{
+							"id": 279,
+							"name": "isPrototypeOf",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 280,
+									"name": "isPrototypeOf",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Determines whether an object exists in another object's prototype chain."
+									},
+									"parameters": [
+										{
+											"id": 281,
+											"name": "v",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"text": "Another object whose prototype chain is to be checked.\n"
+											},
+											"type": {
+												"type": "reference",
+												"name": "Object"
+											}
+										}
+									],
+									"type": {
+										"type": "intrinsic",
+										"name": "boolean"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "Object.isPrototypeOf"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.es5.d.ts",
+									"line": 133,
+									"character": 17
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Object.isPrototypeOf"
+							}
+						},
+						{
+							"id": 291,
+							"name": "json",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 292,
+									"name": "json",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "intrinsic",
+												"name": "any"
+											}
+										]
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "Body.json"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.dom.d.ts",
+									"line": 13915,
+									"character": 8
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Body.json"
+							}
+						},
+						{
+							"id": 282,
+							"name": "propertyIsEnumerable",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 283,
+									"name": "propertyIsEnumerable",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Determines whether a specified property is enumerable."
+									},
+									"parameters": [
+										{
+											"id": 284,
+											"name": "v",
+											"kind": 32768,
+											"kindString": "Parameter",
+											"flags": {},
+											"comment": {
+												"text": "A property name.\n"
+											},
+											"type": {
+												"type": "intrinsic",
+												"name": "string"
+											}
+										}
+									],
+									"type": {
+										"type": "intrinsic",
+										"name": "boolean"
+									},
+									"overwrites": {
+										"type": "reference",
+										"name": "Object.propertyIsEnumerable"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "Object.propertyIsEnumerable"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.es5.d.ts",
+									"line": 139,
+									"character": 24
+								}
+							],
+							"overwrites": {
+								"type": "reference",
+								"name": "Object.propertyIsEnumerable"
+							},
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Object.propertyIsEnumerable"
+							}
+						},
+						{
+							"id": 293,
+							"name": "text",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 294,
+									"name": "text",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "Promise",
+										"typeArguments": [
+											{
+												"type": "intrinsic",
+												"name": "string"
+											}
+										]
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "Body.text"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.dom.d.ts",
+									"line": 13916,
+									"character": 8
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Body.text"
+							}
+						},
+						{
+							"id": 272,
+							"name": "toLocaleString",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 273,
+									"name": "toLocaleString",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Returns a date converted to a string using the current locale."
+									},
+									"type": {
+										"type": "intrinsic",
+										"name": "string"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "Object.toLocaleString"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.es5.d.ts",
+									"line": 118,
+									"character": 18
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Object.toLocaleString"
+							}
+						},
+						{
+							"id": 270,
+							"name": "toString",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 271,
+									"name": "toString",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Returns a string representation of an object."
+									},
+									"type": {
+										"type": "intrinsic",
+										"name": "string"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "Object.toString"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.es5.d.ts",
+									"line": 115,
+									"character": 12
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Object.toString"
+							}
+						},
+						{
+							"id": 274,
+							"name": "valueOf",
+							"kind": 2048,
+							"kindString": "Method",
+							"flags": {},
+							"signatures": [
+								{
+									"id": 275,
+									"name": "valueOf",
+									"kind": 4096,
+									"kindString": "Call signature",
+									"flags": {},
+									"comment": {
+										"shortText": "Returns the primitive value of the specified object."
+									},
+									"type": {
+										"type": "reference",
+										"name": "Object"
+									},
+									"inheritedFrom": {
+										"type": "reference",
+										"name": "Object.valueOf"
+									}
+								}
+							],
+							"sources": [
+								{
+									"fileName": "/Users/jerome/projects/github.com/superfly/fly/node_modules/typescript/lib/lib.es5.d.ts",
+									"line": 121,
+									"character": 11
+								}
+							],
+							"inheritedFrom": {
+								"type": "reference",
+								"name": "Object.valueOf"
+							}
+						}
+					],
+					"groups": [
+						{
+							"title": "Properties",
+							"kind": 1024,
+							"children": [
+								285,
+								259,
+								286,
+								269,
+								260,
+								261,
+								266,
+								262,
+								263,
+								264,
+								265
+							]
+						},
+						{
+							"title": "Methods",
+							"kind": 2048,
+							"children": [
+								287,
+								289,
+								267,
+								295,
+								276,
+								279,
+								291,
+								282,
+								293,
+								272,
+								270,
+								274
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "types/fetch.d.ts",
+							"line": 28,
+							"character": 18
+						}
+					],
+					"extendedTypes": [
+						{
+							"type": "reference",
+							"name": "Object"
+						},
+						{
+							"type": "reference",
+							"name": "Body"
+						}
+					]
+				},
+				{
+					"id": 301,
+					"name": "FlyRequestInfo",
+					"kind": 4194304,
+					"kindString": "Type alias",
+					"flags": {},
+					"sources": [
+						{
+							"fileName": "types/fetch.d.ts",
+							"line": 11,
+							"character": 19
+						}
+					],
+					"type": {
+						"type": "union",
+						"types": [
+							{
+								"type": "reference",
+								"name": "Request"
+							},
+							{
+								"type": "intrinsic",
+								"name": "string"
+							}
+						]
+					}
+				},
+				{
+					"id": 297,
+					"name": "fetch",
+					"kind": 64,
+					"kindString": "Function",
+					"flags": {},
+					"signatures": [
+						{
+							"id": 298,
+							"name": "fetch",
+							"kind": 4096,
+							"kindString": "Call signature",
+							"flags": {},
+							"comment": {
+								"shortText": "The `fetch()` method starts the process of fetching a resource form the network.\nThis returns a promise that resolves to the `Response` object representing the\nresponse to your request."
+							},
+							"parameters": [
+								{
+									"id": 299,
+									"name": "input",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "FlyRequestInfo",
+										"id": 301
+									}
+								},
+								{
+									"id": 300,
+									"name": "init",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {
+										"isOptional": true
+									},
+									"type": {
+										"type": "reference",
+										"name": "RequestInit",
+										"id": 245
+									}
+								}
+							],
+							"type": {
+								"type": "reference",
+								"name": "Promise",
+								"typeArguments": [
+									{
+										"type": "reference",
+										"name": "Response"
+									}
+								]
+							}
+						}
+					],
+					"sources": [
+						{
+							"fileName": "types/fetch.d.ts",
+							"line": 9,
+							"character": 22
+						}
+					]
+				}
+			],
+			"groups": [
+				{
+					"title": "Interfaces",
+					"kind": 256,
+					"children": [
+						245,
+						258
+					]
+				},
+				{
+					"title": "Type aliases",
+					"kind": 4194304,
+					"children": [
+						301
+					]
+				},
+				{
+					"title": "Functions",
+					"kind": 64,
+					"children": [
+						297
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "types/fetch.d.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 302,
+			"name": "\"types/fly.d\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/types/fly.d.ts",
+			"comment": {
+				"tags": [
+					{
+						"tag": "module",
+						"text": "fly"
+					},
+					{
+						"tag": "preferred",
+						"text": "\n"
+					}
+				]
+			},
+			"children": [
+				{
+					"id": 303,
+					"name": "fly",
+					"kind": 2,
+					"kindString": "Module",
+					"flags": {},
+					"comment": {
+						"shortText": "Fly specific APIs and functionality",
+						"tags": [
+							{
+								"tag": "module",
+								"text": "fly"
+							}
+						]
+					},
+					"children": [
+						{
+							"id": 328,
+							"name": "cache",
+							"kind": 2,
+							"kindString": "Module",
+							"flags": {},
+							"children": [
+								{
+									"id": 340,
+									"name": "expire",
+									"kind": 64,
+									"kindString": "Function",
+									"flags": {
+										"isExported": true
+									},
+									"signatures": [
+										{
+											"id": 341,
+											"name": "expire",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"comment": {
+												"shortText": "Sets or overwrites a key's time to live (in seconds)",
+												"returns": "true if ttl was set successfully\n"
+											},
+											"parameters": [
+												{
+													"id": 342,
+													"name": "key",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"comment": {
+														"text": "The key to modify"
+													},
+													"type": {
+														"type": "intrinsic",
+														"name": "string"
+													}
+												},
+												{
+													"id": 343,
+													"name": "ttl",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"comment": {
+														"text": "Expiration time remaining in seconds"
+													},
+													"type": {
+														"type": "intrinsic",
+														"name": "number"
+													}
+												}
+											],
+											"type": {
+												"type": "reference",
+												"name": "Promise",
+												"typeArguments": [
+													{
+														"type": "intrinsic",
+														"name": "boolean"
+													}
+												]
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "types/fly.d.ts",
+											"line": 63,
+											"character": 26
+										}
+									]
+								},
+								{
+									"id": 329,
+									"name": "get",
+									"kind": 64,
+									"kindString": "Function",
+									"flags": {
+										"isExported": true
+									},
+									"signatures": [
+										{
+											"id": 330,
+											"name": "get",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"comment": {
+												"shortText": "Get an ArrayBuffer value (or null) from the cache. See `getString` if you\nwant a string value.",
+												"returns": "Raw bytes stored for provided key or null if empty.\n"
+											},
+											"parameters": [
+												{
+													"id": 331,
+													"name": "key",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"comment": {
+														"text": "The key to get"
+													},
+													"type": {
+														"type": "intrinsic",
+														"name": "string"
+													}
+												}
+											],
+											"type": {
+												"type": "reference",
+												"name": "Promise",
+												"typeArguments": [
+													{
+														"type": "union",
+														"types": [
+															{
+																"type": "reference",
+																"name": "ArrayBuffer"
+															},
+															{
+																"type": "intrinsic",
+																"name": "null"
+															}
+														]
+													}
+												]
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "types/fly.d.ts",
+											"line": 39,
+											"character": 23
+										}
+									]
+								},
+								{
+									"id": 332,
+									"name": "getString",
+									"kind": 64,
+									"kindString": "Function",
+									"flags": {
+										"isExported": true
+									},
+									"signatures": [
+										{
+											"id": 333,
+											"name": "getString",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"comment": {
+												"shortText": "Get a string value (or null) from the cache",
+												"returns": "Data stored at the key, or null if none exists\n"
+											},
+											"parameters": [
+												{
+													"id": 334,
+													"name": "key",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"comment": {
+														"text": "The key to get"
+													},
+													"type": {
+														"type": "intrinsic",
+														"name": "string"
+													}
+												}
+											],
+											"type": {
+												"type": "reference",
+												"name": "Promise",
+												"typeArguments": [
+													{
+														"type": "union",
+														"types": [
+															{
+																"type": "intrinsic",
+																"name": "string"
+															},
+															{
+																"type": "intrinsic",
+																"name": "null"
+															}
+														]
+													}
+												]
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "types/fly.d.ts",
+											"line": 46,
+											"character": 29
+										}
+									]
+								},
+								{
+									"id": 335,
+									"name": "set",
+									"kind": 64,
+									"kindString": "Function",
+									"flags": {
+										"isExported": true
+									},
+									"signatures": [
+										{
+											"id": 336,
+											"name": "set",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"comment": {
+												"shortText": "Sets a value at a certain key, with an optional ttl",
+												"returns": "true if the set was successful\n"
+											},
+											"parameters": [
+												{
+													"id": 337,
+													"name": "key",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"comment": {
+														"text": "The key to add or overwrite"
+													},
+													"type": {
+														"type": "intrinsic",
+														"name": "string"
+													}
+												},
+												{
+													"id": 338,
+													"name": "value",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"comment": {
+														"text": "Data to store at the specified key, up to 2MB"
+													},
+													"type": {
+														"type": "union",
+														"types": [
+															{
+																"type": "intrinsic",
+																"name": "string"
+															},
+															{
+																"type": "reference",
+																"name": "ArrayBuffer"
+															}
+														]
+													}
+												},
+												{
+													"id": 339,
+													"name": "ttl",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {
+														"isOptional": true
+													},
+													"type": {
+														"type": "union",
+														"types": [
+															{
+																"type": "intrinsic",
+																"name": "undefined"
+															},
+															{
+																"type": "intrinsic",
+																"name": "number"
+															}
+														]
+													}
+												}
+											],
+											"type": {
+												"type": "reference",
+												"name": "Promise",
+												"typeArguments": [
+													{
+														"type": "intrinsic",
+														"name": "boolean"
+													}
+												]
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "types/fly.d.ts",
+											"line": 55,
+											"character": 23
+										}
+									]
+								}
+							],
+							"groups": [
+								{
+									"title": "Functions",
+									"kind": 64,
+									"children": [
+										340,
+										329,
+										332,
+										335
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "types/fly.d.ts",
+									"line": 32,
+									"character": 17
+								}
+							]
+						},
+						{
+							"id": 304,
+							"name": "http",
+							"kind": 2,
+							"kindString": "Module",
+							"flags": {},
+							"comment": {
+								"shortText": "The Fly HTTP interface, use this to work with HTTP requests"
+							},
+							"children": [
+								{
+									"id": 305,
+									"name": "respondWith",
+									"kind": 64,
+									"kindString": "Function",
+									"flags": {
+										"isExported": true
+									},
+									"signatures": [
+										{
+											"id": 306,
+											"name": "respondWith",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"parameters": [
+												{
+													"id": 307,
+													"name": "response",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"type": {
+														"type": "union",
+														"types": [
+															{
+																"type": "reference",
+																"name": "Promise",
+																"typeArguments": [
+																	{
+																		"type": "reference",
+																		"name": "Response"
+																	}
+																]
+															},
+															{
+																"type": "reference",
+																"name": "Response"
+															},
+															{
+																"type": "reflection",
+																"declaration": {
+																	"id": 308,
+																	"name": "__type",
+																	"kind": 65536,
+																	"kindString": "Type literal",
+																	"flags": {},
+																	"signatures": [
+																		{
+																			"id": 309,
+																			"name": "__call",
+																			"kind": 4096,
+																			"kindString": "Call signature",
+																			"flags": {},
+																			"parameters": [
+																				{
+																					"id": 310,
+																					"name": "req",
+																					"kind": 32768,
+																					"kindString": "Parameter",
+																					"flags": {},
+																					"type": {
+																						"type": "reference",
+																						"name": "Request"
+																					}
+																				}
+																			],
+																			"type": {
+																				"type": "reference",
+																				"name": "Promise",
+																				"typeArguments": [
+																					{
+																						"type": "reference",
+																						"name": "Response"
+																					}
+																				]
+																			}
+																		}
+																	],
+																	"sources": [
+																		{
+																			"fileName": "types/fly.d.ts",
+																			"line": 15,
+																			"character": 72
+																		}
+																	]
+																}
+															}
+														]
+													}
+												}
+											],
+											"type": {
+												"type": "intrinsic",
+												"name": "void"
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "types/fly.d.ts",
+											"line": 15,
+											"character": 31
+										}
+									]
+								}
+							],
+							"groups": [
+								{
+									"title": "Functions",
+									"kind": 64,
+									"children": [
+										305
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "types/fly.d.ts",
+									"line": 14,
+									"character": 16
+								}
+							]
+						},
+						{
+							"id": 311,
+							"name": "log",
+							"kind": 2,
+							"kindString": "Module",
+							"flags": {},
+							"children": [
+								{
+									"id": 320,
+									"name": "addMetadata",
+									"kind": 64,
+									"kindString": "Function",
+									"flags": {
+										"isExported": true
+									},
+									"signatures": [
+										{
+											"id": 321,
+											"name": "addMetadata",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"parameters": [
+												{
+													"id": 322,
+													"name": "metadata",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"type": {
+														"type": "intrinsic",
+														"name": "any"
+													}
+												}
+											],
+											"type": {
+												"type": "intrinsic",
+												"name": "void"
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "types/fly.d.ts",
+											"line": 20,
+											"character": 31
+										}
+									]
+								},
+								{
+									"id": 316,
+									"name": "addTransport",
+									"kind": 64,
+									"kindString": "Function",
+									"flags": {
+										"isExported": true
+									},
+									"signatures": [
+										{
+											"id": 317,
+											"name": "addTransport",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"parameters": [
+												{
+													"id": 318,
+													"name": "name",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"type": {
+														"type": "intrinsic",
+														"name": "string"
+													}
+												},
+												{
+													"id": 319,
+													"name": "options",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"type": {
+														"type": "intrinsic",
+														"name": "any"
+													}
+												}
+											],
+											"type": {
+												"type": "intrinsic",
+												"name": "void"
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "types/fly.d.ts",
+											"line": 19,
+											"character": 32
+										}
+									]
+								},
+								{
+									"id": 312,
+									"name": "log",
+									"kind": 64,
+									"kindString": "Function",
+									"flags": {
+										"isExported": true
+									},
+									"signatures": [
+										{
+											"id": 313,
+											"name": "log",
+											"kind": 4096,
+											"kindString": "Call signature",
+											"flags": {},
+											"parameters": [
+												{
+													"id": 314,
+													"name": "lvl",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {},
+													"type": {
+														"type": "intrinsic",
+														"name": "string"
+													}
+												},
+												{
+													"id": 315,
+													"name": "args",
+													"kind": 32768,
+													"kindString": "Parameter",
+													"flags": {
+														"isRest": true
+													},
+													"type": {
+														"type": "array",
+														"elementType": {
+															"type": "intrinsic",
+															"name": "any"
+														}
+													}
+												}
+											],
+											"type": {
+												"type": "intrinsic",
+												"name": "void"
+											}
+										}
+									],
+									"sources": [
+										{
+											"fileName": "types/fly.d.ts",
+											"line": 18,
+											"character": 23
+										}
+									]
+								}
+							],
+							"groups": [
+								{
+									"title": "Functions",
+									"kind": 64,
+									"children": [
+										320,
+										316,
+										312
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "types/fly.d.ts",
+									"line": 17,
+									"character": 15
+								}
+							]
+						},
+						{
+							"id": 323,
+							"name": "util",
+							"kind": 2,
+							"kindString": "Module",
+							"flags": {},
+							"children": [
+								{
+									"id": 324,
+									"name": "md5",
+									"kind": 2,
+									"kindString": "Module",
+									"flags": {},
+									"children": [
+										{
+											"id": 325,
+											"name": "hash",
+											"kind": 64,
+											"kindString": "Function",
+											"flags": {
+												"isExported": true
+											},
+											"signatures": [
+												{
+													"id": 326,
+													"name": "hash",
+													"kind": 4096,
+													"kindString": "Call signature",
+													"flags": {},
+													"comment": {
+														"shortText": "Creates an md5 hash of a string.",
+														"returns": "a string representation of an md5 hash\n"
+													},
+													"parameters": [
+														{
+															"id": 327,
+															"name": "s",
+															"kind": 32768,
+															"kindString": "Parameter",
+															"flags": {},
+															"comment": {
+																"text": "The string value to hash"
+															},
+															"type": {
+																"type": "intrinsic",
+																"name": "string"
+															}
+														}
+													],
+													"type": {
+														"type": "intrinsic",
+														"name": "string"
+													}
+												}
+											],
+											"sources": [
+												{
+													"fileName": "types/fly.d.ts",
+													"line": 29,
+													"character": 26
+												}
+											]
+										}
+									],
+									"groups": [
+										{
+											"title": "Functions",
+											"kind": 64,
+											"children": [
+												325
+											]
+										}
+									],
+									"sources": [
+										{
+											"fileName": "types/fly.d.ts",
+											"line": 23,
+											"character": 17
+										}
+									]
+								}
+							],
+							"groups": [
+								{
+									"title": "Modules",
+									"kind": 2,
+									"children": [
+										324
+									]
+								}
+							],
+							"sources": [
+								{
+									"fileName": "types/fly.d.ts",
+									"line": 22,
+									"character": 16
+								}
+							]
+						}
+					],
+					"groups": [
+						{
+							"title": "Modules",
+							"kind": 2,
+							"children": [
+								328,
+								304,
+								311,
+								323
+							]
+						}
+					],
+					"sources": [
+						{
+							"fileName": "types/fly.d.ts",
+							"line": 10,
+							"character": 18
+						}
+					]
+				}
+			],
+			"groups": [
+				{
+					"title": "Modules",
+					"kind": 2,
+					"children": [
+						303
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "types/fly.d.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 344,
+			"name": "\"types/querystring.d\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isPrivate": true,
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/types/querystring.d.ts",
+			"comment": {
+				"tags": [
+					{
+						"tag": "module",
+						"text": "fly"
+					}
+				]
+			},
+			"sources": [
+				{
+					"fileName": "types/querystring.d.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 379,
+			"name": "\"types/text-encoding.d\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isPrivate": true,
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/types/text-encoding.d.ts",
+			"comment": {
+				"tags": [
+					{
+						"tag": "module",
+						"text": "fly"
+					}
+				]
+			},
+			"sources": [
+				{
+					"fileName": "types/text-encoding.d.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 426,
+			"name": "\"types/util.d\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isPrivate": true,
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/types/util.d.ts",
+			"comment": {
+				"tags": [
+					{
+						"tag": "module",
+						"text": "fly\n"
+					}
+				]
+			},
+			"sources": [
+				{
+					"fileName": "types/util.d.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		},
+		{
+			"id": 68,
+			"name": "\"utils/buffer\"",
+			"kind": 1,
+			"kindString": "External module",
+			"flags": {
+				"isExported": true
+			},
+			"originalName": "/Users/jerome/projects/github.com/superfly/fly/v8env/ts/utils/buffer.ts",
+			"children": [
+				{
+					"id": 69,
+					"name": "transferInto",
+					"kind": 64,
+					"kindString": "Function",
+					"flags": {
+						"isExported": true
+					},
+					"signatures": [
+						{
+							"id": 70,
+							"name": "transferInto",
+							"kind": 4096,
+							"kindString": "Call signature",
+							"flags": {},
+							"parameters": [
+								{
+									"id": 71,
+									"name": "ivm",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "intrinsic",
+										"name": "any"
+									}
+								},
+								{
+									"id": 72,
+									"name": "buffer",
+									"kind": 32768,
+									"kindString": "Parameter",
+									"flags": {},
+									"type": {
+										"type": "reference",
+										"name": "BufferSource"
+									}
+								}
+							],
+							"type": {
+								"type": "intrinsic",
+								"name": "any"
+							}
+						}
+					],
+					"sources": [
+						{
+							"fileName": "utils/buffer.ts",
+							"line": 1,
+							"character": 28
+						}
+					]
+				}
+			],
+			"groups": [
+				{
+					"title": "Functions",
+					"kind": 64,
+					"children": [
+						69
+					]
+				}
+			],
+			"sources": [
+				{
+					"fileName": "utils/buffer.ts",
+					"line": 1,
+					"character": 0
+				}
+			]
+		}
+	],
+	"groups": [
+		{
+			"title": "External modules",
+			"kind": 1,
+			"children": [
+				1,
+				18,
+				73,
+				154,
+				103,
+				135,
+				56,
+				244,
+				302,
+				344,
+				379,
+				426,
+				68
+			]
+		}
+	]
+}
