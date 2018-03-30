@@ -245,7 +245,7 @@ export class Context extends EventEmitter {
 		this.clearTimeouts()
 
 		for (let cb of this.callbacks) {
-			this.tryCallback(cb, [new Error("Destroying context.")])
+			this.tryCallback(cb, ["Destroying context."])
 		}
 
 		this.releaseAll()
