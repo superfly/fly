@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.27.0-4"></a>
+# [0.27.0-4](https://github.com/superfly/fly/compare/v0.27.0-3...v0.27.0-4) (2018-03-30)
+
+
+### Bug Fixes
+
+* cache.get in development mode was screwing up string <-> buffer because of an apparent node bug ([6aeb976](https://github.com/superfly/fly/commit/6aeb976))
+
+
+
 <a name="0.27.0-3"></a>
 # [0.27.0-3](https://github.com/superfly/fly/compare/v0.27.0-2...v0.27.0-3) (2018-03-28)
 
