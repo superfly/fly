@@ -1,6 +1,6 @@
 import { CacheStore } from './cache_store'
 import * as IORedis from 'ioredis'
-
+const util = require("util")
 const Redis = require('ioredis-mock')
 const OK = 'ok'
 
@@ -13,16 +13,19 @@ export class MemoryCacheStore implements CacheStore {
   }
 
   async get(key: string): Promise<Buffer | null> {
-    const buf = await this.redis.getBuffer(key)
+    let buf = await this.redis.getBuffer(key)
     if (!buf)
       return null
-    return Buffer.from(buf)
+    return buf
   }
 
   async set(key: string, value: any, ttl?: number): Promise<boolean> {
     let args = []
     if (ttl && !isNaN(ttl))
       args.push('EX', ttl)
+    if (typeof value === "string") {
+      value = new util.TextEncoder().encode(value)
+    }
     return (await this.redis.set(key, value, ...args)) === OK
   }
 
