@@ -2951,18 +2951,6 @@
 				"isExported": true
 			},
 			"originalName": "/Users/kurt/code/fly.io/core/v8env/ts/types/fly.d.ts",
-			"comment": {
-				"tags": [
-					{
-						"tag": "module",
-						"text": "fly"
-					},
-					{
-						"tag": "preferred",
-						"text": "\n"
-					}
-				]
-			},
 			"children": [
 				{
 					"id": 256,
@@ -2975,7 +2963,7 @@
 						"tags": [
 							{
 								"tag": "module",
-								"text": "fly"
+								"text": "fly\n"
 							}
 						]
 					},
@@ -3051,7 +3039,7 @@
 									"sources": [
 										{
 											"fileName": "types/fly.d.ts",
-											"line": 63,
+											"line": 59,
 											"character": 26
 										}
 									]
@@ -3115,7 +3103,7 @@
 									"sources": [
 										{
 											"fileName": "types/fly.d.ts",
-											"line": 39,
+											"line": 35,
 											"character": 23
 										}
 									]
@@ -3179,7 +3167,7 @@
 									"sources": [
 										{
 											"fileName": "types/fly.d.ts",
-											"line": 46,
+											"line": 42,
 											"character": 29
 										}
 									]
@@ -3279,7 +3267,7 @@
 									"sources": [
 										{
 											"fileName": "types/fly.d.ts",
-											"line": 55,
+											"line": 51,
 											"character": 23
 										}
 									]
@@ -3300,7 +3288,7 @@
 							"sources": [
 								{
 									"fileName": "types/fly.d.ts",
-									"line": 32,
+									"line": 28,
 									"character": 17
 								}
 							]
@@ -3397,7 +3385,7 @@
 																	"sources": [
 																		{
 																			"fileName": "types/fly.d.ts",
-																			"line": 15,
+																			"line": 10,
 																			"character": 72
 																		}
 																	]
@@ -3416,7 +3404,7 @@
 									"sources": [
 										{
 											"fileName": "types/fly.d.ts",
-											"line": 15,
+											"line": 10,
 											"character": 31
 										}
 									]
@@ -3434,7 +3422,7 @@
 							"sources": [
 								{
 									"fileName": "types/fly.d.ts",
-									"line": 14,
+									"line": 9,
 									"character": 16
 								}
 							]
@@ -3483,7 +3471,7 @@
 									"sources": [
 										{
 											"fileName": "types/fly.d.ts",
-											"line": 20,
+											"line": 15,
 											"character": 31
 										}
 									]
@@ -3536,7 +3524,7 @@
 									"sources": [
 										{
 											"fileName": "types/fly.d.ts",
-											"line": 19,
+											"line": 14,
 											"character": 32
 										}
 									]
@@ -3594,7 +3582,7 @@
 									"sources": [
 										{
 											"fileName": "types/fly.d.ts",
-											"line": 18,
+											"line": 13,
 											"character": 23
 										}
 									]
@@ -3614,7 +3602,7 @@
 							"sources": [
 								{
 									"fileName": "types/fly.d.ts",
-									"line": 17,
+									"line": 12,
 									"character": 15
 								}
 							]
@@ -3677,7 +3665,7 @@
 											"sources": [
 												{
 													"fileName": "types/fly.d.ts",
-													"line": 29,
+													"line": 25,
 													"character": 26
 												}
 											]
@@ -3695,7 +3683,7 @@
 									"sources": [
 										{
 											"fileName": "types/fly.d.ts",
-											"line": 23,
+											"line": 19,
 											"character": 17
 										}
 									]
@@ -3713,7 +3701,7 @@
 							"sources": [
 								{
 									"fileName": "types/fly.d.ts",
-									"line": 22,
+									"line": 18,
 									"character": 16
 								}
 							]
@@ -3734,7 +3722,7 @@
 					"sources": [
 						{
 							"fileName": "types/fly.d.ts",
-							"line": 10,
+							"line": 5,
 							"character": 18
 						}
 					]

@@ -1,11 +1,6 @@
 /**
- * @module fly
- * @preferred
- */
-/**
  * Fly specific APIs and functionality
  * @module fly
- * @preferred
  */
 declare module fly {
   /**
@@ -18,6 +13,7 @@ declare module fly {
     export function log(lvl: string, ...args: any[]): void
     export function addTransport(name: string, options: any): void
     export function addMetadata(metadata: any): void
+
   }
   namespace util {
     namespace md5 {
