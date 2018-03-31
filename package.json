@@ -1,6 +1,6 @@
 {
   "name": "@fly/fly",
-  "version": "0.26.6",
+  "version": "0.26.7-0",
   "description": "",
   "main": "lib/index.js",
   "files": [
@@ -91,7 +91,7 @@
     "glob": "^7.1.2",
     "ioredis": "^3.2.2",
     "ioredis-mock": "^3.6.1",
-    "isolated-vm": "^1.4.2",
+    "isolated-vm": "1.4.2",
     "js-yaml": "^3.10.0",
     "mocha": "^4.0.1",
     "pako": "^1.0.6",
