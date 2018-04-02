@@ -1,6 +1,6 @@
 {
   "name": "@fly/fly",
-  "version": "0.27.0-7",
+  "version": "0.27.0-8",
   "description": "",
   "main": "lib/index.js",
   "files": [
@@ -92,7 +92,7 @@
     "glob": "^7.1.2",
     "ioredis": "^3.2.2",
     "ioredis-mock": "^3.6.1",
-    "isolated-vm": "^1.5.0",
+    "isolated-vm": "github:laverdet/isolated-vm#thread-log",
     "js-yaml": "^3.10.0",
     "mocha": "^4.0.1",
     "pako": "^1.0.6",
