@@ -1,6 +1,9 @@
 /**
  * Fly specific APIs and functionality
- * Modules are available via the fly Global variable:
+ * Modules are available via the `fly` Global variable.
+ * 
+ * The runtime includes an implementation of the [`fetch`](fetch.html) spec
+ * for making HTTP requests.
  * @module fly
  * @preferred
  */
