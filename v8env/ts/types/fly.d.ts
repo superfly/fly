@@ -1,5 +1,6 @@
 /**
  * Fly specific APIs and functionality
+ * Modules are available via the fly Global variable:
  * @module fly
  * @preferred
  */

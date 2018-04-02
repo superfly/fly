@@ -67,7 +67,9 @@
     "out": "./docs/build/",
     "includeDeclarations": true,
     "excludeExternals": true,
+    "excludeNotExported": true,
     "plugin": "all",
-    "mode": "modules"
+    "mode": "modules",
+    "theme": "./docs/theme/"
   }
 }

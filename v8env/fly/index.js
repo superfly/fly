@@ -18,6 +18,8 @@ export default function flyInit(ivm, dispatcher) {
       }
     },
     streams: initStreams(ivm, dispatcher),
-    Image: initImage(ivm, dispatcher)
+    Image: initImage(ivm, dispatcher),
+    Document,
+    Element
   }
 }

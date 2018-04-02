@@ -663,7 +663,7 @@ dl.tsd-comment-tags p { margin: 0; }
 
 .toggle-public .tsd-is-private, .toggle-public .tsd-is-protected, .toggle-public .tsd-is-private-protected { display: none; }
 
-.toggle-inherited .tsd-is-inherited { display: none; }
+/*.toggle-inherited .tsd-is-inherited { display: none; }*/
 
 .toggle-only-exported .tsd-is-not-exported { display: none; }
 
