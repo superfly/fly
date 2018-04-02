@@ -1,9 +1,4 @@
 /**
- * The Fly image API.
- * @module fly
- */
-
-/**
  * A class for modifying images. This uses operations from [Sharp](http://sharp.pixelplumbing.com/en/stable/) under the hood.
  * @module fly
  */
