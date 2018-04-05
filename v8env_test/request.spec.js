@@ -11,4 +11,11 @@ describe("Request", () => {
 
     expect(req.bodySource).to.eq(r.bodySource)
   })
+
+  it('returns an ArrayBuffer given a Uint8Array', async () => {
+    const bodyText = "hello world"
+    const r = new Response(new TextEncoder().encode(bodyText))
+
+    expect(new TextDecoder("utf-8").decode(await r.arrayBuffer())).to.equal(bodyText)
+  })
 })
