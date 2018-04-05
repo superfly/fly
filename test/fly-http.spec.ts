@@ -6,13 +6,6 @@ describe('fly.http', function () {
   before(startServer('fly-http.js', { config: {} }))
   after(stopServer)
 
-  it("matches a defined route", async () => {
-    let res = await axios.get("http://127.0.0.1:3333/", {
-      headers: { 'Host': "test" }
-    })
-
-    expect(res.data).to.equal("/")
-  })
   it("matches a respondWith", async () => {
     let res = await axios.get("http://127.0.0.1:3333/wat", {
       headers: { 'Host': "test" }

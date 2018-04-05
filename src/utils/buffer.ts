@@ -14,16 +14,16 @@ export function bufferToArrayBuffer(buffer: Buffer): ArrayBuffer {
   )
 }
 
-export function transferInto(buffer: Buffer | ArrayBuffer | null): ivm.Copy<ArrayBuffer> | null {
+export function transferInto(buffer: Buffer | ArrayBuffer | TypedArray | null): ivm.Copy<ArrayBuffer> | null {
   if (!buffer)
     return null
   if (buffer instanceof Buffer)
     return transferArrayBufferInto(bufferToArrayBuffer(buffer))
-  else if (buffer instanceof ArrayBuffer)
+  else if (buffer instanceof ArrayBuffer || typeof buffer.buffer !== 'undefined')
     return transferArrayBufferInto(buffer)
-  return null
+  return new ivm.ExternalCopy(buffer).copyInto({ release: true })
 }
 
-function transferArrayBufferInto(buffer: ArrayBuffer) {
-  return (new ivm.ExternalCopy(buffer, { transferOut: true })).copyInto({ release: true, transferIn: true });
+function transferArrayBufferInto(buffer: ArrayBuffer | TypedArray) {
+  return new ivm.ExternalCopy(buffer, { transferOut: true }).copyInto({ release: true, transferIn: true });
 }
