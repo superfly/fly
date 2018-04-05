@@ -1,10 +1,6 @@
-addEventListener('fetch', function (event) {
-  event.respondWith(new Response(null,
-    {
-      headers: {
-        'Location': 'https://fly.io/docs/apps/'
-      },
-      status: 302
-    }
-  ))
+let array = new Uint8Array(1)
+array[0] = 10
+
+fly.http.respondWith(function(request){
+  return new Response(array, { status: 200})
 })
