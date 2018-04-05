@@ -93,7 +93,10 @@ export default class BodyMixin implements Body {
   }
 
   async arrayBuffer(): Promise<ArrayBuffer> {
-    if (this.bodySource instanceof ArrayBuffer) {
+    if (this.bodySource instanceof Uint8Array) {
+      const buffer = this.bodySource.buffer
+      if (buffer instanceof ArrayBuffer) return buffer
+    } else if (this.bodySource instanceof ArrayBuffer) {
       return this.bodySource
     } else if (typeof this.bodySource === 'string') {
       const enc = new TextEncoder("utf-8")
