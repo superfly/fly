@@ -39,7 +39,6 @@
     "@fly/typedoc-plugin-external-module-name": "^1.1.3",
     "@types/chai": "^4.0.8",
     "@types/chokidar": "^1.7.5",
-    "@types/concat-stream": "^1.6.0",
     "@types/fs-extra": "^5.0.0",
     "@types/glob": "^5.0.35",
     "@types/ioredis": "^3.2.5",
