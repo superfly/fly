@@ -7,7 +7,6 @@ import { Context } from '../context';
 import { Bridge } from './bridge';
 import { createHash, Hash, HexBase64Latin1Encoding } from 'crypto';
 
-import concat = require('concat-stream')
 import { transferInto } from '../utils/buffer';
 
 const supportedAlgos = ["blake2b512", "blake2s256", "gost", "md4", "md5", "mdc2", "rmd160", "sha1", "sha224", "sha256", "sha384", "sha512"]
