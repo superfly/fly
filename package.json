@@ -1,6 +1,6 @@
 {
   "name": "@fly/fly",
-  "version": "0.26.7-0",
+  "version": "0.27.0-13",
   "description": "",
   "main": "lib/index.js",
   "files": [
@@ -73,7 +73,6 @@
     "replay": "file:./vendor/replay",
     "standard-version": "^4.3.0",
     "string-to-stream": "^1.1.0",
-    "text-encoding": "^0.6.4",
     "to-arraybuffer": "^1.0.1",
     "ts-loader": "^3.2.0",
     "ts-node": "^3.3.0",
@@ -95,7 +94,7 @@
     "glob": "^7.1.2",
     "ioredis": "^3.2.2",
     "ioredis-mock": "^3.6.1",
-    "isolated-vm": "1.4.2",
+    "isolated-vm": "^1.5.1",
     "js-yaml": "^3.10.0",
     "mocha": "^4.0.1",
     "pako": "^1.0.6",
@@ -104,7 +103,6 @@
     "segfault-handler": "^1.0.0",
     "sharp": "^0.20.0",
     "source-map": "^0.6.1",
-    "spark-md5": "^3.0.0",
     "tar-fs": "^1.16.0",
     "uglifyjs-webpack-plugin": "^1.2.2",
     "universal-url-lite": "^1.0.0",

@@ -61,7 +61,7 @@ root
         throw err
 
       try {
-        await v8Env.waitForReadiness()
+        // await v8Env.waitForReadiness()
         const iso = new ivm.Isolate({ snapshot: v8Env.snapshot })
         const ctx = await createContext(iso, new Bridge())
 

@@ -160,7 +160,7 @@ export class Context extends EventEmitter {
 			this.set('global', this.global.derefInto()),
 			this.set('_ivm', ivm),
 			this.set("_dispatch", new ivm.Reference((name: string, ...args: any[]) => {
-				bridge.dispatch(this, name, ...args)
+				return bridge.dispatch(this, name, ...args)
 			})),
 			this.set('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
 				log.log(lvl, args[0], ...args.slice(1))
@@ -171,7 +171,7 @@ export class Context extends EventEmitter {
 		try {
 			await bootstrapFn.apply()
 		} finally {
-			bootstrapFn.release()
+			tryRelease(bootstrapFn)
 		}
 
 		return
@@ -230,20 +230,26 @@ export class Context extends EventEmitter {
 	}
 
 	async release() {
-		try {
-			const teardownFn = await this.global.get("teardown")
-			await teardownFn.apply(null, [])
-			teardownFn.release()
-			this.fireFetchEventFn && this.fireFetchEventFn.release()
-			this.global.release()
-			this.callbacks = []
-			this.intervals = {}
-			this.timeouts = {}
-			this.logger.close()
-			this.ctx.release()
-		} catch (err) {
-			log.error("error releasing context:", err.stack)
+		await this.runV8Teardown()
+		this.fireFetchEventFn && tryRelease(this.fireFetchEventFn)
+		tryRelease(this.global)
+		this.callbacks = []
+		this.intervals = {}
+		this.timeouts = {}
+		tryRelease(this.ctx)
+	}
+
+	// forcibly destroy everything about this context
+	destroy() {
+		this.clearIntervals()
+		this.clearTimeouts()
+
+		for (let cb of this.callbacks) {
+			this.tryCallback(cb, ["Destroying context."])
 		}
+
+		this.releaseAll()
+		this.release()
 	}
 
 	async finalize() {
@@ -265,27 +271,67 @@ export class Context extends EventEmitter {
 				this.on("callbackApplied", cbFn)
 			})
 		} finally {
+
+			await this.runV8Finalize()
+
 			// clear all intervals no matter what
-			for (const [id, t] of Object.entries(this.intervals)) {
-				clearInterval(t)
-				delete this.intervals[parseInt(id)] // stupid ts.
-			}
-			let rel;
-			while (rel = this.releasables.pop()) {
-				try {
-					rel.release()
-				} catch (e) {
-					// console.error("RELEASE ERROR:", e.stack)
-					// don't really care
-				}
-			}
+			this.clearIntervals()
+			this.releaseAll()
 			this.logMetadata = {} // reset log meta data!
 		}
 	}
+
+	async runV8Finalize() {
+		try {
+			const finalizeFn = await this.global.get("finalize")
+			await finalizeFn.apply(null, [])
+			tryRelease(finalizeFn)
+		} catch (e) {
+
+		}
+	}
+
+	async runV8Teardown() {
+		try {
+			const teardownFn = await this.global.get("teardown")
+			await teardownFn.apply(null, [])
+			tryRelease(teardownFn)
+		} catch (err) {
+			log.error("error tearing down v8:", err.stack)
+		}
+	}
+
+	releaseAll() {
+		let rel;
+		while (rel = this.releasables.pop()) {
+			tryRelease(rel)
+		}
+	}
+
+	clearTimeouts() {
+		for (const [id, t] of Object.entries(this.timeouts)) {
+			clearTimeout(t)
+			delete this.timeouts[parseInt(id, 10)]
+		}
+	}
+
+	clearIntervals() {
+		for (const [id, t] of Object.entries(this.intervals)) {
+			clearInterval(t)
+			delete this.intervals[parseInt(id, 10)] // stupid ts.
+		}
+	}
+
 }
 
 export async function createContext(iso: ivm.Isolate, bridge: Bridge, opts: ivm.ContextOptions = {}): Promise<Context> {
 	let ctx = new Context(await iso.createContext(opts), iso)
 	await ctx.bootstrap(bridge)
 	return ctx
+}
+
+function tryRelease(rel: Releasable) {
+	try {
+		rel.release()
+	} catch (e) { }
 }

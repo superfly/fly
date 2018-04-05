@@ -27,10 +27,12 @@ export class DefaultContextStore {
   options: DefaultContextStoreOptions
   scripts: { [key: string]: ivm.Script }
   private mutex: Mutex
+  private releaseMutex: Mutex
 
   constructor(opts: DefaultContextStoreOptions = {}) {
     this.options = opts
     this.mutex = new Mutex
+    this.releaseMutex = new Mutex
     this.scripts = {}
 
     v8Env.on('snapshot', this.resetIsolate.bind(this))
@@ -78,15 +80,21 @@ export class DefaultContextStore {
 
   async putContext(ctx: Context) {
     await ctx.finalize()
-    await ctx.release()
-    log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
+    await this.releaseMutex.lock()
+    try {
+      await ctx.release()
+    } catch (e) {
+
+    } finally {
+      log.info(`Heap is: ${ctx.iso.getHeapStatisticsSync().used_heap_size / (1024 * 1024)} MB`)
+      this.releaseMutex.release()
+    }
   }
 
   async getIsolate() {
     if (this.isolate && !this.isolate.isDisposed)
       return this.isolate
     log.info("Getting a new isolate.")
-    await v8Env.waitForReadiness()
     this.resetIsolate()
     return this.isolate
   }

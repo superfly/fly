@@ -23,7 +23,7 @@ export default function flyLogInit(ivm, dispatcher) {
    */
   log.addTransport = function addTransport(name, options) {
     const cb = new ivm.Reference(function (err, added) {
-      cb.release()
+      try { cb.release() } catch (e) { }
       logger.debug("added log transport... maybe!", err, added)
     })
     dispatcher.dispatch('addLogTransport', name,
