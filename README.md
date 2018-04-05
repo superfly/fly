@@ -6,7 +6,7 @@ The fly.io Edge Application runtime is an open core Javascript environment built
 
 The runtime is based on v8, with a proxy-appropriate set of Javascript libraries. There are built in APIs for manipulating HTML and Image content, low level caching, and HTTP requests/responses. When possible, we use WhatWG standards (like `fetch`, `Request`, `Response`, `Cache`, `Stream`).
 
-You can [use it locally](#hello-world-) for development and testing, and [deploy it to the Fly's fleet](#deployment) of edge servers for production use. 
+You can [use it locally](#hello-world) for development and testing, and [deploy it to the Fly's fleet](#deployment) of edge servers for production use. 
 
 ## Usage
 
@@ -33,7 +33,7 @@ Write javascript code to a file (`index.js`):
 fly.http.respondWith(function(request){
   return new Response("Hello! We support whirled peas.", { status: 200})
 })
-// if you'd prefer to be service worker compatibility, this is alos supported:
+// if you'd prefer to be service worker compatibility, this is also supported:
 // around addEventListener('fetch', function(event){})
 ```
 
@@ -198,3 +198,10 @@ Using `fly deploy`, here's what happens:
 - Your code, source map and `files` are added to a simple tarball, gzipped and uploaded to the fly.io API using your token
 - We create a "release" for your app, those are immutable, changing anything (by using `fly deploy` or `fly secrets set`) will trigger a new release which will be deployed automatically
 - Your code is distributed instantly(-ish) across our global fleet of servers
+
+
+## Open core
+
+We develop fly in the open, the core of our service is [Apache licensed](https://github.com/superfly/fly/blob/master/LICENSE) and designed to run easily in local dev. You _can_ deploy our core software to production, but it takes a little elbow grease and a fair amount of infrastructure. If you want to give this a try, let us know and we can help (and we would love related pull requests).
+
+Our commercial offering is built on top of this library, with additional code for managing certificates, distributed caching, and multi-tenant isolation. Over time we expect to extract many of these features, document them, and include them in our open source releases.

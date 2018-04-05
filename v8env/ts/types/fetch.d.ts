@@ -1,4 +1,6 @@
 /**
+ * Fetch is a set of methods and classes for making HTTP requests. This module implements 
+ * the [WhatWG fetch standard](https://fetch.spec.whatwg.org).
  * @module fetch
  */
 /**
@@ -6,11 +8,11 @@
  * This returns a promise that resolves to the `Response` object representing the
  * response to your request.
  */
-declare function fetch(input: FlyRequestInfo, init?: RequestInit): Promise<Response>;
+export declare function fetch(input: RequestInfo, init?: RequestInit): Promise<Response>;
 
-type FlyRequestInfo = Request | string;
+export type RequestInfo = Request | string;
 
-interface RequestInit {
+export interface RequestInit {
   signal?: AbortSignal;
   body?: Blob | BufferSource | FormData | string | null;
   cache?: RequestCache;
@@ -25,7 +27,7 @@ interface RequestInit {
   referrerPolicy?: ReferrerPolicy;
 }
 
-interface Response extends Object, Body {
+export interface Response extends Object, Body {
   readonly body: ReadableStream | null;
   readonly headers: Headers;
   readonly ok: boolean;

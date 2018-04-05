@@ -2,53 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-<a name="0.27.0-13"></a>
-# [0.27.0-13](https://github.com/superfly/fly/compare/v0.27.0-12...v0.27.0-13) (2018-04-05)
-
-
-
-<a name="0.27.0-12"></a>
-# [0.27.0-12](https://github.com/superfly/fly/compare/v0.27.0-11...v0.27.0-12) (2018-04-04)
-
-
-
-<a name="0.27.0-11"></a>
-# [0.27.0-11](https://github.com/superfly/fly/compare/v0.27.0-10...v0.27.0-11) (2018-04-04)
-
-
-
-<a name="0.27.0-10"></a>
-# [0.27.0-10](https://github.com/superfly/fly/compare/v0.27.0-9...v0.27.0-10) (2018-04-03)
-
-
-
-<a name="0.27.0-9"></a>
-# [0.27.0-9](https://github.com/superfly/fly/compare/v0.27.0-8...v0.27.0-9) (2018-04-03)
-
-
-
-<a name="0.27.0-8"></a>
-# [0.27.0-8](https://github.com/superfly/fly/compare/v0.27.0-7...v0.27.0-8) (2018-04-02)
-
-
-
-<a name="0.27.0-7"></a>
-# [0.27.0-7](https://github.com/superfly/fly/compare/v0.27.0-6...v0.27.0-7) (2018-03-30)
-
-
-
-<a name="0.27.0-6"></a>
-# [0.27.0-6](https://github.com/superfly/fly/compare/v0.27.0-5...v0.27.0-6) (2018-03-30)
-
-
-
-<a name="0.27.0-5"></a>
-# [0.27.0-5](https://github.com/superfly/fly/compare/v0.27.0-4...v0.27.0-5) (2018-03-30)
-
-
-
-<a name="0.27.0-4"></a>
-# [0.27.0-4](https://github.com/superfly/fly/compare/v0.27.0-3...v0.27.0-4) (2018-03-30)
+<a name="0.26.7-0"></a>
+## [0.26.7-0](https://github.com/superfly/fly/compare/v0.26.6...v0.26.7-0) (2018-03-31)
 
 
 ### Bug Fixes
@@ -57,38 +12,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 
 
-<a name="0.27.0-3"></a>
-# [0.27.0-3](https://github.com/superfly/fly/compare/v0.27.0-2...v0.27.0-3) (2018-03-28)
-
-
-
-<a name="0.27.0-2"></a>
-# [0.27.0-2](https://github.com/superfly/fly/compare/v0.27.0-1...v0.27.0-2) (2018-03-27)
-
-
-
-<a name="0.27.0-1"></a>
-# [0.27.0-1](https://github.com/superfly/fly/compare/v0.26.6...v0.27.0-1) (2018-03-26)
-
-
-
-<a name="0.27.0-0"></a>
-# [0.27.0-0](https://github.com/superfly/fly/compare/v0.26.5-0...v0.27.0-0) (2018-03-21)
-
-
-### Features
-
-* lighter v8env through native text-encoding, basic Web Crypto API support (digest), bring back source maps, now with far less bloat ([37080d7](https://github.com/superfly/fly/commit/37080d7))
-
-
-
-<a name="0.27.0-0"></a>
-# [0.27.0-0](https://github.com/superfly/fly/compare/v0.26.5-0...v0.27.0-0) (2018-03-21)
-
-
-### Features
-
-* lighter v8env through native text-encoding, basic Web Crypto API support (digest), bring back source maps, now with far less bloat ([37080d7](https://github.com/superfly/fly/commit/37080d7))
 <a name="0.26.6"></a>
 ## [0.26.6](https://github.com/superfly/fly/compare/v0.26.5...v0.26.6) (2018-03-23)
 
