@@ -146,7 +146,7 @@ export class Server extends http.Server {
 
 }
 
-type V8ResponseBody = null | string | Uint8Array | ArrayBuffer | Buffer | ivm.Reference<ProxyStream>
+type V8ResponseBody = null | string | ArrayBuffer | Buffer | ivm.Reference<ProxyStream>
 
 export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage, res: http.ServerResponse, ptrace?: Trace) {
 

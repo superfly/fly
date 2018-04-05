@@ -5,18 +5,18 @@ import { Middleware, MiddlewareChain } from "./middleware"
 import { FlyBackend } from "./fly-backend"
 import { ReadableStream, WritableStream, TransformStream } from 'web-streams-polyfill'
 
-import { TextEncoder, TextDecoder } from 'text-encoding'
-
 import consoleInit from './console'
 import flyInit from './fly'
 
 import { URL, URLSearchParams } from 'universal-url-lite'//'whatwg-url'
 import Headers from './headers'
 
+import textEncodingInit, { TextEncoder, TextDecoder } from './text-encoding'
 import fetchInit from './fetch'
 import bodyMixin from './ts/body_mixin.ts'
 import Blob from './ts/blob.ts'
 import FormData from './ts/form_data.ts'
+import cryptoInit, { crypto } from './ts/crypto.ts'
 import responseInit from './response'
 import cache from './cache'
 import timersInit, { setTimeout, clearTimeout, setInterval, clearInterval } from './timers'
@@ -24,7 +24,7 @@ import timersInit, { setTimeout, clearTimeout, setInterval, clearInterval } from
 import { Document, Element } from './document'
 
 // Sets up `Error.prepareStacktrace`
-// import './utils/error'
+import errorsInit from './utils/error'
 
 import registerFlyBackend from './middleware/fly-backend'
 import registerFlyEcho from './middleware/fly-echo'
@@ -53,6 +53,8 @@ global.bootstrap = function bootstrap() {
 	const dispatcher = dispatcherInit(ivm, global._dispatch)
 	delete global._dispatch
 
+	errorsInit(ivm, dispatcher)
+
 	global.fly = flyInit(ivm, dispatcher)
 
 	global.console = consoleInit(ivm, dispatcher)
@@ -64,10 +66,13 @@ global.bootstrap = function bootstrap() {
 	global.WritableStream = WritableStream
 	global.TransformStream = TransformStream
 
+	textEncodingInit(ivm, dispatcher)
 	global.TextEncoder = TextEncoder
 	global.TextDecoder = TextDecoder
 
 	// Web API
+	cryptoInit(ivm, dispatcher)
+	global.crypto = crypto
 	global.URL = URL
 	global.URLSearchParams = URLSearchParams
 	global.Headers = Headers
@@ -119,6 +124,14 @@ global.bootstrap = function bootstrap() {
 	// load all middleware
 	for (const mwReg of mwToRegister)
 		mwReg(ivm, dispatcher)
+}
+
+global.finalizers = []
+
+global.finalize = function finalize() {
+	while (finalizers.length) {
+		try { finalizers.shift()() } catch (e) { }
+	}
 }
 
 global.teardown = global.release = function release() {
