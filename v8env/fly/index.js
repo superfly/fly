@@ -2,6 +2,8 @@ import flyCacheInit from './cache'
 import flyLogInit from './log'
 import initStreams from './streams'
 import initImage from '../ts/fly/image.ts'
+import { Document, Element } from '../document'
+
 
 /**
  * @namespace fly
@@ -13,7 +15,7 @@ export default function flyInit(ivm, dispatcher) {
     log: flyLogInit(ivm, dispatcher),
     streams: initStreams(ivm, dispatcher),
     Image: initImage(ivm, dispatcher),
-    Document,
-    Element
+    //Document,
+    //Element
   }
 }
