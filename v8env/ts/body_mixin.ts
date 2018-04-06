@@ -103,8 +103,7 @@ export default class BodyMixin implements Body {
         this.bodySource instanceof Float32Array ||
         this.bodySource instanceof Float64Array
     ) {
-      const buffer = this.bodySource.buffer
-      if (buffer instanceof ArrayBuffer) return buffer
+      return <ArrayBuffer>this.bodySource.buffer
     } else if (this.bodySource instanceof ArrayBuffer) {
       return this.bodySource
     } else if (typeof this.bodySource === 'string') {
