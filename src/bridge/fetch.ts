@@ -8,6 +8,8 @@ import { URL, parse as parseURL, format as formatURL } from 'url'
 import { fullURL } from '../utils/http'
 import { transferInto } from '../utils/buffer'
 import { ProxyStream } from './proxy_stream'
+import * as zlib from 'zlib'
+import { Readable } from 'stream'
 
 import { Trace } from '../trace'
 import { FileNotFound } from '../file_store';
@@ -18,6 +20,8 @@ const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
 
 registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
+  const inflate = init ? init.inflate || false : false
+
   log.debug("native fetch with url:", urlStr)
   log.silly("fetch init: ", JSON.stringify(init))
   let t = Trace.tryStart('fetch', ctx.trace)
@@ -135,6 +139,30 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
     req.removeListener('error', handleError)
     try {
       res.pause()
+
+      if(inflate && typeof body == 'string'){
+        zlib.unzip(body, (error, buffer) => {
+          if (error) throw error
+
+          let stream = new Readable()
+          stream.push(buffer)
+          stream.push(null)
+
+          ctx.applyCallback(cb, [
+            null,
+            new ivm.ExternalCopy({
+              status: res.statusCode,
+              statusText: res.statusMessage,
+              ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
+              url: urlStr,
+              headers: res.headers
+            }).copyInto({ release: true }),
+            res.method === 'GET' || res.method === 'HEAD' ? null : new ProxyStream(stream).ref
+          ])
+
+          return
+        })
+      }
 
       ctx.applyCallback(cb, [
         null,
