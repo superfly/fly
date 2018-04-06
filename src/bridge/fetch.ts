@@ -140,28 +140,9 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
     try {
       res.pause()
 
-      if(inflate && typeof body == 'string'){
-        zlib.unzip(body, (error, buffer) => {
-          if (error) throw error
-
-          let stream = new Readable()
-          stream.push(buffer)
-          stream.push(null)
-
-          ctx.applyCallback(cb, [
-            null,
-            new ivm.ExternalCopy({
-              status: res.statusCode,
-              statusText: res.statusMessage,
-              ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
-              url: urlStr,
-              headers: res.headers
-            }).copyInto({ release: true }),
-            res.method === 'GET' || res.method === 'HEAD' ? null : new ProxyStream(stream).ref
-          ])
-
-          return
-        })
+      let zipStream
+      if (inflate && res.headers["content-encoding"] == "gzip") {
+        zipStream = zlib.createUnzip()
       }
 
       ctx.applyCallback(cb, [
@@ -173,7 +154,7 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
           url: urlStr,
           headers: res.headers
         }).copyInto({ release: true }),
-        res.method === 'GET' || res.method === 'HEAD' ? null : new ProxyStream(res).ref
+        res.method === 'GET' || res.method === 'HEAD' ? null : new ProxyStream(zipStream || res).ref
       ])
 
     } catch (err) {
