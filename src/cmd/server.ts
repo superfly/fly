@@ -32,6 +32,7 @@ root
     const { DefaultContextStore } = require('../default_context_store');
 
     const cwd = args.path || process.cwd()
+    console.log(`Using ${cwd} as working directory.`)
 
     const port = opts.port && opts.port[0] || 3000
 
