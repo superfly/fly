@@ -1,9 +1,8 @@
-import { transferInto } from "../utils/buffer";
-
 /**
  * A class for modifying images. This uses operations from [Sharp](http://sharp.pixelplumbing.com/en/stable/) under the hood.
  * @module fly
  */
+import { transferInto } from "../utils/buffer";
 export class Image {
   /** @hidden */
   data: ArrayBuffer
@@ -48,10 +47,11 @@ export class Image {
    * The overlay image must be the same size or smaller than the processed image. If both top and left options are provided, they take precedence over gravity.
    *
    * If the overlay image contains an alpha channel then composition with premultiplication will occur.
-   * @param overlay image data to overlay
+   * @param overlay image to overlay
    * @param options control how the overlay is composited
+   * @returns {fly.Image}
    */
-  overlayWith(overlay: ArrayBuffer | Image | null, options?: Image.OverlayOptions) {
+  overlayWith(overlay: ArrayBuffer | Image, options?: Image.OverlayOptions) {
     let p: any = overlay
     if (p instanceof Image) {
       p = p._ref
@@ -103,8 +103,15 @@ export class Image {
     return this
   }
 
-  extend(...args: any[]) {
-    this._imageOperation("extend", ...args)
+  /**
+   * Pads image by number of pixels. If image is 200px wide, `extend(20)` makes it 220px wide
+   * @param extend If numeric, pads all sides of an image.
+   * 
+   * Otherwise, pad each side by the specified amount.
+   * @returns {fly.Image}
+   */
+  extend(extend: number | Image.ExtendOptions) {
+    this._imageOperation("extend", extend)
     return this
   }
 
@@ -191,6 +198,13 @@ export namespace Image {
     cutout?: Boolean,
     density?: number
   }
+
+  export interface ExtendOptions {
+    top?: number,
+    left?: number,
+    bottom?: number,
+    right?: number
+  }
 }
 
 /** @hidden */
@@ -209,9 +223,12 @@ let constructImage: (data: ArrayBuffer, options?: any) => any
  * @hidden
  */
 let imageOperation: (ref: any, name: string, ...args: any[]) => any
+/** @hidden */
 let imageToBuffer: (ref: any) => Promise<Image.OperationResult>
+/** @hidden */
 let imageMetadata: (ref: any) => Image.Metadata
 
+/** @hidden */
 export default function initImage(ivm: any, dispatcher: any) {
   constructImage = function (data: ArrayBuffer, options?: any) {
     return dispatcher.dispatchSync("fly.Image()", transferInto(ivm, data))
