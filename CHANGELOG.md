@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.27.2"></a>
+## [0.27.2](https://github.com/superfly/fly/compare/v0.27.1...v0.27.2) (2018-04-06)
+
+
+### Bug Fixes
+
+* test command was broken with cwd changes ([67024ac](https://github.com/superfly/fly/commit/67024ac))
+
+
+
 <a name="0.27.1"></a>
 ## [0.27.1](https://github.com/superfly/fly/compare/v0.26.7-0...v0.27.1) (2018-04-06)
 
