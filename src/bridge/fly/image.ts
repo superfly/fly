@@ -82,15 +82,18 @@ registerBridge('fly.Image.operation', function imageOperation(ctx: Context, brid
 
     for (let i = 0; i < args.length; i++) {
       const v = args[i]
+      // replace image references with `toBuffer` promises
       if (v instanceof ivm.Reference) {
         const img = refToImage(v)
         args[i] = img.toBuffer()
       }
     }
     return new Promise((resolve, reject) => {
+      // resolve any promise arguments
       Promise.all(args).then((args) => {
         for (let i = 0; i < args.length; i++) {
           const v = args[i]
+          //and convert ArrayBuffers
           if (v instanceof ArrayBuffer) {
             args[i] = Buffer.from(v)
           }
@@ -112,7 +115,6 @@ registerBridge('fly.Image.metadata', async function imageMetadata(ctx: Context, 
 
 registerBridge("fly.Image.toBuffer", function imageToBuffer(ctx: Context, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, callback: ivm.Reference<Function>) {
   const img = refToImage(ref)
-  console.log()
   if (!img) {
     ctx.applyCallback(callback, ["ref must be a valid image instance"])
     return

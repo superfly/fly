@@ -237,7 +237,6 @@ export default function initImage(ivm: any, dispatcher: any) {
     for (let i = 0; i < args.length; i++) {
       const a = args[i]
       if (a instanceof ArrayBuffer) {
-        console.log("op got arraybuffer:", name, i)
         args[i] = transferInto(ivm, a)
       } else if (typeof a === "object" && !(a instanceof ivm.Reference)) {
         args[i] = new ivm.ExternalCopy(a).copyInto({ release: true })
