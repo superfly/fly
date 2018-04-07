@@ -14,12 +14,15 @@ If you make modifications to an app, fly will automatically update so all you ne
 ### [Getting started](https://github.com/superfly/fly/tree/master/apps/getting-started)
 The getting started app is a simple hello world app.
 ```JavaScript
-fly.http.respondWith(function(request){
-  return new Response("Hello World", { status: 200})
-})
+fly.http.respondWith((req) =>
+  new Response("Hello World", { status: 200})
+)
 ```
 
 ### [Redirect](https://github.com/superfly/fly/tree/master/apps/redirect)
 This app demonstrates how simple it is to redirect a request to another website.
 
 ### [Basic HTTP Caching](https://github.com/superfly/fly/tree/master/apps/caching)
+This app shows the basics of caching responses to requests. It uses `cache.put` but, other methods are also available like `cache.add` and `fly.cache.set`.
+
+Note: by default fly does not cache anything.
