@@ -27,7 +27,6 @@ export class LocalFileStore implements FileStore {
 
   private findFile(path: string) {
     console.log('looking for file: ', path)
-    console.log('available files are:', this.release.files)
     return this.release.files.find((f) => path === f)
   }
 }
