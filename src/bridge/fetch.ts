@@ -20,7 +20,7 @@ const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
 
 registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
-  const inflate = init ? init.inflate || false : false
+  const inflate = init ? init.inflate : false
 
   log.debug("native fetch with url:", urlStr)
   log.silly("fetch init: ", JSON.stringify(init))
@@ -140,9 +140,15 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
     try {
       res.pause()
 
+      console.log('\n checking...')
+      console.log('content encoding? ', res.headers["content-encoding"] == "gzip")
+      console.log('should inflate? ', inflate)
+
       let zipStream
-      if (inflate && res.headers["content-encoding"] == "gzip") {
-        zipStream = zlib.createUnzip()
+      if (inflate && res.headers["content-encoding"] === "gzip") {
+        zipStream = res.pipe(zlib.createUnzip())
+
+        console.log('expanding text...')
       }
 
       ctx.applyCallback(cb, [
