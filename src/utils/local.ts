@@ -3,6 +3,7 @@ import * as YAML from 'js-yaml'
 import * as fs from 'fs-extra'
 import { EventEmitter } from 'events';
 import * as chokidar from 'chokidar';
+import * as glob from 'glob';
 
 import log from '../log'
 import { Release } from '../app';
@@ -61,7 +62,9 @@ export class LocalRelease extends EventEmitter implements Release {
     this.source = ""
     this.hash = ""
     this.source_hash = ""
-    this.files = conf.files || []
+    this.files = []
+
+    this.getFiles(conf.files)
 
     if (!options.noWatch)
       this.watchConfig()
@@ -104,12 +107,36 @@ export class LocalRelease extends EventEmitter implements Release {
     if (path.endsWith(configFile)) {
       const conf = this.getConfig()
       this.config = conf.config
-      this.files = conf.files || []
       this.app = conf.app || conf.app_id || ""
+      this.getFiles(conf.files)
     } else if (path.endsWith(secretsFile)) {
       this.secrets = this.getSecrets()
     }
     this.emit('update', this)
+  }
+
+  private getFiles (files: string[] | undefined) {
+    if (!files) return
+
+    const conf = this.getConfig()
+    if (conf.files) conf.files.forEach((file) => {
+      if (!this.files.includes(file)) this.files.push(file)
+    })
+
+    files.forEach((file) => {
+      glob(file, {}, (error, filesFound) => {
+        if (error) throw error
+
+        filesFound = filesFound.map((e) => this.removePrefix(e))
+        filesFound.forEach((file) => {
+          if (!this.files.includes(file)) this.files.push(file)
+        })
+      })
+    })
+  }
+
+  private removePrefix (file) {
+    return file.replace("./", "")
   }
 }
 
