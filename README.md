@@ -6,7 +6,7 @@ The fly.io Edge Application runtime is an open core Javascript environment built
 
 The runtime is based on v8, with a proxy-appropriate set of Javascript libraries. There are built in APIs for manipulating HTML and Image content, low level caching, and HTTP requests/responses. When possible, we use WhatWG standards (like `fetch`, `Request`, `Response`, `Cache`, `Stream`).
 
-You can [use it locally](#hello-world) for development and testing, and [deploy it to the Fly's fleet](#deployment) of edge servers for production use. 
+You can [use it locally](#hello-world) for development and testing, and [deploy it to the Fly's fleet](#deployment) of edge servers for production use.
 
 ## Usage
 
@@ -199,6 +199,8 @@ Using `fly deploy`, here's what happens:
 - We create a "release" for your app, those are immutable, changing anything (by using `fly deploy` or `fly secrets set`) will trigger a new release which will be deployed automatically
 - Your code is distributed instantly(-ish) across our global fleet of servers
 
+## Example Apps
+If you want some examples, you can check them out [here](https://github.com/superfly/fly/tree/master/apps).
 
 ## Open core
 
