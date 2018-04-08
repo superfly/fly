@@ -1,5 +1,6 @@
 import * as path from 'path'
 
+import { COMMAND, OPTION } from './argTypes'
 import { root } from './root'
 import log from '../log'
 import { IncomingMessage } from 'http';
@@ -20,35 +21,56 @@ interface ServerArguments {
   path?: string
 }
 
-root
-  .subCommand<ServerOptions, ServerArguments>("server [path]")
-  .description("Run the local Fly development server")
-  .option("-p, --port <port>", "Port to bind to")
-  .option("--inspect", "use the v8 inspector on your fly app")
-  .option("--uglify", "uglify your code like we'll use in production (warning: slow!)")
-  .action((opts, args, rest) => {
-    const { FileAppStore } = require('../file_app_store')
-    const { Server } = require('../server')
-    const { DefaultContextStore } = require('../default_context_store');
+root.add([
+  {
+    type: OPTION,
+    name: 'port',
+    accepts: 1,
+    description: "Port to bind to"
+  },
+  {
+    type: OPTION,
+    name: 'uglify',
+    accepts: 1,
+    description: "uglify your code like we'll use in production (warning: slow!)"
+  },
+  {
+    type: OPTION,
+    name: 'inspect',
+    accepts: 1,
+    description: "use the v8 inspector on your fly app"
+  },
+  {
+    type: COMMAND,
+    name: 'server',
+    description: "Run the local Fly development server",
+    action: () => {
+      const opts = root.getOptions(false)
+      console.log('opts', opts)
+      const { FileAppStore } = require('../file_app_store')
+      const { Server } = require('../server')
+      const { DefaultContextStore } = require('../default_context_store');
 
-    const cwd = args.path || process.cwd()
-    console.log(`Using ${cwd} as working directory.`)
+      const cwd = opts.path || process.cwd()
+      console.log(`Using ${cwd} as working directory.`)
 
-    const port = opts.port && opts.port[0] || 3000
+      const port = opts.port || 3000
 
-    const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env: "development" })
+      const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env: "development" })
 
-    let contextStore: DefaultContextStore;
-    if (!!opts.inspect) {
-      contextStore = new DefaultContextStore({ inspect: true })
-      startInspector(contextStore)
-    } else {
-      contextStore = new DefaultContextStore
+      let contextStore: DefaultContextStore;
+      if (!!opts.inspect) {
+        contextStore = new DefaultContextStore({ inspect: true })
+        startInspector(contextStore)
+      } else {
+        contextStore = new DefaultContextStore
+      }
+
+      const server = new Server({ contextStore, appStore })
+      server.listen(port)
     }
-
-    const server = new Server({ contextStore, appStore })
-    server.listen(port)
-  })
+  }
+])
 
 async function startInspector(ctxStore: any) {
   // Create an inspector channel on port 10000
