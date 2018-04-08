@@ -3,6 +3,7 @@ import * as YAML from 'js-yaml'
 import * as fs from 'fs-extra'
 import { EventEmitter } from 'events';
 import * as chokidar from 'chokidar';
+import { readFileSync } from 'fs';
 
 import log from '../log'
 import { Release } from '../app';
