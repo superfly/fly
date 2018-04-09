@@ -26,6 +26,7 @@ root.add([
     type: OPTION,
     name: 'port',
     dontShow: true,
+    respondsTo: 'server',
     description: "Port to bind to"
   },
   {
@@ -33,6 +34,7 @@ root.add([
     name: 'uglify',
     bool: true,
     dontShow: true,
+    respondsTo: 'server',
     description: "uglify your code like we'll use in production (warning: slow!)"
   },
   {
@@ -40,6 +42,7 @@ root.add([
     name: 'inspect',
     bool: true,
     dontShow: true,
+    respondsTo: 'server',
     description: "use the v8 inspector on your fly app"
   },
   {

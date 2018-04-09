@@ -36,6 +36,7 @@ class Parser {
   * @property bool [optional] makes the option not take any value
   * @property dontShow [optional] does not show this option or command in usage/help
   * @property showParams [optional] displays this as parameters the option can take
+  * @property respondsTo [optional] this option will only be set if the command it responds to is also set
   */
   add(obj:any[]) {
     this.objs = [...this.objs, ...obj]
@@ -70,9 +71,14 @@ class Parser {
           !option.bool
         ) {
           argPos++
+          if (
+            command &&
+            option.respondsTo &&
+            option.respondsTo !== command.name
+          ) throw Error (`Option ${option.name} does not work with command ${command.name}`)
           this.found[option.mapTo || option.name] = argv[argPos]
         }
-        if (exicute && option.action) command = option.action
+        if (exicute && option.action) command = option
         if (option.bool) this.found[option.mapTo || option.name] = true
         argPos++
       } else {
@@ -80,7 +86,7 @@ class Parser {
       }
     }
 
-    if (command) command()
+    if (command) command.action()
     return this.found
   }
 

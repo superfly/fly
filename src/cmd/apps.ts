@@ -38,6 +38,7 @@ root.add([{
   name: 'create',
   dontShow: true,
   takesArguments: true,
+  respondsTo: 'apps',
   mapTo: 'name',
   description: "Create a Fly app.",
   usage: `fly apps create <org/app-name>

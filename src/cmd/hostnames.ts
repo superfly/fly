@@ -33,6 +33,7 @@ root.add([{
   name: 'add',
   dontShow: true,
   takesArguments: true,
+  respondsTo: 'hostnames',
   mapTo: 'hostname',
   description: "Add a hostname to your fly app.",
   action: async () => {

@@ -15,13 +15,13 @@ export interface SecretSetArgs {
 root.add([{
   type: COMMAND,
   name: "secrets",
-  description: "Manage your Fly app secrets.",
-  action: () => null
+  description: "Manage your Fly app secrets."
 },
 {
   type: COMMAND,
   name: 'set',
   dontShow: true,
+  respondsTo: 'secrets',
   description: "Set a secret to use in your config.",
   usage: "fly secrets set <key> [value]",
   takesArguments: true,
@@ -60,6 +60,7 @@ root.add([{
   type: OPTION,
   name: 'from-file',
   dontShow: true,
+  respondsTo: 'set',
   mapTo: 'filename',
   description: "Use a file's contents as the secret value.",
 }])
