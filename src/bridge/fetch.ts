@@ -9,7 +9,6 @@ import { fullURL } from '../utils/http'
 import { transferInto } from '../utils/buffer'
 import { ProxyStream } from './proxy_stream'
 import * as zlib from 'zlib'
-import { Readable } from 'stream'
 
 import { Trace } from '../trace'
 import { FileNotFound } from '../file_store';
@@ -20,7 +19,8 @@ const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
 
 registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
-  const inflate = init ? init.inflate : false
+  const inflate = init && init.inflate
+  console.log('inflate set to', inflate)
 
   log.debug("native fetch with url:", urlStr)
   log.silly("fetch init: ", JSON.stringify(init))
