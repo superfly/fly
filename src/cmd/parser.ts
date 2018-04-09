@@ -93,13 +93,13 @@ class Parser {
   private displayHelp () {
     console.log(this.description, '\n')
     console.log('\t Usage: ', this.usage, '\n')
-    console.log('\t Options: \n')
-    this.objs.forEach((obj) => {
-      if (obj.type === OPTION && !obj.dontShow) this.showOption(obj)
-    })
-    console.log('\n\t Commands: \n')
+    console.log('\t Commands: \n')
     this.objs.forEach((obj) => {
       if (obj.type === COMMAND && !obj.dontShow) this.showCommand(obj)
+    })
+    console.log('\n\t Options: \n')
+    this.objs.forEach((obj) => {
+      if (obj.type === OPTION && !obj.dontShow) this.showOption(obj)
     })
   }
 
