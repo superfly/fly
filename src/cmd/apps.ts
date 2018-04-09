@@ -36,6 +36,7 @@ root.add([{
 }, {
   type: COMMAND,
   name: 'create',
+  dontShow: true,
   takesArguments: true,
   mapTo: 'name',
   description: "Create a Fly app.",

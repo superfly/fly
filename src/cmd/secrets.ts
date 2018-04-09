@@ -21,6 +21,7 @@ root.add([{
 {
   type: COMMAND,
   name: 'set',
+  dontShow: true,
   description: "Set a secret to use in your config.",
   usage: "fly secrets set <key> [value]",
   takesArguments: true,

@@ -34,6 +34,7 @@ class Parser {
   * @property usage [optional] the useage of a particular command or option
   * @property takesArguments [optional] allows commands to take arguments
   * @property bool [optional] makes the option not take any value
+  * @property dontShow [optional] does not show this option or command in usage/help
   */
   add(obj:any[]) {
     this.objs = [...this.objs, ...obj]
@@ -94,11 +95,11 @@ class Parser {
     console.log('\t Usage: ', this.usage, '\n')
     console.log('\t Options: \n')
     this.objs.forEach((obj) => {
-      if (obj.type === OPTION) this.showOption(obj)
+      if (obj.type === OPTION && !obj.dontShow) this.showOption(obj)
     })
     console.log('\n\t Commands: \n')
     this.objs.forEach((obj) => {
-      if (obj.type === COMMAND) this.showCommand(obj)
+      if (obj.type === COMMAND && !obj.dontShow) this.showCommand(obj)
     })
   }
 

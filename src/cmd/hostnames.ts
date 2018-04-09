@@ -31,6 +31,7 @@ root.add([{
 {
   type: COMMAND,
   name: 'add',
+  dontShow: true,
   takesArguments: true,
   mapTo: 'hostname',
   description: "Add a hostname to your fly app.",
