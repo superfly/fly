@@ -41,9 +41,11 @@ class Parser {
         }
       }
       if (option) {
-        if (option.type !== COMMAND || option.takesArguments) {
+        if (option.type !== COMMAND ||
+          (option.takesArguments && argv[argPos+1].charAt(0) !== '-') // This is for commands like set that *might* take a value, but might also use another option to get that value
+        ) {
           argPos++
-          this.found[option.name] = argv[argPos]
+          this.found[option.mapTo || option.name] = argv[argPos]
         }
         if (exicute && option.action) command = option.action
         argPos++

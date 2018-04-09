@@ -6,7 +6,7 @@ import { root, getToken } from './root';
 // require("./orgs");
 // require("./deploy");
 // require("./releases");
-// require("./secrets");
+require("./secrets");
 require("./test");
 require("./server");
 // require("./hostnames");
