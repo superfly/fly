@@ -1,4 +1,4 @@
-import { COMMAND } from './argTypes'
+import { COMMAND, OPTION } from './argTypes'
 
 interface Parser {
   description: string,
@@ -82,7 +82,26 @@ class Parser {
   }
 
   private displayHelp () {
-    console.log('help') //TODO: fill me in
+    console.log(this.description, '\n')
+    console.log('\t Usage: ', this.usage, '\n')
+    console.log('\t Options: \n')
+    this.objs.forEach((obj) => {
+      if (obj.type === OPTION) this.showOption(obj)
+    })
+    console.log('\n\t Commands: \n')
+    this.objs.forEach((obj) => {
+      if (obj.type === COMMAND) this.showCommand(obj)
+    })
+  }
+
+  private showOption(obj:any) {
+    console.log(`\t - ${obj.name} (${'--' + obj.name}, ${'-' + obj.name.charAt(0)}): ${obj.description || ''}`)
+    if (obj.useage) console.log(`\t \t Usage: ${obj.useage}`)
+  }
+
+  private showCommand(obj:any) {
+    console.log(`\t - ${obj.name}: ${obj.description || ''}`)
+    if (obj.useage) console.log(`\t \t Usage: ${obj.useage}`)
   }
 }
 

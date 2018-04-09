@@ -18,6 +18,7 @@ export const root = new Parser("Fly CLI", [
   {
     type: COMMAND,
     name: 'version',
+    description: 'The current version of Fly CLI',
     action: () => console.log(version)
   },
   {
