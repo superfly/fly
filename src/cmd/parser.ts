@@ -47,7 +47,6 @@ class Parser {
     if (this.found) return this.found
 
     const argv = this.argv || process.argv
-    console.log('called with args', argv)
     if (argv.indexOf('--help') >= 0 || argv.indexOf('-h') >= 0 || argv.length < 3) {
       this.displayHelp()
       return {}
@@ -86,7 +85,6 @@ class Parser {
       }
     }
 
-    console.log('found', this.found)
     if (exicute && command) command.action()
     return this.found
   }
