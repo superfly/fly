@@ -81,7 +81,7 @@ Properties:
 
 ### Secrets
 
-You can require secrets in your app.config in your like:
+You can require secrets in your app.config like this:
 
 ```yaml
 # .fly.yml
