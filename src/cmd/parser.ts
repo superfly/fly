@@ -20,7 +20,7 @@ class Parser {
     if (this.found) return this.found
 
     const argv = process.argv
-    if (argv.indexOf('--help') >= 0 || argv.indexOf('-h') >= 0) {
+    if (argv.indexOf('--help') >= 0 || argv.indexOf('-h') >= 0 || argv.length < 3) {
       this.displayHelp()
       return {}
     }
@@ -28,28 +28,30 @@ class Parser {
     let argPos = 2
     this.found = {}
     let command = null
+
     while (argPos < argv.length) {
+      let option
       for (let i = 0; i < this.objs.length; i++) {
-        console.log('found: ', this.found)
-        console.log('working on', this.objs[i].name)
-        console.log('for arg', argv[argPos])
-        if (argPos >= argv.length) {
-          console.log("ending on", argv[argPos], argPos)
-          if (command) command()
-          return this.found
-        }
+        console.log('looking for', argv[argPos])
+        console.log('looking on option', this.objs[i].name)
         if (this.equalsName(argv[argPos], this.objs[i], this.objs[i].type === COMMAND)) {
-          if (this.objs[i].type === COMMAND) {
-            if (exicute && this.objs[i].action) command = this.objs[i].action
-          } else {
-            argPos++
-            this.found[this.objs[i].name] = argv[argPos]
-          }
-          argPos++
+          option = this.objs[i]
+          console.log('found option', option)
+          break
         }
       }
+      if (option) {
+        if (option.type !== COMMAND || option.takesArguments) {
+          argPos++
+          this.found[option.name] = argv[argPos]
+        }
+        if (exicute && option.action) command = option.action
+        argPos++
+      } else {
+        throw Error ('could not find option: ' + argv[argPos])
+      }
     }
-
+    console.log('found', this.found)
     //we should never get here, but better safe than sorry
     if (command) command()
     return this.found

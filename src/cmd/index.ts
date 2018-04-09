@@ -7,7 +7,7 @@ import { root, getToken } from './root';
 // require("./deploy");
 // require("./releases");
 // require("./secrets");
-// require("./test");
+require("./test");
 require("./server");
 // require("./hostnames");
 // require("./login");
