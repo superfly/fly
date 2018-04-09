@@ -60,7 +60,7 @@ root.add([{
   type: OPTION,
   name: 'from-file',
   dontShow: true,
-  respondsTo: 'set',
+  respondsTo: ['set', 'secrets'],
   mapTo: 'filename',
   description: "Use a file's contents as the secret value.",
 }])

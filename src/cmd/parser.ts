@@ -47,6 +47,7 @@ class Parser {
     if (this.found) return this.found
 
     const argv = this.argv || process.argv
+    console.log('called with args', argv)
     if (argv.indexOf('--help') >= 0 || argv.indexOf('-h') >= 0 || argv.length < 3) {
       this.displayHelp()
       return {}
@@ -71,23 +72,36 @@ class Parser {
           !option.bool
         ) {
           argPos++
-          if (
-            command &&
-            option.respondsTo &&
-            option.respondsTo !== command.name
-          ) throw Error (`Option ${option.name} does not work with command ${command.name}`)
+          this.throwIf(command, option)
           this.found[option.mapTo || option.name] = argv[argPos]
         }
-        if (exicute && option.action) command = option
-        if (option.bool) this.found[option.mapTo || option.name] = true
+        if (option.type == COMMAND) command = option
+        if (option.bool) {
+          this.found[option.mapTo || option.name] = true
+          this.throwIf(command, option)
+        }
         argPos++
       } else {
         throw Error ('could not find option: ' + argv[argPos])
       }
     }
 
-    if (command) command.action()
+    console.log('found', this.found)
+    if (exicute && command) command.action()
     return this.found
+  }
+
+  private throwIf(command:any, option:any) {
+    if (
+      command &&
+      option.respondsTo &&
+      !this.respondsTo(option.respondsTo, command.name)
+    ) throw Error (`Option ${option.name} does not work with command ${command.name}`)
+  }
+
+  private respondsTo(option:string | string[], name:string) {
+    if (option.length) return option.indexOf(name) > -1
+    return option === name
   }
 
   private equalsName(name:string, obj:any, isCommand:boolean) {
