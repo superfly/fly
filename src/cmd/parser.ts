@@ -35,6 +35,7 @@ class Parser {
   * @property takesArguments [optional] allows commands to take arguments
   * @property bool [optional] makes the option not take any value
   * @property dontShow [optional] does not show this option or command in usage/help
+  * @property showParams [optional] displays this as parameters the option can take
   */
   add(obj:any[]) {
     this.objs = [...this.objs, ...obj]
