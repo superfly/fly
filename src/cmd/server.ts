@@ -46,7 +46,6 @@ root.add([
     description: "Run the local Fly development server",
     action: () => {
       const opts = root.getOptions(false)
-      console.log('opts', opts)
       const { FileAppStore } = require('../file_app_store')
       const { Server } = require('../server')
       const { DefaultContextStore } = require('../default_context_store');

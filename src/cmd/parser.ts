@@ -49,11 +49,8 @@ class Parser {
     while (argPos < argv.length) {
       let option
       for (let i = 0; i < this.objs.length; i++) {
-        console.log('looking for', argv[argPos])
-        console.log('looking on option', this.objs[i].name)
         if (this.equalsName(argv[argPos], this.objs[i], this.objs[i].type === COMMAND)) {
           option = this.objs[i]
-          console.log('found option', option)
           break
         }
       }
@@ -70,7 +67,7 @@ class Parser {
         throw Error ('could not find option: ' + argv[argPos])
       }
     }
-    console.log('found', this.found)
+
     //we should never get here, but better safe than sorry
     if (command) command()
     return this.found
