@@ -28,6 +28,7 @@ interface TestArgs {
 root.add([{
   type: OPTION,
   name: 'path',
+  dontShow: true,
   description: "Test from a specific path, defaults to {test,spec}/**/*.{test,spec}.js",
 }, {
   type: COMMAND,

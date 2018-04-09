@@ -25,18 +25,21 @@ root.add([
   {
     type: OPTION,
     name: 'port',
+    dontShow: true,
     description: "Port to bind to"
   },
   {
     type: OPTION,
     name: 'uglify',
     bool: true,
+    dontShow: true,
     description: "uglify your code like we'll use in production (warning: slow!)"
   },
   {
     type: OPTION,
     name: 'inspect',
     bool: true,
+    dontShow: true,
     description: "use the v8 inspector on your fly app"
   },
   {

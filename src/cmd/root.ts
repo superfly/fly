@@ -24,16 +24,19 @@ export const root = new Parser("Fly CLI", "fly [command] [options]", [
   {
     type: OPTION,
     name: 'app',
+    showParams: '<id>',
     description: "App to use for commands."
   },
   {
     type: OPTION,
     name: 'env',
+    showParams: '<env>',
     description: "Environment to use for commands."
   },
   {
     type: OPTION,
     name: 'token',
+    showParams: '<token>',
     description: "Fly Access Token (can be set via environment FLY_ACCESS_TOKEN)"
   }
 ])

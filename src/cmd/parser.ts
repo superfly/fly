@@ -104,7 +104,7 @@ class Parser {
   }
 
   private showOption(obj:any) {
-    console.log(`\t - ${obj.name} (${'--' + obj.name}, ${'-' + obj.name.charAt(0)}): ${obj.description || ''}`)
+    console.log(`\t - ${obj.name} (${'--' + obj.name}, ${'-' + obj.name.charAt(0)}) ${obj.showParams || ''}: ${obj.description || ''}`)
     if (obj.useage) console.log(`\t \t Usage: ${obj.useage}`)
   }
 
