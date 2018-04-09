@@ -115,15 +115,3 @@ class Parser {
 }
 
 export default Parser
-
-
-// if (this.objs[i].accepts === 1) {
-//   found[this.objs[i].name] = argv[argPos]
-// } else {
-//   found[this.objs[i].name] = []
-//   while (argPos < argv.length && argv[argPos].charAt(0) !== '-') {
-//     found[this.objs[i].name].push(argv[argPos])
-//     argPos++
-//   }
-//   argPos--
-// }
