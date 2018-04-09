@@ -2,17 +2,17 @@
 
 import { root, getToken } from './root';
 
-// require("./apps");
-// require("./orgs");
-// require("./deploy");
-// require("./releases");
+require("./apps");
+require("./orgs");
+require("./deploy");
+require("./releases");
 require("./secrets");
 require("./test");
 require("./server");
-// require("./hostnames");
-// require("./login");
-// require("./fetch");
-// require("./logs");
+require("./hostnames");
+require("./login");
+require("./fetch");
+require("./logs");
 
 var SegfaultHandler = require('segfault-handler');
 SegfaultHandler.registerHandler("crash.log");

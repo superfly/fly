@@ -25,6 +25,7 @@ class Parser {
   * @param mapTo [optional] the name of the object returned from getOptions
   * @param description [optional] description of the command or option
   * @param usage [optional] the useage of a particular command or option
+  * @param takesArguments [optional] allows commands to take arguments
   */
   add(obj:any[]) {
     this.objs = [...this.objs, ...obj]
