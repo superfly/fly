@@ -4,7 +4,8 @@ interface Parser {
   description: string,
   objs: any[],
   found: any,
-  usage: string
+  usage: string,
+  argv: string[]
 }
 
 class Parser {
@@ -12,6 +13,10 @@ class Parser {
     this.description = description
     this.objs = obj
     this.usage = usage
+  }
+
+  setArgs (args:string[]) {
+    this.argv = args
   }
 
   /*
@@ -28,15 +33,17 @@ class Parser {
   * @property description [optional] description of the command or option
   * @property usage [optional] the useage of a particular command or option
   * @property takesArguments [optional] allows commands to take arguments
+  * @property bool [optional] makes the option not take any value
   */
   add(obj:any[]) {
     this.objs = [...this.objs, ...obj]
   }
 
-  getOptions (exicute?:boolean):any {
+  getOptions (exicute:boolean = false, reset:boolean = false):any {
+    if (reset) this.found = null
     if (this.found) return this.found
 
-    const argv = process.argv
+    const argv = this.argv || process.argv
     if (argv.indexOf('--help') >= 0 || argv.indexOf('-h') >= 0 || argv.length < 3) {
       this.displayHelp()
       return {}
@@ -55,20 +62,23 @@ class Parser {
         }
       }
       if (option) {
-        if (option.type !== COMMAND ||
-          (option.takesArguments && argv[argPos+1].charAt(0) !== '-') // This is for commands like set that *might* take a value, but might also use another option to get that value
+        if (
+          (option.type !== COMMAND ||
+          (option.takesArguments && argv[argPos+1].charAt(0) !== '-')) && // This is for commands like set that *might* take a value, but might also use another option to get that value
+          !option.bool
         ) {
           argPos++
           this.found[option.mapTo || option.name] = argv[argPos]
         }
         if (exicute && option.action) command = option.action
+        if (option.bool) this.found[option.mapTo || option.name] = true
         argPos++
       } else {
         throw Error ('could not find option: ' + argv[argPos])
       }
     }
 
-    //we should never get here, but better safe than sorry
+    console.log('foudn', this.found)
     if (command) command()
     return this.found
   }

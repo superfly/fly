@@ -7,7 +7,7 @@ import { root } from './root'
 
 import log from '../log'
 import { Bridge } from '../bridge/bridge'
-import { COMMAND } from './argTypes'
+import { COMMAND, OPTION } from './argTypes'
 
 const scripts = [
   require.resolve("mocha/mocha"),
@@ -26,8 +26,11 @@ interface TestArgs {
 }
 
 root.add([{
+  type: OPTION,
+  name: 'path',
+  description: "Test from a specific path, defaults to {test,spec}/**/*.{test,spec}.js",
+}, {
   type: COMMAND,
-  takesArguments: true,
   name: 'test',
   description: "Run unit tests, defaults to {test,spec}/**/*.{test,spec}.js",
   action: () => {

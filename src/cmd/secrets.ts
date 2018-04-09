@@ -24,12 +24,13 @@ root.add([{
   description: "Set a secret to use in your config.",
   usage: "fly secrets set <key> [value]",
   takesArguments: true,
+  mapTo: 'key',
   action: async () => {
     try {
       const appName = getAppName()
       const opts = root.getOptions(false)
       const value = opts.filename ?
-        fs.readFileSync(opts.filename[0]).toString() :
+        fs.readFileSync(opts.filename).toString() :
         opts.set
 
       if (!value)
