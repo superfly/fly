@@ -14,7 +14,7 @@ export interface CommonOptions {
   token: string[]
 }
 
-export const root = new Parser("Fly CLI", [
+export const root = new Parser("Fly CLI", "fly [command] [options]", [
   {
     type: COMMAND,
     name: 'version',
@@ -24,19 +24,16 @@ export const root = new Parser("Fly CLI", [
   {
     type: OPTION,
     name: 'app',
-    accepts: 1, //number of arguments this accepts (in this case just 1 <id>)
     description: "App to use for commands."
   },
   {
     type: OPTION,
     name: 'env',
-    accepts: 1,
     description: "Environment to use for commands."
   },
   {
     type: OPTION,
     name: 'token',
-    accepts: 1,
     description: "Fly Access Token (can be set via environment FLY_ACCESS_TOKEN)"
   }
 ])

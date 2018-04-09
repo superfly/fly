@@ -3,29 +3,31 @@ import { COMMAND, OPTION } from './argTypes'
 interface Parser {
   description: string,
   objs: any[],
-  found: any
+  found: any,
+  usage: string
 }
 
 class Parser {
-  constructor (description:string, obj:any[]) {
+  constructor (description:string, usage:string, obj:any[]) {
     this.description = description
     this.objs = obj
+    this.usage = usage
   }
 
   /*
   * add takes an array of options. Options are objects in this format:
-  * @param name [required] this is the name that can the user can type to get
+  * @property name [required] this is the name that can the user can type to get
                            this option or command. for commands the user can use
                            the name and for options the user can use either
                            --the-name or -the first letter of the name eg. name:
                            from-file will be triggered by: -f || --from-file
-  * @param type [required] the type of option. this can be either COMMAND or OPTION
-  * @param action [required (for commands)] the function to be run when a
+  * @property type [required] the type of option. this can be either COMMAND or OPTION
+  * @property action [required (for commands)] the function to be run when a
                                             command is given by the user.
-  * @param mapTo [optional] the name of the object returned from getOptions
-  * @param description [optional] description of the command or option
-  * @param usage [optional] the useage of a particular command or option
-  * @param takesArguments [optional] allows commands to take arguments
+  * @property mapTo [optional] the name of the object returned from getOptions
+  * @property description [optional] description of the command or option
+  * @property usage [optional] the useage of a particular command or option
+  * @property takesArguments [optional] allows commands to take arguments
   */
   add(obj:any[]) {
     this.objs = [...this.objs, ...obj]
