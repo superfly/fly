@@ -31,7 +31,7 @@ root.add([{
       const opts = root.getOptions(false)
       const value = opts.filename ?
         fs.readFileSync(opts.filename).toString() :
-        opts.set
+        opts.key
 
       if (!value)
         throw new Error("Either a value or --from-file needs to be provided.")
