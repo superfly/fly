@@ -78,7 +78,6 @@ class Parser {
       }
     }
 
-    console.log('foudn', this.found)
     if (command) command()
     return this.found
   }
