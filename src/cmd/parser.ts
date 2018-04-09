@@ -12,6 +12,20 @@ class Parser {
     this.objs = obj
   }
 
+  /*
+  * add takes an array of options. Options are objects in this format:
+  * @param name [required] this is the name that can the user can type to get
+                           this option or command. for commands the user can use
+                           the name and for options the user can use either
+                           --the-name or -the first letter of the name eg. name:
+                           from-file will be triggered by: -f || --from-file
+  * @param type [required] the type of option. this can be either COMMAND or OPTION
+  * @param action [required (for commands)] the function to be run when a
+                                            command is given by the user.
+  * @param mapTo [optional] the name of the object returned from getOptions
+  * @param description [optional] description of the command or option
+  * @param usage [optional] the useage of a particular command or option
+  */
   add(obj:any[]) {
     this.objs = [...this.objs, ...obj]
   }
@@ -67,7 +81,7 @@ class Parser {
   }
 
   private displayHelp () {
-    console.log('help')
+    console.log('help') //TODO: fill me in
   }
 }
 
