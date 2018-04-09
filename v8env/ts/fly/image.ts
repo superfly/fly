@@ -2,13 +2,15 @@
  * A class for modifying images. This uses operations from [Sharp](http://sharp.pixelplumbing.com/en/stable/) under the hood.
  * @module fly
  */
+import { transferInto } from "../utils/buffer";
 export class Image {
   /** @hidden */
   data: ArrayBuffer
   /** @hidden */
-  operations: Image.Operation[]
-  /** @hidden */
   info: Image.Metadata | null
+
+  /** @hidden */
+  private _ref: any
 
   /**
    * Constructs a new Image from raw Buffer data
@@ -20,7 +22,7 @@ export class Image {
     }
     //console.log("data:", data.constructor)
     this.data = data
-    this.operations = []
+    this._ref = constructImage(this.data)
     this.info = null
   }
 
@@ -35,59 +37,111 @@ export class Image {
    * @returns {fly.Image}
    */
   resize(width?: number, height?: number, options?: Image.ResizeOptions) {
-    this.operations.push({ name: "resize", args: [width, height, options] })
+    this._imageOperation("resize", width, height, options)
+    return this
+  }
+
+  /**
+   * Overlay (composite) an image over the processed (resized, extracted etc.) image.
+   * 
+   * The overlay image must be the same size or smaller than the processed image. If both top and left options are provided, they take precedence over gravity.
+   *
+   * If the overlay image contains an alpha channel then composition with premultiplication will occur.
+   * @param overlay image to overlay
+   * @param options control how the overlay is composited
+   * @returns {fly.Image}
+   */
+  overlayWith(overlay: ArrayBuffer | Image, options?: Image.OverlayOptions) {
+    let p: any = overlay
+    if (p instanceof Image) {
+      p = p._ref
+    }
+    this._imageOperation("overlayWith", p, options)
+    return this
+  }
+  max() {
+    this._imageOperation("max")
+    return this
+  }
+  negate() {
+    this._imageOperation("negate")
     return this
   }
 
   crop(...args: any[]) {
-    this.operations.push({ name: "crop", args: args })
+    this._imageOperation("crop", ...args)
     return this
   }
 
   embed(...args: any[]) {
-    this.operations.push({ name: "embed", args: args })
+    this._imageOperation("embed", ...args)
     return this
   }
 
   background(...args: any[]) {
-    this.operations.push({ name: "background", args: args })
+    this._imageOperation("background", ...args)
     return this
   }
 
   withoutEnlargement(...args: any[]) {
-    this.operations.push({ name: "withoutEnlargement", args: args })
+    this._imageOperation("withoutEnlargement", ...args)
     return this
   }
 
   png(...args: any[]) {
-    this.operations.push({ name: "png", args: args })
+    this._imageOperation("png", ...args)
     return this
   }
 
   webp(...args: any[]) {
-    this.operations.push({ name: "webp", args: args })
+    this._imageOperation("webp", ...args)
     return this
   }
 
   withMetadata(...args: any[]) {
-    this.operations.push({ name: "withMedata", args: args })
+    this._imageOperation("withMedata", ...args)
     return this
   }
 
-  async metadata(): Promise<Image.Metadata> {
-    return await imageMetadata(this)
+  /**
+   * Pads image by number of pixels. If image is 200px wide, `extend(20)` makes it 220px wide
+   * @param extend If numeric, pads all sides of an image.
+   * 
+   * Otherwise, pad each side by the specified amount.
+   * @returns {fly.Image}
+   */
+  extend(extend: number | Image.ExtendOptions) {
+    this._imageOperation("extend", extend)
+    return this
+  }
+
+  metadata(): Image.Metadata {
+    const m = imageMetadata(this._ref)
+    this.info = m
+    return m
+  }
+
+  /** @hidden */
+  private _imageOperation(name: string, ...args: any[]) {
+    if (!imageOperation) {
+      throw new Error("Image operations not enabled")
+    }
+    return imageOperation(this._ref, name, ...args)
   }
 
   async toBuffer(): Promise<Image.OperationResult> {
-    if (!modifyImage) {
+    if (!imageToBuffer) {
       throw new Error("Image operations not enabled")
     }
-    const result = await modifyImage(this)
+    const result = await imageToBuffer(this._ref)
     return result
   }
 
   async toImage(): Promise<Image> {
-    const result = await this.toBuffer()
+    if (!imageToBuffer) {
+      throw new Error("Image operations not enabled")
+    }
+    const result = await imageToBuffer(this._ref)
     const i = new Image(result.data)
     i.info = result.info
     return i
@@ -95,11 +149,6 @@ export class Image {
 }
 
 export namespace Image {
-  /** @hidden */
-  export interface Operation {
-    name: string,
-    args: any[]
-  }
 
   export interface Metadata {
     /** Number of pixels wide */
@@ -138,9 +187,26 @@ export namespace Image {
      * some images. (optional, default `true`)
      */
     fastShrinkOnLoad?: boolean
+  }
 
+  export interface OverlayOptions {
+    /**  gravity at which to place the overlay. (optional, default `center`) */
+    gravity?: gravity,
+    top?: number,
+    left?: number,
+    tile?: Boolean,
+    cutout?: Boolean,
+    density?: number
+  }
+
+  export interface ExtendOptions {
+    top?: number,
+    left?: number,
+    bottom?: number,
+    right?: number
   }
 }
+
 /** @hidden */
 interface OperationFunction {
   (image: Image): Promise<Image.OperationResult>
@@ -152,21 +218,41 @@ interface MetadataFunction {
 /**
  * @hidden
  */
-let modifyImage: OperationFunction
+let constructImage: (data: ArrayBuffer, options?: any) => any
 /**
  * @hidden
  */
-let imageMetadata: MetadataFunction
+let imageOperation: (ref: any, name: string, ...args: any[]) => any
+/** @hidden */
+let imageToBuffer: (ref: any) => Promise<Image.OperationResult>
+/** @hidden */
+let imageMetadata: (ref: any) => Image.Metadata
 
-/**
- * @hidden 
- */
+/** @hidden */
 export default function initImage(ivm: any, dispatcher: any) {
-  modifyImage = async function modifyImage(image: Image): Promise<Image.OperationResult> {
+  constructImage = function (data: ArrayBuffer, options?: any) {
+    return dispatcher.dispatchSync("fly.Image()", transferInto(ivm, data))
+  }
+  imageOperation = function (ref: any, name: string, ...args: any[]) {
+    for (let i = 0; i < args.length; i++) {
+      const a = args[i]
+      if (a instanceof ArrayBuffer) {
+        args[i] = transferInto(ivm, a)
+      } else if (typeof a === "object" && !(a instanceof ivm.Reference)) {
+        args[i] = new ivm.ExternalCopy(a).copyInto({ release: true })
+      }
+    }
+    const result = dispatcher.dispatchSync("fly.Image.operation", ref, name, ...args)
+    if (result != ref) {
+      //console.error("Image ref mismatch:", name, ref.typeof, result.typeof)
+      //throw new Error(["image operation failed, result not expected:", ref.typeof, result.typeof].join(" "))
+    }
+    return result
+  }
+  imageToBuffer = async function (ref: any) {
     return new Promise<Image.OperationResult>((resolve, reject) => {
-      dispatcher.dispatch("flyModifyImage",
-        new ivm.ExternalCopy(image.data).copyInto({ release: true }),
-        new ivm.ExternalCopy(image.operations).copyInto({ release: true }),
+      dispatcher.dispatch("fly.Image.toBuffer",
+        ref,
         new ivm.Reference((err: string, data: ArrayBuffer, info: any) => {
           if (err) {
             reject(err)
@@ -177,19 +263,8 @@ export default function initImage(ivm: any, dispatcher: any) {
       )
     })
   }
-  imageMetadata = async function imageMetadata(image: Image): Promise<Image.Metadata> {
-    return new Promise<Image.Metadata>((resolve, reject) => {
-      dispatcher.dispatch("flyImageMetadata",
-        new ivm.ExternalCopy(image.data).copyInto({ release: true }),
-        new ivm.Reference((err: string, metadata: any) => {
-          if (err) {
-            reject(err)
-            return
-          }
-          resolve(metadata)
-        })
-      )
-    })
+  imageMetadata = function imageMetadata(ref): Image.Metadata {
+    return dispatcher.dispatchSync("fly.Image.metadata", ref)
   }
   return Image
 }

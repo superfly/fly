@@ -1,11 +1,13 @@
 import { expect } from 'chai'
 
 const logo = require("./fixtures/logo.png")
+const picture = require("./fixtures/picture.jpg")
+const overlay = require("./fixtures/overlay.png")
 const Image = fly.Image
 describe("Image", () => {
-  it("metadata()", async () => {
+  it("metadata()", () => {
     const img = new Image(logo)
-    const meta = await img.metadata()
+    const meta = img.metadata()
     expect(meta.width).to.eq(256)
     expect(meta.format).to.eq("png")
   })
@@ -16,6 +18,19 @@ describe("Image", () => {
     expect(img2.data.byteLength).to.be.lessThan(logo.byteLength)
     expect(img2.info.width).to.eq(128)
     expect(img2.info.format).to.eq("webp")
+  })
+
+  it("overlayWith()", async () => {
+    const img = new Image(picture)
+    const watermark = new Image(overlay)
+    const meta = img.metadata()
+    const wmeta = watermark.metadata()
+
+    watermark.extend(parseInt(wmeta.width)).background({ r: 255, g: 255, b: 255, alpha: 0 }).embed()
+    img.overlayWith(watermark, { gravity: Image.gravity.southeast })
+    const img2 = await img.toBuffer()
+
+    expect(img2.info.width).to.eq(meta.width)
   })
 
   it("withoutEnlargement().resize()", async () => {
@@ -35,8 +50,7 @@ describe("Image", () => {
     let err = null
     try {
       const img = new Image(logo)
-      img.operations.push({ name: "naughty", args: [] })
-      const p = await img.toBuffer()
+      img._imageOperation("naughty")
     } catch (e) {
       err = e
     }
