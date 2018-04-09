@@ -48,7 +48,8 @@ class Parser {
 
     const argv = this.argv || process.argv
     if (argv.indexOf('--help') >= 0 || argv.indexOf('-h') >= 0 || argv.length < 3) {
-      this.displayHelp()
+      if (argv.length < 4) this.displayHelp()
+      else this.displayHelpFor(this.objs.filter((item) => item.name === argv[2])[0])
       return {}
     }
 
@@ -107,6 +108,18 @@ class Parser {
     if (name === '--' + obj.name) return true
     if (name === '-' + obj.name.charAt(0)) return true
     return false
+  }
+
+  private displayHelpFor (command:any) {
+    console.log(command.description, '\n')
+    if (command.useage) console.log('\t Usage: ', command.usage, '\n')
+    console.log('\t Options: \n')
+    this.objs.forEach((obj) => {
+      if (obj.respondsTo && this.respondsTo(obj.respondsTo, command.name)) {
+        if (obj.type === COMMAND) this.showCommand(obj)
+        if (obj.type === OPTION) this.showOption(obj)
+      }
+    })
   }
 
   private displayHelp () {
