@@ -68,6 +68,8 @@
     "includeDeclarations": true,
     "excludeExternals": true,
     "excludeNotExported": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
     "plugin": "all",
     "mode": "modules",
     "theme": "./docs/theme/"

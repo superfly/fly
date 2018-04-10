@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.28.0"></a>
+# [0.28.0](https://github.com/superfly/fly/compare/v0.27.1...v0.28.0) (2018-04-09)
+
+
+### Bug Fixes
+
+* Support all TypedArray Response/Request bodies ([#54](https://github.com/superfly/fly/issues/54)) ([332356c](https://github.com/superfly/fly/commit/332356c))
+* test command was broken with cwd changes ([67024ac](https://github.com/superfly/fly/commit/67024ac))
+
+
+### Features
+
+* Add APIs for watermarking images ([#55](https://github.com/superfly/fly/issues/55)) ([942ccea](https://github.com/superfly/fly/commit/942ccea))
+
+
+
 <a name="0.27.2"></a>
 ## [0.27.2](https://github.com/superfly/fly/compare/v0.27.1...v0.27.2) (2018-04-06)
 

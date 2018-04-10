@@ -44,13 +44,6 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>A class for modifying images. This uses operations from <a href="http://sharp.pixelplumbing.com/en/stable/">Sharp</a> under the hood.</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -74,8 +67,10 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.extendoptions.html" class="tsd-kind-icon">Extend<wbr>Options</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.metadata.html" class="tsd-kind-icon">Metadata</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.operationresult.html" class="tsd-kind-icon">Operation<wbr>Result</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.overlayoptions.html" class="tsd-kind-icon">Overlay<wbr>Options</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a></li>
 							</ul>
 						</section>
@@ -91,7 +86,11 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#background" class="tsd-kind-icon">background</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#crop" class="tsd-kind-icon">crop</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#embed" class="tsd-kind-icon">embed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#extend" class="tsd-kind-icon">extend</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#max" class="tsd-kind-icon">max</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#metadata-1" class="tsd-kind-icon">metadata</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#negate" class="tsd-kind-icon">negate</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#overlaywith" class="tsd-kind-icon">overlay<wbr>With</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#png" class="tsd-kind-icon">png</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#resize" class="tsd-kind-icon">resize</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#tobuffer" class="tsd-kind-icon">to<wbr>Buffer</a></li>
@@ -116,7 +115,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L11">fly/image.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L13">fly/image.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -152,7 +151,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L52">fly/image.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L81">fly/image.ts:81</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -175,7 +174,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L42">fly/image.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L71">fly/image.ts:71</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -198,7 +197,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L47">fly/image.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L76">fly/image.ts:76</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -212,19 +211,124 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="metadata-1" class="tsd-anchor"></a>
-					<h3>metadata</h3>
+					<a name="extend" class="tsd-anchor"></a>
+					<h3>extend</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">metadata<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/fly.image.metadata.html" class="tsd-signature-type">Metadata</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">extend<span class="tsd-signature-symbol">(</span>extend<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/fly.image.extendoptions.html" class="tsd-signature-type">ExtendOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L77">fly/image.ts:77</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L113">fly/image.ts:113</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/fly.image.metadata.html" class="tsd-signature-type">Metadata</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Pads image by number of pixels. If image is 200px wide, <code>extend(20)</code> makes it 220px wide</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>extend: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/fly.image.extendoptions.html" class="tsd-signature-type">ExtendOptions</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>If numeric, pads all sides of an image.</p>
+										<p>Otherwise, pad each side by the specified amount.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="max" class="tsd-anchor"></a>
+					<h3>max</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">max<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L62">fly/image.ts:62</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="metadata-1" class="tsd-anchor"></a>
+					<h3>metadata</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">metadata<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/fly.image.metadata.html" class="tsd-signature-type">Metadata</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L118">fly/image.ts:118</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/fly.image.metadata.html" class="tsd-signature-type">Metadata</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="negate" class="tsd-anchor"></a>
+					<h3>negate</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">negate<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L66">fly/image.ts:66</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="overlaywith" class="tsd-anchor"></a>
+					<h3>overlay<wbr>With</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">overlay<wbr>With<span class="tsd-signature-symbol">(</span>overlay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><a href="fly.image.html" class="tsd-signature-type">Image</a>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/fly.image.overlayoptions.html" class="tsd-signature-type">OverlayOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L54">fly/image.ts:54</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Overlay (composite) an image over the processed (resized, extracted etc.) image.</p>
+								</div>
+								<p>The overlay image must be the same size or smaller than the processed image. If both top and left options are provided, they take precedence over gravity.</p>
+								<p>If the overlay image contains an alpha channel then composition with premultiplication will occur.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>overlay: <span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><a href="fly.image.html" class="tsd-signature-type">Image</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>image to overlay</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/fly.image.overlayoptions.html" class="tsd-signature-type">OverlayOptions</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>control how the overlay is composited</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -238,7 +342,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L62">fly/image.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L91">fly/image.ts:91</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -261,7 +365,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L37">fly/image.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L39">fly/image.ts:39</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -307,7 +411,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L81">fly/image.ts:81</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L132">fly/image.ts:132</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/fly.image.operationresult.html" class="tsd-signature-type">OperationResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -324,7 +428,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L89">fly/image.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L140">fly/image.ts:140</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="fly.image.html" class="tsd-signature-type">Image</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -341,7 +445,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L67">fly/image.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L96">fly/image.ts:96</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -364,7 +468,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L72">fly/image.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L101">fly/image.ts:101</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -387,7 +491,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/4814b14/v8env/ts/fly/image.ts#L57">fly/image.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L86">fly/image.ts:86</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -439,10 +543,16 @@
 								<a href="../enums/fly.image.strategy.html" class="tsd-kind-icon">strategy</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="../interfaces/fly.image.extendoptions.html" class="tsd-kind-icon">Extend<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="../interfaces/fly.image.metadata.html" class="tsd-kind-icon">Metadata</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="../interfaces/fly.image.operationresult.html" class="tsd-kind-icon">Operation<wbr>Result</a>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="../interfaces/fly.image.overlayoptions.html" class="tsd-kind-icon">Overlay<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="../interfaces/fly.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a>
@@ -460,7 +570,19 @@
 								<a href="fly.image.html#embed" class="tsd-kind-icon">embed</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fly.image.html#extend" class="tsd-kind-icon">extend</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fly.image.html#max" class="tsd-kind-icon">max</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="fly.image.html#metadata-1" class="tsd-kind-icon">metadata</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fly.image.html#negate" class="tsd-kind-icon">negate</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fly.image.html#overlaywith" class="tsd-kind-icon">overlay<wbr>With</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="fly.image.html#png" class="tsd-kind-icon">png</a>
