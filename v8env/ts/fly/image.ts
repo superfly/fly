@@ -338,7 +338,8 @@ export namespace Image {
     /** use progressive (interlace) scan (defaults to false) */
     progressive?: boolean,
     /** set to '4:4:4' to prevent chroma subsampling when quality <= 90 */
-    overshootDeringing?: boolean,
+    chromaSubsampling?: boolean,
+    /** force output to jpeg (default true) */
     force?: boolean
   }
 
