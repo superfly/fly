@@ -16,13 +16,13 @@ export class Image {
    * Constructs a new Image from raw Buffer data
    * @param data Raw image data from `fetch` or `cache` or somewhere else.
    */
-  constructor(data: ArrayBuffer|string) {
+  constructor(data: ArrayBuffer) {
     if (data instanceof ArrayBuffer) {
       this.data = data
       this._ref = constructImage(this.data)
       this.info = null
     } else {
-      throw new Error("Data must be an ArrayBuffer or string path")
+      throw new Error("Data must be an ArrayBuffer")
     }
   }
 
