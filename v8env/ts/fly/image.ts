@@ -16,22 +16,22 @@ export class Image {
    * Constructs a new Image from raw Buffer data
    * @param data Raw image data from `fetch` or `cache` or somewhere else.
    */
-  constructor(data: ArrayBuffer) {
-    if (!(data instanceof ArrayBuffer)) {
-      throw new Error("Data must be an ArrayBuffer")
+  constructor(data: ArrayBuffer|string) {
+    if (data instanceof ArrayBuffer) {
+      this.data = data
+      this._ref = constructImage(this.data)
+      this.info = null
+    } else {
+      throw new Error("Data must be an ArrayBuffer or string path")
     }
-    //console.log("data:", data.constructor)
-    this.data = data
-    this._ref = constructImage(this.data)
-    this.info = null
   }
 
   /**
-   * Resize image to `width` x `height`. By default, the resized image is center 
-   * cropped to the exact size specified. 
+   * Resize image to `width` x `height`. By default, the resized image is center
+   * cropped to the exact size specified.
    * @param width Width in pixels of the resulting image.
    * Pass `undefined` or `null` to auto-scale the width to match the height.
-   * @param height Height in pixels of the resulting image. 
+   * @param height Height in pixels of the resulting image.
    * Pass `undefind` or `null` to auto-scale the height to match the width.
    * @param options Resize options
    * @returns {fly.Image}
@@ -43,7 +43,7 @@ export class Image {
 
   /**
    * Overlay (composite) an image over the processed (resized, extracted etc.) image.
-   * 
+   *
    * The overlay image must be the same size or smaller than the processed image. If both top and left options are provided, they take precedence over gravity.
    *
    * If the overlay image contains an alpha channel then composition with premultiplication will occur.
@@ -106,7 +106,7 @@ export class Image {
   /**
    * Pads image by number of pixels. If image is 200px wide, `extend(20)` makes it 220px wide
    * @param extend If numeric, pads all sides of an image.
-   * 
+   *
    * Otherwise, pad each side by the specified amount.
    * @returns {fly.Image}
    */
@@ -146,6 +146,18 @@ export class Image {
     i.info = result.info
     return i
   }
+
+  async toResponse(res:any = { headers: { "Content-Type": "image/jpg" }}): Promise<any> {
+    const result = await imageToBuffer(this._ref)
+    const i = await new Image(result.data)
+    i.info = result.info
+    return new Response(i.data, res)
+  }
+
+  static async imageFromPath(path:string) {
+    const resp = await fetch(path)
+    return new Image(await resp.arrayBuffer())
+  }
 }
 
 export namespace Image {
@@ -182,8 +194,8 @@ export namespace Image {
      */
     kernel?: kernel,
     /**
-     * take greater advantage of the JPEG 
-     * and WebP shrink-on-load feature, which can lead to a slight moiré pattern on 
+     * take greater advantage of the JPEG
+     * and WebP shrink-on-load feature, which can lead to a slight moiré pattern on
      * some images. (optional, default `true`)
      */
     fastShrinkOnLoad?: boolean
