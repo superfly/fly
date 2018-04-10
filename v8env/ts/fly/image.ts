@@ -33,8 +33,7 @@ export class Image {
    * Pass `undefined` or `null` to auto-scale the width to match the height.
    * @param height Height in pixels of the resulting image. 
    * Pass `undefind` or `null` to auto-scale the height to match the width.
-   * @param options Resize options
-   * @returns {fly.Image}
+   * @param options Resize options}
    */
   resize(width?: number, height?: number, options?: Image.ResizeOptions) {
     this._imageOperation("resize", width, height, options)
@@ -49,7 +48,6 @@ export class Image {
    * If the overlay image contains an alpha channel then composition with premultiplication will occur.
    * @param overlay image to overlay
    * @param options control how the overlay is composited
-   * @returns {fly.Image}
    */
   overlayWith(overlay: ArrayBuffer | Image, options?: Image.OverlayOptions) {
     let p: any = overlay
@@ -88,6 +86,10 @@ export class Image {
     return this
   }
 
+  jpeg(...args: any[]) {
+    this._imageOperation("jpeg", ...args)
+    return this
+  }
   png(...args: any[]) {
     this._imageOperation("png", ...args)
     return this
@@ -100,6 +102,11 @@ export class Image {
 
   withMetadata(...args: any[]) {
     this._imageOperation("withMedata", ...args)
+    return this
+  }
+
+  flatten(flatten: boolean) {
+    this._imageOperation("flatten", flatten)
     return this
   }
 

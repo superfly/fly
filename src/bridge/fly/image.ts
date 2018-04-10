@@ -24,12 +24,18 @@ const allowedOperations: Map<string, imageOperation> = new Map([
   ["background", sharp.prototype.background],
   ["withoutEnlargement", sharp.prototype.withoutEnlargement],
   ["withMetadata", sharp.prototype.withMetadata],
-  ["png", sharp.prototype.png],
-  ["webp", sharp.prototype.webp],
+
   ["overlayWith", sharp.prototype.overlayWith],
   ["negate", sharp.prototype.negate],
   ["max", sharp.prototype.max],
-  ["extend", sharp.prototype.extend]
+  ["extend", sharp.prototype.extend],
+  ["flatten", sharp.prototype.flatten],
+
+  // output
+  ["png", sharp.prototype.png],
+  ["webp", sharp.prototype.webp],
+  ["jpeg", sharp.prototype.jpeg],
+
 ])
 
 const metadataFields = [

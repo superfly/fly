@@ -20,6 +20,13 @@ describe("Image", () => {
     expect(img2.info.format).to.eq("webp")
   })
 
+  it("flatten()", async () => {
+    const img = new Image(logo)
+    const img2 = await img.background({ r: 0, b: 0, g: 255, alpha: 1 }).flatten().toImage()
+
+    expect(img2.data.byteLength).to.not.eq(img.data.byteLength)
+  })
+
   it("overlayWith()", async () => {
     const img = new Image(picture)
     const watermark = new Image(overlay)
