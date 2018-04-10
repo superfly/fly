@@ -1,4 +1,4 @@
-/* Original pulsing dots by sharla */
+/* Credit to: https://codepen.io/bev/pen/vZNJWr */
 
 @keyframes pulse {
   0% {box-shadow: 0px 0px 0px 0px rgba(52, 106, 180, 1);}
