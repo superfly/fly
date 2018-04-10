@@ -1,0 +1,5 @@
+app: fly-fleet
+files:
+  - index.html
+  - out.css
+  - map.png
