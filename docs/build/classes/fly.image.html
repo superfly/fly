@@ -67,11 +67,15 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.color.html" class="tsd-kind-icon">Color</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.extendoptions.html" class="tsd-kind-icon">Extend<wbr>Options</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.jpegoptions.html" class="tsd-kind-icon">Jpeg<wbr>Options</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.metadata.html" class="tsd-kind-icon">Metadata</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.operationresult.html" class="tsd-kind-icon">Operation<wbr>Result</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.overlayoptions.html" class="tsd-kind-icon">Overlay<wbr>Options</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.pngoptions.html" class="tsd-kind-icon">Png<wbr>Options</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/fly.image.webpoptions.html" class="tsd-kind-icon">Webp<wbr>Options</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -87,6 +91,8 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#crop" class="tsd-kind-icon">crop</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#embed" class="tsd-kind-icon">embed</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#extend" class="tsd-kind-icon">extend</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#flatten" class="tsd-kind-icon">flatten</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#jpeg" class="tsd-kind-icon">jpeg</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#max" class="tsd-kind-icon">max</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#metadata-1" class="tsd-kind-icon">metadata</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.image.html#negate" class="tsd-kind-icon">negate</a></li>
@@ -115,7 +121,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L13">fly/image.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L13">fly/image.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -145,19 +151,31 @@
 					<a name="background" class="tsd-anchor"></a>
 					<h3>background</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">background<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">background<span class="tsd-signature-symbol">(</span>rgba<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/fly.image.color.html" class="tsd-signature-type">Color</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L81">fly/image.ts:81</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L138">fly/image.ts:138</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Set the background for the <code>embed</code>, <code>flatten</code> and <code>extend</code> operations.
+									The default background is <code>{r: 0, g: 0, b: 0, alpha: 1}</code>, black without transparency.</p>
+								</div>
+								<p>Delegates to the <em>color</em> module, which can throw an Error
+									but is liberal in what it accepts, clipping values to sensible min/max.
+								The alpha value is a float between <code>0</code> (transparent) and <code>1</code> (opaque).</p>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>rgba: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/fly.image.color.html" class="tsd-signature-type">Color</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>parsed by the <a href="https://www.npmjs.org/package/color">color</a> module to extract values for red, green, blue and alpha.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -168,19 +186,37 @@
 					<a name="crop" class="tsd-anchor"></a>
 					<h3>crop</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">crop<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">crop<span class="tsd-signature-symbol">(</span>crop<span class="tsd-signature-symbol">?: </span><a href="../enums/fly.image.gravity.html" class="tsd-signature-type">gravity</a><span class="tsd-signature-symbol"> | </span><a href="../enums/fly.image.strategy.html" class="tsd-signature-type">strategy</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L71">fly/image.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L104">fly/image.ts:104</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Crop the resized image to the exact size specified, the default behaviour.</p>
+								</div>
+								<p>Possible attributes of the optional <code>sharp.gravity</code> are <code>north</code>, <code>northeast</code>, <code>east</code>, <code>southeast</code>, <code>south</code>,
+								<code>southwest</code>, <code>west</code>, <code>northwest</code>, <code>center</code> and <code>centre</code>.</p>
+								<p>The experimental strategy-based approach resizes so one dimension is at its target length
+								then repeatedly ranks edge regions, discarding the edge with the lowest score based on the selected strategy.</p>
+								<ul>
+									<li><code>entropy</code>: focus on the region with the highest <a href="https://en.wikipedia.org/wiki/Entropy_%28information_theory%29">Shannon entropy</a>.</li>
+									<li><code>attention</code>: focus on the region with the highest luminance frequency, colour saturation and presence of skin tones.</li>
+								</ul>
+								<pre><code>const cropped = await <span class="hljs-function"><span class="hljs-keyword">new</span> <span class="hljs-title">Image</span>(input)
+  .<span class="hljs-title">resize</span>(<span class="hljs-number">200</span>, <span class="hljs-number">200</span>)
+  .<span class="hljs-title">crop</span>(<span class="hljs-type">Image</span>.strategy.entropy)
+  .<span class="hljs-title">toBuffer</span>()</span>
+</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> crop: <a href="../enums/fly.image.gravity.html" class="tsd-signature-type">gravity</a><span class="tsd-signature-symbol"> | </span><a href="../enums/fly.image.strategy.html" class="tsd-signature-type">strategy</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -191,19 +227,36 @@
 					<a name="embed" class="tsd-anchor"></a>
 					<h3>embed</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">embed<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">embed<span class="tsd-signature-symbol">(</span>gravity<span class="tsd-signature-symbol">?: </span><a href="../enums/fly.image.gravity.html" class="tsd-signature-type">gravity</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L76">fly/image.ts:76</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L124">fly/image.ts:124</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Preserving aspect ratio, resize the image to the maximum <code>width</code> or <code>height</code> specified
+									then embed on a background of the exact <code>width</code> and <code>height</code> specified.</p>
+								</div>
+								<p>If the background contains an alpha value then WebP and PNG format output images will
+								contain an alpha channel, even when the input image does not.</p>
+								<pre><code>const data = <span class="hljs-function"><span class="hljs-keyword">new</span> <span class="hljs-title">Image</span>(input)
+  .<span class="hljs-title">resize</span>(<span class="hljs-number">200</span>, <span class="hljs-number">300</span>)
+  .<span class="hljs-title">background</span>({r: <span class="hljs-number">0</span>, g: <span class="hljs-number">0</span>, b: <span class="hljs-number">0</span>, alpha: <span class="hljs-number">0</span>})
+  .<span class="hljs-title">embed</span>()
+  .<span class="hljs-title">toBuffer</span>();</span>
+</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> gravity: <a href="../enums/fly.image.gravity.html" class="tsd-signature-type">gravity</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>embed to an edge/corner, defaults to <code>center</code>.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -220,7 +273,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L113">fly/image.ts:113</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L238">fly/image.ts:238</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -243,6 +296,76 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="flatten" class="tsd-anchor"></a>
+					<h3>flatten</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">flatten<span class="tsd-signature-symbol">(</span>flatten<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L227">fly/image.ts:227</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p> Merge alpha transparency channel, if any, with <code>background</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>flatten: <span class="tsd-signature-type">boolean</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Defaults to true</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="jpeg" class="tsd-anchor"></a>
+					<h3>jpeg</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">jpeg<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/fly.image.jpegoptions.html" class="tsd-signature-type">JpegOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L169">fly/image.ts:169</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Output image to JPEG</p>
+								</div>
+								<pre><code> * <span class="hljs-comment">// Convert any input to very high quality JPEG output</span>
+<span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> Image(input)
+  .jpeg({
+    quality: <span class="hljs-number">100</span>,
+    chromaSubsampling: <span class="hljs-string">'4:4:4'</span>
+  })
+  .toBuffer();
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/fly.image.jpegoptions.html" class="tsd-signature-type">JpegOptions</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>JPEG output options</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="max" class="tsd-anchor"></a>
 					<h3>max</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -252,9 +375,21 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L62">fly/image.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L73">fly/image.ts:73</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Preserving aspect ratio, resize the image to be as large as possible
+									while ensuring its dimensions are less than or equal to the <code>width</code> and <code>height</code> specified.</p>
+								</div>
+								<p>Both <code>width</code> and <code>height</code> must be provided via <code>resize</code> otherwise the behavior will default to <code>crop</code>.</p>
+								<pre><code>const data = await <span class="hljs-function"><span class="hljs-keyword">new</span> <span class="hljs-title">ImageinputBuffer</span>)
+  .<span class="hljs-title">resize</span>(<span class="hljs-number">200</span>, <span class="hljs-number">200</span>)
+  .<span class="hljs-title">max</span>()
+  .<span class="hljs-title">toBuffer</span>()</span>
+</code></pre>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
 						</li>
 					</ul>
@@ -269,9 +404,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L118">fly/image.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L246">fly/image.ts:246</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get metadata from image</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/fly.image.metadata.html" class="tsd-signature-type">Metadata</a></h4>
 						</li>
 					</ul>
@@ -286,9 +426,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L66">fly/image.ts:66</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L81">fly/image.ts:81</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Produce the &quot;negative&quot; of the image.</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
 						</li>
 					</ul>
@@ -303,7 +448,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L54">fly/image.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L52">fly/image.ts:52</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -336,19 +481,34 @@
 					<a name="png" class="tsd-anchor"></a>
 					<h3>png</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">png<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">png<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/fly.image.pngoptions.html" class="tsd-signature-type">PngOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L91">fly/image.ts:91</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L188">fly/image.ts:188</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Use these PNG options for output image.</p>
+								</div>
+								<p>PNG output is always full colour at 8 or 16 bits per pixel.
+								Indexed PNG input at 1, 2 or 4 bits per pixel is converted to 8 bits per pixel.</p>
+								<pre><code><span class="hljs-comment">// Convert any input to PNG output</span>
+const data = await <span class="hljs-function"><span class="hljs-keyword">new</span> <span class="hljs-title">Image</span>(input)
+  .<span class="hljs-title">png</span>()
+  .<span class="hljs-title">toBuffer</span>();</span>
+</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/fly.image.pngoptions.html" class="tsd-signature-type">PngOptions</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Compression and encoding options</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -365,7 +525,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L39">fly/image.ts:39</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L38">fly/image.ts:38</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -393,7 +553,7 @@
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/fly.image.resizeoptions.html" class="tsd-signature-type">ResizeOptions</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Resize options</p>
+										<p>Resize options}</p>
 									</div>
 								</li>
 							</ul>
@@ -411,7 +571,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L132">fly/image.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L260">fly/image.ts:260</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/fly.image.operationresult.html" class="tsd-signature-type">OperationResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -428,7 +588,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L140">fly/image.ts:140</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L268">fly/image.ts:268</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="fly.image.html" class="tsd-signature-type">Image</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -439,19 +599,32 @@
 					<a name="webp" class="tsd-anchor"></a>
 					<h3>webp</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">webp<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">webp<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/fly.image.webpoptions.html" class="tsd-signature-type">WebpOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L96">fly/image.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L204">fly/image.ts:204</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Output to webp.</p>
+								</div>
+								<pre><code><span class="hljs-comment">// Convert any input to lossless WebP output</span>
+<span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> Image(input)
+  .webp({ lossless: <span class="hljs-literal">true</span> })
+  .toBuffer();
+</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/fly.image.webpoptions.html" class="tsd-signature-type">WebpOptions</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>webp encoding options, quality, etc</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -462,19 +635,31 @@
 					<a name="withmetadata" class="tsd-anchor"></a>
 					<h3>with<wbr>Metadata</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">with<wbr>Metadata<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">with<wbr>Metadata<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L101">fly/image.ts:101</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L218">fly/image.ts:218</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Include all metadata (EXIF, XMP, IPTC) from the input image in the output image.
+										The default behaviour, when <code>withMetadata</code> is not used, is to strip all metadata
+										and convert to the device-independent sRGB colour space. This will also convert
+									to and add a web-friendly sRGB ICC profile.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p> <code>options.orientation:</code> value between 1 and 8, used to update the EXIF
+										<code>Orientation</code> tag.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -485,19 +670,30 @@
 					<a name="withoutenlargement" class="tsd-anchor"></a>
 					<h3>without<wbr>Enlargement</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">without<wbr>Enlargement<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">without<wbr>Enlargement<span class="tsd-signature-symbol">(</span>flag<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/3132473/v8env/ts/fly/image.ts#L86">fly/image.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L149">fly/image.ts:149</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Do not enlarge the output image if the input image width or height are already less than the required dimensions.
+										This is equivalent to GraphicsMagick&#39;s <code>&gt;</code> geometry option: <em>&quot;change the dimensions of the image only if its width
+										or height exceeds the geometry specification&quot;</em>. Use with <code>max()</code> to preserve the image&#39;s aspect ratio
+									The default behaviour before function call is false, meaning the image will be enlarged.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> flag: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Toggle option</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -543,7 +739,13 @@
 								<a href="../enums/fly.image.strategy.html" class="tsd-kind-icon">strategy</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="../interfaces/fly.image.color.html" class="tsd-kind-icon">Color</a>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="../interfaces/fly.image.extendoptions.html" class="tsd-kind-icon">Extend<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="../interfaces/fly.image.jpegoptions.html" class="tsd-kind-icon">Jpeg<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="../interfaces/fly.image.metadata.html" class="tsd-kind-icon">Metadata</a>
@@ -555,7 +757,13 @@
 								<a href="../interfaces/fly.image.overlayoptions.html" class="tsd-kind-icon">Overlay<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="../interfaces/fly.image.pngoptions.html" class="tsd-kind-icon">Png<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="../interfaces/fly.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="../interfaces/fly.image.webpoptions.html" class="tsd-kind-icon">Webp<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="fly.image.html#constructor" class="tsd-kind-icon">constructor</a>
@@ -571,6 +779,12 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="fly.image.html#extend" class="tsd-kind-icon">extend</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fly.image.html#flatten" class="tsd-kind-icon">flatten</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fly.image.html#jpeg" class="tsd-kind-icon">jpeg</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="fly.image.html#max" class="tsd-kind-icon">max</a>

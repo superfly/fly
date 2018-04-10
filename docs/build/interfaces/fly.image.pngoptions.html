@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ResizeOptions | @fly/fly</title>
+	<title>PngOptions | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -37,21 +37,28 @@
 					<a href="../classes/fly.image.html">Image</a>
 				</li>
 				<li>
-					<a href="fly.image.resizeoptions.html">ResizeOptions</a>
+					<a href="fly.image.pngoptions.html">PngOptions</a>
 				</li>
 			</ul>
-			<h1>Interface ResizeOptions</h1>
+			<h1>Interface PngOptions</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>PNG output options</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ResizeOptions</span>
+						<span class="target">PngOptions</span>
 					</li>
 				</ul>
 			</section>
@@ -62,8 +69,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.resizeoptions.html#fastshrinkonload" class="tsd-kind-icon">fast<wbr>Shrink<wbr>OnLoad</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.resizeoptions.html#kernel" class="tsd-kind-icon">kernel</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.pngoptions.html#adaptivefiltering" class="tsd-kind-icon">adaptive<wbr>Filtering</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.pngoptions.html#compressionlevel" class="tsd-kind-icon">compression<wbr>Level</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.pngoptions.html#force" class="tsd-kind-icon">force</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.pngoptions.html#progressive" class="tsd-kind-icon">progressive</a></li>
 							</ul>
 						</section>
 					</div>
@@ -72,35 +81,62 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="fastshrinkonload" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> fast<wbr>Shrink<wbr>OnLoad</h3>
-					<div class="tsd-signature tsd-kind-icon">fast<wbr>Shrink<wbr>OnLoad<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+					<a name="adaptivefiltering" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> adaptive<wbr>Filtering</h3>
+					<div class="tsd-signature tsd-kind-icon">adaptive<wbr>Filtering<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L370">fly/image.ts:370</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L354">fly/image.ts:354</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>take greater advantage of the JPEG
-								and WebP shrink-on-load feature, which can lead to a slight moiré pattern on
-							some images. (optional, default <code>true</code>)</p>
+							<p>use adaptive row filtering (defaults to false)</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="kernel" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> kernel</h3>
-					<div class="tsd-signature tsd-kind-icon">kernel<span class="tsd-signature-symbol">:</span> <a href="fly.image.resizeoptions.html#kernel" class="tsd-signature-type">kernel</a></div>
+					<a name="compressionlevel" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> compression<wbr>Level</h3>
+					<div class="tsd-signature tsd-kind-icon">compression<wbr>Level<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L364">fly/image.ts:364</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L352">fly/image.ts:352</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>the kernel to use for image reduction.
-							(optional, default <code>&#39;lanczos3&#39;</code>)</p>
+							<p>zlib compression level, 0-9 (default to 9)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="force" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> force</h3>
+					<div class="tsd-signature tsd-kind-icon">force<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L356">fly/image.ts:356</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>force PNG output (defaults to true)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="progressive" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> progressive</h3>
+					<div class="tsd-signature tsd-kind-icon">progressive<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L350">fly/image.ts:350</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>use progressive (interlace) scan (defaults to false)</p>
 						</div>
 					</div>
 				</section>
@@ -160,19 +196,25 @@
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.overlayoptions.html" class="tsd-kind-icon">Overlay<wbr>Options</a>
 							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.pngoptions.html" class="tsd-kind-icon">Png<wbr>Options</a>
-							</li>
 							<li class="current tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a>
+								<a href="fly.image.pngoptions.html" class="tsd-kind-icon">Png<wbr>Options</a>
 								<ul>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.resizeoptions.html#fastshrinkonload" class="tsd-kind-icon">fast<wbr>Shrink<wbr>OnLoad</a>
+										<a href="fly.image.pngoptions.html#adaptivefiltering" class="tsd-kind-icon">adaptive<wbr>Filtering</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.resizeoptions.html#kernel" class="tsd-kind-icon">kernel</a>
+										<a href="fly.image.pngoptions.html#compressionlevel" class="tsd-kind-icon">compression<wbr>Level</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.pngoptions.html#force" class="tsd-kind-icon">force</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.pngoptions.html#progressive" class="tsd-kind-icon">progressive</a>
 									</li>
 								</ul>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="fly.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.webpoptions.html" class="tsd-kind-icon">Webp<wbr>Options</a>

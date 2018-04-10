@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ResizeOptions | @fly/fly</title>
+	<title>WebpOptions | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -37,21 +37,28 @@
 					<a href="../classes/fly.image.html">Image</a>
 				</li>
 				<li>
-					<a href="fly.image.resizeoptions.html">ResizeOptions</a>
+					<a href="fly.image.webpoptions.html">WebpOptions</a>
 				</li>
 			</ul>
-			<h1>Interface ResizeOptions</h1>
+			<h1>Interface WebpOptions</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>WebP output options</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ResizeOptions</span>
+						<span class="target">WebpOptions</span>
 					</li>
 				</ul>
 			</section>
@@ -62,8 +69,11 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.resizeoptions.html#fastshrinkonload" class="tsd-kind-icon">fast<wbr>Shrink<wbr>OnLoad</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.resizeoptions.html#kernel" class="tsd-kind-icon">kernel</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.webpoptions.html#alphaquality" class="tsd-kind-icon">alpha<wbr>Quality</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.webpoptions.html#force" class="tsd-kind-icon">force</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.webpoptions.html#lossless" class="tsd-kind-icon">lossless</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.webpoptions.html#nearlossless" class="tsd-kind-icon">near<wbr>Lossless</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.webpoptions.html#quality" class="tsd-kind-icon">quality</a></li>
 							</ul>
 						</section>
 					</div>
@@ -72,35 +82,77 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="fastshrinkonload" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> fast<wbr>Shrink<wbr>OnLoad</h3>
-					<div class="tsd-signature tsd-kind-icon">fast<wbr>Shrink<wbr>OnLoad<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+					<a name="alphaquality" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> alpha<wbr>Quality</h3>
+					<div class="tsd-signature tsd-kind-icon">alpha<wbr>Quality<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L370">fly/image.ts:370</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L323">fly/image.ts:323</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>take greater advantage of the JPEG
-								and WebP shrink-on-load feature, which can lead to a slight moiré pattern on
-							some images. (optional, default <code>true</code>)</p>
+							<p>quality of alpha layer, integer 0-100, default to 100</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="kernel" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> kernel</h3>
-					<div class="tsd-signature tsd-kind-icon">kernel<span class="tsd-signature-symbol">:</span> <a href="fly.image.resizeoptions.html#kernel" class="tsd-signature-type">kernel</a></div>
+					<a name="force" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> force</h3>
+					<div class="tsd-signature tsd-kind-icon">force<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L364">fly/image.ts:364</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L329">fly/image.ts:329</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>the kernel to use for image reduction.
-							(optional, default <code>&#39;lanczos3&#39;</code>)</p>
+							<p>force WebP output, otherwise attempt to use input format, defaults to true</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="lossless" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> lossless</h3>
+					<div class="tsd-signature tsd-kind-icon">lossless<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L325">fly/image.ts:325</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>use lossless compression mode</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="nearlossless" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> near<wbr>Lossless</h3>
+					<div class="tsd-signature tsd-kind-icon">near<wbr>Lossless<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L327">fly/image.ts:327</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>use near_lossless compression mode</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="quality" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> quality</h3>
+					<div class="tsd-signature tsd-kind-icon">quality<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L321">fly/image.ts:321</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>quality, integer 1-100, defaults to 80</p>
 						</div>
 					</div>
 				</section>
@@ -163,19 +215,28 @@
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.pngoptions.html" class="tsd-kind-icon">Png<wbr>Options</a>
 							</li>
-							<li class="current tsd-kind-interface tsd-parent-kind-class">
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a>
+							</li>
+							<li class="current tsd-kind-interface tsd-parent-kind-class">
+								<a href="fly.image.webpoptions.html" class="tsd-kind-icon">Webp<wbr>Options</a>
 								<ul>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.resizeoptions.html#fastshrinkonload" class="tsd-kind-icon">fast<wbr>Shrink<wbr>OnLoad</a>
+										<a href="fly.image.webpoptions.html#alphaquality" class="tsd-kind-icon">alpha<wbr>Quality</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.resizeoptions.html#kernel" class="tsd-kind-icon">kernel</a>
+										<a href="fly.image.webpoptions.html#force" class="tsd-kind-icon">force</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.webpoptions.html#lossless" class="tsd-kind-icon">lossless</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.webpoptions.html#nearlossless" class="tsd-kind-icon">near<wbr>Lossless</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.webpoptions.html#quality" class="tsd-kind-icon">quality</a>
 									</li>
 								</ul>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.webpoptions.html" class="tsd-kind-icon">Webp<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="../classes/fly.image.html#constructor" class="tsd-kind-icon">constructor</a>

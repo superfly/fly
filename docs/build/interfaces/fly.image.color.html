@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ResizeOptions | @fly/fly</title>
+	<title>Color | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -37,10 +37,10 @@
 					<a href="../classes/fly.image.html">Image</a>
 				</li>
 				<li>
-					<a href="fly.image.resizeoptions.html">ResizeOptions</a>
+					<a href="fly.image.color.html">Color</a>
 				</li>
 			</ul>
-			<h1>Interface ResizeOptions</h1>
+			<h1>Interface Color</h1>
 		</div>
 	</div>
 </header>
@@ -51,7 +51,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ResizeOptions</span>
+						<span class="target">Color</span>
 					</li>
 				</ul>
 			</section>
@@ -62,8 +62,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.resizeoptions.html#fastshrinkonload" class="tsd-kind-icon">fast<wbr>Shrink<wbr>OnLoad</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.resizeoptions.html#kernel" class="tsd-kind-icon">kernel</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.color.html#alpha" class="tsd-kind-icon">alpha</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.color.html#b" class="tsd-kind-icon">b</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.color.html#g" class="tsd-kind-icon">g</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.color.html#r" class="tsd-kind-icon">r</a></li>
 							</ul>
 						</section>
 					</div>
@@ -72,35 +74,62 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="fastshrinkonload" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> fast<wbr>Shrink<wbr>OnLoad</h3>
-					<div class="tsd-signature tsd-kind-icon">fast<wbr>Shrink<wbr>OnLoad<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+					<a name="alpha" class="tsd-anchor"></a>
+					<h3>alpha</h3>
+					<div class="tsd-signature tsd-kind-icon">alpha<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L370">fly/image.ts:370</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L288">fly/image.ts:288</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>take greater advantage of the JPEG
-								and WebP shrink-on-load feature, which can lead to a slight moiré pattern on
-							some images. (optional, default <code>true</code>)</p>
+							<p>alpha channel, 0.0-1.0</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="kernel" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> kernel</h3>
-					<div class="tsd-signature tsd-kind-icon">kernel<span class="tsd-signature-symbol">:</span> <a href="fly.image.resizeoptions.html#kernel" class="tsd-signature-type">kernel</a></div>
+					<a name="b" class="tsd-anchor"></a>
+					<h3>b</h3>
+					<div class="tsd-signature tsd-kind-icon">b<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L364">fly/image.ts:364</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L286">fly/image.ts:286</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>the kernel to use for image reduction.
-							(optional, default <code>&#39;lanczos3&#39;</code>)</p>
+							<p>blue channel, 0-255</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="g" class="tsd-anchor"></a>
+					<h3>g</h3>
+					<div class="tsd-signature tsd-kind-icon">g<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L284">fly/image.ts:284</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>green channel, 0-255</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="r" class="tsd-anchor"></a>
+					<h3>r</h3>
+					<div class="tsd-signature tsd-kind-icon">r<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/fafc55a/v8env/ts/fly/image.ts#L282">fly/image.ts:282</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>red channel, 0-255</p>
 						</div>
 					</div>
 				</section>
@@ -142,8 +171,22 @@
 							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
 								<a href="../enums/fly.image.strategy.html" class="tsd-kind-icon">strategy</a>
 							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
+							<li class="current tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.color.html" class="tsd-kind-icon">Color</a>
+								<ul>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.color.html#alpha" class="tsd-kind-icon">alpha</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.color.html#b" class="tsd-kind-icon">b</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.color.html#g" class="tsd-kind-icon">g</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.color.html#r" class="tsd-kind-icon">r</a>
+									</li>
+								</ul>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.extendoptions.html" class="tsd-kind-icon">Extend<wbr>Options</a>
@@ -163,16 +206,8 @@
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.pngoptions.html" class="tsd-kind-icon">Png<wbr>Options</a>
 							</li>
-							<li class="current tsd-kind-interface tsd-parent-kind-class">
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a>
-								<ul>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.resizeoptions.html#fastshrinkonload" class="tsd-kind-icon">fast<wbr>Shrink<wbr>OnLoad</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.resizeoptions.html#kernel" class="tsd-kind-icon">kernel</a>
-									</li>
-								</ul>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.webpoptions.html" class="tsd-kind-icon">Webp<wbr>Options</a>
