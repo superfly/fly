@@ -1,14 +1,16 @@
 import { root, getAppName } from './root'
 import { API } from './api'
 import { processResponse } from '../utils/cli'
+import { COMMAND, OPTION } from './argTypes'
 
 interface HostnamesOptions { }
 interface HostnamesArgs { }
 
-const hostnames = root
-  .subCommand<HostnamesOptions, HostnamesArgs>("hostnames")
-  .description("Manage Fly app's hostnames.")
-  .action(async (opts, args, rest) => {
+root.add([{
+  type: COMMAND,
+  name: 'hostnames',
+  description: "Manage Fly app's hostnames.",
+  action: async () => {
     try {
       const res = await API.get(`/api/v1/apps/${getAppName()}/hostnames`)
       processResponse(res, (res: any) => {
@@ -24,21 +26,22 @@ const hostnames = root
       else
         throw e
     }
-  })
-
-interface HostnamesAddOptions { }
-interface HostnamesAddArgs {
-  hostname: string
-}
-
-hostnames
-  .subCommand<HostnamesAddOptions, HostnamesAddArgs>("add <hostname>")
-  .description("Add a hostname to your fly app.")
-  .action(async (opts, args, rest) => {
+  }
+},
+{
+  type: COMMAND,
+  name: 'add',
+  dontShow: true,
+  takesArguments: true,
+  respondsTo: 'hostnames',
+  mapTo: 'hostname',
+  description: "Add a hostname to your fly app.",
+  action: async () => {
+    const opts = root.getOptions(false)
     try {
-      const res = await API.post(`/api/v1/apps/${getAppName()}/hostnames`, { data: { attributes: { hostname: args.hostname } } })
+      const res = await API.post(`/api/v1/apps/${getAppName()}/hostnames`, { data: { attributes: { hostname: opts.hostname } } })
       processResponse(res, (res: any) => {
-        console.log(`Successfully added hostname ${args.hostname}`)
+        console.log(`Successfully added hostname ${opts.hostname}`)
       })
     } catch (e) {
       if (e.response)
@@ -46,6 +49,5 @@ hostnames
       else
         throw e
     }
-  })
-
-
+  }
+}])

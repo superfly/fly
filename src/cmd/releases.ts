@@ -1,14 +1,16 @@
 import { root, getAppName } from './root'
 import { API } from './api'
 import { processResponse } from '../utils/cli'
+import { COMMAND, OPTION } from './argTypes'
 
 export interface ReleasesOptions { }
 export interface ReleasesArgs { }
 
-root
-  .subCommand<ReleasesOptions, ReleasesArgs>("releases")
-  .description("Manage Fly apps.")
-  .action(async (opts, args, rest) => {
+root.add([{
+  type: COMMAND,
+  name: 'releases',
+  description: "Manage Fly apps.",
+  action: async () => {
     try {
       const appName = getAppName()
       const res = await API.get(`/api/v1/apps/${appName}/releases`)
@@ -25,4 +27,5 @@ root
       else
         throw e
     }
-  })
+  }
+}])

@@ -1,14 +1,16 @@
 import { root, getAppName } from './root'
 import { API } from './api'
 import { processResponse } from '../utils/cli'
+import { COMMAND, OPTION } from './argTypes'
 
 export interface FetchOptions { }
 export interface FetchArgs { }
 
-root
-  .subCommand<FetchOptions, FetchArgs>("fetch")
-  .description("Fetch your Fly app locally.")
-  .action(async (opts, args, rest) => {
+root.add([{
+  type: COMMAND,
+  name: 'fetch',
+  description: "Fetch your Fly app locally.",
+  action: async () => {
     try {
       const appName = getAppName()
       const res = await API.get(`/api/v1/apps/${appName}/source`)
@@ -21,4 +23,5 @@ root
       else
         throw e
     }
-  })
+  }
+}])

@@ -7,6 +7,7 @@ import { root } from './root'
 
 import log from '../log'
 import { Bridge } from '../bridge/bridge'
+import { COMMAND, OPTION } from './argTypes'
 
 const scripts = [
   require.resolve("mocha/mocha"),
@@ -24,10 +25,18 @@ interface TestArgs {
   paths?: string[]
 }
 
-root
-  .subCommand<any, TestArgs>("test [paths...]")
-  .description("Run unit tests, defaults to {test,spec}/**/*.{test,spec}.js")
-  .action((opts, args, rest) => {
+root.add([{
+  type: OPTION,
+  name: 'path',
+  dontShow: true,
+  respondsTo: 'test',
+  description: "Test from a specific path, defaults to {test,spec}/**/*.{test,spec}.js",
+}, {
+  type: COMMAND,
+  name: 'test',
+  description: "Run unit tests, defaults to {test,spec}/**/*.{test,spec}.js",
+  action: () => {
+    const opts = root.getOptions(false)
     const { ivm } = require('../')
     const { v8Env } = require('../v8env')
     const { FileAppStore } = require('../file_app_store')
@@ -36,9 +45,9 @@ root
 
     const cwd = process.cwd()
 
-    let paths = args.paths && args.paths.length ?
+    let paths = opts.paths && opts.paths.length ?
       [].concat.apply([],
-        args.paths.map((f) =>
+        opts.paths.map((f:any) =>
           glob.sync(f).map((gf) =>
             path.resolve(cwd, gf)
           )
@@ -105,5 +114,5 @@ root
         console.error(err.stack)
       }
     })
-  })
-
+  }
+}])

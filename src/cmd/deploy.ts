@@ -2,6 +2,7 @@ import { root, getAppName } from './root'
 import { API } from './api'
 import { getLocalRelease } from '../utils/local'
 import { processResponse } from '../utils/cli'
+import { COMMAND, OPTION } from './argTypes'
 
 import log from '../log'
 
@@ -17,10 +18,11 @@ import { AxiosResponse } from 'axios';
 export interface DeployOptions { }
 export interface DeployArgs { }
 
-root
-  .subCommand<DeployOptions, DeployArgs>("deploy")
-  .description("Deploy your local Fly app.")
-  .action((opts, args, rest) => {
+root.add([{
+  type: COMMAND,
+  name: 'deploy',
+  description: "Deploy your local Fly app.",
+  action: () => {
     const { buildApp } = require('../utils/build')
     const appName = getAppName("production")
     console.log("Deploying", appName)
@@ -77,4 +79,5 @@ root
         }
       }
     })
-  })
+  }
+}])

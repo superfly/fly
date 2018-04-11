@@ -2,6 +2,7 @@ import fs = require('fs')
 import { root, getAppName } from './root'
 import { API } from './api'
 import { processResponse } from '../utils/cli'
+import { COMMAND, OPTION } from './argTypes'
 
 export interface SecretSetOptions {
   filename?: string[]
@@ -11,22 +12,27 @@ export interface SecretSetArgs {
   value?: string
 }
 
-const secrets = root
-  .subCommand<any, any>("secrets")
-  .description("Manage your Fly app secrets.")
-
-secrets
-  .subCommand<SecretSetOptions, SecretSetArgs>("set <key> [value]")
-  .description("Set a secret to use in your config.")
-  .option("--from-file <filename>", "Use a file's contents as the secret value.")
-  .usage("fly secrets set <key> [value]")
-  .action(async (opts, args, rest) => {
+root.add([{
+  type: COMMAND,
+  name: "secrets",
+  description: "Manage your Fly app secrets."
+},
+{
+  type: COMMAND,
+  name: 'set',
+  dontShow: true,
+  respondsTo: 'secrets',
+  description: "Set a secret to use in your config.",
+  usage: "fly secrets set <key> [value]",
+  takesArguments: true,
+  mapTo: 'key',
+  action: async () => {
     try {
       const appName = getAppName()
-
+      const opts = root.getOptions(false)
       const value = opts.filename ?
-        fs.readFileSync(opts.filename[0]).toString() :
-        args.value && args.value
+        fs.readFileSync(opts.filename).toString() :
+        opts.key
 
       if (!value)
         throw new Error("Either a value or --from-file needs to be provided.")
@@ -34,7 +40,7 @@ secrets
       const res = await API.patch(`/api/v1/apps/${appName}/secrets`, {
         data: {
           attributes: {
-            key: args.key,
+            key: opts.key,
             value: Buffer.from(value).toString('base64')
           }
         }
@@ -48,4 +54,13 @@ secrets
       else
         throw e
     }
-  })
+  }
+},
+{
+  type: OPTION,
+  name: 'from-file',
+  dontShow: true,
+  respondsTo: ['set', 'secrets'],
+  mapTo: 'filename',
+  description: "Use a file's contents as the secret value.",
+}])

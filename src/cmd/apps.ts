@@ -2,16 +2,18 @@ import { root, fullAppMatch } from './root'
 import { API } from './api'
 import { processResponse } from '../utils/cli'
 import { existsSync, writeFileSync } from 'fs';
+import { COMMAND, OPTION } from './argTypes'
 
 const Table = require('cli-table2')
 
 interface AppsOptions { }
 interface AppsArgs { }
 
-const apps = root
-  .subCommand<AppsOptions, AppsArgs>("apps")
-  .description("Manage Fly apps.")
-  .action(async (opts, args, rest) => {
+root.add([{
+  type: COMMAND,
+  name: 'apps',
+  description: "Manage Fly apps.",
+  action: async () => {
     try {
       const res = await API.get("/api/v1/apps")
       processResponse(res, (res: any) => {
@@ -30,27 +32,28 @@ const apps = root
       else
         throw e
     }
-  })
-
-interface AppsCreateOptions { }
-interface AppsCreateArgs {
-  name?: string
-}
-
-apps
-  .subCommand<AppsCreateOptions, AppsCreateArgs>("create [name]")
-  .description("Create a Fly app.")
-  .usage(`fly apps create <org/app-name>
+  }
+}, {
+  type: COMMAND,
+  name: 'create',
+  dontShow: true,
+  takesArguments: true,
+  respondsTo: 'apps',
+  mapTo: 'name',
+  description: "Create a Fly app.",
+  usage: `fly apps create <org/app-name>
 
   - Format: org/app-name, find your organizations with \`fly orgs\`.
-  - App name will be lowercased, accepted characters: [a-z0-9-_.]`)
-  .action(async (opts, args, rest) => {
+  - App name will be lowercased, accepted characters: [a-z0-9-_.]`,
+  action: async () => {
+    const opts = root.getOptions(false)
+
     try {
       let name = null;
-      if (args.name) {
-        if (!args.name.match(fullAppMatch))
+      if (opts.name) {
+        if (!opts.name.match(fullAppMatch))
           return console.log("App name, if provided, needs to match regex:", fullAppMatch)
-        name = args.name
+        name = opts.name
       }
       const res = await API.post(`/api/v1/apps`, { data: { attributes: { name: name } } })
       processResponse(res, (res: any) => {
@@ -68,4 +71,5 @@ apps
       console.error(e.stack)
       throw e
     }
-  })
+  }
+}])

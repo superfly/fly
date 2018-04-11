@@ -1,6 +1,7 @@
 import { root, getAppName } from './root'
 import { API } from './api'
 import { processResponse } from '../utils/cli'
+import { COMMAND, OPTION } from './argTypes'
 
 import log from '../log'
 
@@ -9,12 +10,14 @@ import colors = require('ansi-colors')
 export interface LogsOptions { }
 export interface LogsArgs { }
 
-root
-  .subCommand<LogsOptions, LogsArgs>("logs")
-  .description("Logs from your app.")
-  .action(async (opts, args, rest) => {
+root.add([{
+  type: COMMAND,
+  description: "Logs from your app.",
+  name: 'logs',
+  action: async () => {
     continuouslyGetLogs(getAppName())
-  })
+  }
+}])
 
 async function continuouslyGetLogs(appName: string) {
   log.silly("continuously get logs for app id:", appName)

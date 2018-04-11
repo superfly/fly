@@ -1,7 +1,7 @@
 import { root, homeConfigPath } from './root'
 import axios from 'axios'
 import { processResponse } from '../utils/cli'
-
+import { COMMAND, OPTION } from './argTypes'
 
 const promptly = require('promptly')
 
@@ -11,10 +11,11 @@ import YAML = require('js-yaml')
 
 const baseURL = process.env.FLY_BASE_URL || "https://fly.io"
 
-root
-  .subCommand<any, any>("login")
-  .description("Login to Fly and save credentials locally.")
-  .action(async (opts, args, rest) => {
+root.add([{
+  type: COMMAND,
+  name: 'login',
+  description: "Login to Fly and save credentials locally.",
+  action: async () => {
     const email = await promptly.prompt("Email: ")
     const password = await promptly.password("Password: ")
     const otp = await promptly.prompt("2FA code (if any): ", { default: "n/a", retry: false })
@@ -33,4 +34,5 @@ root
       else
         throw e
     }
-  })
+  }
+}])

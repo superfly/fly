@@ -1,11 +1,13 @@
 import { root } from './root'
 import { API } from './api'
 import { processResponse } from '../utils/cli'
+import { COMMAND, OPTION } from './argTypes'
 
-root
-  .subCommand<any, any>("orgs")
-  .description("Manage Fly orgs.")
-  .action(async (opts, args, rest) => {
+root.add([{
+  type: COMMAND,
+  name: 'orgs',
+  description: "Manage Fly orgs.",
+  action: async () => {
     try {
       const res = await API.get(`/api/v1/orgs`)
       processResponse(res, (res: any) => {
@@ -18,4 +20,5 @@ root
       else
         throw e
     }
-  })
+  }
+}])

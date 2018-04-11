@@ -1,4 +1,5 @@
-import { create, Command } from "commandpost";
+import Parser from "./parser";
+import { COMMAND, OPTION } from './argTypes'
 import { getLocalRelease } from '../utils/local'
 
 import YAML = require('js-yaml')
@@ -13,17 +14,36 @@ export interface CommonOptions {
   token: string[]
 }
 
-export const root =
-  create<CommonOptions, any>("fly")
-    .version(version, "-v, --version")
-    .description("Fly CLI")
-    .option("-a, --app <id>", "App to use for commands.")
-    .option("-e, --env <env>", "Environment to use for commands.")
-    .option("--token <token>", "Fly Access Token (can be set via environment FLY_ACCESS_TOKEN)")
-
+export const root = new Parser("Fly CLI", "fly [command] [options]", [
+  {
+    type: COMMAND,
+    name: 'version',
+    description: 'The current version of Fly CLI',
+    action: () => console.log(version)
+  },
+  {
+    type: OPTION,
+    name: 'app',
+    showParams: '<id>',
+    description: "App to use for commands."
+  },
+  {
+    type: OPTION,
+    name: 'env',
+    showParams: '<env>',
+    description: "Environment to use for commands."
+  },
+  {
+    type: OPTION,
+    name: 'token',
+    showParams: '<token>',
+    description: "Fly Access Token (can be set via environment FLY_ACCESS_TOKEN)"
+  }
+])
 
 export function getToken() {
-  let token = root.parsedOpts.token && root.parsedOpts.token[0] || process.env.FLY_ACCESS_TOKEN
+  let opts = root.getOptions(false)
+  let token = opts.token || process.env.FLY_ACCESS_TOKEN
   if (!token) {
     try {
       const creds = getCredentials()
@@ -43,10 +63,11 @@ export function getToken() {
 export const fullAppMatch = /([a-z0-9_.-]+)/i
 
 export function getAppName(env?: string) {
+  let opts = root.getOptions(false)
   const cwd = process.cwd()
-  env = process.env.FLY_ENV || env || root.parsedOpts.env && root.parsedOpts.env[0] || "production"
+  env = process.env.FLY_ENV || env || opts.env || "production"
   const release = getLocalRelease(cwd, env, { noWatch: true })
-  const appName = root.parsedOpts.app && root.parsedOpts.app[0] || release.app
+  const appName = opts.app || release.app
 
   if (!appName) {
     throw new Error("--app option or app (in your .fly.yml) needs to be set.")
