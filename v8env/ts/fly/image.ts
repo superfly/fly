@@ -148,7 +148,7 @@ export class Image {
   }
 
   async toResponse(res:any = { headers: { "Content-Type": "image/jpg" }}): Promise<any> {
-    const result = await imageToBuffer(this._ref)
+    const result = await this.toBuffer()
     const i = await new Image(result.data)
     i.info = result.info
     return new Response(i.data, res)
