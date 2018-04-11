@@ -8,6 +8,7 @@ import { URL, parse as parseURL, format as formatURL } from 'url'
 import { fullURL } from '../utils/http'
 import { transferInto } from '../utils/buffer'
 import { ProxyStream } from './proxy_stream'
+import * as zlib from 'zlib'
 
 import { Trace } from '../trace'
 import { FileNotFound } from '../file_store';
@@ -18,6 +19,9 @@ const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
 
 registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
+  const inflate = init && init.inflate
+  console.log('inflate set to', inflate)
+
   log.debug("native fetch with url:", urlStr)
   log.silly("fetch init: ", JSON.stringify(init))
   let t = Trace.tryStart('fetch', ctx.trace)
@@ -136,6 +140,17 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
     try {
       res.pause()
 
+      console.log('\n checking...')
+      console.log('content encoding? ', res.headers["content-encoding"] == "gzip")
+      console.log('should inflate? ', inflate)
+
+      let zipStream
+      if (inflate && res.headers["content-encoding"] === "gzip") {
+        zipStream = res.pipe(zlib.createUnzip())
+
+        console.log('expanding text...')
+      }
+
       ctx.applyCallback(cb, [
         null,
         new ivm.ExternalCopy({
@@ -145,7 +160,7 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
           url: urlStr,
           headers: res.headers
         }).copyInto({ release: true }),
-        res.method === 'GET' || res.method === 'HEAD' ? null : new ProxyStream(res).ref
+        res.method === 'GET' || res.method === 'HEAD' ? null : new ProxyStream(zipStream || res).ref
       ])
 
     } catch (err) {

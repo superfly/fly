@@ -21,6 +21,7 @@ export default function fetchInit(ivm, dispatcher) {
 			init = {
 				method: req.method,
 				headers: req.headers && req.headers.toJSON() || {},
+				inflate: init && init.inflate
 			}
 			if (!req.bodySource)
 				return await _applyFetch(url, init, null)

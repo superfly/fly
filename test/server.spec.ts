@@ -40,6 +40,18 @@ describe('Server', function () {
     })
   })
 
+  describe('basic gzip fetch and read app', function () {
+    before(startServer('gzip-fetch.js'))
+    after(stopServer)
+
+    it('may fetch responses externally', async () => {
+      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
+      expect(res.status).to.equal(200);
+      expect(res.data).to.include(`<title>Example Domain</title>`)
+      expect(res.headers['content-type']).to.equal('text/html')
+    })
+  })
+
   describe('basic chain with google-analytics', function () {
     before(startServer("basic-google-analytics.js"))
     after(stopServer)
