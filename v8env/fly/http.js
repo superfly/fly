@@ -11,16 +11,8 @@ function ensureFetchEvent() {
 }
 function handleFetch(event) {
   const req = event.request
-  if (staticDirectory) {
-    const pathname = new URL(req.url).pathname.substr(1)
-    if (pathname.startsWith(staticDirectory)) {
-      event.respondWith(staticfor(pathname))
-      return
-    }
-  }
 
   if (router) {
-    const path = new URL(req.url).pathname
     let match = router.find(req.method, path)
 
     if (match) {
@@ -70,7 +62,10 @@ module.exports = {
    * @memberof fly.static
    * @param {String} dir A function that accepts a directory, and serves all files in that directory staticly
    */
-  serveStatic(dir) {
-    staticDirectory = dir
+  serveStatic(req) {
+    const pathname = new URL(req.url).pathname.substr(1)
+    const file = staticfor(pathname)
+    if (file.status !== 404) return file
+    return new Response("not found", { status: 404 })
   }
 }
