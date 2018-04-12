@@ -12,15 +12,22 @@ import { ProxyStream } from './proxy_stream'
 import { Trace } from '../trace'
 import { FileNotFound } from '../file_store';
 import { Bridge } from './bridge';
+import { Releasable } from '../context';
 
 
 const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
 
-registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
+registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, refCb: ivm.Reference<Function>) {
   log.debug("native fetch with url:", urlStr)
   log.silly("fetch init: ", JSON.stringify(init))
   let t = Trace.tryStart('fetch', ctx.trace)
+  let dataIn = 0,
+    dataOut = 0
+  const cb = new ReferenceWrapper(refCb, function () {
+    console.log("WRAPPED CALLBACK")
+    t.end({ dataIn, dataOut })
+  })
   ctx.addCallback(cb)
   init || (init = {})
   const u = parseURL(urlStr)
@@ -121,13 +128,16 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
   req.on("error", handleError)
 
   setImmediate(function () {
-    if (body instanceof ArrayBuffer)
+    if (body)
+      dataOut += Buffer.byteLength(body, 'utf-8')
+    if (body instanceof ArrayBuffer) {
       req.end(Buffer.from(body))
-    else
+    } else {
       req.end(!!body ? body : null)
+    }
   })
 
-  return cb
+  return refCb
 
   function handleResponse(res: http.IncomingMessage) {
     log.silly(`Fetch response: ${res.statusCode} ${urlStr} ${JSON.stringify(res.headers)}`)
@@ -161,3 +171,24 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
     req.removeListener('error', handleError)
   }
 })
+
+
+
+class ReferenceWrapper {
+  fn: ivm.Reference<Function>
+  cb: Function
+  constructor(fn: ivm.Reference<Function>, cb: Function) {
+    this.fn = fn
+    this.cb = cb
+  }
+  release() {
+    return this.fn.release()
+  }
+  apply(...args: any[]) {
+    try {
+      return this.fn.apply(...args)
+    } finally {
+      this.cb()
+    }
+  }
+}
