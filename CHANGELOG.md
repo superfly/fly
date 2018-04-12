@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.28.3"></a>
+## [0.28.3](https://github.com/superfly/fly/compare/v0.28.2...v0.28.3) (2018-04-12)
+
+
+### Bug Fixes
+
+* allow CLI options throughout subcommands, add move and destroy apps subcommand ([26edf5a](https://github.com/superfly/fly/commit/26edf5a))
+
+
+
 <a name="0.28.2"></a>
 ## [0.28.2](https://github.com/superfly/fly/compare/v0.28.1...v0.28.2) (2018-04-12)
 
