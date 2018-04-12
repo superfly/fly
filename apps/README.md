@@ -19,8 +19,8 @@ fly.http.respondWith((req) =>
 )
 ```
 
-### [Redirect](https://github.com/superfly/fly/tree/master/apps/redirect)
-This app demonstrates how simple it is to redirect a request to another website.
+### [Headers](https://github.com/superfly/fly/tree/master/apps/redirect)
+This app demonstrates how to send a response with http headers. It uses redirecting as a practical example of that.
 
 ### [Basic HTTP Caching](https://github.com/superfly/fly/tree/master/apps/caching)
 This app shows the basics of caching responses to requests. It uses `cache.put` but, other methods are also available like `cache.add` and `fly.cache.set`.
