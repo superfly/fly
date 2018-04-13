@@ -109,7 +109,6 @@
     "uglifyjs-webpack-plugin": "^1.2.2",
     "universal-url-lite": "^1.0.0",
     "webpack": "^3.11.0",
-    "windows-1255": "^1.0.0",
     "winston": "^2.4.0",
     "winston-syslog": "^1.2.6",
     "ws": "^4.0.0"
