@@ -24,7 +24,6 @@ registerBridge("fly.Font()", function fontConstructor(ctx: Context, bridge: Brid
 registerBridge('fly.Font.layout', async function layout(ctx: Context, bridge: Bridge, ref: ivm.Reference<Fontmin>, characters: string) {
   try {
     const font = refToFont(ref)
-    font.dest('/Users/zoe/Developer/fly/apps/font-example')
     font.use(Fontmin.glyph({text: characters}))
     font.use(Fontmin.ttf2woff({}));
     const buffer = await woffStringFromRun(font)
@@ -46,7 +45,7 @@ function woffStringFromRun(font: any): Promise<string> {
   return new Promise((resolve, reject) => {
     font.run((error:any, files:any[], stream:any) => {
       if (error) reject(error)
-      const contents = fs.readFileSync(files[0].stem + '.woff', 'binary')
+      const contents = files[0].contents.toString('binary')
       resolve(contents)
     })
   })
