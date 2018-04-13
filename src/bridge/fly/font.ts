@@ -47,7 +47,6 @@ function woffStringFromRun(font: any): Promise<string> {
     font.run((error:any, files:any[], stream:any) => {
       if (error) reject(error)
       const contents = fs.readFileSync(files[0].stem + '.woff', 'binary')
-      fs.writeFileSync('font.woff', contents, 'binary')
       resolve(contents)
     })
   })
