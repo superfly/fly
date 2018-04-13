@@ -7,6 +7,7 @@ import { transferInto } from '../../utils/buffer'
 import log from "../../log"
 
 import * as sharp from 'sharp'
+//import * as color from 'color'
 import { Bridge } from '../bridge';
 
 interface sharpImage extends sharp.SharpInstance {
@@ -62,12 +63,19 @@ function extractMetadata(meta: any): any {
   return info
 }
 
-registerBridge("fly.Image()", function imageConstructor(ctx: Context, bridge: Bridge, data: ivm.Reference<Buffer>) {
+registerBridge("fly.Image()", function imageConstructor(ctx: Context, bridge: Bridge, data?: ivm.Reference<Buffer>, create?: any) {
   try {
-    if (!(data instanceof ArrayBuffer)) {
+    if (data && !(data instanceof ArrayBuffer)) {
       throw new Error("image data must be an ArrayBuffer")
     }
-    const image = sharp(Buffer.from(data))
+    const opts: any = {}
+    if (create) {
+      if (typeof create.background === "string") {
+        //create.background = color.parse(create.background)
+      }
+      opts["create"] = create
+    }
+    const image = sharp(data && Buffer.from(data), opts)
     const ref = new ivm.Reference(image)
     ctx.addReleasable(ref)
     return Promise.resolve(ref)

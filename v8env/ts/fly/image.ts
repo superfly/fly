@@ -5,7 +5,7 @@
 import { transferInto } from "../utils/buffer";
 export class Image {
   /** @hidden */
-  data: ArrayBuffer
+  data: ArrayBuffer | null
   /** @hidden */
   info: Image.Metadata | null
 
@@ -14,15 +14,15 @@ export class Image {
 
   /**
    * Constructs a new Image from raw Buffer data
-   * @param data Raw image data from `fetch` or `cache` or somewhere else.
+   * @param data Raw image data as a buffer, or options to create a new image
    */
-  constructor(data: ArrayBuffer) {
-    if (!(data instanceof ArrayBuffer)) {
-      throw new Error("Data must be an ArrayBuffer")
+  constructor(data: ArrayBuffer | Image.CreateOptions) {
+    this.data = null
+    this._ref = null
+    if (data instanceof ArrayBuffer) {
+      this.data = data
     }
-    //console.log("data:", data.constructor)
-    this.data = data
-    this._ref = constructImage(this.data)
+    this._ref = constructImage(data)
     this.info = null
   }
 
@@ -387,6 +387,13 @@ export namespace Image {
     bottom?: number,
     right?: number
   }
+
+  export interface CreateOptions {
+    width: number,
+    height: number,
+    channels: number,
+    background: Color | string
+  }
 }
 
 /** @hidden */
@@ -400,7 +407,7 @@ interface MetadataFunction {
 /**
  * @hidden
  */
-let constructImage: (data: ArrayBuffer, options?: any) => any
+let constructImage: (data: ArrayBuffer | Image.CreateOptions, options?: any) => any
 /**
  * @hidden
  */
@@ -412,8 +419,14 @@ let imageMetadata: (ref: any) => Image.Metadata
 
 /** @hidden */
 export default function initImage(ivm: any, dispatcher: any) {
-  constructImage = function (data: ArrayBuffer, options?: any) {
-    return dispatcher.dispatchSync("fly.Image()", transferInto(ivm, data))
+  constructImage = function (data: ArrayBuffer | Image.CreateOptions, options?: any) {
+    const args: any[] = [undefined, undefined]
+    if (data instanceof ArrayBuffer) {
+      args[0] = transferInto(ivm, data)
+    } else if (data instanceof Object) {
+      args[1] = new ivm.ExternalCopy(data).copyInto({ release: true })
+    }
+    return dispatcher.dispatchSync("fly.Image()", ...args)
   }
   imageOperation = function (ref: any, name: string, ...args: any[]) {
     for (let i = 0; i < args.length; i++) {

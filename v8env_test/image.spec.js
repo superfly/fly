@@ -5,6 +5,18 @@ const picture = require("./fixtures/picture.jpg")
 const overlay = require("./fixtures/overlay.png")
 const Image = fly.Image
 describe("Image", () => {
+  it("Image(create)", () => {
+    const img = new Image({
+      width: 200,
+      height: 200,
+      background: { r: 255, g: 0, b: 0, alpha: 0.5 },
+      channels: 4
+    })
+
+    const meta = img.metadata()
+    expect(meta.width).to.eq(200)
+    expect(meta.height).to.eq(200)
+  })
   it("metadata()", () => {
     const img = new Image(logo)
     const meta = img.metadata()
