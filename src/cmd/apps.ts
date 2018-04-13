@@ -138,29 +138,6 @@ Please type the app's name to confirm:`, [appName], { retry: false })
         else
           throw e
       }
-
-
-      //       const res = await API.get(`/api/v1/orgs`)
-      //       processResponse(res, async (res: any) => {
-      //         const choices: any = {}
-      //         for (let i in res.data.data)
-      //           choices[i] = res.data.data[i].id
-
-      //         let choiceText = ""
-      //         for (const [i, slug] of Object.entries(choices))
-      //           choiceText += `${i}) ${slug}\n`
-
-      //         const chose = await promptly.choose(`Select organization to move to:
-      // ${choiceText}
-      // Enter a number:`, Object.keys(choices))
-      //         const orgSlug = choices[chose]
-      //         console.log(`Moving app '${appName}' to organization '${orgSlug}'`)
-      //         const resUpdate = await API.patch(`/api/v1/apps/${appName}`, { data: { attributes: { org_slug: orgSlug } } })
-
-      //         processResponse(resUpdate, (res: any) => {
-      //           console.log("Successfully moved app.")
-      //         })
-      // })
     } catch (e) {
       if (e.response)
         return console.log(e.response.data)
