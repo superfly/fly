@@ -12,7 +12,6 @@ export class Font {
    * @param data Raw font data from `fetch` or `cache` or somewhere else.
    */
   constructor(data: ArrayBuffer) {
-    console.log('making font')
     if (!(data instanceof ArrayBuffer))
       throw new Error("Data must be an ArrayBuffer")
     this._ref = constructFont(data)

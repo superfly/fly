@@ -31,18 +31,12 @@ registerBridge("fly.Font()", function fontConstructor(ctx: Context, bridge: Brid
 })
 
 registerBridge('fly.Font.layout', async function layout(ctx: Context, bridge: Bridge, ref: ivm.Reference<fontkit.Font>, characters: string) {
-  console.log('getting a layout')
-
   try {
     const font = refToFont(ref)
-    console.log('font', font == null)
     const set = font.layout(characters)
-    console.log('set', set == null)
     const subset = font.createSubset()
     set.glyphs.forEach((glyph:any) => subset.includeGlyph(glyph))
-    console.log('SUBSET: ', subset == null)
     const buffer = await stringFromStream(subset.encodeStream())
-    console.log('buffer', buffer)
     return Promise.resolve(buffer)
   } catch (err) {
     return Promise.reject(err)
