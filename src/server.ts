@@ -208,6 +208,7 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 
 					const val = v8res.headers[n]
 
+					// console.log("setting header", n, val)
 					res.setHeader(n, val)
 				} catch (err) {
 					log.error("error setting header", err)
