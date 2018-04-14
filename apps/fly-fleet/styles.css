@@ -1,0 +1,77 @@
+/* Credit to: https://codepen.io/bev/pen/vZNJWr */
+
+@keyframes pulse {
+  0% {box-shadow: 0px 0px 0px 0px rgba(52, 106, 180, 1);}
+  100% {box-shadow: 0px 0px 0px 7px rgba(52, 106, 180, 0.0);}
+}
+
+body {
+	background-color: #111114;
+}
+
+img {
+	width: 100%;
+	max-width: 100%;
+}
+
+#map {
+	position: relative;
+	max-width: 1280px;
+	margin: 0 auto;
+}
+
+.dot {
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	animation: pulse 1.5s infinite ease-out;
+	background: #346ab4;
+	position: absolute;
+	z-index: 1;
+	top: 50%;
+	left: 50%;
+	&:before {
+		content: '';
+		position: absolute;
+		width: 3px;
+		height: 3px;
+		border-radius: 50%;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		margin: auto;
+		background: rgba(255, 255, 255, 0.4);
+	}
+	&:nth-child(odd) {
+		animation: pulse 1.5s infinite ease-out 0.3s;
+	}
+  &-1 { top: 39%; left: 27%; } /*newark*/
+	&-2 { top: 41%; left: 14.5%; } /*san jose*/
+	&-3 { top: 34%; left: 14.5%; } /*seattle*/
+	&-4 { top: 42.5%; left: 15.5%; } /*Los angeles*/
+	&-5 { top: 43%; left: 22%; } /*dallas*/
+	&-6 { top: 37%; left: 24%; } /*chicago*/
+	&-7 { top: 43%; left: 25%; } /*atlanta*/
+	&-8 { top: 40.5%; left: 26.5%; } /*ashburn*/
+	&-9 { top: 37.5%; left: 26.3%; } /*toronto*/
+	&-10 { top: 31%; left: 49%; } /*amsterdam*/
+	&-11 { top: 32.5%; left: 50%; } /*frankfurt*/
+	&-12 { top: 62%; left: 76%; } /*singapore*/
+	&-13 { top: 50%; left: 78.5%; } /*hong kong*/
+	&-14 { top: 82%; left: 88.5%; } /*sydney*/
+	&-15 { top: 42%; left: 85.5%; } /*tokyo*/
+
+	@media (min-width: 768px) {
+	    width: 16px;
+	    height: 16px;
+		&:before {
+			width: 4px;
+			height: 4px;
+		}
+		@keyframes pulse {
+			0% {box-shadow: 0px 0px 0px 0px rgba(52, 106, 180, 1);}
+			100% {box-shadow: 0px 0px 0px 10px rgba(52, 106, 180, 0.0);}
+		}
+	}
+}

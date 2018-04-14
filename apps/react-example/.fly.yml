@@ -1,0 +1,5 @@
+files:
+  - index.html
+  - react/react.development.js
+  - react/react-dom.development.js
+  - src/index.js

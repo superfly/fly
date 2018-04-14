@@ -5,7 +5,7 @@ fly.http.respondWith(async function (req) {
   const url = new URL(req.url)
 
   if (url.pathname == "/picture.jpg") {
-    return watermarkPicture(req.headers.get("accept"))
+    return loadImage(pictureURL)
   }
 
   return new Response("not found", { status: 404 })
