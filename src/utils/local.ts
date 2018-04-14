@@ -120,7 +120,7 @@ export class LocalRelease extends EventEmitter implements Release {
 
     const conf = this.getConfig()
     if (conf.files) conf.files.forEach((file) => {
-      if (!this.files.includes(file)) this.files.push(file)
+      if (!this.isIn(this.files, file)) this.files.push(file)
     })
 
     files.forEach((file) => {
@@ -129,13 +129,20 @@ export class LocalRelease extends EventEmitter implements Release {
 
         filesFound = filesFound.map((e) => this.removePrefix(e))
         filesFound.forEach((file) => {
-          if (!this.files.includes(file)) this.files.push(file)
+          if (!this.isIn(this.files, file)) this.files.push(file)
         })
       })
     })
   }
 
-  private removePrefix (file) {
+	private isIn (array:string[], name:string) {
+		array.forEach((e) => {
+			if (e === name) return true
+		})
+		return false
+	}
+
+  private removePrefix (file:string) {
     return file.replace("./", "")
   }
 }
