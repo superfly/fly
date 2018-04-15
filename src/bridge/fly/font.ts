@@ -4,6 +4,7 @@ import { Trace } from '../../trace'
 import { Context } from '../../'
 import { transferInto } from '../../utils/buffer'
 
+import wawoff2 = require('fontmin-wawoff2');
 import Fontmin = require('fontmin');
 import { Bridge } from '../bridge';
 import * as fs from 'fs';
@@ -21,11 +22,22 @@ registerBridge("fly.Font()", function fontConstructor(ctx: Context, bridge: Brid
   }
 })
 
-registerBridge('fly.Font.layout', async function layout(ctx: Context, bridge: Bridge, ref: ivm.Reference<Fontmin>, characters: string) {
+registerBridge('fly.Font.layout', async function layout(ctx: Context, bridge: Bridge, ref: ivm.Reference<Fontmin>, characters: string, fontType: string = 'woff') {
   try {
     const font = refToFont(ref)
     font.use(Fontmin.glyph({text: characters}))
-    font.use(Fontmin.ttf2woff({}));
+		switch (fontType) {
+			case 'woff':
+				font.use(Fontmin.ttf2woff({}));
+				break;
+			case 'woff2':
+				font.use(wawoff2())
+				break;
+			case 'ttf':
+				break;
+			default:
+				throw new Error('Type not available. Available types are: woff, woff2, ttf');
+		}
     const buffer = await woffStringFromRun(font)
     return Promise.resolve(buffer)
   } catch (err) {

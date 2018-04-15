@@ -17,16 +17,16 @@ export class Font {
     this._ref = constructFont(data)
   }
 
-  async subset(characters:string) {
-    return await this._layout(characters)
+  async subset(characters:string, fontType:string = 'woff') {
+    return await this._layout(characters, fontType)
   }
 
   /** @hidden */
-  private _layout(characters: string) {
+  private _layout(characters: string, fontType:string) {
     if (!layout)
       throw new Error("Font operations not enabled")
 
-    return layout(this._ref, characters)
+    return layout(this._ref, characters, fontType)
   }
 }
 
@@ -37,14 +37,14 @@ let constructFont: (data: ArrayBuffer, options?: any) => any
 /**
  * @hidden
  */
-let layout: (ref: any, name: string, ...args: any[]) => any
+let layout: (ref: any, characters:string, fontType:string) => any
 export default function initFont(ivm: any, dispatcher: any) {
   constructFont = function (data: ArrayBuffer) {
     return dispatcher.dispatchSync("fly.Font()", transferInto(ivm, data))
   }
 
-  layout = function (ref: any, characters: string) {
-    return dispatcher.dispatchSync("fly.Font.layout", ref, characters)
+  layout = function (ref: any, characters: string, fontType: string) {
+    return dispatcher.dispatchSync("fly.Font.layout", ref, characters, fontType)
   }
 
   return Font
