@@ -182,44 +182,45 @@ describe('Server', function () {
     })
   })
 
-  describe("automatic gzip", function () {
-    before(startServer("gzip.js"))
-    after(stopServer)
+  describe("gzip", function () {
+    describe("when not gzipped", () => {
+      before(startServer("gzip.js"))
+      after(stopServer)
 
-    it('gzips if accepts encoding is right', function (done) {
-      http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/"), {
-        method: "GET",
-        headers: {
-          "accept-encoding": "gzip"
-        }
-      }), function (res) {
-        res.on("error", done)
-        expect(res.statusCode).to.equal(200)
-        expect(res.headers['content-encoding']).to.equal('gzip')
-        res.on('data', (chunk: Buffer) => {
-          expect(chunk.byteLength).to.equal(parseInt(<string>res.headers['content-length'], 10))
-          expect(chunk.toString()).to.not.equal('notgzipped')
-          done()
+      it('gzips if accepts encoding is right', function (done) {
+        http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/"), {
+          method: "GET",
+          headers: {
+            "accept-encoding": "gzip"
+          }
+        }), function (res) {
+          res.on("error", done)
+          expect(res.statusCode).to.equal(200)
+          expect(res.headers['content-encoding']).to.equal('gzip')
+          res.on('data', (chunk: Buffer) => {
+            expect(chunk.byteLength).to.equal(parseInt(<string>res.headers['content-length'], 10))
+            expect(chunk.toString()).to.not.equal('notgzipped')
+            done()
+          })
         })
       })
-    })
 
-    it('does not gzip if not accepted', function (done) {
-      http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/"), {
-        method: "GET",
-      }), function (res) {
-        res.on("error", done)
-        expect(res.statusCode).to.equal(200)
-        expect(res.headers['content-encoding']).to.be.undefined
-        res.on('data', (chunk: Buffer) => {
-          expect(chunk.toString()).to.equal('notgzipped')
-          done()
+      it('does not gzip if not accepted', function (done) {
+        http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/"), {
+          method: "GET",
+        }), function (res) {
+          res.on("error", done)
+          expect(res.statusCode).to.equal(200)
+          expect(res.headers['content-encoding']).to.be.undefined
+          res.on('data', (chunk: Buffer) => {
+            expect(chunk.toString()).to.equal('notgzipped')
+            done()
+          })
         })
       })
     })
 
     describe('pre-gzipped', function () {
-      before(stopServer)
       before(startServer("pregzip.js"))
       after(stopServer)
 
