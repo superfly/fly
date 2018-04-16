@@ -64,7 +64,7 @@ export class LocalRelease extends EventEmitter implements Release {
     this.source_hash = ""
     this.files = []
 
-    this.getFiles(conf.files)
+    this.getFiles()
 
     if (!options.noWatch)
       this.watchConfig()
@@ -108,30 +108,28 @@ export class LocalRelease extends EventEmitter implements Release {
       const conf = this.getConfig()
       this.config = conf.config
       this.app = conf.app || conf.app_id || ""
-      this.getFiles(conf.files)
+      this.getFiles()
     } else if (path.endsWith(secretsFile)) {
       this.secrets = this.getSecrets()
     }
     this.emit('update', this)
   }
 
-  private getFiles (files: string[] | undefined) {
-    if (!files) return
-
+  private getFiles () {
     const conf = this.getConfig()
     if (conf.files) conf.files.forEach((file) => {
       if (!this.isIn(this.files, file)) this.files.push(file)
     })
 
-    files.forEach((file) => {
-      glob(file, {}, (error, filesFound) => {
+    this.files.forEach((file) => {
+      glob(this.cwd + '/' + file, {}, (error, filesFound) => {
         if (error) throw error
 
         filesFound
 					.map((e) => this.removePrefix(e))
         	.forEach((file) => {
-          if (!this.isIn(this.files, file)) this.files.push(file)
-        })
+            if (!this.isIn(this.files, file)) this.files.push(file)
+          })
       })
     })
   }
@@ -144,7 +142,7 @@ export class LocalRelease extends EventEmitter implements Release {
   }
 
   private removePrefix (file:string) {
-    return file.replace("./", "")
+    return file.replace(this.cwd + '/', "").replace("./", "")
   }
 }
 
