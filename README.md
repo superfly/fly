@@ -6,7 +6,7 @@ The fly.io Edge Application runtime is an open core Javascript environment built
 
 The runtime is based on v8, with a proxy-appropriate set of Javascript libraries. There are built in APIs for manipulating HTML and Image content, low level caching, and HTTP requests/responses. When possible, we use WhatWG standards (like `fetch`, `Request`, `Response`, `Cache`, `Stream`).
 
-You can [use it locally](#hello-world) for development and testing, and [deploy it to the Fly's fleet](#deployment) of edge servers for production use. 
+You can [use it locally](#hello-world) for development and testing, and [deploy it to Fly's fleet](#deployment) of edge servers for production use. 
 
 ## Usage
 
