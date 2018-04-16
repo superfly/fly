@@ -18,6 +18,7 @@ export class ProxyStream {
   stream: Readable
   buffered: Buffer[]
   bufferedByteLength: number
+  readLength: number
   tainted: boolean
   ended: boolean
   private _ref: ivm.Reference<ProxyStream> | undefined
@@ -28,6 +29,7 @@ export class ProxyStream {
     this.stream = base
     this.buffered = []
     this.bufferedByteLength = 0
+    this.readLength = 0
     this.stream.once("close", () => this.ended = true)
     this.stream.once("end", () => this.ended = true)
     this.stream.once("error", () => this.ended = true)
@@ -36,6 +38,7 @@ export class ProxyStream {
   read(size?: number): Buffer | null {
     let chunk = this.stream.read(size)
     if (chunk && !this.tainted) this.bufferChunk(chunk)
+    this.readLength += chunk
     return chunk
   }
 
@@ -87,7 +90,6 @@ registerBridge("subscribeProxyStream", function (ctx: Context, bridge: Bridge, r
 
 registerBridge("readProxyStream", function (ctx: Context, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
   const proxyable = ref.deref({ release: true })
-  const stream = proxyable.stream
 
   let attempts = 0
   const tryRead = function () {

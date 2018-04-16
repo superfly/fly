@@ -1,5 +1,5 @@
-import { root, getAppName } from './root'
-import { API } from './api'
+import { root, getAppName, CommonOptions, addCommonOptions } from './root'
+import { apiClient } from './api'
 import { getLocalRelease } from '../utils/local'
 import { processResponse } from '../utils/cli'
 
@@ -13,16 +13,18 @@ import { createHash } from 'crypto';
 
 import * as pako from 'pako'
 import { AxiosResponse } from 'axios';
+import { Command } from 'commandpost';
 
-export interface DeployOptions { }
+export interface DeployOptions extends CommonOptions { }
 export interface DeployArgs { }
 
-root
+const deploy = root
   .subCommand<DeployOptions, DeployArgs>("deploy")
   .description("Deploy your local Fly app.")
-  .action((opts, args, rest) => {
+  .action(function (this: Command<DeployOptions, DeployArgs>, opts, args, rest) {
+    const API = apiClient(this)
     const { buildApp } = require('../utils/build')
-    const appName = getAppName("production")
+    const appName = getAppName(this, { env: ["production"] })
     console.log("Deploying", appName)
     const cwd = process.cwd()
 
@@ -78,3 +80,5 @@ root
       }
     })
   })
+
+addCommonOptions(deploy)

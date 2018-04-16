@@ -7,24 +7,42 @@ import { EventEmitter } from 'events'
 import { createHash } from 'crypto'
 import * as ivm from 'isolated-vm';
 
+
+
 let v8EnvHash = "";
 let v8EnvCode = "";
 let v8EnvSourceMap = "";
 let v8EnvSnapshot: ivm.ExternalCopy<ArrayBuffer>;
 
 const v8dist = path.join(__dirname, '..', 'dist', 'v8env.js')
+const v8distSnapshot = path.join(__dirname, '..', 'dist', 'v8env.bin')
 const v8mapDist = path.join(__dirname, '..', 'dist', 'v8env.map.json')
+
+if (fs.existsSync(v8dist)) {
+  v8EnvCode = fs.readFileSync(v8dist).toString()
+  v8EnvHash = createHash("sha1").update(v8EnvCode).digest("hex")
+}
+
+if (fs.existsSync(v8distSnapshot)) {
+  v8EnvSnapshot = new ivm.ExternalCopy(fs.readFileSync(v8distSnapshot).buffer)
+} else if (v8EnvCode) {
+  v8EnvSnapshot = ivm.Isolate.createSnapshot([{
+    code: v8EnvCode,
+    filename: 'dist/v8env.js'
+  }])
+}
+
+if (fs.existsSync(v8mapDist)) {
+  v8EnvSourceMap = fs.readFileSync(v8mapDist).toString()
+}
 
 export class V8Environment extends EventEmitter {
   bootstrapped: boolean
   constructor() {
     super()
     this.bootstrapped = false
-    if (!fs.existsSync(v8dist)) {
+    if (!v8EnvCode)
       throw new Error("v8env not found, please run npm build to generate it")
-    } else {
-      this.bootstrap()
-    }
   }
 
   get isReady() {
@@ -41,26 +59,6 @@ export class V8Environment extends EventEmitter {
 
   get sourceMap() {
     return v8EnvSourceMap
-  }
-  bootstrap() {
-    setImmediate(() => {
-      if (process.env.NODE_ENV === 'development' && !this.bootstrapped)
-        this.startUpdater()
-      this.updateV8Env()
-      this.bootstrapped = true
-    })
-  }
-
-  waitForReadiness() {
-    if (this.isReady)
-      return Promise.resolve()
-    return new Promise((resolve, reject) => {
-      this.once('ready', () => {
-        this.removeListener('error', reject)
-        resolve()
-      })
-      this.once('error', reject)
-    })
   }
 
   startUpdater() {
@@ -95,7 +93,7 @@ export class V8Environment extends EventEmitter {
       v8EnvSnapshot = ivm.Isolate.createSnapshot([{
         code: v8EnvCode,
         filename: 'dist/v8env.js'
-      }], "bootstrap();")
+      }])
       this.emit('snapshot', v8EnvSnapshot)
       if (!wasReady)
         this.emit('ready')

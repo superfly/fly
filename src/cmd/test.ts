@@ -56,12 +56,12 @@ root
 
     const appStore = new FileAppStore(cwd, { noWatch: true, noSource: true, env: "test" })
 
-    buildAppWithConfig(conf, { watch: false }, async (err: Error, code: string, hash: string, sourceMap: string) => {
+    buildAppWithConfig(cwd, conf, { watch: false }, async (err: Error, code: string, hash: string, sourceMap: string) => {
       if (err)
         throw err
 
       try {
-        await v8Env.waitForReadiness()
+        // await v8Env.waitForReadiness()
         const iso = new ivm.Isolate({ snapshot: v8Env.snapshot })
         const ctx = await createContext(iso, new Bridge())
 

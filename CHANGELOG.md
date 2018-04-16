@@ -2,6 +2,101 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.28.4"></a>
+## [0.28.4](https://github.com/superfly/fly/compare/v0.28.3...v0.28.4) (2018-04-13)
+
+
+### Bug Fixes
+
+* create image from scrach with `new Image({width, height, ...})`" ([8641f13](https://github.com/superfly/fly/commit/8641f13))
+
+
+
+<a name="0.28.3"></a>
+## [0.28.3](https://github.com/superfly/fly/compare/v0.28.2...v0.28.3) (2018-04-12)
+
+
+### Bug Fixes
+
+* allow CLI options throughout subcommands, add move and destroy apps subcommand ([26edf5a](https://github.com/superfly/fly/commit/26edf5a))
+
+
+
+<a name="0.28.2"></a>
+## [0.28.2](https://github.com/superfly/fly/compare/v0.28.1...v0.28.2) (2018-04-12)
+
+
+### Bug Fixes
+
+* don't try to parse metadata ([cab9667](https://github.com/superfly/fly/commit/cab9667))
+
+
+
+<a name="0.28.1"></a>
+## [0.28.1](https://github.com/superfly/fly/compare/v0.28.0...v0.28.1) (2018-04-10)
+
+
+### Bug Fixes
+
+* add missing flatten and jpeg image calls ([c344847](https://github.com/superfly/fly/commit/c344847))
+
+
+
+<a name="0.28.0"></a>
+# [0.28.0](https://github.com/superfly/fly/compare/v0.27.1...v0.28.0) (2018-04-09)
+
+
+### Bug Fixes
+
+* Support all TypedArray Response/Request bodies ([#54](https://github.com/superfly/fly/issues/54)) ([332356c](https://github.com/superfly/fly/commit/332356c))
+* test command was broken with cwd changes ([67024ac](https://github.com/superfly/fly/commit/67024ac))
+
+
+### Features
+
+* Add APIs for watermarking images ([#55](https://github.com/superfly/fly/issues/55)) ([942ccea](https://github.com/superfly/fly/commit/942ccea))
+
+
+
+<a name="0.27.2"></a>
+## [0.27.2](https://github.com/superfly/fly/compare/v0.27.1...v0.27.2) (2018-04-06)
+
+
+### Bug Fixes
+
+* test command was broken with cwd changes ([67024ac](https://github.com/superfly/fly/commit/67024ac))
+
+
+
+<a name="0.27.1"></a>
+## [0.27.1](https://github.com/superfly/fly/compare/v0.26.7-0...v0.27.1) (2018-04-06)
+
+
+### Bug Fixes
+
+* Support Uint8Array Response bodies ([#52](https://github.com/superfly/fly/issues/52)) ([8e73481](https://github.com/superfly/fly/commit/8e73481))
+
+
+
+<a name="0.27.0"></a>
+# [0.27.0](https://github.com/superfly/fly/compare/v0.26.7-0...v0.27.0) (2018-04-05)
+
+### Features
+
+* Basic `crypto` API (`crypto.subtle.digest`)
+* Cut v8env weight in half by removing text-encoding and spark-md5 packages
+
+
+<a name="0.26.7-0"></a>
+## [0.26.7-0](https://github.com/superfly/fly/compare/v0.26.6...v0.26.7-0) (2018-03-31)
+
+
+### Bug Fixes
+
+* cache.get in development mode was screwing up string <-> buffer because of an apparent node bug ([6aeb976](https://github.com/superfly/fly/commit/6aeb976))
+
+
+
 <a name="0.26.6"></a>
 ## [0.26.6](https://github.com/superfly/fly/compare/v0.26.5...v0.26.6) (2018-03-23)
 

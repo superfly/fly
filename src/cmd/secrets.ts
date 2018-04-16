@@ -1,9 +1,10 @@
 import fs = require('fs')
-import { root, getAppName } from './root'
-import { API } from './api'
+import { root, getAppName, CommonOptions, addCommonOptions } from './root'
+import { apiClient } from './api'
 import { processResponse } from '../utils/cli'
+import { Command } from 'commandpost';
 
-export interface SecretSetOptions {
+export interface SecretSetOptions extends CommonOptions {
   filename?: string[]
 }
 export interface SecretSetArgs {
@@ -15,14 +16,15 @@ const secrets = root
   .subCommand<any, any>("secrets")
   .description("Manage your Fly app secrets.")
 
-secrets
+const secretsSet = secrets
   .subCommand<SecretSetOptions, SecretSetArgs>("set <key> [value]")
   .description("Set a secret to use in your config.")
   .option("--from-file <filename>", "Use a file's contents as the secret value.")
   .usage("fly secrets set <key> [value]")
-  .action(async (opts, args, rest) => {
+  .action(async function (this: Command<SecretSetOptions, SecretSetArgs>, opts, args, rest) {
+    const API = apiClient(this)
     try {
-      const appName = getAppName()
+      const appName = getAppName(this, { env: ['production'] })
 
       const value = opts.filename ?
         fs.readFileSync(opts.filename[0]).toString() :
@@ -49,3 +51,6 @@ secrets
         throw e
     }
   })
+
+addCommonOptions(secrets)
+addCommonOptions(secretsSet)

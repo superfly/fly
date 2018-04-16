@@ -3,16 +3,9 @@ import { format } from 'util'
 
 export default function flyLogInit(ivm, dispatcher) {
   function log(lvl, ...args) {
-    const last = args[args.length - 1]
-    let metadata = {}
-    if (typeof last === 'object') {
-      metadata = last
-      args = args.slice(0, -1)
-    }
     dispatcher.dispatch('log',
       lvl,
-      format(...args),
-      new ivm.ExternalCopy(metadata).copyInto({ release: true })
+      format(...args)
     )
   }
 
@@ -23,7 +16,7 @@ export default function flyLogInit(ivm, dispatcher) {
    */
   log.addTransport = function addTransport(name, options) {
     const cb = new ivm.Reference(function (err, added) {
-      cb.release()
+      try { cb.release() } catch (e) { }
       logger.debug("added log transport... maybe!", err, added)
     })
     dispatcher.dispatch('addLogTransport', name,

@@ -219,8 +219,9 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 
 			writeHead(ctx, res, v8res.status)
 
-			handleResponse(resBody, <Writable>res).then(() => {
-				trace.end()
+			handleResponse(resBody, <Writable>res).then((len) => {
+				if (ptrace)
+					ptrace.addTags({ dataOut: len, dataIn: 0 })
 				if (!res.finished)
 					res.end() // we are done. triggers 'finish' event
 				ctx.log('info', `${req.connection.remoteAddress} ${req.method} ${fullURL} ${res.statusCode} ${Math.round(trace.milliseconds() * 100) / 100}ms`)
@@ -236,21 +237,29 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 	})
 }
 
-function handleResponse(src: V8ResponseBody, dst: Writable): Promise<void> {
+function handleResponse(src: V8ResponseBody, dst: Writable): Promise<number> {
 	if (!src)
-		return Promise.resolve()
+		return Promise.resolve(0)
 
 	if (src instanceof ivm.Reference)
 		return handleResponseStream(src.deref({ release: true }), dst)
 
+	let totalLength = 0
+
 	if (src instanceof ArrayBuffer)
 		src = Buffer.from(src)
 
-	dst.end(src) // string or ArrayBuffer
-	return Promise.resolve()
+	dst.end(src) // string or Buffer
+
+	if (src instanceof Buffer)
+		totalLength = src.byteLength
+	else if (typeof src === 'string')
+		totalLength = Buffer.byteLength(src, 'utf8')
+
+	return Promise.resolve(totalLength)
 }
 
-function handleResponseStream(src: ProxyStream, dst: Writable): Promise<void> {
+function handleResponseStream(src: ProxyStream, dst: Writable): Promise<number> {
 	return new Promise(function (resolve, reject) {
 		setImmediate(() => {
 			for (const c of src.buffered) {
@@ -258,7 +267,7 @@ function handleResponseStream(src: ProxyStream, dst: Writable): Promise<void> {
 			}
 			src.stream.pipe(dst)
 				.on("finish", function () {
-					resolve()
+					resolve(src.readLength)
 				}).on("error", reject)
 		})
 	})

@@ -15,14 +15,14 @@ export interface AppBuilderOptions {
 }
 
 export function buildApp(cwd: string, opts: AppBuilderOptions, callback: Function) {
-  buildAppWithConfig(getWebpackConfig(cwd, opts), opts, callback)
+  buildAppWithConfig(cwd, getWebpackConfig(cwd, opts), opts, callback)
 }
 
-export function buildAppWithConfig(config: webpack.Configuration, opts: AppBuilderOptions, callback: Function) {
+export function buildAppWithConfig(cwd: string, config: webpack.Configuration, opts: AppBuilderOptions, callback: Function) {
   console.log("Compiling app w/ options:", opts)
   let compiler = webpack(config)
 
-  const cb = compileCallback(compiler, callback)
+  const cb = compileCallback(cwd, compiler, callback)
 
   if (opts.watch)
     return compiler.watch({}, cb)
@@ -30,7 +30,7 @@ export function buildAppWithConfig(config: webpack.Configuration, opts: AppBuild
   compiler.run(cb)
 }
 
-function compileCallback(compiler: webpack.Compiler, callback: Function) {
+function compileCallback(cwd: string, compiler: webpack.Compiler, callback: Function) {
   let codeHash: string;
   return function (err: Error, stats: any) {
     if (err) {
@@ -47,8 +47,8 @@ function compileCallback(compiler: webpack.Compiler, callback: Function) {
 
     if (stats.hash != codeHash) {
       console.log(`Compiled app bundle (hash: ${stats.hash})`)
-      const source = fs.readFileSync('.fly/build/bundle.js')
-      const sourceMap = fs.readFileSync('.fly/build/bundle.map.json')
+      const source = fs.readFileSync(path.resolve(cwd, '.fly/build/bundle.js'))
+      const sourceMap = fs.readFileSync(path.resolve(cwd, '.fly/build/bundle.map.json'))
       codeHash = stats.hash
       log.debug("Compiled size: ", source.byteLength / (1024 * 1024), "MB")
       log.debug("Compiled sourcemap size: ", sourceMap.byteLength / (1024 * 1024), "MB")
@@ -58,7 +58,7 @@ function compileCallback(compiler: webpack.Compiler, callback: Function) {
         .replace("\u2028", "\\u2028") // ugh.
         .replace("\u2029", "\\u2029")
 
-      fs.writeFileSync('.fly/build/bundle.map.json', sanitizedSourceMap)
+      fs.writeFileSync(path.resolve(cwd, '.fly/build/bundle.map.json'), sanitizedSourceMap)
 
       callback(null,
         source.toString('utf8'),
@@ -71,9 +71,10 @@ function compileCallback(compiler: webpack.Compiler, callback: Function) {
 
 export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack.Configuration {
   let conf;
-  if (fs.existsSync(path.join(cwd, webpackConfPath))) {
+  const defaultPathToWebpackConfig = path.join(cwd, webpackConfPath)
+  if (fs.existsSync(defaultPathToWebpackConfig)) {
     console.log(`Using Webpack config ${webpackConfPath}`)
-    conf = require(path.join(cwd, webpackConfPath))
+    conf = require(defaultPathToWebpackConfig)
   } else {
     console.log("Generating Webpack config...")
     conf = {

@@ -1,5 +1,4 @@
 import colors = require('ansi-colors')
-import { getToken } from "../cmd/root";
 
 function getErrorMessages(res: any): string[] {
   if (res.data.errors) {

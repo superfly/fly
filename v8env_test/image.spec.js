@@ -1,11 +1,25 @@
 import { expect } from 'chai'
 
 const logo = require("./fixtures/logo.png")
+const picture = require("./fixtures/picture.jpg")
+const overlay = require("./fixtures/overlay.png")
 const Image = fly.Image
 describe("Image", () => {
-  it("metadata()", async () => {
+  it("Image(create)", () => {
+    const img = new Image({
+      width: 200,
+      height: 200,
+      background: { r: 255, g: 0, b: 0, alpha: 0.5 },
+      channels: 4
+    })
+
+    const meta = img.metadata()
+    expect(meta.width).to.eq(200)
+    expect(meta.height).to.eq(200)
+  })
+  it("metadata()", () => {
     const img = new Image(logo)
-    const meta = await img.metadata()
+    const meta = img.metadata()
     expect(meta.width).to.eq(256)
     expect(meta.format).to.eq("png")
   })
@@ -16,6 +30,26 @@ describe("Image", () => {
     expect(img2.data.byteLength).to.be.lessThan(logo.byteLength)
     expect(img2.info.width).to.eq(128)
     expect(img2.info.format).to.eq("webp")
+  })
+
+  it("flatten()", async () => {
+    const img = new Image(logo)
+    const img2 = await img.background({ r: 0, b: 0, g: 255, alpha: 1 }).flatten().toImage()
+
+    expect(img2.data.byteLength).to.not.eq(img.data.byteLength)
+  })
+
+  it("overlayWith()", async () => {
+    const img = new Image(picture)
+    const watermark = new Image(overlay)
+    const meta = img.metadata()
+    const wmeta = watermark.metadata()
+
+    watermark.extend(parseInt(wmeta.width)).background({ r: 255, g: 255, b: 255, alpha: 0 }).embed()
+    img.overlayWith(watermark, { gravity: Image.gravity.southeast })
+    const img2 = await img.toBuffer()
+
+    expect(img2.info.width).to.eq(meta.width)
   })
 
   it("withoutEnlargement().resize()", async () => {
@@ -35,8 +69,7 @@ describe("Image", () => {
     let err = null
     try {
       const img = new Image(logo)
-      img.operations.push({ name: "naughty", args: [] })
-      const p = await img.toBuffer()
+      img._imageOperation("naughty")
     } catch (e) {
       err = e
     }

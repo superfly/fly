@@ -16,8 +16,12 @@ interface ServerOptions {
   uglify: boolean
 }
 
+interface ServerArguments {
+  path?: string
+}
+
 root
-  .subCommand<ServerOptions, any>("server")
+  .subCommand<ServerOptions, ServerArguments>("server [path]")
   .description("Run the local Fly development server")
   .option("-p, --port <port>", "Port to bind to")
   .option("--inspect", "use the v8 inspector on your fly app")
@@ -27,7 +31,8 @@ root
     const { Server } = require('../server')
     const { DefaultContextStore } = require('../default_context_store');
 
-    const cwd = process.cwd()
+    const cwd = args.path || process.cwd()
+    console.log(`Using ${cwd} as working directory.`)
 
     const port = opts.port && opts.port[0] || 3000
 

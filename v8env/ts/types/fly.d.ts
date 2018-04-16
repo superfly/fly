@@ -1,25 +1,26 @@
 /**
- * @module fly
- * @preferred
- */
-/**
  * Fly specific APIs and functionality
+ * Modules are available via the `fly` Global variable.
+ * 
+ * The runtime includes an implementation of the [`fetch`](fetch.html) spec
+ * for making HTTP requests.
  * @module fly
  * @preferred
  */
-declare module fly {
+export declare module fly {
   /**
    * The Fly HTTP interface, use this to work with HTTP requests
    */
-  namespace http {
+  export namespace http {
     export function respondWith(response: Promise<Response> | Response | ((req: Request) => Promise<Response>)): void
   }
-  namespace log {
+  export namespace log {
     export function log(lvl: string, ...args: any[]): void
     export function addTransport(name: string, options: any): void
     export function addMetadata(metadata: any): void
+
   }
-  namespace util {
+  export namespace util {
     namespace md5 {
       /**
        * Creates an md5 hash of a string.
@@ -29,7 +30,7 @@ declare module fly {
       export function hash(s: string): string
     }
   }
-  namespace cache {
+  export namespace cache {
     /**
      * Get an ArrayBuffer value (or null) from the cache. See `getString` if you 
      * want a string value.

@@ -1,27 +1,29 @@
-import { root, getAppName } from './root'
-import { API } from './api'
+import { root, getAppName, CommonOptions, addCommonOptions } from './root'
+import { apiClient } from './api'
 import { processResponse } from '../utils/cli'
 
 import log from '../log'
 
 import colors = require('ansi-colors')
+import { Command } from 'commandpost';
+import { AxiosInstance } from 'axios';
 
-export interface LogsOptions { }
+export interface LogsOptions extends CommonOptions { }
 export interface LogsArgs { }
 
-root
+const logs = root
   .subCommand<LogsOptions, LogsArgs>("logs")
   .description("Logs from your app.")
-  .action(async (opts, args, rest) => {
-    continuouslyGetLogs(getAppName())
+  .action(async function (this: Command<LogsArgs, LogsOptions>, opts, args, rest) {
+    continuouslyGetLogs(apiClient(this), getAppName(this, { env: ["production"] }))
   })
 
-async function continuouslyGetLogs(appName: string) {
+async function continuouslyGetLogs(API: AxiosInstance, appName: string) {
   log.silly("continuously get logs for app id:", appName)
   let lastNextToken: string | undefined;
   while (true) {
     try {
-      const [logs, nextToken] = await getLogs(appName, lastNextToken)
+      const [logs, nextToken] = await getLogs(API, appName, lastNextToken)
       lastNextToken = nextToken
       showLogs(logs)
     } catch (e) {
@@ -59,7 +61,7 @@ async function showLogs(logs: Log[]) {
   }
 }
 
-async function getLogs(appName: string, nextToken?: string): Promise<[any[], string | undefined]> {
+async function getLogs(API: AxiosInstance, appName: string, nextToken?: string): Promise<[any[], string | undefined]> {
   const res = await API.get(`/api/v1/apps/${appName}/logs`, {
     params: { next_token: nextToken }
   })
@@ -83,3 +85,5 @@ class LogResponseError extends Error {
     this.response = response
   }
 }
+
+addCommonOptions(logs)

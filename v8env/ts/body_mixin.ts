@@ -93,7 +93,18 @@ export default class BodyMixin implements Body {
   }
 
   async arrayBuffer(): Promise<ArrayBuffer> {
-    if (this.bodySource instanceof ArrayBuffer) {
+    if (this.bodySource instanceof Int8Array ||
+        this.bodySource instanceof Int16Array ||
+        this.bodySource instanceof Int32Array ||
+        this.bodySource instanceof Uint8Array ||
+        this.bodySource instanceof Uint16Array ||
+        this.bodySource instanceof Uint32Array ||
+        this.bodySource instanceof Uint8ClampedArray ||
+        this.bodySource instanceof Float32Array ||
+        this.bodySource instanceof Float64Array
+    ) {
+      return <ArrayBuffer>this.bodySource.buffer
+    } else if (this.bodySource instanceof ArrayBuffer) {
       return this.bodySource
     } else if (typeof this.bodySource === 'string') {
       const enc = new TextEncoder("utf-8")
@@ -143,6 +154,7 @@ function bufferFromStream(stream: ReadableStreamReader): Promise<ArrayBuffer> {
     })()
   })
 }
+
 /** @hidden */
 function concatenate(...arrays: Uint8Array[]): ArrayBuffer {
   let totalLength = 0;

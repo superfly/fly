@@ -25,7 +25,7 @@ export class FetchEvent {
 		this.respondWithEntered = false
 	}
 
-	/** 
+	/**
 	 * respondWith callback
 	 * @callback respondWithCallback
 	 * @param {Response} The HTTP response to reply with
