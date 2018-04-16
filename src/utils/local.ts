@@ -135,12 +135,12 @@ export class LocalRelease extends EventEmitter implements Release {
     })
   }
 
-	private isIn (array:string[], name:string) {
-		array.forEach((e) => {
-			if (e === name) return true
-		})
-		return false
-	}
+  private isIn (array:string[], name:string) {
+    array.forEach((e) => {
+      if (e === name) return true
+    })
+    return false
+  }
 
   private removePrefix (file:string) {
     return file.replace("./", "")
