@@ -16,7 +16,7 @@ export default function flyInit(ivm, dispatcher) {
     log: flyLogInit(ivm, dispatcher),
     streams: initStreams(ivm, dispatcher),
 		Image: initImage(ivm, dispatcher),
-		CSS: initCSS(ivm, dispatcher),
+		StyleSheets: initCSS(ivm, dispatcher),
     //Document,
     //Element
   }
