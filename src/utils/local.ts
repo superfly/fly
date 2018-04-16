@@ -127,8 +127,9 @@ export class LocalRelease extends EventEmitter implements Release {
       glob(file, {}, (error, filesFound) => {
         if (error) throw error
 
-        filesFound = filesFound.map((e) => this.removePrefix(e))
-        filesFound.forEach((file) => {
+        filesFound
+					.map((e) => this.removePrefix(e))
+        	.forEach((file) => {
           if (!this.isIn(this.files, file)) this.files.push(file)
         })
       })
