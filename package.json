@@ -7,7 +7,7 @@
     "apps/",
     "lib/",
     "dist/",
-    "v8env/testing/",
+    "v8env",
     "docs/build/"
   ],
   "scripts": {

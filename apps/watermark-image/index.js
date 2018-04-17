@@ -1,3 +1,5 @@
+import { Image } from '@fly/image'
+
 const pictureURL = "https://raw.githubusercontent.com/superfly/fly/147f2a327dc76ce6cf10c46b7ea1c19a9d8f2d87/v8env_test/fixtures/picture.jpg"
 const logoURL = "https://raw.githubusercontent.com/superfly/fly/147f2a327dc76ce6cf10c46b7ea1c19a9d8f2d87/v8env_test/fixtures/overlay.png"
 
@@ -29,7 +31,7 @@ async function watermarkPicture() {
 
   logo.extend(padding).background({ r: 0, g: 0, b: 0, alpha: 0 })
 
-  picture.overlayWith(logo, { gravity: fly.Image.gravity.southeast })
+  picture.overlayWith(logo, { gravity: Image.gravity.southeast })
 
   const body = await picture.toBuffer()
 
@@ -47,5 +49,5 @@ async function loadImage(url) {
   }
   const body = await resp.arrayBuffer()
 
-  return new fly.Image(body)
+  return new Image(body)
 }

@@ -3,7 +3,7 @@ import { expect } from 'chai'
 const logo = require("./fixtures/logo.png")
 const picture = require("./fixtures/picture.jpg")
 const overlay = require("./fixtures/overlay.png")
-const Image = fly.Image
+const { Image } = require("@fly/image")
 describe("Image", () => {
   it("Image(create)", () => {
     const img = new Image({
