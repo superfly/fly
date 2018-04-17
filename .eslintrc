@@ -33,6 +33,7 @@
     "mocha": true,
     "_mocha_done": true,
     "fly": true,
-    "Body": true
+    "Body": true,
+    "bridge": true
   }
 }

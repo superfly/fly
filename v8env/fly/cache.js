@@ -1,5 +1,4 @@
 import { logger } from '../logger'
-import { transferInto } from '../utils/buffer'
 
 /**
  * @namespace fly.cache
@@ -46,23 +45,14 @@ export default function flyCacheInit(ivm, dispatcher) {
       if (size > 2 * 1024 * 1024) {
         return Promise.reject("Cache does not support values > 2MB")
       }
-      if (value instanceof ArrayBuffer) {
-        logger.debug("Transferring buffer:", key, value.byteLength)
-        value = transferInto(ivm, value)
-      }
 
       return new Promise(function cacheSetPromise(resolve, reject) {
-        const cb = new ivm.Reference(function cacheSetCallback(err, ok) {
-          cb.release()
+        bridge.dispatch("flyCacheSet", key, value, ttl, function cacheSetCallback(err, ok) {
           if (err != null) {
             reject(err)
             return
           }
           resolve(ok)
-        })
-        dispatcher.dispatch("flyCacheSet", key, value, ttl, cb).catch((err) => {
-          try { cb.release() } catch (e) { }
-          reject(err)
         })
       })
     },
@@ -77,17 +67,12 @@ export default function flyCacheInit(ivm, dispatcher) {
     expire(key, ttl) {
       logger.debug("cache expire:", ttl)
       return new Promise(function cacheExpirePromise(resolve, reject) {
-        const cb = new ivm.Reference(function cacheExpireCallback(err, value) {
-          cb.release()
+        bridge.dispatch("flyCacheExpire", key, ttl, function cacheExpireCallback(err, value) {
           if (err != null) {
             reject(err)
             return
           }
           resolve(value)
-        })
-        dispatcher.dispatch("flyCacheExpire", key, ttl, cb).catch((err) => {
-          try { cb.release() } catch (e) { }
-          reject(err)
         })
       })
     }
@@ -97,17 +82,12 @@ export default function flyCacheInit(ivm, dispatcher) {
     logger.debug("cache get: " + key)
 
     return new Promise(function cacheGetPromise(resolve, reject) {
-      const cb = new ivm.Reference(function cacheGetCallback(err, value) {
-        cb.release()
+      bridge.dispatch("flyCacheGet", key, function cacheGetCallback(err, value) {
         if (err != null) {
           reject(err)
           return
         }
         resolve(value)
-      })
-      dispatcher.dispatch("flyCacheGet", key, cb).catch((err) => {
-        try { cb.release() } catch (e) { }
-        reject(err)
       })
     })
   }

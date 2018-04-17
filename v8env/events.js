@@ -1,7 +1,6 @@
-import SessionStore from './session_store'
 import { logger } from './logger'
 import { EventEmitter2 as EventEmitter } from 'eventemitter2'
-import { transferInto } from './utils/buffer'
+import refToStream from './fly/streams'
 
 const invalidResponseType = new Error(`Invalid response type for 'fetch' event. Expecting a straight Response, a function returning a Promise<Response> or a Response.`)
 
@@ -76,12 +75,9 @@ export function fireFetchEvent(ivm, url, req, body, callback) {
 			body.release()
 	}
 
-	// reset the session
-	global.session = new SessionStore()
-
 	let fetchEvent = new FetchEvent('fetch', {
 		request: new Request(url, Object.assign(req, {
-			body: body && fly.streams.refToStream(body) || null
+			body: body && refToStream(body) || null
 		}))
 	}, async function (err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
@@ -103,14 +99,16 @@ export function fireFetchEvent(ivm, url, req, body, callback) {
 			if (typeof res.bodySource === 'string')
 				b = res.bodySource
 			else
-				b = transferInto(ivm, await res.arrayBuffer())
+				b = bridge.wrapValue(await res.arrayBuffer())
 		}
 
+		logger.debug("got ourselves a body")
+
 		selfCleaningCallback.apply(undefined, [null,
-			new ivm.ExternalCopy({
+			bridge.wrapValue({
 				headers: res.headers && res.headers.toJSON() || {},
 				status: res.status
-			}).copyInto({ release: true }),
+			}),
 			b
 		])
 	})

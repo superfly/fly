@@ -4,7 +4,7 @@ import axios from 'axios'
 
 describe('JS Fails', function () {
   describe('bad js syntax', function () {
-    let fixtures = ["bad-syntax", "not-async", "void-returns", "no-respondwith", "no-fetch-listener", "not-a-response", "async-fetch-handler"];
+    let fixtures = ["bad-syntax", "no-respondwith", "no-fetch-listener", "not-a-response", "async-fetch-handler"];
     fixtures.forEach(f => {
       let bad = f
       describe(bad, function () {
@@ -49,24 +49,4 @@ describe('JS Fails', function () {
       })
     })
   })
-
-  // describe("out of band error in context", function() {
-  //   before(
-  //     startServer(`fails/after-dispose.js`)
-  //   })
-  //   after(stopServer)
-
-  //   it('returns a 500', function (done) {
-  //     axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } }).then((res) => {
-  //       expect(res.status).to.equal(500)
-  //       expect(res.data).to.equal('Critical error.')
-  //       done()
-  //     }).catch(done)
-
-  //     setTimeout(() => {
-  //       if (contextStore.isolate)
-  //         contextStore.isolate.dispose()
-  //     }, 10)
-  //   })
-  // })
 })

@@ -1,5 +1,5 @@
 import { logger } from './logger'
-import { transferInto } from './utils/buffer'
+import refToStream from './fly/streams'
 
 /**
  * Starts the process of fetching a network request.
@@ -12,54 +12,45 @@ import { transferInto } from './utils/buffer'
  * @returns {Promise<Response>} - A {@linkcode Promise} that resolves to a {@linkcode Response} object
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch}
  */
-export default function fetchInit(ivm, dispatcher) {
-	return async function fetch(url, init) {
-		logger.debug("fetch called", typeof url, typeof init)
-		try {
-			let req = new Request(url, init)
-			url = req.url
-			init = {
-				method: req.method,
-				headers: req.headers && req.headers.toJSON() || {},
-			}
-			if (!req.bodySource)
-				return await _applyFetch(url, init, null)
-			else if (typeof req.bodySource === 'string')
-				return await _applyFetch(url, init, req.bodySource)
-			return await _applyFetch(url, init, await req.arrayBuffer())
-
-		} catch (err) {
-			logger.debug("err applying nativeFetch", err.toString())
-			throw err
+export async function fetch(url, init) {
+	logger.debug("fetch called", typeof url, typeof init)
+	try {
+		let req = new Request(url, init)
+		url = req.url
+		init = {
+			method: req.method,
+			headers: req.headers && req.headers.toJSON() || {},
 		}
-	};
+		if (!req.bodySource)
+			return await _applyFetch(url, init, null)
+		else if (typeof req.bodySource === 'string')
+			return await _applyFetch(url, init, req.bodySource)
+		return await _applyFetch(url, init, await req.arrayBuffer())
 
-	function _applyFetch(url, init, body) {
-		return new Promise(function (resolve, reject) {
-			logger.debug("gonna fetch", url, init && JSON.stringify(init))
-			const cb = new ivm.Reference(function _applyFetchCallback(err, nodeRes, nodeBody) {
-				cb.release()
+	} catch (err) {
+		logger.debug("err applying nativeFetch", err.toString())
+		throw err
+	}
+};
+
+function _applyFetch(url, init, body) {
+	return new Promise(function (resolve, reject) {
+		logger.debug("gonna fetch", url, init && JSON.stringify(init))
+
+		bridge.dispatch("fetch",
+			url, init, body,
+			function applyFetchCallback(err, nodeRes, nodeBody) {
 				if (err != null) {
 					logger.debug("err :(", err)
 					reject(err)
 					return
 				}
 				let b = nodeBody;
-				if (nodeBody instanceof ivm.Reference)
-					b = fly.streams.refToStream(nodeBody)
+				if (bridge.isReference(nodeBody))
+					b = refToStream(nodeBody)
 				resolve(new Response(b, nodeRes))
-			})
-			dispatcher.dispatch("fetch",
-				url,
-				new ivm.ExternalCopy(init).copyInto({ release: true }),
-				transferInto(ivm, body),
-				cb
-			).catch((err) => {
-				try { cb.release() } catch (e) { }
-				reject(err)
-			})
-			logger.debug("dispatched nativefetch")
-		})
-	}
-
+			}
+		)
+		logger.debug("dispatched nativefetch")
+	})
 }

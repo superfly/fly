@@ -4,6 +4,9 @@ export const logger = {
   info(...args) {
     flyLog('info', format(...args))
   },
+  warn(...args) {
+    flyLog('warn', format(...args))
+  },
   error(...args) {
     flyLog('error', format(...args))
   },

@@ -2,7 +2,6 @@
  * A class for modifying images. This uses operations from [Sharp](http://sharp.pixelplumbing.com/en/stable/) under the hood.
  * @module fly
  */
-import { transferInto } from "../utils/buffer";
 export class Image {
   /** @hidden */
   data: ArrayBuffer | null
@@ -404,64 +403,41 @@ interface OperationFunction {
 interface MetadataFunction {
   (image: Image): Promise<Image.Metadata>
 }
-/**
- * @hidden
- */
-let constructImage: (data: ArrayBuffer | Image.CreateOptions, options?: any) => any
-/**
- * @hidden
- */
-let imageOperation: (ref: any, name: string, ...args: any[]) => any
-/** @hidden */
-let imageToBuffer: (ref: any) => Promise<Image.OperationResult>
-/** @hidden */
-let imageMetadata: (ref: any) => Image.Metadata
 
 /** @hidden */
-export default function initImage(ivm: any, dispatcher: any) {
-  constructImage = function (data: ArrayBuffer | Image.CreateOptions, options?: any) {
-    const args: any[] = [undefined, undefined]
-    if (data instanceof ArrayBuffer) {
-      args[0] = transferInto(ivm, data)
-    } else if (data instanceof Object) {
-      args[1] = new ivm.ExternalCopy(data).copyInto({ release: true })
-    }
-    return dispatcher.dispatchSync("fly.Image()", ...args)
+function constructImage(data: ArrayBuffer | Image.CreateOptions, options?: any) {
+  const args: any[] = [undefined, undefined]
+  if (data instanceof ArrayBuffer) {
+    args[0] = data
+  } else if (data instanceof Object) {
+    args[1] = data
   }
-  imageOperation = function (ref: any, name: string, ...args: any[]) {
-    for (let i = 0; i < args.length; i++) {
-      const a = args[i]
-      if (a instanceof ArrayBuffer) {
-        args[i] = transferInto(ivm, a)
-      } else if (typeof a === "object" && !(a instanceof ivm.Reference)) {
-        args[i] = new ivm.ExternalCopy(a).copyInto({ release: true })
+  return bridge.dispatchSync("fly.Image()", ...args)
+}
+function imageOperation(ref: any, name: string, ...args: any[]) {
+  const result = bridge.dispatchSync("fly.Image.operation", ref, name, ...args)
+  if (result != ref) {
+    //console.error("Image ref mismatch:", name, ref.typeof, result.typeof)
+    //throw new Error(["image operation failed, result not expected:", ref.typeof, result.typeof].join(" "))
+  }
+  return result
+}
+async function imageToBuffer(ref: any) {
+  return new Promise<Image.OperationResult>((resolve, reject) => {
+    bridge.dispatch("fly.Image.toBuffer",
+      ref,
+      (err: string, data: ArrayBuffer, info: any) => {
+        if (err) {
+          reject(err)
+          return
+        }
+        resolve({ data: data, info: info })
       }
-    }
-    const result = dispatcher.dispatchSync("fly.Image.operation", ref, name, ...args)
-    if (result != ref) {
-      //console.error("Image ref mismatch:", name, ref.typeof, result.typeof)
-      //throw new Error(["image operation failed, result not expected:", ref.typeof, result.typeof].join(" "))
-    }
-    return result
-  }
-  imageToBuffer = async function (ref: any) {
-    return new Promise<Image.OperationResult>((resolve, reject) => {
-      dispatcher.dispatch("fly.Image.toBuffer",
-        ref,
-        new ivm.Reference((err: string, data: ArrayBuffer, info: any) => {
-          if (err) {
-            reject(err)
-            return
-          }
-          resolve({ data: data, info: info })
-        })
-      )
-    })
-  }
-  imageMetadata = function imageMetadata(ref): Image.Metadata {
-    return dispatcher.dispatchSync("fly.Image.metadata", ref)
-  }
-  return Image
+    )
+  })
+}
+function imageMetadata(ref: any): Image.Metadata {
+  return bridge.dispatchSync("fly.Image.metadata", ref)
 }
 
 export namespace Image {

@@ -40,15 +40,15 @@ describe('Server', function () {
     })
   })
 
-  describe('basic chain with google-analytics', function () {
-    before(startServer("basic-google-analytics.js"))
-    after(stopServer)
+  // describe('basic chain with google-analytics', function () {
+  //   before(startServer("basic-google-analytics.js"))
+  //   after(stopServer)
 
-    it("doesn't bomb", async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test", 'user-agent': 'predictable-agent' } })
-      expect(res.status).to.equal(200);
-    })
-  })
+  //   it("doesn't bomb", async () => {
+  //     let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test", 'user-agent': 'predictable-agent' } })
+  //     expect(res.status).to.equal(200);
+  //   })
+  // })
 
   describe('dom selector', function () {
     before(startServer("dom-selector.js"))
