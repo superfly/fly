@@ -13,7 +13,7 @@ registerBridge("fly.Font()", function fontConstructor(ctx: Context, bridge: Brid
   try {
     if (!(data instanceof ArrayBuffer))
       throw new Error("font data must be an ArrayBuffer")
-    const font = new Fontmin().src(toBuffer(data))
+    const font = new Fontmin().src(Buffer.from(data))
     const ref = new ivm.Reference(font)
     ctx.addReleasable(ref)
     return Promise.resolve(ref)
@@ -61,29 +61,4 @@ function woffStringFromRun(font: any): Promise<string> {
       resolve(contents)
     })
   })
-}
-
-/** @hidden */
-function concatenate(...arrays: Uint8Array[]): ArrayBuffer {
-  let totalLength = 0;
-  for (let arr of arrays) {
-    totalLength += arr.length;
-  }
-  let result = new Uint8Array(totalLength);
-  let offset = 0;
-  for (let arr of arrays) {
-    result.set(arr, offset);
-    offset += arr.length;
-  }
-  return <ArrayBuffer>result.buffer;
-}
-
-/** @hidden */
-function toBuffer(ab:ArrayBuffer) {
-    var buf = new Buffer(ab.byteLength);
-    var view = new Uint8Array(ab);
-    for (var i = 0; i < buf.length; ++i) {
-        buf[i] = view[i];
-    }
-    return buf;
 }
