@@ -1,16 +1,18 @@
-import { root, getAppName } from './root'
-import { API } from './api'
+import { root, getAppName, CommonOptions, addCommonOptions } from './root'
+import { apiClient } from './api'
 import { processResponse } from '../utils/cli'
+import { Command } from 'commandpost';
 
-export interface FetchOptions { }
+export interface FetchOptions extends CommonOptions { }
 export interface FetchArgs { }
 
-root
+const fetch = root
   .subCommand<FetchOptions, FetchArgs>("fetch")
   .description("Fetch your Fly app locally.")
-  .action(async (opts, args, rest) => {
+  .action(async function (this: Command<FetchOptions, FetchArgs>, opts, args, rest) {
+    const API = apiClient(this)
     try {
-      const appName = getAppName()
+      const appName = getAppName(this, { env: ['production'] })
       const res = await API.get(`/api/v1/apps/${appName}/source`)
       processResponse(res, (res: any) => {
         console.log(res.data.data.attributes.source)
@@ -22,3 +24,5 @@ root
         throw e
     }
   })
+
+addCommonOptions(fetch)

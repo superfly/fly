@@ -1,41 +1,20 @@
 import axios from 'axios'
 import { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
-import { getToken } from './root'
+import { getToken, CommonOptions } from './root'
+import { Command } from 'commandpost';
 
 const { version } = require('../../package.json')
 
-let apiClient: AxiosInstance;
-
-export const API = {
-  get(url: string, config?: AxiosRequestConfig) {
-    return getAPIClient().get(url, config)
-  },
-  put(url: string, data?: any, config?: AxiosRequestConfig) {
-    return getAPIClient().put(url, data, config)
-  },
-  patch(url: string, data?: any, config?: AxiosRequestConfig) {
-    return getAPIClient().patch(url, data, config)
-  },
-  post(url: string, data?: any, config?: AxiosRequestConfig) {
-    return getAPIClient().post(url, data, config)
-  },
-}
-
-function getAPIClient() {
-  if (apiClient)
-    return apiClient
-
+export function apiClient(cmd: Command<CommonOptions, any>) {
   const baseURL = process.env.FLY_BASE_URL || "https://fly.io"
 
-  apiClient = axios.create({
+  return axios.create({
     baseURL: baseURL,
     timeout: 30000,
     headers: {
-      "Authorization": `Bearer ${getToken()}`,
+      "Authorization": `Bearer ${getToken(cmd)}`,
       "User-Agent": `fly/${version}`
     },
     validateStatus: (status) => { return status >= 200 && status < 500 }
   })
-
-  return apiClient
 }

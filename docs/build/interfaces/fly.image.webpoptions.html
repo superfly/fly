@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Metadata | @fly/fly</title>
+	<title>WebpOptions | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -37,21 +37,28 @@
 					<a href="../classes/fly.image.html">Image</a>
 				</li>
 				<li>
-					<a href="fly.image.metadata.html">Metadata</a>
+					<a href="fly.image.webpoptions.html">WebpOptions</a>
 				</li>
 			</ul>
-			<h1>Interface Metadata</h1>
+			<h1>Interface WebpOptions</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>WebP output options</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Metadata</span>
+						<span class="target">WebpOptions</span>
 					</li>
 				</ul>
 			</section>
@@ -62,15 +69,11 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.metadata.html#channels" class="tsd-kind-icon">channels</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.metadata.html#density" class="tsd-kind-icon">density</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.metadata.html#format" class="tsd-kind-icon">format</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.metadata.html#hasalpha" class="tsd-kind-icon">has<wbr>Alpha</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.metadata.html#hasprofile" class="tsd-kind-icon">has<wbr>Profile</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.metadata.html#height" class="tsd-kind-icon">height</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.metadata.html#orientation" class="tsd-kind-icon">orientation</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.metadata.html#space" class="tsd-kind-icon">space</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.metadata.html#width" class="tsd-kind-icon">width</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.webpoptions.html#alphaquality" class="tsd-kind-icon">alpha<wbr>Quality</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.webpoptions.html#force" class="tsd-kind-icon">force</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.webpoptions.html#lossless" class="tsd-kind-icon">lossless</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.webpoptions.html#nearlossless" class="tsd-kind-icon">near<wbr>Lossless</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.webpoptions.html#quality" class="tsd-kind-icon">quality</a></li>
 							</ul>
 						</section>
 					</div>
@@ -79,132 +82,77 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="channels" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> channels</h3>
-					<div class="tsd-signature tsd-kind-icon">channels<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<a name="alphaquality" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> alpha<wbr>Quality</h3>
+					<div class="tsd-signature tsd-kind-icon">alpha<wbr>Quality<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L299">fly/image.ts:299</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L323">fly/image.ts:323</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Number of bands e.g. 3 for sRGB, 4 for CMYK</p>
+							<p>quality of alpha layer, integer 0-100, default to 100</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="density" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> density</h3>
-					<div class="tsd-signature tsd-kind-icon">density<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<a name="force" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> force</h3>
+					<div class="tsd-signature tsd-kind-icon">force<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L301">fly/image.ts:301</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L329">fly/image.ts:329</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Number of pixels per inch (DPI), if present</p>
+							<p>force WebP output, otherwise attempt to use input format, defaults to true</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="format" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> format</h3>
-					<div class="tsd-signature tsd-kind-icon">format<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<a name="lossless" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> lossless</h3>
+					<div class="tsd-signature tsd-kind-icon">lossless<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L309">fly/image.ts:309</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="hasalpha" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> has<wbr>Alpha</h3>
-					<div class="tsd-signature tsd-kind-icon">has<wbr>Alpha<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L305">fly/image.ts:305</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L325">fly/image.ts:325</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Boolean indicating the presence of an alpha transparency channel</p>
+							<p>use lossless compression mode</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="hasprofile" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> has<wbr>Profile</h3>
-					<div class="tsd-signature tsd-kind-icon">has<wbr>Profile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+					<a name="nearlossless" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> near<wbr>Lossless</h3>
+					<div class="tsd-signature tsd-kind-icon">near<wbr>Lossless<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L303">fly/image.ts:303</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L327">fly/image.ts:327</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Boolean indicating the presence of an embedded ICC profile</p>
+							<p>use near_lossless compression mode</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="height" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> height</h3>
-					<div class="tsd-signature tsd-kind-icon">height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<a name="quality" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> quality</h3>
+					<div class="tsd-signature tsd-kind-icon">quality<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L295">fly/image.ts:295</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L321">fly/image.ts:321</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Number of pixels high</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="orientation" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> orientation</h3>
-					<div class="tsd-signature tsd-kind-icon">orientation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L307">fly/image.ts:307</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Number value of the EXIF Orientation header, if present</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="space" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> space</h3>
-					<div class="tsd-signature tsd-kind-icon">space<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L297">fly/image.ts:297</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Name of colour space interpretation e.g. srgb, rgb, cmyk, lab, b-w ...</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="width" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> width</h3>
-					<div class="tsd-signature tsd-kind-icon">width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/db1ce2c/v8env/ts/fly/image.ts#L293">fly/image.ts:293</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Number of pixels wide</p>
+							<p>quality, integer 1-100, defaults to 80</p>
 						</div>
 					</div>
 				</section>
@@ -258,37 +206,8 @@
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.jpegoptions.html" class="tsd-kind-icon">Jpeg<wbr>Options</a>
 							</li>
-							<li class="current tsd-kind-interface tsd-parent-kind-class">
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.metadata.html" class="tsd-kind-icon">Metadata</a>
-								<ul>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.metadata.html#channels" class="tsd-kind-icon">channels</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.metadata.html#density" class="tsd-kind-icon">density</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.metadata.html#format" class="tsd-kind-icon">format</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.metadata.html#hasalpha" class="tsd-kind-icon">has<wbr>Alpha</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.metadata.html#hasprofile" class="tsd-kind-icon">has<wbr>Profile</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.metadata.html#height" class="tsd-kind-icon">height</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.metadata.html#orientation" class="tsd-kind-icon">orientation</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.metadata.html#space" class="tsd-kind-icon">space</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.metadata.html#width" class="tsd-kind-icon">width</a>
-									</li>
-								</ul>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.operationresult.html" class="tsd-kind-icon">Operation<wbr>Result</a>
@@ -302,8 +221,25 @@
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a>
 							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
+							<li class="current tsd-kind-interface tsd-parent-kind-class">
 								<a href="fly.image.webpoptions.html" class="tsd-kind-icon">Webp<wbr>Options</a>
+								<ul>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.webpoptions.html#alphaquality" class="tsd-kind-icon">alpha<wbr>Quality</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.webpoptions.html#force" class="tsd-kind-icon">force</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.webpoptions.html#lossless" class="tsd-kind-icon">lossless</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.webpoptions.html#nearlossless" class="tsd-kind-icon">near<wbr>Lossless</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="fly.image.webpoptions.html#quality" class="tsd-kind-icon">quality</a>
+									</li>
+								</ul>
 							</li>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="../classes/fly.image.html#constructor" class="tsd-kind-icon">constructor</a>

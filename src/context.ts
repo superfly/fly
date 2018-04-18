@@ -7,6 +7,10 @@ import { EventEmitter } from 'events';
 
 import * as winston from 'winston'
 
+export interface Reference extends Releasable {
+	apply(...args: any[]): Promise<any>
+}
+
 export interface Releasable {
 	release(): void
 }
@@ -38,8 +42,8 @@ export class Context extends EventEmitter {
 
 	timeouts: { [id: number]: NodeJS.Timer }
 	intervals: { [id: number]: NodeJS.Timer }
-	callbacks: ivm.Reference<Function>[]
-	fireFetchEventFn?: ivm.Reference<Function>
+	callbacks: Reference[]
+	fireFetchEventFn?: Reference
 
 	releasables: Releasable[]
 
@@ -63,14 +67,14 @@ export class Context extends EventEmitter {
 		this.logMetadata = {}
 	}
 
-	addCallback(fn: ivm.Reference<Function>) {
+	addCallback(fn: Reference) {
 		this.addReleasable(fn)
 		this.callbacks.push(fn)
 		log.silly("Added callback", fn)
 		this.emit("callbackAdded", fn)
 	}
 
-	async applyCallback(fn: ivm.Reference<Function>, args: any[], opts?: any) {
+	async applyCallback(fn: Reference, args: any[], opts?: any) {
 		try {
 			return await this._applyCallback(fn, args, opts)
 		} catch (err) {
@@ -79,7 +83,7 @@ export class Context extends EventEmitter {
 		}
 	}
 
-	async _applyCallback(fn: ivm.Reference<Function>, args: any[], opts?: any) {
+	async _applyCallback(fn: Reference, args: any[], opts?: any) {
 		log.silly("Applying callback", fn, args)
 		try {
 			if (this.iso.isDisposed)
@@ -103,7 +107,7 @@ export class Context extends EventEmitter {
 		}
 	}
 
-	async tryCallback(fn: ivm.Reference<Function>, args: any[], opts?: any) {
+	async tryCallback(fn: Reference, args: any[], opts?: any) {
 		try {
 			return await this._applyCallback(fn, args, opts)
 		} catch (err) {
@@ -111,7 +115,7 @@ export class Context extends EventEmitter {
 		}
 	}
 
-	log(lvl: string, msg: string, meta?: any, cb?: ivm.Reference<Function>) {
+	log(lvl: string, msg: string, meta?: any, cb?: Reference) {
 		if (cb)
 			this.addCallback(cb)
 		this.logger.log(lvl, msg, Object.assign({}, this.persistentLogMetadata, this.logMetadata, meta || {}), (error?: any, level?: string, msg?: string, meta?: any) => {
@@ -120,15 +124,15 @@ export class Context extends EventEmitter {
 		})
 	}
 
-	addReleasable(ref: ivm.Reference<any>): ivm.Reference<any>;
+	addReleasable(ref: Reference): Reference;
 	addReleasable(ec: ivm.ExternalCopy<any>): ivm.ExternalCopy<any>;
-	addReleasable(rel: ivm.Reference<any> | ivm.ExternalCopy<any>) {
+	addReleasable(rel: Reference | ivm.ExternalCopy<any>) {
 		if (this.releasables.indexOf(rel) === -1)
 			this.releasables.push(rel)
 		return rel
 	}
 
-	setTimeout(fn: ivm.Reference<Function>, timeout: number) {
+	setTimeout(fn: Reference, timeout: number) {
 		const id = ++this.currentTimerId
 		this.timeouts[id] = setTimeout(() => { this.applyCallback(fn, []) }, timeout)
 		this.addCallback(fn)
@@ -141,7 +145,7 @@ export class Context extends EventEmitter {
 		return
 	}
 
-	setInterval(fn: ivm.Reference<Function>, every: number) {
+	setInterval(fn: Reference, every: number) {
 		const id = ++this.currentTimerId
 		// we don't add interval callbacks because we will clear them at the very end
 		this.intervals[id] = setInterval(() => { fn.apply(null, []) }, every)

@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.28.4"></a>
+## [0.28.4](https://github.com/superfly/fly/compare/v0.28.3...v0.28.4) (2018-04-13)
+
+
+### Bug Fixes
+
+* create image from scrach with `new Image({width, height, ...})`" ([8641f13](https://github.com/superfly/fly/commit/8641f13))
+
+
+
+<a name="0.28.3"></a>
+## [0.28.3](https://github.com/superfly/fly/compare/v0.28.2...v0.28.3) (2018-04-12)
+
+
+### Bug Fixes
+
+* allow CLI options throughout subcommands, add move and destroy apps subcommand ([26edf5a](https://github.com/superfly/fly/commit/26edf5a))
+
+
+
+<a name="0.28.2"></a>
+## [0.28.2](https://github.com/superfly/fly/compare/v0.28.1...v0.28.2) (2018-04-12)
+
+
+### Bug Fixes
+
+* don't try to parse metadata ([cab9667](https://github.com/superfly/fly/commit/cab9667))
+
+
+
+<a name="0.28.1"></a>
+## [0.28.1](https://github.com/superfly/fly/compare/v0.28.0...v0.28.1) (2018-04-10)
+
+
+### Bug Fixes
+
+* add missing flatten and jpeg image calls ([c344847](https://github.com/superfly/fly/commit/c344847))
+
+
+
 <a name="0.28.0"></a>
 # [0.28.0](https://github.com/superfly/fly/compare/v0.27.1...v0.28.0) (2018-04-09)
 

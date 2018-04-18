@@ -1,16 +1,18 @@
-import { root, getAppName } from './root'
-import { API } from './api'
+import { root, getAppName, CommonOptions, addCommonOptions } from './root'
+import { apiClient } from './api'
 import { processResponse } from '../utils/cli'
+import { Command } from 'commandpost';
 
-export interface ReleasesOptions { }
+export interface ReleasesOptions extends CommonOptions { }
 export interface ReleasesArgs { }
 
-root
+export const releases = root
   .subCommand<ReleasesOptions, ReleasesArgs>("releases")
   .description("Manage Fly apps.")
-  .action(async (opts, args, rest) => {
+  .action(async function (this: Command<ReleasesOptions, ReleasesArgs>, opts, args, rest) {
+    const API = apiClient(this)
     try {
-      const appName = getAppName()
+      const appName = getAppName(this, { env: ['production'] })
       const res = await API.get(`/api/v1/apps/${appName}/releases`)
       processResponse(res, (res: any) => {
         if (res.data.data.length == 0)
@@ -26,3 +28,5 @@ root
         throw e
     }
   })
+
+addCommonOptions(releases)

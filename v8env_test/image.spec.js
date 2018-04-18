@@ -5,6 +5,18 @@ const picture = require("./fixtures/picture.jpg")
 const overlay = require("./fixtures/overlay.png")
 const Image = fly.Image
 describe("Image", () => {
+  it("Image(create)", () => {
+    const img = new Image({
+      width: 200,
+      height: 200,
+      background: { r: 255, g: 0, b: 0, alpha: 0.5 },
+      channels: 4
+    })
+
+    const meta = img.metadata()
+    expect(meta.width).to.eq(200)
+    expect(meta.height).to.eq(200)
+  })
   it("metadata()", () => {
     const img = new Image(logo)
     const meta = img.metadata()
@@ -18,6 +30,13 @@ describe("Image", () => {
     expect(img2.data.byteLength).to.be.lessThan(logo.byteLength)
     expect(img2.info.width).to.eq(128)
     expect(img2.info.format).to.eq("webp")
+  })
+
+  it("flatten()", async () => {
+    const img = new Image(logo)
+    const img2 = await img.background({ r: 0, b: 0, g: 255, alpha: 1 }).flatten().toImage()
+
+    expect(img2.data.byteLength).to.not.eq(img.data.byteLength)
   })
 
   it("overlayWith()", async () => {

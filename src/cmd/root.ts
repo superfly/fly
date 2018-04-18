@@ -10,20 +10,24 @@ const { version } = require('../../package.json')
 export interface CommonOptions {
   app?: string[]
   env?: string[]
-  token: string[]
+  token?: string[]
 }
 
 export const root =
   create<CommonOptions, any>("fly")
     .version(version, "-v, --version")
     .description("Fly CLI")
-    .option("-a, --app <id>", "App to use for commands.")
+
+addCommonOptions(root)
+
+export function addCommonOptions(cmd: Command<CommonOptions, any>) {
+  cmd.option("-a, --app <id>", "App to use for commands.")
     .option("-e, --env <env>", "Environment to use for commands.")
     .option("--token <token>", "Fly Access Token (can be set via environment FLY_ACCESS_TOKEN)")
+}
 
-
-export function getToken() {
-  let token = root.parsedOpts.token && root.parsedOpts.token[0] || process.env.FLY_ACCESS_TOKEN
+export function getToken(cmd: Command<any, CommonOptions>) {
+  let token = recursivelyGetOption(cmd, 'token') || process.env.FLY_ACCESS_TOKEN
   if (!token) {
     try {
       const creds = getCredentials()
@@ -40,13 +44,14 @@ export function getToken() {
   return token
 }
 
-export const fullAppMatch = /([a-z0-9_.-]+)/i
+export const fullAppMatch = /^([a-z0-9_.-]+)$/i
 
-export function getAppName(env?: string) {
+export function getAppName(cmd: Command<CommonOptions, any>, override: CommonOptions = {}) {
   const cwd = process.cwd()
-  env = process.env.FLY_ENV || env || root.parsedOpts.env && root.parsedOpts.env[0] || "production"
+  const env = process.env.FLY_ENV || override.env && override.env[0] || root.parsedOpts.env && root.parsedOpts.env[0] || "production"
   const release = getLocalRelease(cwd, env, { noWatch: true })
-  const appName = root.parsedOpts.app && root.parsedOpts.app[0] || release.app
+
+  const appName = recursivelyGetOption(cmd, 'app') || release.app
 
   if (!appName) {
     throw new Error("--app option or app (in your .fly.yml) needs to be set.")
@@ -76,4 +81,16 @@ function getCredentials() {
   if (!fs.existsSync(credspath))
     return
   return YAML.load(fs.readFileSync(credspath).toString())
+}
+
+function recursivelyGetOption(cmd: Command<CommonOptions, any>, optName: string) {
+  let currentCmd = cmd
+
+  while (currentCmd) {
+    const opts = (<any>currentCmd.parsedOpts)
+    if (opts[optName] && !!opts[optName][0]) {
+      return opts[optName][0]
+    }
+    currentCmd = currentCmd.parent
+  }
 }
