@@ -105,7 +105,6 @@
     "sharp": "^0.20.1",
     "source-map": "^0.6.1",
     "tar-fs": "^1.16.0",
-    "uglifycss": "0.0.29",
     "uglifyjs-webpack-plugin": "^1.2.2",
     "universal-url-lite": "^1.0.0",
     "webpack": "^3.11.0",
