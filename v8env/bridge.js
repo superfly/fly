@@ -61,9 +61,7 @@ export default function initBridge(ivm, dispatch) {
           return arg.stack || arg.message || arg.toString()
 
         default:
-          logger.warn("Unknown constructor, wrapping in ivm.Reference:", ctor.name)
-          return new ivm.Reference(arg);
-        // throw new Error(`Can't prepare a non-transferable value (constructor: '${ctor && ctor.name || 'unknown'}')`);
+          throw new Error(`Can't prepare a non-transferable value (constructor: '${ctor && ctor.name || 'unknown'}')`);
       }
     },
     dispatch(name, ...args) {
