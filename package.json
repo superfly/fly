@@ -70,7 +70,6 @@
     "http-cache-semantics": "^3.8.1",
     "image-webpack-loader": "^4.1.0",
     "nyc": "^11.3.0",
-    "pako": "^1.0.6",
     "replay": "file:./vendor/replay",
     "standard-version": "^4.3.0",
     "string-to-stream": "^1.1.0",
