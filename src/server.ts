@@ -239,7 +239,7 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 					res.removeHeader("Content-Length")
 					res.setHeader("Content-Encoding", "gzip")
 					//res.setHeader("Content-Type", contentType)
-					dst = zlib.createGzip()
+					dst = zlib.createGzip({ level: 2 })
 					dst.pipe(res)
 				}
 			}
