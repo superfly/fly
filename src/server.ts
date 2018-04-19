@@ -3,6 +3,7 @@ import { ivm } from './'
 import * as url from 'url';
 import * as net from 'net';
 import * as fs from 'fs';
+import * as zlib from 'zlib';
 import log from './log'
 import { Trace } from './trace';
 import * as httpUtils from './utils/http'
@@ -208,7 +209,7 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 
 					const val = v8res.headers[n]
 
-					// console.log("setting header", n, val)
+					//console.log("setting header", n, val)
 					res.setHeader(n, val)
 				} catch (err) {
 					log.error("error setting header", err)
@@ -218,9 +219,34 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 			for (let n of hopHeaders)
 				res.removeHeader(n)
 
+			let dst: Writable = res
+			let contentEncoding = res.getHeader("content-encoding")
+			let contentType = res.getHeader("content-type")
+			let acceptEncoding = req.headers['accept-encoding']
+			if (acceptEncoding && acceptEncoding instanceof Array) {
+				acceptEncoding = acceptEncoding.join(", ")
+			}
+
+			// gzip if no encoding
+			if (!contentEncoding && contentType && acceptEncoding && acceptEncoding.includes("gzip")) {
+				if (contentType && contentType instanceof Array) {
+					contentType = contentType.join(", ")
+				} else {
+					contentType = contentType.toString()
+				}
+				// only gzip text
+				if (contentType.includes("text/") || contentType.includes("application/javascript")) {
+					res.removeHeader("Content-Length")
+					res.setHeader("Content-Encoding", "gzip")
+					//res.setHeader("Content-Type", contentType)
+					dst = zlib.createGzip()
+					dst.pipe(res)
+				}
+			}
+
 			writeHead(ctx, res, v8res.status)
 
-			handleResponse(resBody, <Writable>res).then((len) => {
+			handleResponse(resBody, dst).then((len) => {
 				if (ptrace)
 					ptrace.addTags({ dataOut: len, dataIn: 0 })
 				if (!res.finished)
@@ -250,14 +276,24 @@ function handleResponse(src: V8ResponseBody, dst: Writable): Promise<number> {
 	if (src instanceof ArrayBuffer)
 		src = Buffer.from(src)
 
+	const p = new Promise<number>((resolve, reject) => {
+		dst.on("close", () => {
+			console.log("dest closed")
+			if (src instanceof Buffer)
+				totalLength = src.byteLength
+			else if (typeof src === 'string')
+				totalLength = Buffer.byteLength(src, 'utf8')
+			resolve(totalLength)
+		})
+		dst.on("error", (err) => {
+			reject(err)
+		})
+	})
+
 	dst.end(src) // string or Buffer
 
-	if (src instanceof Buffer)
-		totalLength = src.byteLength
-	else if (typeof src === 'string')
-		totalLength = Buffer.byteLength(src, 'utf8')
-
-	return Promise.resolve(totalLength)
+	return p
+	//return Promise.resolve(totalLength)
 }
 
 function handleResponseStream(src: ProxyStream, dst: Writable): Promise<number> {
