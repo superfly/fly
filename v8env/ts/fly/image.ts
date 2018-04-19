@@ -16,14 +16,15 @@ export class Image {
    * Constructs a new Image from raw Buffer data
    * @param data Raw image data as a buffer, or options to create a new image
    */
-  constructor(data: ArrayBuffer) {
+
+  constructor(data: ArrayBuffer | Image.CreateOptions) {
+    this.data = null
+    this._ref = null
     if (data instanceof ArrayBuffer) {
       this.data = data
-      this._ref = constructImage(this.data)
-      this.info = null
-    } else {
-      throw new Error("Data must be an ArrayBuffer")
     }
+    this._ref = constructImage(data)
+    this.info = null
   }
 
   /**
