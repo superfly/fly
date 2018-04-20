@@ -276,9 +276,8 @@ function handleResponse(src: V8ResponseBody, dst: Writable): Promise<number> {
 	if (src instanceof ArrayBuffer)
 		src = Buffer.from(src)
 
-	const p = new Promise<number>((resolve, reject) => {
-		dst.on("close", () => {
-			console.log("dest closed")
+	return new Promise<number>((resolve, reject) => {
+		dst.on("finish", () => {
 			if (src instanceof Buffer)
 				totalLength = src.byteLength
 			else if (typeof src === 'string')
@@ -288,12 +287,8 @@ function handleResponse(src: V8ResponseBody, dst: Writable): Promise<number> {
 		dst.on("error", (err) => {
 			reject(err)
 		})
+		dst.end(src) // string or Buffer
 	})
-
-	dst.end(src) // string or Buffer
-
-	return p
-	//return Promise.resolve(totalLength)
 }
 
 function handleResponseStream(src: ProxyStream, dst: Writable): Promise<number> {

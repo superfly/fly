@@ -25,7 +25,6 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
   let dataIn = 0,
     dataOut = 0
   const cb = new ReferenceWrapper(refCb, function () {
-    console.log("WRAPPED CALLBACK")
     t.end({ dataIn, dataOut })
   })
   ctx.addCallback(cb)
@@ -129,7 +128,7 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
 
   setImmediate(function () {
     if (body)
-      dataOut += Buffer.byteLength(body, 'utf-8')
+      dataOut += Buffer.byteLength(body)
     if (body instanceof ArrayBuffer) {
       req.end(Buffer.from(body))
     } else {
