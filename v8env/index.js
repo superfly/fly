@@ -23,6 +23,8 @@ import { setTimeout, clearTimeout, setInterval, clearInterval } from './timers'
 
 import { Document, Element } from './document'
 
+import { MiddlewareChain } from './middleware'
+
 global.releasables = []
 global.middleware = {}
 
@@ -50,23 +52,9 @@ global.bootstrap = function bootstrap() {
 		TextEncoder, TextDecoder,
 		Headers, Request, Response, fetch, Body,
 		Blob, FormData, URL, URLSearchParams,
-		cache, crypto
+		cache, crypto,
+		MiddlewareChain // ugh
 	})
-
-	// Web API
-	// global.crypto = crypto
-	// global.URL = URL
-	// global.URLSearchParams = URLSearchParams
-	// global.Headers = Headers
-	// global.fetch = fetchInit(ivm)
-	// global.Body = bodyMixin
-	// global.Blob = Blob
-	// global.FormData = FormData
-	// global.Response = responseInit(ivm)
-	// global.Request = require('./request').Request
-
-	// oh boy
-	// global.cache = cache
 
 	// Events
 	global.fireFetchEvent = fireFetchEvent.bind(null, ivm)

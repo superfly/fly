@@ -269,7 +269,6 @@ function handleResponse(src: V8ResponseBody, dst: Writable): Promise<number> {
 		return Promise.resolve(0)
 
 	if (src instanceof ivm.Reference) {
-		console.log("body is a stream, streamking")
 		return handleResponseStream(src.deref({ release: true }), dst)
 	}
 
@@ -279,7 +278,7 @@ function handleResponse(src: V8ResponseBody, dst: Writable): Promise<number> {
 		src = Buffer.from(src)
 
 	return new Promise<number>((resolve, reject) => {
-		dst.on("finish", () => {
+		dst.on("close", () => {
 			if (src instanceof Buffer)
 				totalLength = src.byteLength
 			else if (typeof src === 'string')
