@@ -54,7 +54,10 @@ export function startServer(cwd: string, options: ServerOptions = {}) {
 }
 
 export function stopServer(this: IHookCallbackContext, done: MochaDone) {
-  this.server.close(done)
+  if (this.server.listening)
+    this.server.close(done)
+  else
+    done()
 }
 
 export function makeServer(cwd: string, options: ServerOptions = {}) {

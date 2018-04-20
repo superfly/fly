@@ -97,7 +97,6 @@
     "isolated-vm": "^1.5.2",
     "js-yaml": "^3.10.0",
     "mocha": "^4.0.1",
-    "pako": "^1.0.6",
     "promise.prototype.finally": "^3.1.0",
     "promptly": "^3.0.3",
     "segfault-handler": "^1.0.0",
