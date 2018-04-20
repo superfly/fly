@@ -246,7 +246,7 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 
 			writeHead(ctx, res, v8res.status)
 
-			handleResponse(resBody, dst).then((len) => {
+			handleResponse(resBody, res, dst).then((len) => {
 				if (ptrace)
 					ptrace.addTags({ dataOut: len, dataIn: 0 })
 				if (!res.finished)
@@ -264,13 +264,12 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 	})
 }
 
-function handleResponse(src: V8ResponseBody, dst: Writable): Promise<number> {
+function handleResponse(src: V8ResponseBody, res: http.ServerResponse, dst: Writable): Promise<number> {
 	if (!src)
 		return Promise.resolve(0)
 
 	if (src instanceof ivm.Reference) {
-		console.log("body is a stream, streamking")
-		return handleResponseStream(src.deref({ release: true }), dst)
+		return handleResponseStream(src.deref({ release: true }), res, dst)
 	}
 
 	let totalLength = 0
@@ -279,15 +278,14 @@ function handleResponse(src: V8ResponseBody, dst: Writable): Promise<number> {
 		src = Buffer.from(src)
 
 	const p = new Promise<number>((resolve, reject) => {
-		dst.on("close", () => {
-			console.log("dest closed")
+		res.on("finish", () => {
 			if (src instanceof Buffer)
 				totalLength = src.byteLength
 			else if (typeof src === 'string')
 				totalLength = Buffer.byteLength(src, 'utf8')
 			resolve(totalLength)
 		})
-		dst.on("error", (err) => {
+		res.on("error", (err) => {
 			reject(err)
 		})
 	})
@@ -298,14 +296,14 @@ function handleResponse(src: V8ResponseBody, dst: Writable): Promise<number> {
 	//return Promise.resolve(totalLength)
 }
 
-function handleResponseStream(src: ProxyStream, dst: Writable): Promise<number> {
+function handleResponseStream(src: ProxyStream, res: http.ServerResponse, dst: Writable): Promise<number> {
 	return new Promise(function (resolve, reject) {
 		setImmediate(() => {
 			let dataOut = 0
-			dst.on("data", function (d) {
+			res.on("data", function (d) {
 				dataOut += d.byteLength
 			})
-			dst.on("close", function () {
+			res.on("finish", function () {
 				resolve(dataOut)
 			}).on("error", reject)
 			for (const c of src.buffered) {
