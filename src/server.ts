@@ -268,8 +268,10 @@ function handleResponse(src: V8ResponseBody, dst: Writable): Promise<number> {
 	if (!src)
 		return Promise.resolve(0)
 
-	if (src instanceof ivm.Reference)
+	if (src instanceof ivm.Reference) {
+		console.log("body is a stream, streamking")
 		return handleResponseStream(src.deref({ release: true }), dst)
+	}
 
 	let totalLength = 0
 
@@ -294,13 +296,17 @@ function handleResponse(src: V8ResponseBody, dst: Writable): Promise<number> {
 function handleResponseStream(src: ProxyStream, dst: Writable): Promise<number> {
 	return new Promise(function (resolve, reject) {
 		setImmediate(() => {
+			let dataOut = 0
+			dst.on("data", function (d) {
+				dataOut += d.byteLength
+			})
+			dst.on("close", function () {
+				resolve(dataOut)
+			}).on("error", reject)
 			for (const c of src.buffered) {
 				dst.write(c)
 			}
 			src.stream.pipe(dst)
-				.on("finish", function () {
-					resolve(src.readLength)
-				}).on("error", reject)
 		})
 	})
 }
