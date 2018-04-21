@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.29.0-4"></a>
+# [0.29.0-4](https://github.com/superfly/fly/compare/v0.28.4...v0.29.0-4) (2018-04-21)
+
+
+### Bug Fixes
+
+* inflate gzip stream race condition causes early closes ([42581bb](https://github.com/superfly/fly/commit/42581bb))
+
+
+### Features
+
+* Automatically gzip response bodies when appropriate ([2f066ca](https://github.com/superfly/fly/commit/2f066ca))
+* makes fly.Image importable via '[@fly](https://github.com/fly)/image' ([0cbbfde](https://github.com/superfly/fly/commit/0cbbfde))
+
+
+
 <a name="0.28.4"></a>
 ## [0.28.4](https://github.com/superfly/fly/compare/v0.28.3...v0.28.4) (2018-04-13)
 
