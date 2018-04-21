@@ -278,7 +278,7 @@ function handleResponse(src: V8ResponseBody, res: http.ServerResponse, dst: Writ
 		src = Buffer.from(src)
 
 	return new Promise<number>((resolve, reject) => {
-		dst.on("finish", () => {
+		res.on("finish", () => {
 			if (src instanceof Buffer)
 				totalLength = src.byteLength
 			else if (typeof src === 'string')
