@@ -300,7 +300,7 @@ function handleResponseStream(src: ProxyStream, res: http.ServerResponse, dst: W
 	return new Promise(function (resolve, reject) {
 		setImmediate(() => {
 			let dataOut = 0
-			res.on("data", function (d) {
+			dst.on("data", function (d) {
 				dataOut += d.byteLength
 			})
 			res.on("finish", function () {
