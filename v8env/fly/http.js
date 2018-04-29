@@ -10,8 +10,8 @@ function ensureFetchEvent() {
 }
 function handleFetch(event) {
   const req = event.request
+
   if (router) {
-    const path = new URL(req.url).pathname
     let match = router.find(req.method, path)
 
     if (match) {
@@ -26,6 +26,10 @@ function handleFetch(event) {
   }
 
   event.respondWith(new Response("404", { status: 404 }))
+}
+
+async function staticfor(pathname) {
+  return await fetch("file://" + pathname)
 }
 
 /**
@@ -44,11 +48,23 @@ module.exports = {
   /**
    * Registers an HTTP handler functions. This handler is matched when no routes are set, or no routes match a given request.
    * @public
-   * @memberof fly.http 
+   * @memberof fly.http
    * @param {httpHandler} fn A function that accepts a request and a set of parameters, and returns a response
    */
   respondWith(fn) {
     ensureFetchEvent()
     flyFetchHandler = fn
+  },
+  /**
+   * Registers an serve functions.
+   * @public
+   * @memberof fly.static
+   * @param {String} dir A function that accepts a directory, and serves all files in that directory staticly
+   */
+  serveStatic(req) {
+    const pathname = new URL(req.url).pathname.substr(1)
+    const file = staticfor(pathname)
+    if (file.status !== 404) return file
+    return new Response("not found", { status: 404 })
   }
 }
