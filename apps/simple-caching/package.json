@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "babel-eslint": "^8.2.3"
+  },
+  "dependencies": {
+    "parse-headers": "^2.0.1",
+    "superagent": "^3.8.2",
+    "url": "^0.11.0"
+  }
+}

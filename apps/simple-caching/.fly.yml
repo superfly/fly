@@ -1,0 +1,4 @@
+app: vmuio
+config:
+  HOST:
+    fromSecret: HOST
