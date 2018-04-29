@@ -24,7 +24,9 @@
     "build:cli:live": "npm run build:cli -- -w",
     "prepublishOnly": "npm run build && npm run doc:v8env",
     "release": "standard-version",
-    "doc:v8env": "./node_modules/typedoc/bin/typedoc --tsconfig ./v8env/ts/tsconfig.json"
+    "doc:v8env": "./node_modules/typedoc/bin/typedoc --tsconfig ./v8env/ts/tsconfig.json",
+    "dev": "./node_modules/.bin/ts-node",
+    "watch": "./node_modules/.bin/onchange 'src/**/*.ts' --initial --poll -- npm run dev"
   },
   "bin": {
     "fly": "lib/cmd/index.js"
@@ -97,6 +99,7 @@
     "isolated-vm": "^1.5.2",
     "js-yaml": "^3.10.0",
     "mocha": "^4.0.1",
+    "onchange": "^3.3.0",
     "promise.prototype.finally": "^3.1.0",
     "promptly": "^3.0.3",
     "segfault-handler": "^1.0.0",
