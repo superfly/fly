@@ -199,6 +199,16 @@ Using `fly deploy`, here's what happens:
 - We create a "release" for your app, those are immutable, changing anything (by using `fly deploy` or `fly secrets set`) will trigger a new release which will be deployed automatically
 - Your code is distributed instantly(-ish) across our global fleet of servers
 
+## Development
+
+```zsh
+# to install
+npm install // we currently use npm, not yarn
+# to test a particular command (e.g., the cli `apps` sub-command)
+npm run dev -- src/cmd/index.ts apps
+# to watch for file changes and repeat a command
+npm run watch -- src/cmd/index.ts apps
+```
 
 ## Open core
 
