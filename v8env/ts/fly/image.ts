@@ -16,6 +16,7 @@ export class Image {
    * Constructs a new Image from raw Buffer data
    * @param data Raw image data as a buffer, or options to create a new image
    */
+
   constructor(data: ArrayBuffer | Image.CreateOptions) {
     this.data = null
     this._ref = null
@@ -27,11 +28,11 @@ export class Image {
   }
 
   /**
-   * Resize image to `width` x `height`. By default, the resized image is center 
-   * cropped to the exact size specified. 
+   * Resize image to `width` x `height`. By default, the resized image is center
+   * cropped to the exact size specified.
    * @param width Width in pixels of the resulting image.
    * Pass `undefined` or `null` to auto-scale the width to match the height.
-   * @param height Height in pixels of the resulting image. 
+   * @param height Height in pixels of the resulting image.
    * Pass `undefind` or `null` to auto-scale the height to match the width.
    * @param options Resize options}
    */
@@ -42,7 +43,7 @@ export class Image {
 
   /**
    * Overlay (composite) an image over the processed (resized, extracted etc.) image.
-   * 
+   *
    * The overlay image must be the same size or smaller than the processed image. If both top and left options are provided, they take precedence over gravity.
    *
    * If the overlay image contains an alpha channel then composition with premultiplication will occur.
@@ -153,7 +154,7 @@ export class Image {
 
   /**
    * Output image to JPEG
-   * 
+   *
    * ```
    *  * // Convert any input to very high quality JPEG output
    * const data = await new Image(input)
@@ -163,7 +164,7 @@ export class Image {
    *   })
    *   .toBuffer();
    * ```
-   * 
+   *
    * @param options JPEG output options
    */
   jpeg(options?: Image.JpegOptions) {
@@ -182,7 +183,7 @@ export class Image {
    *   .png()
    *   .toBuffer();
    * ```
-   * 
+   *
    * @param options Compression and encoding options
    */
   png(options?: Image.PngOptions) {
@@ -211,7 +212,7 @@ export class Image {
    * The default behaviour, when `withMetadata` is not used, is to strip all metadata
    * and convert to the device-independent sRGB colour space. This will also convert
    * to and add a web-friendly sRGB ICC profile.
-   * @param options 
+   * @param options
    *  `options.orientation:` value between 1 and 8, used to update the EXIF
    * `Orientation` tag.
    */
@@ -232,7 +233,7 @@ export class Image {
   /**
    * Pads image by number of pixels. If image is 200px wide, `extend(20)` makes it 220px wide
    * @param extend If numeric, pads all sides of an image.
-   * 
+   *
    * Otherwise, pad each side by the specified amount.
    */
   extend(extend: number | Image.ExtendOptions) {
@@ -273,6 +274,18 @@ export class Image {
     const i = new Image(result.data)
     i.info = result.info
     return i
+  }
+
+  async toResponse(res:any = { headers: { "Content-Type": "image/jpg" }}): Promise<any> {
+    const result = await this.toBuffer()
+    const i = await new Image(result.data)
+    i.info = result.info
+    return new Response(i.data, res)
+  }
+
+  static async imageFromPath(path:string) {
+    const resp = await fetch(path)
+    return new Image(await resp.arrayBuffer())
   }
 }
 
@@ -364,8 +377,8 @@ export namespace Image {
      */
     kernel?: kernel,
     /**
-     * take greater advantage of the JPEG 
-     * and WebP shrink-on-load feature, which can lead to a slight moiré pattern on 
+     * take greater advantage of the JPEG
+     * and WebP shrink-on-load feature, which can lead to a slight moiré pattern on
      * some images. (optional, default `true`)
      */
     fastShrinkOnLoad?: boolean
