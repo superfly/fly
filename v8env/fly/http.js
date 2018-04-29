@@ -1,7 +1,6 @@
 let router = null
 let fetchEventBound = false
 let flyFetchHandler = null
-let staticDirectory = null
 
 function ensureFetchEvent() {
   if (!fetchEventBound) {
