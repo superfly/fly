@@ -141,6 +141,7 @@ export class Server extends http.Server {
 			ctx.removeListener('error', contextErrorHandler)
 			this.contextStore.putContext(ctx)
 			trace.end()
+			ctx.log('info', `${request.connection.remoteAddress} ${request.method} ${request.url} ${response.statusCode} ${Math.round(trace.milliseconds() * 100) / 100}ms`)
 			log.debug(trace.report())
 		}
 	}
@@ -251,7 +252,6 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 					ptrace.addTags({ dataOut: len, dataIn: 0 })
 				if (!res.finished)
 					res.end() // we are done. triggers 'finish' event
-				ctx.log('info', `${req.connection.remoteAddress} ${req.method} ${fullURL} ${res.statusCode} ${Math.round(trace.milliseconds() * 100) / 100}ms`)
 			}).then(() => resolve()).catch((e) => reject(e))
 		}
 
