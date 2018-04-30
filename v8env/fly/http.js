@@ -1,4 +1,3 @@
-let router = null
 let fetchEventBound = false
 let flyFetchHandler = null
 
@@ -10,18 +9,15 @@ function ensureFetchEvent() {
 }
 function handleFetch(event) {
   const req = event.request
-  if (router) {
-    const path = new URL(req.url).pathname
-    let match = router.find(req.method, path)
-
-    if (match) {
-      event.respondWith(match.handler(req, match))
-      return
-    }
-  }
-
   if (flyFetchHandler != null) {
-    event.respondWith(flyFetchHandler(req))
+    const resp = flyFetchHandler(req)
+    if (
+      !(resp instanceof Promise) &&
+      !(resp instanceof Response)
+    ) {
+      throw new Error('fly.http.respondWith function returned the wrong type, expected Promise<Response> or Response')
+    }
+    event.respondWith(resp)
     return
   }
 
