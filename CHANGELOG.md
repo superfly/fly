@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.29.0"></a>
+# [0.29.0](https://github.com/superfly/fly/compare/v0.28.4...v0.29.0) (2018-04-30)
+
+
+### Bug Fixes
+
+* inflate gzip stream race condition causes early closes ([42581bb](https://github.com/superfly/fly/commit/42581bb))
+* response time was always 0 because trace was not done ([d6b2c2f](https://github.com/superfly/fly/commit/d6b2c2f))
+* throw useful error when fly.http.respondWith gets the wrong type (fixes [#65](https://github.com/superfly/fly/issues/65)) ([#78](https://github.com/superfly/fly/issues/78)) ([83a6c08](https://github.com/superfly/fly/commit/83a6c08))
+
+
+### Features
+
+* Automatically gzip response bodies when appropriate ([2f066ca](https://github.com/superfly/fly/commit/2f066ca))
+* use [@fly](https://github.com/fly)/ namespace for internal requires, less globals ([#73](https://github.com/superfly/fly/issues/73)) ([4015038](https://github.com/superfly/fly/commit/4015038))
+
+
+
 <a name="0.28.4"></a>
 ## [0.28.4](https://github.com/superfly/fly/compare/v0.28.3...v0.28.4) (2018-04-13)
 
