@@ -1,12 +1,10 @@
-import { logger } from '../logger'
-let originalPositionFor;
+import { logger } from './logger'
 
-export default function errorsInit(ivm, dispatcher) {
-  originalPositionFor = function (source, position) {
-    return dispatcher.dispatchSync("SourceMapConsumer.originalPositionFor", source, new ivm.ExternalCopy(position).copyInto({ release: true }))
-  }
-  Error.prepareStackTrace = prepareStackTrace
+function originalPositionFor(source, position) {
+  return bridge.dispatchSync("SourceMapConsumer.originalPositionFor", source, position)
 }
+
+Error.prepareStackTrace = prepareStackTrace
 
 function prepareStackTrace(error, stack) {
   return error + stack.map(function (frame) {

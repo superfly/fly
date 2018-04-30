@@ -92,6 +92,15 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     hashDigestLength: 40,
     sourceMapFilename: 'bundle.map.json',
   }
+
+  let v8EnvPath = path.resolve(__filename, "../../../v8env/lib")
+
+  conf.resolve = Object.assign({
+    alias: Object.assign({}, conf.resolve.alias, {
+      "@fly/image": v8EnvPath + "/fly/image"
+    })
+  }, conf.resolve)
+
   if (opts && opts.uglify) {
     conf.plugins = conf.plugins || []
     conf.plugins.push(new UglifyJsPlugin({

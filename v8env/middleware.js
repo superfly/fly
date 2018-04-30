@@ -9,24 +9,6 @@ class MiddlewareSettings {
 	}
 }
 
-class Cache {
-	ignoreCookie() {
-
-	}
-	ignoreQueryParam() {
-
-	}
-}
-
-class Session {
-	get userID() {
-		return ""
-	}
-	get clientID() {
-		return ""
-	}
-}
-
 const errMiddlewareNotPromise = new Error("Middleware did not return a promise")
 
 /**
@@ -51,8 +33,6 @@ export class Middleware {
 		this.type = props.type
 		this.settings = new MiddlewareSettings(props.settings)
 		this.fn = props.fn
-		this.cache = new Cache()
-		this.session = new Session()
 	}
 
 	/**

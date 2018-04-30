@@ -1,13 +1,13 @@
 {
   "name": "@fly/fly",
-  "version": "0.28.4",
+  "version": "0.29.0-3",
   "description": "",
   "main": "lib/index.js",
   "files": [
     "apps/",
     "lib/",
     "dist/",
-    "v8env/testing",
+    "v8env",
     "docs/build/"
   ],
   "scripts": {
@@ -17,9 +17,9 @@
     "test:v8env": "npm run build:v8env && node ./lib/cmd/index.js test v8env_test/**/*.spec.js",
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "build": "./node_modules/.bin/concurrently -n \"core,v8env\" \"npm run build:core\" \"npm run build:v8env\"",
-    "build:live": "./node_modules/.bin/concurrently -n \"core,v8env\" \"tsc -w --pretty\" \"webpack --config webpack.v8.config.js -w\"",
+    "build:live": "./node_modules/.bin/concurrently -n \"core,v8env.ts,v8env\" \"tsc -w --pretty\" \"tsc -w --pretty -p v8env/ts\" \"webpack --config webpack.v8.config.js -w\"",
     "build:core": "./node_modules/.bin/tsc",
-    "build:v8env": "./node_modules/.bin/webpack --config webpack.v8.config.js",
+    "build:v8env": "./node_modules/.bin/tsc -p v8env/ts && ./node_modules/.bin/webpack --config webpack.v8.config.js",
     "build:cli": "./node_modules/.bin/tsc bin/fly.ts",
     "build:cli:live": "npm run build:cli -- -w",
     "prepublishOnly": "npm run build && npm run doc:v8env",

@@ -38,7 +38,8 @@ export class ProxyStream {
   read(size?: number): Buffer | null {
     let chunk = this.stream.read(size)
     if (chunk && !this.tainted) this.bufferChunk(chunk)
-    this.readLength += chunk
+    if (chunk)
+      this.readLength += Buffer.byteLength(chunk)
     return chunk
   }
 

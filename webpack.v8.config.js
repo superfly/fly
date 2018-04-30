@@ -11,7 +11,10 @@ module.exports = {
   },
   resolve: {
     modules: ["../node_modules"],
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: [".ts", ".tsx", ".js"],
+    alias: {
+      "@fly/image": path.resolve(__dirname, "./v8env/lib/fly/image")
+    }
   },
   module: {
     loaders: [

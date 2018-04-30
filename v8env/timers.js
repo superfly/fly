@@ -1,36 +1,22 @@
-let st, ct, si, ci;
-
-export {
-  st as setTimeout,
-  ct as clearTimeout,
-  si as setInterval,
-  ci as clearInterval
+export function setTimeout(cb, ms) {
+  const ref = bridge.wrapFunction(cb)
+  bridge.dispatch("setTimeout", ref, ms).catch(() => {
+    try { ref.release() } catch (e) { }
+  })
 }
 
-export default function timersInit(ivm, dispatcher) {
-  st = function (cb, ms) {
-    const ref = new ivm.Reference(function () {
-      ref.release()
-      cb()
-    })
-    dispatcher.dispatch("setTimeout", ref, ms).catch(() => {
-      try { ref.release() } catch (e) { }
-    })
-  }
+export function clearTimeout(id) {
+  bridge.dispatch("clearTimeout", id)
+}
 
-  ct = function (id) {
-    dispatcher.dispatch("clearTimeout", id)
-  }
+export function setInterval(cb, ms) {
+  const ref = bridge.wrapFunction(cb)
+  releasables.push(ref)
+  bridge.dispatch("setInterval", ref, ms).catch(() => {
+    try { ref.release() } catch (e) { }
+  })
+}
 
-  si = function (cb, ms) {
-    const ref = new ivm.Reference(cb)
-    releasables.push(ref)
-    dispatcher.dispatch("setInterval", ref, ms).catch(() => {
-      try { ref.release() } catch (e) { }
-    })
-  }
-
-  ci = function (id) {
-    dispatcher.dispatch("clearInterval", id)
-  }
+export function clearInterval(id) {
+  bridge.dispatch("clearInterval", id)
 }

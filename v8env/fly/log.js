@@ -3,10 +3,11 @@ import { format } from 'util'
 
 export default function flyLogInit(ivm, dispatcher) {
   function log(lvl, ...args) {
-    dispatcher.dispatch('log',
-      lvl,
-      format(...args)
-    )
+    bridge.dispatch("log", lvl, format(...args))
+    // dispatcher.dispatch('log',
+    //   lvl,
+    //   format(...args)
+    // )
   }
 
   /**
@@ -15,16 +16,21 @@ export default function flyLogInit(ivm, dispatcher) {
    * @param {Object} options 
    */
   log.addTransport = function addTransport(name, options) {
-    const cb = new ivm.Reference(function (err, added) {
-      try { cb.release() } catch (e) { }
+    bridge.dispatch("addLogTransport", name, options, function addTransportCallback(err, added) {
       logger.debug("added log transport... maybe!", err, added)
     })
-    dispatcher.dispatch('addLogTransport', name,
-      new ivm.ExternalCopy(options).copyInto({ release: true }),
-      cb
-    ).catch(() => {
-      try { cb.release() } catch (e) { }
-    })
+
+    // const cb = new ivm.Reference(function (err, added) {
+    //   try { cb.release() } catch (e) { }
+    //   logger.debug("added log transport... maybe!", err, added)
+    // })
+
+    // dispatcher.dispatch('addLogTransport', name,
+    //   new ivm.ExternalCopy(options).copyInto({ release: true }),
+    //   cb
+    // ).catch(() => {
+    //   try { cb.release() } catch (e) { }
+    // })
   }
 
   /**
@@ -32,9 +38,10 @@ export default function flyLogInit(ivm, dispatcher) {
    * for every log entries.
    */
   log.addMetadata = function addMetadata(metadata) {
-    dispatcher.dispatch('addLogMetadata',
-      new ivm.ExternalCopy(metadata).copyInto({ release: true })
-    )
+    bridge.dispatch('addLogMetadata', metadata)
+    // dispatcher.dispatch('addLogMetadata',
+    //   new ivm.ExternalCopy(metadata).copyInto({ release: true })
+    // )
   }
   return log
 }
