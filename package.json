@@ -90,6 +90,8 @@
     "chokidar": "^2.0.2",
     "cli-table2": "^0.2.0",
     "commandpost": "^1.3.0",
+    "fontmin": "^0.9.6",
+    "fontmin-wawoff2": "0.0.2",
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",
     "ioredis": "^3.2.2",
