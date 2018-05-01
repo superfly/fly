@@ -6,16 +6,6 @@ All notable changes to this project will be documented in this file. See [standa
 ## [0.29.2](https://github.com/superfly/fly/compare/v0.29.1...v0.29.2) (2018-05-01)
 
 
-
-<a name="0.29.1"></a>
-## [0.29.1](https://github.com/superfly/fly/compare/v0.29.0...v0.29.1) (2018-05-01)
-
-
-
-<a name="0.29.0"></a>
-# [0.29.0](https://github.com/superfly/fly/compare/v0.28.4...v0.29.0) (2018-04-30)
-
-
 ### Bug Fixes
 
 * inflate gzip stream race condition causes early closes ([42581bb](https://github.com/superfly/fly/commit/42581bb))

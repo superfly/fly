@@ -44,7 +44,7 @@ export function getToken(cmd: Command<any, CommonOptions>) {
   return token
 }
 
-export const fullAppMatch = /^([a-z0-9_.-]+)$/i
+export const fullAppMatch = /^([a-z0-9_-]+)$/i
 
 export function getAppName(cmd: Command<CommonOptions, any>, override: CommonOptions = {}) {
   const cwd = process.cwd()
@@ -58,7 +58,7 @@ export function getAppName(cmd: Command<CommonOptions, any>, override: CommonOpt
   }
 
   if (!appName.match(fullAppMatch))
-    throw new Error("app parameter needs to match a full org/app name (ie: your-org/app-name)")
+    throw new Error("app parameter needs to match an app name (ie: app-name)")
 
   return appName
 }
