@@ -107,7 +107,8 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
       parallel: true,
       sourceMap: true,
       uglifyOptions: {
-        output: { ascii_only: true }
+        output: { ascii_only: true },
+        mangle: false
       }
     }))
   }
