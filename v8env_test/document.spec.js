@@ -28,5 +28,17 @@ describe("Document", () => {
     const doc = Document.parse(html)
     doc.querySelector("p").replaceWith("<div>booya</div>")
     expect(doc.querySelector("div").textContent).to.equal("booya")
+    expect(doc.querySelector("p")).to.equal(null)
+  })
+
+  it('can append elements', () => {
+    const doc = Document.parse(html)
+    doc.querySelector("p").appendChild("<div>booya</div>")
+    const div = doc.querySelector("p div")
+    expect(div.textContent).to.equal("booya")
+
+    const span = doc.createElement("span")
+    doc.appendChild(span)
+    expect(doc.querySelector("html > span")).to.not.be.null
   })
 })

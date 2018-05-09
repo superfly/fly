@@ -5,7 +5,8 @@ import {
 	getText,
 	getInnerHTML,
 	replaceElement,
-	getAttributeValue
+	getAttributeValue,
+	appendChild,
 } from 'domutils'
 
 import { logger } from './logger'
@@ -43,6 +44,19 @@ export class Node {
 	get children() {
 		return this._dom
 	}
+
+	appendChild(html) {
+		if (typeof html._dom !== 'undefined') {
+			// Document
+			if (Array.isArray(this._dom))
+				appendChild(this._dom[1], html._dom)
+			else
+				appendChild(this._dom, html._dom)
+			return html
+		}
+		html = new Element(parseDOMSync(html)[0])
+		return this.appendChild(html)
+	}
 }
 
 export class Document extends Node {
@@ -57,6 +71,14 @@ export class Document extends Node {
 	get documentElement() {
 		return new Element(this._dom)
 	}
+
+	createElement(tagName) {
+		return new Element(parseDOMSync(`<${tagName}></${tagName}>`)[0])
+	}
+
+	static parse(html) {
+		return new Document(parseDOMSync(html))
+	}
 }
 
 export class Element extends Node {
@@ -69,8 +91,6 @@ export class Element extends Node {
 	}
 
 	get textContent() {
-		logger.debug("get text content!")
-		logger.debug("element?", this instanceof Element)
 		return getText(this._dom)
 	}
 
@@ -96,10 +116,6 @@ export class Element extends Node {
 	setAttribute(name, value) {
 		this._dom.attribs[name] = value
 	}
-}
-
-Document.parse = function documentParse(html) {
-	return new Document(parseDOMSync(html))
 }
 
 class DocumentParser {
