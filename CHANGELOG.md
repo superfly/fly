@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.31.0"></a>
+# [0.31.0](https://github.com/superfly/fly/compare/v0.30.0-0...v0.31.0) (2018-05-09)
+
+
+### Bug Fixes
+
+* don't mangle names ([864456a](https://github.com/superfly/fly/commit/864456a))
+
+
+### Features
+
+* Document Node#appendChild ([96ea89e](https://github.com/superfly/fly/commit/96ea89e))
+
+
+
 <a name="0.30.0"></a>
 # [0.30.0](https://github.com/superfly/fly/compare/v0.30.0-0...v0.30.0) (2018-05-04)
 
