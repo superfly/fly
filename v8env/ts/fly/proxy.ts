@@ -15,7 +15,7 @@ export default function proxy(origin: string | URL, options?: ProxyOptions) {
     if (!options) {
       options = {}
     }
-    const breq = buildProxyReq(origin, options, req, init)
+    const breq = buildProxyRequest(origin, options, req, init)
     return fetch(breq)
   }
 }
@@ -32,7 +32,7 @@ interface FlyRequest extends Request {
  * @param req 
  * @param init 
  */
-export function buildProxyReq(origin: string | URL, options: ProxyOptions, req: RequestInfo, init?: RequestInit) {
+export function buildProxyRequest(origin: string | URL, options: ProxyOptions, req: RequestInfo, init?: RequestInit) {
 
   if (typeof req === "string") {
     req = new Request(req)
@@ -60,7 +60,7 @@ export function buildProxyReq(origin: string | URL, options: ProxyOptions, req: 
     console.log("rewriting base path:", options.rewritePath, url.pathname)
   }
   if (origin.pathname && origin.pathname.length > 0) {
-    url.pathname = origin.pathname + url.pathname
+    url.pathname = [origin.pathname.replace(/\/$/, ''), url.pathname.replace(/^\//, "")].join("/")
   }
   if (url.pathname.startsWith("//")) {
     url.pathname = url.pathname.substring(1)
