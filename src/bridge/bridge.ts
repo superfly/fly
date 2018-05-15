@@ -1,3 +1,11 @@
+/**
+ * @module fly
+ */
+
+/**
+ * @private
+ */
+
 import './proxy_stream'
 import './fetch'
 import './heap'
@@ -16,15 +24,24 @@ import { MemoryCacheStore } from '../memory_cache_store';
 
 const errNoSuchBridgeFn = "Attempted to call a unregistered bridge function."
 
+/**
+ * @private
+ */
 interface IterableIterator<T> extends Iterator<T> {
   [Symbol.iterator](): IterableIterator<T>;
 }
 
+/**
+ * @private
+ */
 export interface BridgeOptions {
   cacheStore?: CacheStore
   fileStore?: FileStore
 }
 
+/**
+ * @private
+ */
 export class Bridge {
   cacheStore: CacheStore
   fileStore?: FileStore
