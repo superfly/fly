@@ -1,0 +1,4 @@
+app: fly-glob
+files:
+  - public/*
+  - ./*.jpg
