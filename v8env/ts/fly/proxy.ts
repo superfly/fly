@@ -54,10 +54,9 @@ export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r
   url.protocol = origin.protocol
   url.port = origin.port
 
-  if (options.rewritePath && typeof options.rewritePath === 'string') {
+  if (options.stripPath && typeof options.stripPath === 'string') {
     // remove basePath so we can serve `onehosthame.com/dir/` from `origin.com/`
-    url.pathname = url.pathname.substring(options.rewritePath.length)
-    console.log("rewriting base path:", options.rewritePath, url.pathname)
+    url.pathname = url.pathname.substring(options.stripPath.length)
   }
   if (origin.pathname && origin.pathname.length > 0) {
     url.pathname = [origin.pathname.replace(/\/$/, ''), url.pathname.replace(/^\//, "")].join("/")
@@ -98,7 +97,7 @@ export interface ProxyOptions {
    * origin("https://somehostname.com/path2/to/document.html")
    * ```
    */
-  rewritePath?: string,
+  stripPath?: string,
 
   /**
    * Headers to set on backend request. Each header accepts either a `boolean` or `string`.
