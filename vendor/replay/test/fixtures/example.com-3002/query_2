@@ -1,7 +1,0 @@
-GET /query?param=2
-
-HTTP/1.1 200 OK
-Content-Type: text/html
-Date:         Tue, 29 Nov 2011 03:12:15 GMT
-
-2

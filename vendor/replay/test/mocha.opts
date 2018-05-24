@@ -1,5 +1,0 @@
---require babel-register
---reporter spec
---growl
---check-leaks
---exit
