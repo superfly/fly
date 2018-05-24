@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.33.0"></a>
+# [0.33.0](https://github.com/superfly/fly/compare/v0.31.0...v0.33.0) (2018-05-24)
+
+
+### Bug Fixes
+
+* node 10 support, easier windows installs hopefully ([f391bf8](https://github.com/superfly/fly/commit/f391bf8))
+
+
+### Features
+
+* [@fly](https://github.com/fly)/proxy for sending requests to origin servers ([#81](https://github.com/superfly/fly/issues/81)) ([cc2c1d9](https://github.com/superfly/fly/commit/cc2c1d9))
+
+
+
 <a name="0.32.0"></a>
 # [0.32.0](https://github.com/superfly/fly/compare/v0.31.0...v0.32.0) (2018-05-21)
 
