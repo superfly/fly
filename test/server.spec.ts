@@ -4,7 +4,11 @@ import axios from 'axios'
 import * as http from 'http'
 import * as url from 'url'
 
+import * as nock from 'nock'
+import { createReadStream } from 'fs';
+
 describe('Server', function () {
+
   describe('basic app', function () {
     before(startServer('basic.js'))
     after(stopServer)
@@ -21,6 +25,14 @@ describe('Server', function () {
     before(startServer('basic-fetch.js'))
     after(stopServer)
 
+    before(() => {
+      nock('https://example.com')
+        .get('/')
+        .replyWithFile(200, __dirname + "/fixtures/http/basic-fetch", {
+          'Content-Type': 'text/html'
+        });
+    })
+
     it('may fetch responses externally', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
       expect(res.status).to.equal(200);
@@ -33,6 +45,14 @@ describe('Server', function () {
   describe('basic fetch and read app', function () {
     before(startServer('basic-fetch-and-read.js'))
     after(stopServer)
+
+    before(() => {
+      nock('https://example.com')
+        .get('/')
+        .replyWithFile(200, __dirname + "/fixtures/http/basic-fetch", {
+          'Content-Type': 'text/html'
+        });
+    })
 
     it('may fetch responses externally', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -92,6 +112,12 @@ describe('Server', function () {
     before(startServer("fetch-relative-path.js"))
     after(stopServer)
 
+    before(() => {
+      nock('http://test')
+        .get('/foo')
+        .reply(200, "bar");
+    })
+
     it('resolves relative paths to the original url properties', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
       expect(res.status).to.equal(200);
@@ -102,6 +128,12 @@ describe('Server', function () {
   describe('fetch absolute path', function () {
     before(startServer("fetch-absolute-path.js"))
     after(stopServer)
+
+    before(() => {
+      nock('http://myserver.example:5000')
+        .get('/foo1')
+        .reply(200, "bar1");
+    })
 
     it('resolves absolute paths with explicit port number', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -125,6 +157,16 @@ describe('Server', function () {
     before(startServer("cache.js"))
     after(stopServer)
 
+    before(() => {
+      nock('http://cacheable/')
+        .get('/foo')
+        .reply(200, "bar", {
+          date: 'Wed, 13 Dec 2017 21:32:50 GMT',
+          'content-type': 'text/plain; charset=utf-8',
+          'cache-control': 'public, max-age=7234'
+        });
+    })
+
     it('adds and matches cache', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
       expect(res.status).to.equal(200);
@@ -136,6 +178,12 @@ describe('Server', function () {
     before(startServer("basic-post.js"))
     after(stopServer)
 
+    before(() => {
+      nock('https://example.com')
+        .post('/')
+        .reply(200, "bar");
+    })
+
     it('posts body and all', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
       expect(res.status).to.equal(200);
@@ -146,6 +194,18 @@ describe('Server', function () {
   describe('set-cookie', function () {
     before(startServer("set-cookie.js"))
     after(stopServer)
+
+    before(() => {
+      nock('http://test')
+        .get('/set-cookies')
+        .reply(200, "ok", {
+          'set-cookie': [
+            'fly_cid=f93f9d40-41b7-4d57-a245-6f639d402585; Expires=Wed, 16 Dec 2037 18:16:57 GMT; HttpOnly',
+            'foo=bar',
+            '_some_session=2342353454edge56rtyghf'
+          ]
+        });
+    })
 
     it('does not merge headers', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
@@ -194,7 +254,10 @@ describe('Server', function () {
             "accept-encoding": "gzip"
           }
         }), function (res) {
-          res.on("error", done)
+          res.on("error", (err) => {
+            console.log("ERROR GZIPIING", err)
+            done(err)
+          })
           expect(res.statusCode).to.equal(200)
           expect(res.headers['content-encoding']).to.equal('gzip')
           res.on('data', (chunk: Buffer) => {
@@ -257,6 +320,12 @@ describe('Server', function () {
   describe("big fetch responses", function () {
     before(startServer("twenty-mb.js"))
     after(stopServer)
+
+    before(() => {
+      nock('http://ipv4.download.thinkbroadband.com')
+        .get('/20MB.zip')
+        .reply(200, createReadStream(__dirname + "/fixtures/http/20mb"));
+    })
 
     it('works', async function () {
       this.timeout(30000) // give it some leeway

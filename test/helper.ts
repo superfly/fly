@@ -22,9 +22,9 @@ import { Bridge } from '../src/bridge/bridge';
 import { LocalFileStore } from '../src/local_file_store';
 import { IHookCallbackContext } from 'mocha';
 
-const Replay = require('replay');
-Replay.fixtures = './test/fixtures/replay';
-Replay.headers.push(/^fly-/);
+import * as nock from 'nock';
+nock.disableNetConnect();
+nock.enableNetConnect('127.0.0.1');
 
 export interface ServerOptions extends FileAppStoreOptions {
   port?: number

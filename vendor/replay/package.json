@@ -1,11 +1,73 @@
 {
-  "name": "replay",
-  "description": "When API testing slows you down: record and replay HTTP responses like a boss",
-  "version": "2.1.4",
+  "_from": "replay@latest",
+  "_id": "replay@2.3.0",
+  "_inBundle": false,
+  "_integrity": "sha512-4RHtkRz1vsTLWDro4gUIIGBluukkol4VQlyuOc9TLCZAkXYHy1bASs85DxkCJL0TACY02Tm71BOB6vIkygnxRQ==",
+  "_location": "/replay",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "replay@latest",
+    "name": "replay",
+    "escapedName": "replay",
+    "rawSpec": "latest",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/replay/-/replay-2.3.0.tgz",
+  "_shasum": "cc9ad4e82094dd001f8fd2f1d0a0add29b5cff85",
+  "_spec": "replay@latest",
+  "_where": "/Users/jerome/projects/github.com/superfly/fly",
+  "author": {
+    "name": "Assaf Arkin",
+    "email": "assaf@labnotes.org",
+    "url": "http://labnotes.org/"
+  },
+  "bugs": {
+    "url": "https://github.com/assaf/node-replay/issues"
+  },
+  "bundleDependencies": false,
   "config": {
     "tag": "next"
   },
-  "author": "Assaf Arkin <assaf@labnotes.org> (http://labnotes.org/)",
+  "dependencies": {
+    "babel-runtime": "^6.26.0",
+    "debug": "^3.1.0",
+    "js-string-escape": "^1.0.1"
+  },
+  "deprecated": false,
+  "description": "When API testing slows you down: record and replay HTTP responses like a boss",
+  "devDependencies": {
+    "async": "^2.6.0",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "body-parser": "^1.15.2",
+    "compression": "^1.7.2",
+    "del": "^3.0.0",
+    "eslint": "^4.19.1",
+    "express": "^4.16.3",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.1",
+    "gulp-eslint": "^4.0.2",
+    "gulp-exec": "^3.0.1",
+    "gulp-notify": "^3.2.0",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-util": "^3.0.7",
+    "mocha": "^5.1.1",
+    "request": "^2.85.0"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "homepage": "https://github.com/assaf/node-replay#readme",
   "keywords": [
     "test",
     "testing",
@@ -16,49 +78,23 @@
     "vcr",
     "api"
   ],
-  "main": "./src",
-  "scripts": {
-    "build": "gulp build",
-    "test": "mocha",
-    "prepublish": "gulp build",
-    "postpublish": "gulp tag"
-  },
-  "dependencies": {
-    "babel-runtime": "^6.11.6",
-    "debug": "^3.1.0",
-    "js-string-escape": "^1.0.1"
-  },
-  "devDependencies": {
-    "async": "^2.0.1",
-    "babel": "^6.5.2",
-    "babel-eslint": "^8.0.1",
-    "babel-preset-es2015-node4": "^2.1.0",
-    "babel-preset-stage-2": "^6.13.0",
-    "babel-register": "^6.14.0",
-    "body-parser": "^1.15.2",
-    "compression": "^1.6.0",
-    "del": "^3.0.0",
-    "eslint": "^4.9.0",
-    "express": "^4.14.0",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^7.0.0",
-    "gulp-eslint": "^4.0.0",
-    "gulp-exec": "^2.1.2",
-    "gulp-notify": "^3.0.0",
-    "gulp-sourcemaps": "^2.6.1",
-    "gulp-util": "^3.0.7",
-    "mocha": "^4.0.1",
-    "request": "^2.74.0"
-  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/assaf/node-replay/blob/master/MIT-LICENSE"
+    }
+  ],
+  "main": "./lib",
+  "name": "replay",
   "repository": {
     "type": "git",
-    "url": "https://github.com/assaf/node-replay"
+    "url": "git+https://github.com/assaf/node-replay.git"
   },
-  "bugs": {
-    "url": "https://github.com/assaf/node-replay/issues"
+  "scripts": {
+    "build": "gulp build",
+    "postpublish": "gulp tag",
+    "prepare": "gulp build",
+    "test": "mocha"
   },
-  "licenses": [{
-    "type": "MIT",
-    "url": "https://github.com/assaf/node-replay/blob/master/MIT-LICENSE"
-  }]
+  "version": "2.3.0"
 }

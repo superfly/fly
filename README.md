@@ -24,6 +24,10 @@ or as a `devDependency` in your project:
 npm install --save-dev @fly/fly
 ```
 
+#### Windows Users
+
+Follow the node-gyp instructions from here: [node-gyp](https://github.com/nodejs/node-gyp)
+
 
 ### Hello World!
 

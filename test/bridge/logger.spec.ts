@@ -22,6 +22,7 @@ describe('logger', function () {
     it('send a datagram to the defined syslog server', async function () {
       let msgs: Buffer[] = []
       this.udpServer.on('message', (message: Buffer) => {
+        console.log("MESSAGE!", message.toString())
         msgs.push(message)
       })
 

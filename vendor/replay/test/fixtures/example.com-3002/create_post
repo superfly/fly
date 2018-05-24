@@ -1,0 +1,6 @@
+POST /posts
+
+HTTP/1.1 201 OK
+Content-Type: text/html
+Date:         Tue, 29 Nov 2011 03:12:15 GMT
+Location:     /posts/1

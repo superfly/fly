@@ -1,0 +1,19 @@
+/api/v1/random
+
+HTTP/1.1 200 OK
+server: nginx/0.7.67
+date: Fri, 02 Dec 2011 02:58:03 GMT
+content-type: text/plain
+connection: keep-alive
+etag: "a7131ebc1e81e43ea9ecf36fa2fdf610"
+x-ua-compatible: IE=Edge,chrome=1
+x-runtime: 0.158080
+cache-control: max-age=0, private, must-revalidate
+content-length: 234
+x-varnish: 2274830138
+age: 0
+via: 1.1 varnish
+
+Oxymoron 2. Exact estimate
+
+[codehappy] http://iheartquotes.com/fortune/show/38021

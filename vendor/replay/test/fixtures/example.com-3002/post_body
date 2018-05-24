@@ -1,0 +1,6 @@
+POST /post-body
+body: request body
+
+HTTP/1.1 200 OK
+
+response body

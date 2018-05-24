@@ -1,0 +1,8 @@
+GET /weather.json
+accept: "application/json"
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Date:         Tue, 29 Nov 2011 03:12:15 GMT
+
+{ "outlook": "Nice and warm" }

@@ -36,6 +36,7 @@ registerBridge('addLogTransport', async function (
     switch (type) {
       case TransportType.Syslog:
         const ip = await resolveHostname(options.host)
+        ctx.logger.setLevels(winston.config.syslog.levels);
         ctx.logger.add(Syslog, Object.assign(options, {
           app_name: ctx.meta.app && ctx.meta.app.name || "app",
           host: ip,

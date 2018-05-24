@@ -92,7 +92,7 @@ export interface ProxyOptions {
    * 
    * For example, this makes a request to `https://fly.io/path1/to/document.html`:
    * ```javascript
-   * const opts = { rewritePath: "/path2/"}
+   * const opts = { stripPath: "/path2/"}
    * const origin = proxy("https://fly.io/path1/", opts)
    * origin("https://somehostname.com/path2/to/document.html")
    * ```
