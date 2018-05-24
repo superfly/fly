@@ -8,7 +8,7 @@ import { Context } from '../context';
 import { isIP } from 'net';
 import { lookup } from 'dns';
 import { Bridge } from './bridge';
-const { Syslog } = require('winston-syslog');
+const { Syslog } = require('../../vendor/winston-syslog');
 
 let defaultLogger: winston.LoggerInstance;
 

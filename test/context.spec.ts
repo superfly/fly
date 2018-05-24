@@ -31,6 +31,7 @@ describe('Context', function () {
         await ctx.finalize()
         await ctx.release()
       }
+      await new Promise((resolve, reject) => { setTimeout(resolve, 1000) })
       expect(this.iso.getHeapStatisticsSync().used_heap_size).to.be.within(
         initHeap - (1024 * 1024),
         initHeap + (15 * 1024 * 1024) // GC is not perfect.
