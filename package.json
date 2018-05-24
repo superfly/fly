@@ -33,7 +33,7 @@
   "author": "",
   "license": "Apache 2.0",
   "engines": {
-    "node": ">=8"
+    "node": ">=8 <10.2"
   },
   "devDependencies": {
     "@fly/typedoc-plugin-external-module-name": "^1.1.3",
