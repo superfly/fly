@@ -1,6 +1,6 @@
 {
   "name": "@fly/fly",
-  "version": "0.33.1-0",
+  "version": "0.33.1-1",
   "description": "",
   "main": "lib/index.js",
   "files": [
@@ -109,8 +109,9 @@
     "universal-url-lite": "^1.0.0",
     "webpack": "^3.11.0",
     "winston": "^2.4.0",
-    "winston-syslog": "file:./vendor/winston-syslog",
-    "ws": "^4.0.0"
+    "ws": "^4.0.0",
+    "cycle": "~1.0.3",
+    "glossy": "0.x.x"
   },
   "publishConfig": {
     "access": "public"
