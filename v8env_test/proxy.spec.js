@@ -13,7 +13,7 @@ describe("proxy", () => {
   })
 
   it('rewrite paths properly', () => {
-    const breq = proxy.buildProxyRequest(origin, { rewritePath: "/path/to/" }, req)
+    const breq = proxy.buildProxyRequest(origin, { stripPath: "/path/to/" }, req)
     const url = new URL(breq.url)
     expect(url.pathname).to.eq("/proxy/thing")
   })
