@@ -1,7 +1,37 @@
 /**
+ * Library for proxying requests to origins. Use this to create `fetch` like functions
+ *  for making requests to other services. For example:
+ * 
+ * ```javascript
+ * // sends all traffic to an Amazon ELB,
+ * // `Host` header passes through from visitor request
+ * const origin = proxy("https://elb1298.amazonaws.com")
+ * ```
+ * 
+ * Always send a known host header to origins that route with it. This is useful for third 
+ * party services that provide per-application subdomains, or origins with shared IPs.
+ * 
+ * ```javascript
+ * // sends all traffic to an Amazon ELB, 
+ * // always sends "example.com" as the host header
+ * const origin = proxy("https://elb1298.amazonaws.com", {
+ *  headers: { host: "example.com"}
+ * })
+ * ```
+ * 
+ * And then way more rare, no host header at all. Usually you'd strip out `x-forwarded-host`, 
+ * since some origins don't like that:
+ * ```javascript
+ * // sends all traffic to an Amazon ELB, never sends a host header
+ * const origin = proxy("https://elb1298.amazonaws.com", {
+ *  headers: { host: false}
+ * })
+ * ```
+ * 
+ * @preferred
  * @module fly/proxy
- * Library for proxying requests to origins.
  */
+
 /**
  * This generates a `fetch` like function for proxying requests to a given origin.
  * When this function makes origin requests, it adds standard proxy headers like 

@@ -81,7 +81,7 @@
 					<div class="tsd-signature tsd-kind-icon">headers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/cc2c1d9/v8env/ts/fly/proxy.ts#L108">fly/proxy.ts:108</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/fly/proxy.ts#L138">fly/proxy.ts:138</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -101,7 +101,7 @@
 					<div class="tsd-signature tsd-kind-icon">strip<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/cc2c1d9/v8env/ts/fly/proxy.ts#L100">fly/proxy.ts:100</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/fly/proxy.ts#L130">fly/proxy.ts:130</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -109,7 +109,7 @@
 							<p>Replace this portion of URL path before making request to origin.</p>
 						</div>
 						<p>For example, this makes a request to <code>https://fly.io/path1/to/document.html</code>:</p>
-						<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> opts = { <span class="hljs-attr">rewritePath</span>: <span class="hljs-string">"/path2/"</span>}
+						<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> opts = { <span class="hljs-attr">stripPath</span>: <span class="hljs-string">"/path2/"</span>}
 <span class="hljs-keyword">const</span> origin = proxy(<span class="hljs-string">"https://fly.io/path1/"</span>, opts)
 origin(<span class="hljs-string">"https://somehostname.com/path2/to/document.html"</span>)
 </code></pre>
@@ -128,6 +128,9 @@ origin(<span class="hljs-string">"https://somehostname.com/path2/to/document.htm
 					</li>
 					<li class=" tsd-kind-external-module tsd-is-private">
 						<a href="../modules/fly.html">fly</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_image.html">fly/image</a>
 					</li>
 					<li class="current tsd-kind-external-module">
 						<a href="../modules/fly_proxy.html">fly/proxy</a>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>JpegOptions | @fly/fly</title>
+	<title>OperationResult | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -31,34 +31,27 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../modules/fly.html">fly</a>
+					<a href="../modules/fly_image.html">fly/image</a>
 				</li>
 				<li>
-					<a href="../classes/fly.image.html">Image</a>
+					<a href="../classes/fly_image.image.html">Image</a>
 				</li>
 				<li>
-					<a href="fly.image.jpegoptions.html">JpegOptions</a>
+					<a href="fly_image.image.operationresult.html">OperationResult</a>
 				</li>
 			</ul>
-			<h1>Interface JpegOptions</h1>
+			<h1>Interface OperationResult</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>JPEG output options</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">JpegOptions</span>
+						<span class="target">OperationResult</span>
 					</li>
 				</ul>
 			</section>
@@ -69,10 +62,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.jpegoptions.html#chromasubsampling" class="tsd-kind-icon">chroma<wbr>Subsampling</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.jpegoptions.html#force" class="tsd-kind-icon">force</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.jpegoptions.html#progressive" class="tsd-kind-icon">progressive</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly.image.jpegoptions.html#quality" class="tsd-kind-icon">quality</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly_image.image.operationresult.html#data" class="tsd-kind-icon">data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly_image.image.operationresult.html#info" class="tsd-kind-icon">info</a></li>
 							</ul>
 						</section>
 					</div>
@@ -81,64 +72,24 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="chromasubsampling" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> chroma<wbr>Subsampling</h3>
-					<div class="tsd-signature tsd-kind-icon">chroma<wbr>Subsampling<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+					<a name="data" class="tsd-anchor"></a>
+					<h3>data</h3>
+					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ArrayBuffer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/cc2c1d9/v8env/ts/fly/image/index.ts#L340">fly/image/index.ts:340</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/fly/image/index.ts#L327">fly/image/index.ts:327</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>set to &#39;4:4:4&#39; to prevent chroma subsampling when quality &lt;= 90</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="force" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> force</h3>
-					<div class="tsd-signature tsd-kind-icon">force<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
+					<a name="info" class="tsd-anchor"></a>
+					<h3>info</h3>
+					<div class="tsd-signature tsd-kind-icon">info<span class="tsd-signature-symbol">:</span> <a href="fly_image.image.metadata.html" class="tsd-signature-type">Metadata</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/cc2c1d9/v8env/ts/fly/image/index.ts#L342">fly/image/index.ts:342</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/fly/image/index.ts#L326">fly/image/index.ts:326</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>force output to jpeg (default true)</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="progressive" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> progressive</h3>
-					<div class="tsd-signature tsd-kind-icon">progressive<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/cc2c1d9/v8env/ts/fly/image/index.ts#L338">fly/image/index.ts:338</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>use progressive (interlace) scan (defaults to false)</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="quality" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> quality</h3>
-					<div class="tsd-signature tsd-kind-icon">quality<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/cc2c1d9/v8env/ts/fly/image/index.ts#L336">fly/image/index.ts:336</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>quality, integer 1-100, defaults to 80</p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -151,8 +102,11 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/fetch.html">fetch</a>
 					</li>
-					<li class="current tsd-kind-external-module tsd-is-private">
+					<li class=" tsd-kind-external-module tsd-is-private">
 						<a href="../modules/fly.html">fly</a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/fly_image.html">fly/image</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/fly_proxy.html">fly/proxy</a>
@@ -161,123 +115,111 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/fly.document.html" class="tsd-kind-icon">Document</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/fly.element.html" class="tsd-kind-icon">Element</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/fly.image.html" class="tsd-kind-icon">Image</a>
+						<a href="../classes/fly_image.image.html" class="tsd-kind-icon">Image</a>
 						<ul>
 							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="../enums/fly.image.gravity.html" class="tsd-kind-icon">gravity</a>
+								<a href="../enums/fly_image.image.gravity.html" class="tsd-kind-icon">gravity</a>
 							</li>
 							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="../enums/fly.image.kernel.html" class="tsd-kind-icon">kernel</a>
+								<a href="../enums/fly_image.image.kernel.html" class="tsd-kind-icon">kernel</a>
 							</li>
 							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="../enums/fly.image.strategy.html" class="tsd-kind-icon">strategy</a>
+								<a href="../enums/fly_image.image.strategy.html" class="tsd-kind-icon">strategy</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.color.html" class="tsd-kind-icon">Color</a>
+								<a href="fly_image.image.color.html" class="tsd-kind-icon">Color</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.createoptions.html" class="tsd-kind-icon">Create<wbr>Options</a>
+								<a href="fly_image.image.createoptions.html" class="tsd-kind-icon">Create<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.extendoptions.html" class="tsd-kind-icon">Extend<wbr>Options</a>
+								<a href="fly_image.image.extendoptions.html" class="tsd-kind-icon">Extend<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="fly_image.image.jpegoptions.html" class="tsd-kind-icon">Jpeg<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="fly_image.image.metadata.html" class="tsd-kind-icon">Metadata</a>
 							</li>
 							<li class="current tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.jpegoptions.html" class="tsd-kind-icon">Jpeg<wbr>Options</a>
+								<a href="fly_image.image.operationresult.html" class="tsd-kind-icon">Operation<wbr>Result</a>
 								<ul>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.jpegoptions.html#chromasubsampling" class="tsd-kind-icon">chroma<wbr>Subsampling</a>
+										<a href="fly_image.image.operationresult.html#data" class="tsd-kind-icon">data</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.jpegoptions.html#force" class="tsd-kind-icon">force</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.jpegoptions.html#progressive" class="tsd-kind-icon">progressive</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="fly.image.jpegoptions.html#quality" class="tsd-kind-icon">quality</a>
+										<a href="fly_image.image.operationresult.html#info" class="tsd-kind-icon">info</a>
 									</li>
 								</ul>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.metadata.html" class="tsd-kind-icon">Metadata</a>
+								<a href="fly_image.image.overlayoptions.html" class="tsd-kind-icon">Overlay<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.operationresult.html" class="tsd-kind-icon">Operation<wbr>Result</a>
+								<a href="fly_image.image.pngoptions.html" class="tsd-kind-icon">Png<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.overlayoptions.html" class="tsd-kind-icon">Overlay<wbr>Options</a>
+								<a href="fly_image.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.pngoptions.html" class="tsd-kind-icon">Png<wbr>Options</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.resizeoptions.html" class="tsd-kind-icon">Resize<wbr>Options</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="fly.image.webpoptions.html" class="tsd-kind-icon">Webp<wbr>Options</a>
+								<a href="fly_image.image.webpoptions.html" class="tsd-kind-icon">Webp<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="../classes/fly_image.image.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#background" class="tsd-kind-icon">background</a>
+								<a href="../classes/fly_image.image.html#background" class="tsd-kind-icon">background</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#crop" class="tsd-kind-icon">crop</a>
+								<a href="../classes/fly_image.image.html#crop" class="tsd-kind-icon">crop</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#embed" class="tsd-kind-icon">embed</a>
+								<a href="../classes/fly_image.image.html#embed" class="tsd-kind-icon">embed</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#extend" class="tsd-kind-icon">extend</a>
+								<a href="../classes/fly_image.image.html#extend" class="tsd-kind-icon">extend</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#flatten" class="tsd-kind-icon">flatten</a>
+								<a href="../classes/fly_image.image.html#flatten" class="tsd-kind-icon">flatten</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#jpeg" class="tsd-kind-icon">jpeg</a>
+								<a href="../classes/fly_image.image.html#jpeg" class="tsd-kind-icon">jpeg</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#max" class="tsd-kind-icon">max</a>
+								<a href="../classes/fly_image.image.html#max" class="tsd-kind-icon">max</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#metadata-1" class="tsd-kind-icon">metadata</a>
+								<a href="../classes/fly_image.image.html#metadata-1" class="tsd-kind-icon">metadata</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#negate" class="tsd-kind-icon">negate</a>
+								<a href="../classes/fly_image.image.html#negate" class="tsd-kind-icon">negate</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#overlaywith" class="tsd-kind-icon">overlay<wbr>With</a>
+								<a href="../classes/fly_image.image.html#overlaywith" class="tsd-kind-icon">overlay<wbr>With</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#png" class="tsd-kind-icon">png</a>
+								<a href="../classes/fly_image.image.html#png" class="tsd-kind-icon">png</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#resize" class="tsd-kind-icon">resize</a>
+								<a href="../classes/fly_image.image.html#resize" class="tsd-kind-icon">resize</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#tobuffer" class="tsd-kind-icon">to<wbr>Buffer</a>
+								<a href="../classes/fly_image.image.html#tobuffer" class="tsd-kind-icon">to<wbr>Buffer</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#toimage" class="tsd-kind-icon">to<wbr>Image</a>
+								<a href="../classes/fly_image.image.html#toimage" class="tsd-kind-icon">to<wbr>Image</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#webp" class="tsd-kind-icon">webp</a>
+								<a href="../classes/fly_image.image.html#webp" class="tsd-kind-icon">webp</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#withmetadata" class="tsd-kind-icon">with<wbr>Metadata</a>
+								<a href="../classes/fly_image.image.html#withmetadata" class="tsd-kind-icon">with<wbr>Metadata</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/fly.image.html#withoutenlargement" class="tsd-kind-icon">without<wbr>Enlargement</a>
+								<a href="../classes/fly_image.image.html#withoutenlargement" class="tsd-kind-icon">without<wbr>Enlargement</a>
 							</li>
 						</ul>
 					</li>

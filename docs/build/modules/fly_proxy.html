@@ -43,6 +43,29 @@
 		<div class="col-8 col-content">
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Library for proxying requests to origins. Use this to create <code>fetch</code> like functions
+						for making requests to other services. For example:</p>
+					</div>
+					<pre><code class="lang-javascript"><span class="hljs-comment">// sends all traffic to an Amazon ELB,</span>
+<span class="hljs-comment">// `Host` header passes through from visitor request</span>
+<span class="hljs-keyword">const</span> origin = proxy(<span class="hljs-string">"https://elb1298.amazonaws.com"</span>)
+</code></pre>
+					<p>Always send a known host header to origins that route with it. This is useful for third
+					party services that provide per-application subdomains, or origins with shared IPs.</p>
+					<pre><code class="lang-javascript"><span class="hljs-comment">// sends all traffic to an Amazon ELB,</span>
+<span class="hljs-comment">// always sends "example.com" as the host header</span>
+<span class="hljs-keyword">const</span> origin = proxy(<span class="hljs-string">"https://elb1298.amazonaws.com"</span>, {
+ <span class="hljs-attr">headers</span>: { <span class="hljs-attr">host</span>: <span class="hljs-string">"example.com"</span>}
+})
+</code></pre>
+					<p>And then way more rare, no host header at all. Usually you&#39;d strip out <code>x-forwarded-host</code>,
+					since some origins don&#39;t like that:</p>
+					<pre><code class="lang-javascript"><span class="hljs-comment">// sends all traffic to an Amazon ELB, never sends a host header</span>
+<span class="hljs-keyword">const</span> origin = proxy(<span class="hljs-string">"https://elb1298.amazonaws.com"</span>, {
+ <span class="hljs-attr">headers</span>: { <span class="hljs-attr">host</span>: <span class="hljs-literal">false</span>}
+})
+</code></pre>
 				</div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -76,7 +99,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/cc2c1d9/v8env/ts/fly/proxy.ts#L13">fly/proxy.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/fly/proxy.ts#L43">fly/proxy.ts:43</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -119,6 +142,9 @@
 					</li>
 					<li class=" tsd-kind-external-module tsd-is-private">
 						<a href="fly.html">fly</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_image.html">fly/image</a>
 					</li>
 					<li class="current tsd-kind-external-module">
 						<a href="fly_proxy.html">fly/proxy</a>

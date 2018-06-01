@@ -1,6 +1,22 @@
 /**
- * A class for modifying images. This uses operations from [Sharp](http://sharp.pixelplumbing.com/en/stable/) under the hood.
- * @module fly
+ * Image manipulation APIs. Resize, convert, crop, etc. You can use this library to optimize images on-the-fly. Or, do clever things like adding watermarks.
+ * 
+ * Example:
+ * ```javascript
+ *   import { Image } from "@fly/image"
+ *   const resp = await fetch(url)
+ *   if (resp.status != 200) {
+ *     throw new Error("Couldn't load image: " + url)
+ *   }
+ *   const body = await resp.arrayBuffer()
+ * 
+ *   return new Image(body)
+ * ```
+ * @module fly/image
+ * @preferred
+ */
+/**
+ * A class representing an Image. This uses operations from [Sharp](http://sharp.pixelplumbing.com/en/stable/) under the hood.
  */
 export class Image {
   /** @hidden */
