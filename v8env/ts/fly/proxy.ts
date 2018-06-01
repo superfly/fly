@@ -70,6 +70,11 @@ export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r
   breq.headers.set("x-forwarded-for", (<any>req).remoteAddr)
   breq.headers.set("x-forwarded-host", url.hostname)
 
+  // modify host header like we do the url if present on the request
+  if (req.headers.has('host')) {
+    breq.headers.set('host', origin.hostname)
+  }
+
   if (options.headers) {
     for (const h of Object.getOwnPropertyNames(options.headers)) {
       const v = options.headers[h]
