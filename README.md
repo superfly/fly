@@ -114,7 +114,7 @@ secretKey: <your secret value>
 
 By specifying a `files` property in your `.fly.yml`, it's possible to use `fetch` to load files without having to bundle them in your javascript directly.
 
-Locally, these our fetched from your filesystem. Deployed, these are fetched from our distributed store.
+Locally, these are fetched from your filesystem. Deployed, these are fetched from our distributed store.
 
 Example usage in your code: (given a `client/app.js` file)
 
