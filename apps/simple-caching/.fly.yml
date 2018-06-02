@@ -1,4 +1,4 @@
-app: vmuio
+app: sample
 config:
   HOST:
     fromSecret: HOST
