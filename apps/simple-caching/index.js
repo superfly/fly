@@ -9,16 +9,16 @@ fly.http.respondWith(async (req) => {
   url.hostname = destination.hostname
   url.protocol = destination.protocol
   url.port = destination.port
-  /* Caches are stored as keys and values, that simple. You can store `fly.cache.getString()` accepts a key and returns a string version of whatever is stored. The first time a user accesses this Edge App, cached is going to be null or undefined, cause we've never stored anything with any key. */
-  let cached = await fly.cache.getString(url.href)
+  /* Caches are stored as keys and values, that simple. `fly.cache.get()` and `fly.cache.getString()` accept a key and return whatever is stored. The first time a user accesses this Edge App, our `cached` variable below is going to be null or undefined, cause we've never stored anything yet. */
+  let cached = await fly.cache.get(url.href)
 
   /* No cache? Lets do something about that. */
   if (!cached) {
-    /* Fetch the requested site. Remember, this just happens if nothing is cached. */
+    /* Fetch the requested site or file. This just happens if nothing is cached. */
     const response = await fetch(url.href)
-    /* Get the string value of whatever was returned */
-    cached = await response.text()
-    /* Now finally we use `path` as a key, `cached` as a string value, and `60` seconds as a length of time to store the cache for! Anyone viewing the site in the next minute won't hit your main server at all! You may want to cache for much longer. */
+    /* Get the array buffer value of whatever was returned */
+    cached = await response.arrayBuffer()
+    /* Now finally we use `url.href` as a key, `cached` as a value, and `60` seconds as a length of time to store the cache for! Anyone viewing the site in the next minute won't hit your main server at all! You may want to cache for much longer. */
     await fly.cache.set(url.href, cached, 60)
   }
 
