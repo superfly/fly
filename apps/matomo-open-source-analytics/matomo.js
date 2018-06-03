@@ -37,8 +37,7 @@ export default async function analytics (req, cached) {
 
   /* You may want to add these custom variables, or custom "dimensions" (I'm not sure which is more appropriate, sorry). Since we're caching most requests with Fly, wouldn't it be nice to know if it's a fresh request or a cache-derived one? */
   const cvar = {
-    '1': ['origin', isFromCache ? 'fly' : 'direct'],
-    '2': ['cached', isFromCache]
+    '1': ['origin', isFromCache ? 'fly' : 'direct']
   }
 
   /* Example of examining the path to determine actions, etc */
