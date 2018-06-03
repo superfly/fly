@@ -7,7 +7,7 @@
 
 */
 
-import MatomoTracker from './tracker'
+import MatomoTracker from 'fly-matomo'
 
 /*
 

@@ -1,7 +1,10 @@
 {
   "devDependencies": {
+    "@fly/fly": "^0.28.4",
     "babel-eslint": "^8.2.3",
-    "onchange": "^3.3.0",
-    "@fly/fly": "^0.28.4"
+    "onchange": "^3.3.0"
+  },
+  "dependencies": {
+    "fly-matomo": "^2.2.0"
   }
 }

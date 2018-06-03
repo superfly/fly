@@ -6,20 +6,19 @@ fly.http.respondWith(async (req) => {
 
   url.port = 3000 // my local dev port
 
-  const isGif = url.href.match(/\/user\/.*\.gif/g)
-  const isScript = url.href.match(/\.*\.js/g)
+  const isImage = url.href.match(/\.(gif|jpg|jpeg|png)/g)
+  const isScript = url.href.match(/\.js/g)
 
+  const request = new Request(req)
 
-  console.log(`
+  request.url = url.href
+  request.headers.delete('host')
+  request.headers.append('host', url.hostname)
 
-    url.href, ${url.href}
-
-  `)
-
-  const requested = await fetch(url.href)
+  const requested = await fetch(request)
   const requestedPage = await requested.text()
 
-  if (!isGif && !isScript) {
+  if (!isImage && !isScript) {
     try {
       await analytics(req, false)
     } catch (error) {
