@@ -8,14 +8,13 @@
  * const origin = proxy("https://elb1298.amazonaws.com")
  * ```
  * 
- * Always send a known host header to origins that route with it. This is useful for third 
- * party services that provide per-application subdomains, or origins with shared IPs.
+ * By default, this function sends the `Host` header inferred from the origin URL. To forward
+ * host headers sent by visitors, set `forwardHostHeader` to true.
  * 
  * ```javascript
- * // sends all traffic to an Amazon ELB, 
- * // always sends "example.com" as the host header
+ * // sends all traffic to an Amazon ELB, include host header from original request.
  * const origin = proxy("https://elb1298.amazonaws.com", {
- *  headers: { host: "example.com"}
+ *  forwardHostHeader: true
  * })
  * ```
  * 
@@ -100,6 +99,11 @@ export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r
   breq.headers.set("x-forwarded-for", (<any>req).remoteAddr)
   breq.headers.set("x-forwarded-host", url.hostname)
 
+  if (!options.forwardHostHeader) {
+    // set host header to origin.hostnames
+    breq.headers.set("host", origin.hostname)
+  }
+
   if (options.headers) {
     for (const h of Object.getOwnPropertyNames(options.headers)) {
       const v = options.headers[h]
@@ -128,6 +132,13 @@ export interface ProxyOptions {
    * ```
    */
   stripPath?: string,
+
+  /**
+   * Forward `Host` header from original request. Without this options,
+   * proxy requests infers a host header from the origin URL.
+   * Defaults to `false`.
+   */
+  forwardHostHeader?: boolean,
 
   /**
    * Headers to set on backend request. Each header accepts either a `boolean` or `string`.
