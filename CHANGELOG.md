@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.33.2"></a>
+## [0.33.2](https://github.com/superfly/fly/compare/v0.33.1...v0.33.2) (2018-06-05)
+
+
+### Bug Fixes
+
+* (proxy) send host header from origin by default ([306ea2d](https://github.com/superfly/fly/commit/306ea2d)), closes [#83](https://github.com/superfly/fly/issues/83)
+
+
+
 <a name="0.33.1"></a>
 ## [0.33.1](https://github.com/superfly/fly/compare/v0.33.1-1...v0.33.1) (2018-05-24)
 
