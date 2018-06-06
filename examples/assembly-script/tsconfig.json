@@ -1,0 +1,29 @@
+{
+  "extends": "./node_modules/assemblyscript/tsconfig.assembly.json",
+  "include": [
+    "./assembly/**/*.ts"
+  ]
+  // "compilerOptions": {
+  //   "target": "esnext",
+  //   "module": "commonjs",
+  //   "noLib": true,
+  //   "types": [
+  //     "assemblyscript.d.ts"
+  //   ],
+  //   // "lib": [
+  //   //   // "es2017",
+  //   //   // "dom"
+  //   // ],
+  //   "rootDirs": [
+  //     "./assembly"
+  //   ],
+  //   "allowJs": false,
+  //   "alwaysStrict": true,
+  //   "noImplicitAny": true,
+  //   "noImplicitReturns": true,
+  //   "noImplicitThis": true,
+  //   "noEmitOnError": true,
+  //   "strictNullChecks": true,
+  //   "experimentalDecorators": true
+  // },
+}

@@ -1,0 +1,15 @@
+{
+  "name": "assembly-script",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.fly.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "assemblyscript-live-loader": "^0.3.0"
+  }
+}
