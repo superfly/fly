@@ -3,6 +3,7 @@ import * as path from 'path'
 import * as webpack from 'webpack'
 
 import log from '../log'
+import { config } from 'bluebird';
 
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
@@ -83,6 +84,10 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
         extensions: ['.js']
       }
     }
+  }
+  conf.entry = conf.entry || `${cwd}/index.js`
+  conf.resolve = conf.resolve || {
+    extensions: ['.js']
   }
   conf.devtool = 'source-map'
   conf.output = {
