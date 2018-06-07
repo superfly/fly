@@ -54,11 +54,11 @@ declare namespace TextEncoding {
     }
 }
 
-/** @hidden */
-declare var TextDecoder: TextEncoding.TextDecoderStatic;
+// /** @hidden */
+// declare var TextDecoder: TextEncoding.TextDecoderStatic;
 
-/** @hidden */
-declare var TextEncoder: TextEncoding.TextEncoderStatic;
+// /** @hidden */
+// declare var TextEncoder: TextEncoding.TextEncoderStatic;
 
 /** @hidden */
 declare var TextEncoding: TextEncoding.TextEncodingStatic;

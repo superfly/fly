@@ -8,7 +8,7 @@ export function bufferToStream(buffer: Buffer) {
   return stream;
 }
 
-export function bufferToArrayBuffer(buffer: Buffer): ArrayBuffer {
+export function bufferToArrayBuffer(buffer: Buffer): ArrayBuffer | SharedArrayBuffer {
   return buffer.buffer.slice(
     buffer.byteOffset, buffer.byteOffset + buffer.byteLength
   )
@@ -24,6 +24,6 @@ export function transferInto(buffer: Buffer | ArrayBuffer | TypedArray | null): 
   return new ivm.ExternalCopy(buffer).copyInto({ release: true })
 }
 
-function transferArrayBufferInto(buffer: ArrayBuffer | TypedArray) {
+function transferArrayBufferInto(buffer: ArrayBuffer | SharedArrayBuffer | TypedArray) {
   return new ivm.ExternalCopy(buffer, { transferOut: true }).copyInto({ release: true, transferIn: true });
 }

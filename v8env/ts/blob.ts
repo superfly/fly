@@ -18,7 +18,7 @@ export default class Blob {
       this.bytes = new Uint8Array()
     else {
       let parts: Uint8Array[] = []
-      let encoder = new TextEncoder('utf-8');
+      let encoder = new TextEncoder();
       for (const part of blobParts) {
         switch (part.constructor) {
           case Int8Array:

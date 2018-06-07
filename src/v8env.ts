@@ -24,7 +24,7 @@ if (fs.existsSync(v8dist)) {
 }
 
 if (fs.existsSync(v8distSnapshot)) {
-  v8EnvSnapshot = new ivm.ExternalCopy(fs.readFileSync(v8distSnapshot).buffer)
+  v8EnvSnapshot = new ivm.ExternalCopy(<ArrayBuffer>fs.readFileSync(v8distSnapshot).buffer)
 } else if (v8EnvCode) {
   v8EnvSnapshot = ivm.Isolate.createSnapshot([{
     code: v8EnvCode,
