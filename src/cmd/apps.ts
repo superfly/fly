@@ -81,7 +81,7 @@ const appsMove = apps
   .usage(`fly apps move`)
   .action(async function (this: Command<CommonOptions, any>, opts, args, rest) {
     const API = apiClient(this)
-    const appName = getAppName(this, { env: ['production'] })
+    const appName = getAppName(this)
     try {
       const res = await API.get(`/api/v1/orgs`)
       processResponse(res, async (res: any) => {
@@ -118,7 +118,7 @@ const appsDelete = apps
   .usage(`fly apps delete`)
   .action(async function (this: Command<CommonOptions, any>, opts, args, rest) {
     const API = apiClient(this)
-    const appName = getAppName(this, { env: ['production'] })
+    const appName = getAppName(this)
     try {
 
       try {

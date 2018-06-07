@@ -12,7 +12,7 @@ const fetch = root
   .action(async function (this: Command<FetchOptions, FetchArgs>, opts, args, rest) {
     const API = apiClient(this)
     try {
-      const appName = getAppName(this, { env: ['production'] })
+      const appName = getAppName(this)
       const res = await API.get(`/api/v1/apps/${appName}/source`)
       processResponse(res, (res: any) => {
         console.log(res.data.data.attributes.source)

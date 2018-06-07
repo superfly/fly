@@ -24,11 +24,12 @@ const deploy = root
   .action(function (this: Command<DeployOptions, DeployArgs>, opts, args, rest) {
     const API = apiClient(this)
     const { buildApp } = require('../utils/build')
-    const appName = getAppName(this, { env: ["production"] })
-    console.log("Deploying", appName)
+    const env: string = opts.env ? opts.env[0] : "production"
+    const appName = getAppName(this)
+    console.log("Deploying", appName, `(env: ${env})`)
     const cwd = process.cwd()
 
-    const release = getLocalRelease(cwd, "production", { noWatch: true })
+    const release = getLocalRelease(cwd, env, { noWatch: true })
 
     buildApp(cwd, { watch: false, uglify: true }, async (err: Error, source: string, hash: string, sourceMap: string) => {
       try {
@@ -53,7 +54,8 @@ const deploy = root
 
               const res = API.post(`/api/v1/apps/${appName}/releases`, gz, {
                 params: {
-                  sha1: hash.digest('hex')
+                  sha1: hash.digest('hex'),
+                  env: env,
                 },
                 headers: {
                   'Content-Type': 'application/x-tar',

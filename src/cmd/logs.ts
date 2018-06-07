@@ -15,7 +15,7 @@ const logs = root
   .subCommand<LogsOptions, LogsArgs>("logs")
   .description("Logs from your app.")
   .action(async function (this: Command<LogsArgs, LogsOptions>, opts, args, rest) {
-    continuouslyGetLogs(apiClient(this), getAppName(this, { env: ["production"] }))
+    continuouslyGetLogs(apiClient(this), getAppName(this))
   })
 
 async function continuouslyGetLogs(API: AxiosInstance, appName: string) {

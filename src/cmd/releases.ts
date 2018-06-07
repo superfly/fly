@@ -12,7 +12,7 @@ export const releases = root
   .action(async function (this: Command<ReleasesOptions, ReleasesArgs>, opts, args, rest) {
     const API = apiClient(this)
     try {
-      const appName = getAppName(this, { env: ['production'] })
+      const appName = getAppName(this)
       const res = await API.get(`/api/v1/apps/${appName}/releases`)
       processResponse(res, (res: any) => {
         if (res.data.data.length == 0)

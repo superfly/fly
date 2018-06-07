@@ -24,7 +24,7 @@ const secretsSet = secrets
   .action(async function (this: Command<SecretSetOptions, SecretSetArgs>, opts, args, rest) {
     const API = apiClient(this)
     try {
-      const appName = getAppName(this, { env: ['production'] })
+      const appName = getAppName(this)
 
       const value = opts.filename ?
         fs.readFileSync(opts.filename[0]).toString() :
