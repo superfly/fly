@@ -1,4 +1,4 @@
-import { root, getAppName, CommonOptions, addCommonOptions } from './root'
+import { root, getAppName, CommonOptions, addCommonOptions, getEnv } from './root'
 import { apiClient } from './api'
 import { getLocalRelease } from '../utils/local'
 import { processResponse } from '../utils/cli'
@@ -24,7 +24,7 @@ const deploy = root
   .action(function (this: Command<DeployOptions, DeployArgs>, opts, args, rest) {
     const API = apiClient(this)
     const { buildApp } = require('../utils/build')
-    const env: string = opts.env ? opts.env[0] : "production"
+    const env = getEnv(this)
     const appName = getAppName(this)
     console.log("Deploying", appName, `(env: ${env})`)
     const cwd = process.cwd()

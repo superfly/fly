@@ -1,6 +1,6 @@
 {
   "name": "@fly/fly",
-  "version": "0.33.2",
+  "version": "0.33.3-0",
   "description": "",
   "main": "lib/index.js",
   "files": [
@@ -23,7 +23,7 @@
     "build:v8env": "rm -rf dist v8env/lib && ./node_modules/.bin/tsc -p v8env/ts && ./node_modules/.bin/webpack --config webpack.v8.config.js",
     "build:cli": "./node_modules/.bin/tsc bin/fly.ts",
     "build:cli:live": "npm run build:cli -- -w",
-    "prepublishOnly": "npm run build && npm run doc:v8env",
+    "prepublishOnly": "npm run build",
     "release": "standard-version",
     "doc:v8env": "./node_modules/typedoc/bin/typedoc --tsconfig ./v8env/ts/tsconfig.json"
   },

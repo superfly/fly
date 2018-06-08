@@ -46,11 +46,13 @@ export function getToken(cmd: Command<any, CommonOptions>) {
 
 export const fullAppMatch = /^([a-z0-9_-]+)$/i
 
+export function getEnv(cmd: Command<CommonOptions, any>): string {
+  return process.env.FLY_ENV || recursivelyGetOption(cmd, 'env') || "production"
+}
+
 export function getAppName(cmd: Command<CommonOptions, any>) {
   const cwd = process.cwd()
-  const env = process.env.FLY_ENV ||
-    recursivelyGetOption(cmd, 'env') ||
-    "production"
+  const env = getEnv(cmd)
 
   const release = getLocalRelease(cwd, env, { noWatch: true })
   const appName = recursivelyGetOption(cmd, 'app') || release.app
