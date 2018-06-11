@@ -4,7 +4,7 @@ import { processResponse } from '../utils/cli'
 import { existsSync, writeFileSync } from 'fs';
 import { Command } from 'commandpost';
 
-const Table = require('cli-table2')
+const Table = require('cli-table3')
 
 const promptly = require('promptly')
 
