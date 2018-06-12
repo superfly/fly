@@ -15,7 +15,10 @@ fly.http.respondWith(async function (request) {
         return new Response(err.toString(), { status: 500 })
       }
     } else {
-      await fly.cache.set(request.url, body, ttl)
+      const result = await fly.cache.set(request.url, body, ttl)
+      if (!result) {
+        throw new Error("Cache set returned false")
+      }
     }
     if (!isNaN(ttl)) {
       await fly.cache.expire(request.url, ttl * 2) // sets it back to the original value

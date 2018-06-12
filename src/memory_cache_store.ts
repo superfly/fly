@@ -2,7 +2,7 @@ import { CacheStore } from './cache_store'
 import * as IORedis from 'ioredis'
 
 const Redis = require('ioredis-mock')
-const OK = 'ok'
+const OK = 'OK'
 
 export class MemoryCacheStore implements CacheStore {
   redis: IORedis.Redis
@@ -23,7 +23,8 @@ export class MemoryCacheStore implements CacheStore {
     let args = []
     if (ttl && !isNaN(ttl))
       args.push('EX', ttl)
-    return (await this.redis.set(key, value, ...args)) === OK
+    const result = await this.redis.set(key, value, ...args)
+    return result === OK
   }
 
   async expire(key: string, ttl: number): Promise<boolean> {
