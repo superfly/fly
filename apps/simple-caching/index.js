@@ -1,7 +1,7 @@
 /*
   This is the site we're going to proxy. You can put it in your `.fly.yml` file and/or do `fly secret set HOST https://my-uncached-website.com` in the command line after installing `@fly/fly`.
 */
-const destination = new URL(app.config.HOST)
+const destination = new URL(app.config.HOST || 'https://onehostname.com')
 
 fly.http.respondWith(async (req) => {
   /* Here we take the url from the request and modify it to our actual destination's hostname and protocol. This should preserve the other parts of the url. */
