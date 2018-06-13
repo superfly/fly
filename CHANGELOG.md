@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.33.4"></a>
+## [0.33.4](https://github.com/superfly/fly/compare/v0.33.3...v0.33.4) (2018-06-13)
+
+
+### Bug Fixes
+
+* fly.cache.set returns true when successful in dev mode (closes [#88](https://github.com/superfly/fly/issues/88)) ([5b9778a](https://github.com/superfly/fly/commit/5b9778a))
+* gzip application/json ([68a9535](https://github.com/superfly/fly/commit/68a9535))
+
+
+
 <a name="0.33.3"></a>
 ## [0.33.3](https://github.com/superfly/fly/compare/v0.33.3-1...v0.33.3) (2018-06-09)
 
