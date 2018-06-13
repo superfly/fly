@@ -236,7 +236,11 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 					contentType = contentType.toString()
 				}
 				// only gzip text
-				if (contentType.includes("text/") || contentType.includes("application/javascript")) {
+				if (
+					contentType.includes("text/") ||
+					contentType.includes("application/javascript") ||
+					contentType.includes("application/json")
+				) {
 					res.removeHeader("Content-Length")
 					res.setHeader("Content-Encoding", "gzip")
 					//res.setHeader("Content-Type", contentType)
