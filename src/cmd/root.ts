@@ -50,8 +50,7 @@ export function getEnv(cmd: Command<CommonOptions, any>): string {
   return process.env.FLY_ENV || recursivelyGetOption(cmd, 'env') || "production"
 }
 
-export function getAppName(cmd: Command<CommonOptions, any>) {
-  const cwd = process.cwd()
+export function getAppName(cmd: Command<CommonOptions, any>, cwd: string = process.cwd()) {
   const env = getEnv(cmd)
 
   const release = getLocalRelease(cwd, env, { noWatch: true })

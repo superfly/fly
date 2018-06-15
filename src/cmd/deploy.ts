@@ -14,38 +14,42 @@ import { createHash } from 'crypto';
 import * as pako from 'pako'
 import { AxiosResponse } from 'axios';
 import { Command } from 'commandpost';
+import { resolve as pathResolve } from 'path';
 
 export interface DeployOptions extends CommonOptions { }
-export interface DeployArgs { }
+export interface DeployArgs {
+  path?: string
+}
 
 const deploy = root
-  .subCommand<DeployOptions, DeployArgs>("deploy")
+  .subCommand<DeployOptions, DeployArgs>("deploy [path]")
   .description("Deploy your local Fly app.")
   .action(function (this: Command<DeployOptions, DeployArgs>, opts, args, rest) {
     const API = apiClient(this)
     const { buildApp } = require('../utils/build')
     const env = getEnv(this)
-    const appName = getAppName(this)
+    const cwd = args.path || process.cwd()
+    const appName = getAppName(this, cwd)
+
     console.log("Deploying", appName, `(env: ${env})`)
-    const cwd = process.cwd()
 
     const release = getLocalRelease(cwd, env, { noWatch: true })
 
     buildApp(cwd, { watch: false, uglify: true }, async (err: Error, source: string, hash: string, sourceMap: string) => {
       try {
         const entries = [
-          '.fly.yml',
-          ...glob.sync('.fly/*/**.{js,json}'),
+          pathResolve('.fly.yml'),
+          ...glob.sync('.fly/*/**.{js,json}', { cwd: cwd }),
           ...release.files
-        ].filter((f) => existsSync(f))
+        ].filter((f) => existsSync(pathResolve(cwd, f)))
 
         const res = await new Promise<AxiosResponse<any>>((resolve, reject) => {
-          const packer: Readable = tar.pack('.', {
+          const packer: Readable = tar.pack(cwd, {
             entries: entries,
             dereference: true,
             finish: function () {
               log.debug("Finished packing.")
-              const buf = readFileSync(".fly/bundle.tar")
+              const buf = readFileSync(pathResolve(cwd, '.fly/bundle.tar'))
               console.log(`Bundle size: ${buf.byteLength / (1024 * 1024)}MB`)
               const gz = pako.gzip(buf)
               console.log(`Bundle compressed size: ${gz.byteLength / (1024 * 1024)}MB`)
@@ -66,7 +70,7 @@ const deploy = root
                 timeout: 120 * 1000
               }).then(resolve).catch(reject)
             },
-          }).pipe(createWriteStream(".fly/bundle.tar"))
+          }).pipe(createWriteStream(pathResolve(cwd, '.fly/bundle.tar')))
         })
 
         processResponse(res, (res: any) => {

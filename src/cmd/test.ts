@@ -7,6 +7,7 @@ import { root } from './root'
 
 import log from '../log'
 import { Bridge } from '../bridge/bridge'
+import { SQLiteDataStore } from '../sqlite_data_store';
 
 const scripts = [
   require.resolve("mocha/mocha"),
@@ -60,16 +61,18 @@ root
       if (err)
         throw err
 
+      const app = appStore.app
+
       try {
         // await v8Env.waitForReadiness()
         const iso = new ivm.Isolate({ snapshot: v8Env.snapshot })
-        const ctx = await createContext(iso, new Bridge())
+        const ctx = await createContext(iso, new Bridge({
+          dataStore: new SQLiteDataStore(app.name, 'test')
+        }))
 
         await ctx.set('_log', new ivm.Reference(function (lvl: string, msg: string, ...args: any[]) {
           log.log(lvl, msg, ...args)
         }))
-
-        const app = appStore.app
 
         ctx.meta.app = app
 
