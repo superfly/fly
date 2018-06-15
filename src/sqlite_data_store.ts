@@ -1,0 +1,73 @@
+import Database = require("better-sqlite3")
+import { mkdirpSync } from "fs-extra";
+import { DataStore, CollectionStore } from "./data_store";
+import log from "./log";
+
+export class Collection implements CollectionStore {
+  name: string
+  db: Database
+
+  constructor(db: Database, name: string) {
+    this.db = db
+    this.name = name
+  }
+
+  put(key: string, obj: string) {
+    try {
+      const info = this.db.prepare(`INSERT OR REPLACE INTO ${this.name} VALUES (?, ?)`).run(key, obj)
+      return Promise.resolve(info.changes > 0)
+    } catch (err) {
+      return Promise.reject(err)
+    }
+  }
+
+  get(key: string) {
+    try {
+      const data = this.db.prepare(`SELECT obj FROM ${this.name} WHERE key == ?`).get(key)
+      return Promise.resolve(data)
+    } catch (err) {
+      return Promise.reject(err)
+    }
+  }
+
+  del(key: string) {
+    try {
+      const info = this.db.prepare(`DELETE FROM ${this.name} WHERE key == ?`).run(key)
+      return Promise.resolve(info.changes > 0)
+    } catch (err) {
+      return Promise.reject(err)
+    }
+  }
+}
+
+export class SQLiteDataStore implements DataStore {
+  db: Database
+  constructor(appName: string, env: string) {
+    // FIXME: use correct cwd, for now: using default.
+    mkdirpSync(".fly/data")
+    appName = appName.split("/").join("-") // useful in our own testing environment
+    this.db = new Database(`.fly/data/${appName}-${env}.db`)
+  }
+
+  collection(name: string) {
+    log.debug("creating coll (table) name:", name)
+    try {
+      this.db.prepare(`CREATE TABLE IF NOT EXISTS ${name} (key TEXT PRIMARY KEY NOT NULL, obj JSON NOT NULL)`).run()
+      return Promise.resolve(new Collection(this.db, name))
+    } catch (err) {
+      log.error("error creating coll:", err)
+      return Promise.reject(err)
+    }
+  }
+
+  dropCollection(name: string) {
+    log.debug("drop coll", name)
+    try {
+      this.db.prepare(`DROP TABLE IF EXISTS ${name}`).run()
+      return Promise.resolve()
+    } catch (err) {
+      log.error("error creating coll:", err)
+      return Promise.reject(err)
+    }
+  }
+}

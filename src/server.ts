@@ -21,6 +21,7 @@ import { FileAppStore } from './file_app_store';
 import { Bridge } from './bridge/bridge';
 import { LocalFileStore } from './local_file_store';
 import { randomBytes } from 'crypto';
+import { SQLiteDataStore } from './sqlite_data_store';
 
 const defaultFetchDispatchTimeout = 1000
 const defaultFetchEndTimeout = 5000
@@ -55,6 +56,7 @@ declare module 'http' {
 }
 
 export interface ServerOptions {
+	env?: string
 	contextStore?: DefaultContextStore
 	appStore?: FileAppStore
 	bridge?: Bridge
@@ -76,7 +78,10 @@ export class Server extends http.Server {
 		super()
 		this.options = options
 		this.appStore = options.appStore || new FileAppStore(process.cwd())
-		this.bridge = options.bridge || new Bridge({ fileStore: new LocalFileStore(process.cwd(), this.appStore.release) })
+		this.bridge = options.bridge || new Bridge({
+			fileStore: new LocalFileStore(process.cwd(), this.appStore.release),
+			dataStore: new SQLiteDataStore(this.appStore.app.name, options.env || 'development')
+		})
 		this.contextStore = options.contextStore || new DefaultContextStore()
 		this.on("request", this.handleRequest.bind(this))
 		this.on("listening", () => {
