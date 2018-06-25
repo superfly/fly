@@ -4,7 +4,6 @@ import * as path from 'path'
 import glob = require('glob')
 import { root } from './root'
 
-import log from '../log'
 import { Bridge } from '../bridge/bridge'
 import { LocalRuntime } from '../local_runtime';
 import { App } from '../app';
@@ -32,9 +31,7 @@ root
   .description("Run unit tests, defaults to {test,spec}/**/*.{test,spec}.js")
   .action((opts, args, rest) => {
     const { ivm } = require('../')
-    const { v8Env } = require('../v8env')
     const { getWebpackConfig, buildAppWithConfig } = require('../utils/build')
-    const { createContext } = require('../context')
 
     const cwd = process.cwd()
 
