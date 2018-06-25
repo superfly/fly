@@ -10,7 +10,11 @@ import { TextEncoder, TextDecoder } from 'util'
 import { transferInto } from '../utils/buffer';
 
 registerBridge("TextDecoder.decode", async function (ctx: Context, bridge: Bridge, buf: ArrayBuffer, encoding?: string) {
-  return new TextDecoderProxy(encoding).decode(buf)
+  console.log("Decoding buffer:", encoding, buf.byteLength)
+  //const txt = await new TextDecoderProxy(encoding).decode(buf)
+  const txt2 = Buffer.from(buf).toString(encoding)
+  //console.log("Got string:", txt.length, txt2.length, txt == txt2, txt[txt.length - 1], txt2[txt2.length - 1])
+  return txt2
 })
 
 registerBridge("TextEncoder.encode", async function (ctx: Context, bridge: Bridge, data: string) {
