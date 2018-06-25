@@ -44,7 +44,7 @@ export class FetchEvent {
 				ret.then((res) => {
 					if (res instanceof Response)
 						return this.callback(null, res)
-					logger.debug("weird response:", res.constructor)
+					logger.debug("weird response:", res ? res.constructor : undefined)
 					this.callback(invalidResponseType)
 				}).catch((err) => {
 					this.callback(err)

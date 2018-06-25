@@ -7,6 +7,7 @@ import { root } from './root'
 import { Bridge } from '../bridge/bridge'
 import { LocalRuntime } from '../local_runtime';
 import { App } from '../app';
+import { SQLiteDataStore } from '../sqlite_data_store';
 
 const scripts = [
   require.resolve("mocha/mocha"),
@@ -59,9 +60,16 @@ root
       if (err)
         throw err
 
+      const app = appStore.app
+
       try {
         const app = appStore.app
-        const rt = new LocalRuntime(new App({ app: app.name, version: app.version, source: "", source_hash: "", config: {}, secrets: {}, env: "test" }), new Bridge)
+        const rt = new LocalRuntime(
+          new App({ app: app.name, version: app.version, source: "", source_hash: "", config: {}, secrets: {}, env: "test" }),
+          new Bridge({
+            dataStore: new SQLiteDataStore(app.name, 'test')
+          })
+        )
 
         await rt.set('_mocha_done', new ivm.Reference(function (failures: number) {
           if (failures)

@@ -14,6 +14,10 @@ import { randomBytes } from 'crypto';
 import { LocalRuntime } from './local_runtime';
 import { Runtime } from './runtime';
 import { Tags, Span, MockTracer } from 'opentracing';
+import { SQLiteDataStore } from './sqlite_data_store';
+
+const defaultFetchDispatchTimeout = 1000
+const defaultFetchEndTimeout = 5000
 
 const hopHeaders = [
 	// From RFC 2616 section 13.5.1
@@ -45,6 +49,7 @@ declare module 'http' {
 }
 
 export interface ServerOptions {
+	env?: string
 	appStore?: FileAppStore
 	bridge?: Bridge
 	inspect?: boolean
@@ -66,7 +71,10 @@ export class Server extends http.Server {
 		super()
 		this.options = options
 		this.appStore = options.appStore || new FileAppStore(process.cwd())
-		this.bridge = options.bridge || new Bridge({ fileStore: new LocalFileStore(process.cwd(), this.appStore.release) })
+		this.bridge = options.bridge || new Bridge({
+			fileStore: new LocalFileStore(process.cwd(), this.appStore.release),
+			dataStore: new SQLiteDataStore(this.appStore.app.name, options.env || 'development')
+		})
 		this.runtime = new LocalRuntime(this.appStore.app, this.bridge, { inspect: !!options.inspect })
 		this.on("request", this.handleRequest.bind(this))
 		this.on("listening", () => {
