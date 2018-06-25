@@ -81,23 +81,24 @@ export class LocalRuntime implements Runtime {
     const context = this.isolate.createContextSync({ inspector: !!this.options.inspect })
     const g = context.global
     g.setSync("global", g.derefInto())
-    g.setSync("_ivm", ivm)
-    g.setSync("_dispatch", new ivm.Reference((name: string, ...args: any[]) => {
-      return this.bridge.dispatch(this, name, ...args)
-    }))
     g.setSync('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
       log[lvl](...args)
     }))
 
     const bootstrap = g.getSync('bootstrap')
     bootstrap.applySync()
+
+    const bootstrapBridge = g.getSync('bootstrapBridge')
+    bootstrapBridge.applySync(null, [ivm, new ivm.Reference((name: string, ...args: any[]) => {
+      return this.bridge.dispatch(this, name, ...args)
+    })])
     return context
   }
 
   private async runApp(app: App) {
+    await this.set("app", app.forV8())
     const script = this.isolate.compileScriptSync(app.source, { filename: "bundle.js" })
     await script.run(this.context)
-    await this.set("app", app.forV8())
   }
 
   async setApp(app: App) {

@@ -27,16 +27,14 @@ import { MiddlewareChain } from './middleware'
 
 global.middleware = {}
 
+global.bootstrapBridge = function bootstrapBridge(ivm, dispatch) {
+	delete global.bootstrapBridge
+	bridgeInit(ivm, dispatch)
+}
+
 global.bootstrap = function bootstrap() {
-	const ivm = global._ivm
-
 	// Cleanup, early!
-	delete global._ivm
 	delete global.bootstrap
-
-	// Bridge is used everywhere to transfer values to node
-	bridgeInit(ivm, global._dispatch)
-	delete global._dispatch
 
 	// Sets up `Error.prepareStacktrace`, for source map support
 	require('./error')

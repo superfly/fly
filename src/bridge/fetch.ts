@@ -31,7 +31,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     }
 
     try {
-      bridge.fileStore.createReadStream(urlStr.replace("file://", "")).then((stream) => {
+      bridge.fileStore.createReadStream(rt, urlStr.replace("file://", "")).then((stream) => {
         stream.pause()
         cb.applyIgnored(null, [null,
           new ivm.ExternalCopy({

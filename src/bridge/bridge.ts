@@ -23,7 +23,6 @@ import { catalog, BridgeFunction } from './'
 import { MemoryCacheStore } from '../memory_cache_store';
 import { Runtime } from '../runtime';
 import { DataStore } from '../data_store';
-import { SQLiteDataStore } from '../sqlite_data_store';
 
 const errNoSuchBridgeFn = "Attempted to call a unregistered bridge function."
 

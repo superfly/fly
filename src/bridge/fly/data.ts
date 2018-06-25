@@ -12,8 +12,8 @@ registerBridge("fly.Data.put", function (rt: Runtime, bridge: Bridge, collName: 
     cb.applyIgnored(null, ["data store not present, this is a bug, please report!"])
     return
   }
-  bridge.dataStore.collection(collName).then((coll) => {
-    coll.put(key, obj)
+  bridge.dataStore.collection(rt, collName).then((coll) => {
+    coll.put(rt, key, obj)
       .then((ok) => {
         cb.applyIgnored(null, [null, ok])
       })
@@ -34,8 +34,8 @@ registerBridge("fly.Data.get", function (rt: Runtime, bridge: Bridge, collName: 
     return
   }
 
-  bridge.dataStore.collection(collName).then((coll) => {
-    coll.get(key)
+  bridge.dataStore.collection(rt, collName).then((coll) => {
+    coll.get(rt, key)
       .then((res) => {
         cb.applyIgnored(null, [null, res ? res.obj : null])
       })
@@ -56,7 +56,7 @@ registerBridge("fly.Data.dropCollection", function (rt: Runtime, bridge: Bridge,
     return
   }
 
-  bridge.dataStore.dropCollection(collName)
+  bridge.dataStore.dropCollection(rt, collName)
     .then(() => {
       cb.applyIgnored(null, [])
     }).catch((err) => {
@@ -72,8 +72,8 @@ registerBridge("fly.Data.del", function (rt: Runtime, bridge: Bridge, collName: 
     return
   }
 
-  bridge.dataStore.collection(collName).then((coll) => {
-    coll.del(key)
+  bridge.dataStore.collection(rt, collName).then((coll) => {
+    coll.del(rt, key)
       .then((ok) => {
         cb.applyIgnored(null, [null, ok])
       })
