@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 import { getToken, CommonOptions } from './root'
 import { Command } from 'commandpost';
 

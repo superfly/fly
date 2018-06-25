@@ -66,13 +66,13 @@ export function addEventListener(name, fn) {
 	emitter.addListener(name, fn)
 }
 
-export function fireFetchEvent(ivm, url, req, body, callback) {
+export function fireFetchEvent(url, req, body, callback) {
 	logger.debug("handling request event")
 	let selfCleaningCallback = function selfCleaningCallback(...args) {
 		callback.apply(null, args)
-		callback.release()
+		try { callback.release() } catch (e) { }
 		if (body)
-			body.release()
+			try { body.release() } catch (e) { }
 	}
 
 	let fetchEvent = new FetchEvent('fetch', {

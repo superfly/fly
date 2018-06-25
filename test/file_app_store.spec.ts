@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai'
 import { FileAppStore } from '../src/file_app_store'
-import { App } from '../src';
+import { App } from '../src/app';
 
 
 describe('FileAppStore', function () {

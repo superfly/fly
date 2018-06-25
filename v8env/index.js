@@ -25,7 +25,6 @@ import { Document, Element } from './document'
 
 import { MiddlewareChain } from './middleware'
 
-global.releasables = []
 global.middleware = {}
 
 global.bootstrap = function bootstrap() {
@@ -57,7 +56,7 @@ global.bootstrap = function bootstrap() {
 	})
 
 	// Events
-	global.fireFetchEvent = fireFetchEvent.bind(null, ivm)
+	global.fireFetchEvent = fireFetchEvent
 	global.addEventListener = addEventListener
 	global.dispatchEvent = dispatchEvent
 
@@ -77,24 +76,5 @@ global.bootstrap = function bootstrap() {
 				resolve(heap)
 			})
 		})
-	}
-}
-
-global.finalizers = []
-
-global.finalize = function finalize() {
-	while (finalizers.length) {
-		try { finalizers.shift()() } catch (e) { }
-	}
-}
-
-global.teardown = global.release = function release() {
-	releaseReleasables()
-	emitter.removeAllListeners()
-}
-
-function releaseReleasables() {
-	while (releasables.length) {
-		try { releasables.shift().release() } catch (e) { }
 	}
 }

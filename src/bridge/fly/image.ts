@@ -1,14 +1,12 @@
 import { registerBridge } from '../'
 import { ivm } from '../../'
-import { Trace } from '../../trace'
-import { Context } from '../../'
 import { transferInto } from '../../utils/buffer'
 
 import log from "../../log"
 
 import * as sharp from 'sharp'
-//import * as color from 'color'
 import { Bridge } from '../bridge';
+import { Runtime } from '../../runtime';
 
 interface sharpImage extends sharp.SharpInstance {
   options: any
@@ -63,7 +61,7 @@ function extractMetadata(meta: any): any {
   return info
 }
 
-registerBridge("fly.Image()", function imageConstructor(ctx: Context, bridge: Bridge, data?: ivm.Reference<Buffer>, create?: any) {
+registerBridge("fly.Image()", function imageConstructor(rt: Runtime, bridge: Bridge, data?: ivm.Reference<Buffer>, create?: any) {
   try {
     if (data && !(data instanceof ArrayBuffer)) {
       throw new Error("image data must be an ArrayBuffer")
@@ -77,14 +75,13 @@ registerBridge("fly.Image()", function imageConstructor(ctx: Context, bridge: Br
     }
     const image = sharp(data && Buffer.from(data), opts)
     const ref = new ivm.Reference(image)
-    ctx.addReleasable(ref)
     return Promise.resolve(ref)
   } catch (e) {
     return Promise.reject(e)
   }
 })
 
-registerBridge('fly.Image.operation', function imageOperation(ctx: Context, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, name: string, ...args: any[]) {
+registerBridge('fly.Image.operation', function imageOperation(rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, name: string, ...args: any[]) {
   try {
     const img = refToImage(ref)
     const operation = allowedOperations.get(name)
@@ -121,30 +118,27 @@ registerBridge('fly.Image.operation', function imageOperation(ctx: Context, brid
   }
 })
 
-registerBridge('fly.Image.metadata', async function imageMetadata(ctx: Context, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>) {
+registerBridge('fly.Image.metadata', async function imageMetadata(rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>) {
   const img = ref.deref()
   const meta = await img.metadata()
   return new ivm.ExternalCopy(extractMetadata(meta)).copyInto({ release: true })
 })
 
-registerBridge("fly.Image.toBuffer", function imageToBuffer(ctx: Context, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, callback: ivm.Reference<Function>) {
+registerBridge("fly.Image.toBuffer", function imageToBuffer(rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, callback: ivm.Reference<Function>) {
   const img = refToImage(ref)
   if (!img) {
-    ctx.applyCallback(callback, ["ref must be a valid image instance"])
+    callback.applyIgnored(null, ["ref must be a valid image instance"])
     return
   }
-  let t = Trace.tryStart("modifyImage", ctx.trace)
 
-  //return await img.toBuffer()
   img.toBuffer((err, d, metadata) => {
     if (err) {
       log.debug("sending error:", err)
-      ctx.applyCallback(callback, [err.toString()])
+      callback.applyIgnored(null, [err.toString()])
       return
     }
     const info = extractMetadata(metadata)
-    t.end({ output: info.format, outSize: d.byteLength })
-    ctx.applyCallback(callback, [null, transferInto(d), new ivm.ExternalCopy(info).copyInto({ release: true })])
+    callback.applyIgnored(null, [null, transferInto(d), new ivm.ExternalCopy(info).copyInto({ release: true })])
   })
 })
 

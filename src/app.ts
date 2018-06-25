@@ -15,11 +15,9 @@ export interface Release {
 }
 
 export class App {
-  release: Release
   private _config: any
 
-  constructor(release: Release) {
-    this.release = release
+  constructor(public release: Release) {
   }
 
   get name() {

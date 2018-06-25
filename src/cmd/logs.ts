@@ -2,8 +2,6 @@ import { root, getAppName, CommonOptions, addCommonOptions } from './root'
 import { apiClient } from './api'
 import { processResponse } from '../utils/cli'
 
-import log from '../log'
-
 import colors = require('ansi-colors')
 import { Command } from 'commandpost';
 import { AxiosInstance } from 'axios';
@@ -19,7 +17,6 @@ const logs = root
   })
 
 async function continuouslyGetLogs(API: AxiosInstance, appName: string) {
-  log.silly("continuously get logs for app id:", appName)
   let lastNextToken: string | undefined;
   while (true) {
     try {

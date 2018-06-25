@@ -1,55 +1,39 @@
 import { registerBridge } from './'
 
-import { ivm, Context } from '../'
+import { ivm } from '../'
 import log from "../log"
 import * as http from 'http'
 import * as https from 'https'
-import { URL, parse as parseURL, format as formatURL } from 'url'
-import { fullURL } from '../utils/http'
-import { transferInto } from '../utils/buffer'
+import { parse as parseURL } from 'url'
 import { ProxyStream } from './proxy_stream'
 
-import { Trace } from '../trace'
-import { FileNotFound } from '../file_store';
 import { Bridge } from './bridge';
-import { Releasable } from '../context';
+import { Runtime } from '../runtime';
 
 
 const fetchAgent = new http.Agent({ keepAlive: true });
 const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
 
-registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, refCb: ivm.Reference<Function>) {
+registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
   log.debug("native fetch with url:", urlStr)
-  log.silly("fetch init: ", JSON.stringify(init))
-  let t = Trace.tryStart('fetch', ctx.trace)
-  let dataIn = 0,
-    dataOut = 0
-  const cb = new ReferenceWrapper(refCb, function () {
-    t.end({ dataIn, dataOut })
-  })
-  ctx.addCallback(cb)
   init || (init = {})
   const u = parseURL(urlStr)
 
   if (u.protocol === 'file:') {
-    if (!ctx.meta.app) {
-      ctx.tryCallback(cb, ["no app configured, should not happen!"])
-      return
-    }
     if (!bridge.fileStore) {
-      ctx.tryCallback(cb, ["no file store configured, should not happen!"])
+      cb.applyIgnored(null, ["no file store configured, should not happen!"])
       return
     }
 
     if (init.method && init.method != 'GET') {
-      ctx.tryCallback(cb, ["only GET allowed on file:// URIs"])
+      cb.applyIgnored(null, ["only GET allowed on file:// URIs"])
       return
     }
 
     try {
       bridge.fileStore.createReadStream(urlStr.replace("file://", "")).then((stream) => {
         stream.pause()
-        ctx.applyCallback(cb, [null,
+        cb.applyIgnored(null, [null,
           new ivm.ExternalCopy({
             status: 200,
             statusText: "OK",
@@ -60,45 +44,20 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
           new ProxyStream(stream).ref
         ])
       }).catch((err) => {
-        ctx.tryCallback(cb, [err.toString()])
+        cb.applyIgnored(null, [err.toString()])
       })
     } catch (e) {
       // Might throw FileNotFound
-      ctx.tryCallback(cb, [e.toString()])
+      cb.applyIgnored(null, [e.toString()])
     }
     return
   }
-
-  let depth = ctx.meta.flyDepth || 0
-
-  log.silly("fetch depth: ", depth)
-  if (depth >= 3) {
-    log.error("too much recursion: ", depth)
-    ctx.tryCallback(cb, ["Too much recursion"])
-    return
-  }
-
-  if (!u.host)
-    u.host = ctx.meta.originalHost
-  if (!u.protocol)
-    u.protocol = ctx.meta.originalScheme
 
   const httpFn = u.protocol == 'http:' ? http.request : https.request
   const httpAgent = u.protocol == 'http:' ? fetchAgent : fetchHttpsAgent
 
   let method = init.method || "GET"
-  let headers = Object.assign({},
-    // defaults
-    {
-      origin: `${ctx.meta.originalScheme}//${ctx.meta.originalHost}`
-    },
-    // user-supplied
-    init.headers || {},
-    // override
-    {
-      'x-fly-depth': (depth + 1).toString()
-    }
-  )
+  let headers = init.headers || {}
 
   let req: http.ClientRequest;
 
@@ -122,13 +81,20 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
   }
   req = httpFn(reqOptions)
 
+  req.setHeader('fly-app', rt.app.name)
+
   req.once("response", handleResponse)
 
   req.on("error", handleError)
 
   setImmediate(function () {
     if (body)
-      dataOut += Buffer.byteLength(body)
+      rt.reportUsage("fetch", {
+        dataOut: Buffer.byteLength(body),
+        method: method,
+        host: u.host,
+        path: u.path
+      })
     if (body instanceof ArrayBuffer) {
       req.end(Buffer.from(body))
     } else {
@@ -136,16 +102,15 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
     }
   })
 
-  return refCb
+  return
 
   function handleResponse(res: http.IncomingMessage) {
-    log.silly(`Fetch response: ${res.statusCode} ${urlStr} ${JSON.stringify(res.headers)}`)
     req.removeListener('response', handleResponse)
     req.removeListener('error', handleError)
     try {
       res.pause()
 
-      ctx.applyCallback(cb, [
+      cb.applyIgnored(null, [
         null,
         new ivm.ExternalCopy({
           status: res.statusCode,
@@ -159,35 +124,14 @@ registerBridge('fetch', function fetchBridge(ctx: Context, bridge: Bridge, urlSt
 
     } catch (err) {
       log.error("caught error", err)
-      ctx.tryCallback(cb, [err.toString()])
+      cb.applyIgnored(null, [err.toString()])
     }
   }
 
   function handleError(err: Error) {
     log.error("error requesting http resource", err)
-    ctx.tryCallback(cb, [err.toString()])
+    cb.applyIgnored(null, [err.toString()])
     req.removeListener('response', handleResponse)
     req.removeListener('error', handleError)
   }
 })
-
-
-
-class ReferenceWrapper {
-  fn: ivm.Reference<Function>
-  cb: Function
-  constructor(fn: ivm.Reference<Function>, cb: Function) {
-    this.fn = fn
-    this.cb = cb
-  }
-  release() {
-    return this.fn.release()
-  }
-  apply(...args: any[]) {
-    try {
-      return this.fn.apply(...args)
-    } finally {
-      this.cb()
-    }
-  }
-}

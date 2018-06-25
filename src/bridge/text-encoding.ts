@@ -1,19 +1,15 @@
-import log from '../log'
-
-import { ivm } from '..';
-
 import { registerBridge } from '.';
-import { Context } from '../context';
 import { Bridge } from './bridge';
 
 import { TextEncoder, TextDecoder } from 'util'
 import { transferInto } from '../utils/buffer';
+import { Runtime } from '../runtime';
 
-registerBridge("TextDecoder.decode", async function (ctx: Context, bridge: Bridge, buf: ArrayBuffer, encoding?: string) {
+registerBridge("TextDecoder.decode", async function (rt: Runtime, bridge: Bridge, buf: ArrayBuffer, encoding?: string) {
   return new TextDecoderProxy(encoding).decode(buf)
 })
 
-registerBridge("TextEncoder.encode", async function (ctx: Context, bridge: Bridge, data: string) {
+registerBridge("TextEncoder.encode", async function (rt: Runtime, bridge: Bridge, data: string) {
   return new TextEncoderProxy().encode(data)
 })
 

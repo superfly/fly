@@ -16,7 +16,7 @@ axios.defaults.validateStatus = undefined
 import http = require('http')
 
 import { FileAppStore, FileAppStoreOptions } from '../src/file_app_store'
-import { DefaultContextStore } from '../src/default_context_store';
+// import { DefaultContextStore } from '../src/default_context_store';
 import { MemoryCacheStore } from '../src/memory_cache_store';
 import { Bridge } from '../src/bridge/bridge';
 import { LocalFileStore } from '../src/local_file_store';
@@ -38,7 +38,7 @@ process.on("unhandledRejection", function (err) {
   console.error(err.stack)
 })
 
-export const contextStore = new DefaultContextStore()
+// export const contextStore = new DefaultContextStore()
 export const cacheStore = new MemoryCacheStore("test cache")
 
 export function startServer(cwd: string, options: ServerOptions = {}) {
@@ -66,10 +66,10 @@ export function makeServer(cwd: string, options: ServerOptions = {}) {
   let appStore = new FileAppStore(cwd, options)
 
   const bridge = new Bridge({ cacheStore: cacheStore, fileStore: new LocalFileStore(cwd, appStore.release) })
-  return new Server({ appStore, contextStore, bridge })
+  return new Server({ appStore, bridge })
 }
 
 before(async function () {
-  this.timeout(10000) // give this a chance
-  await contextStore.getIsolate()
+  // this.timeout(10000) // give this a chance
+  // await contextStore.getIsolate()
 })

@@ -1,8 +1,9 @@
 import { registerBridge } from './'
 import { Readable } from "stream";
-import { ivm, Context } from "../";
+import { ivm } from "../";
 import { transferInto } from "../utils/buffer";
 import { Bridge } from './bridge';
+import { Runtime } from '../runtime';
 
 // get stream from http or whatever
 // pass reference back to v8
@@ -65,12 +66,12 @@ export class ProxyStream {
   }
 }
 
-registerBridge("subscribeProxyStream", function (ctx: Context, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
-  ctx.addReleasable(cb)
+registerBridge("subscribeProxyStream", function (rt: Runtime, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
+  // ctx.addReleasable(cb)
   const proxyable = ref.deref({ release: true })
   const stream = proxyable.stream
   if (!stream) {
-    ctx.tryCallback(cb, ["end"])
+    cb.applyIgnored(null, ["end"])
     return
   }
   stream.once("close", streamClose)
@@ -78,18 +79,18 @@ registerBridge("subscribeProxyStream", function (ctx: Context, bridge: Bridge, r
   stream.on("error", streamError)
 
   function streamClose() {
-    ctx.tryCallback(cb, ["close"])
+    cb.applyIgnored(null, ["close"])
     stream.removeAllListeners()
   }
   function streamEnd() {
-    ctx.tryCallback(cb, ["end"])
+    cb.applyIgnored(null, ["end"])
   }
   function streamError(err: Error) {
-    ctx.tryCallback(cb, ["error", err.toString()])
+    cb.applyIgnored(null, ["error", err.toString()])
   }
 })
 
-registerBridge("readProxyStream", function (ctx: Context, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
+registerBridge("readProxyStream", function (rt: Runtime, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
   const proxyable = ref.deref({ release: true })
 
   let attempts = 0
@@ -100,14 +101,13 @@ registerBridge("readProxyStream", function (ctx: Context, bridge: Bridge, ref: i
     if (chunk) {
       data = transferInto(chunk)
     }
-    ctx.addCallback(cb)
     if (data || attempts >= 10 || proxyable.ended) {
-      ctx.applyCallback(cb, [null, data, proxyable.tainted])
+      cb.applyIgnored(null, [null, data, proxyable.tainted])
     } else if (attempts >= 10 && !proxyable.ended) {
       // wait a bit, with a backoff
       setTimeout(tryRead, 20 * attempts)
     } else {
-      ctx.applyCallback(cb, [null, null, proxyable.tainted])
+      cb.applyIgnored(null, [null, null, proxyable.tainted])
     }
   }
   setImmediate(tryRead)
