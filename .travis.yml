@@ -4,25 +4,37 @@ matrix:
   include:
     - os: linux
       node_js: "8"
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          packages:
+          - gcc-5
+          - g++-5
+      env:
+        - MATRIX_EVAL="export CXX=g++-5"
     - os: linux
       node_js: "10"
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          packages:
+          - gcc-5
+          - g++-5
+      env:
+        - MATRIX_EVAL="export CXX=g++-5"
     - os: osx
-      osx_image: xcode8.3
+      osx_image: xcode9.4
       node_js: "8"
     - os: osx
-      osx_image: xcode8.3
+      osx_image: xcode9.4
       node_js: "10"
-# addons:
-#   apt:
-#     sources:
-#     - ubuntu-toolchain-r-test
-#     packages:
-#     - gcc-5
-#     - g++-5
+      
 before_install:
 - set -e
+- eval "${MATRIX_EVAL}"
 install:
-- export CXX="clang++"
 - npm install
 - npm run build
 script:
