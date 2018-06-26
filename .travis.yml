@@ -1,4 +1,5 @@
 language: node_js
+compiler: clang
 matrix:
   include:
     - os: linux
@@ -11,20 +12,18 @@ matrix:
     - os: osx
       osx_image: xcode8.3
       node_js: "10"
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - gcc-5
-    - g++-5
+# addons:
+#   apt:
+#     sources:
+#     - ubuntu-toolchain-r-test
+#     packages:
+#     - gcc-5
+#     - g++-5
 before_install:
 - set -e
 install:
-- export CXX="g++-5"
+- export CXX="clang++"
 - npm install
-- git submodule init
-- git submodule update
 - npm run build
 script:
 - .hooks/pre-build
