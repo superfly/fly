@@ -1,8 +1,16 @@
 language: node_js
-node_js:
-- '8'
-- '9'
-- '10.3'
+matrix:
+  include:
+    - os: linux
+      node_js: "8"
+    - os: linux
+      node_js: "10"
+    - os: osx
+      osx_image: xcode8.3
+      node_js: "8"
+    - os: osx
+      osx_image: xcode8.3
+      node_js: "10"
 addons:
   apt:
     sources:
@@ -15,7 +23,8 @@ before_install:
 install:
 - export CXX="g++-5"
 - npm install
-- git submodule foreach git pull origin master
+- git submodule init
+- git submodule update
 - npm run build
 script:
 - .hooks/pre-build

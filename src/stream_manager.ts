@@ -31,7 +31,6 @@ export const streamIdPrefix = "__fly_stream_id:"
 
 export const streamManager = {
   add(rt: Runtime, stream: Readable): string {
-    stream.pause()
     const id = generateStreamId()
     streams[streamKey(rt, id)] = { stream, readLength: 0, addedAt: Date.now(), endedAt: 0 }
     return id
@@ -72,6 +71,9 @@ export const streamManager = {
     const info = streams[key]
     if (!info)
       return cb.applyIgnored(null, ["stream closed, not found or destroyed after timeout"])
+    if (!info.stream.isPaused())
+      info.stream.pause()
+
     attemptN += 1
     setImmediate(function () {
       try {
@@ -99,7 +101,7 @@ export const streamManager = {
     const info = streams[key]
     if (!info)
       throw new Error("stream closed, not found or destroyed")
-    info.stream.resume()
+    // info.stream.resume()
     info.stream.pipe(dst)
   },
 }
