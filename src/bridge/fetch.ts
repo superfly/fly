@@ -5,14 +5,22 @@ import log from "../log"
 import * as http from 'http'
 import * as https from 'https'
 import { parse as parseURL } from 'url'
-import { ProxyStream } from './proxy_stream'
 
 import { Bridge } from './bridge';
 import { Runtime } from '../runtime';
+import { streamManager } from '../stream_manager';
 
-
-const fetchAgent = new http.Agent({ keepAlive: true });
-const fetchHttpsAgent = new https.Agent({ keepAlive: true, rejectUnauthorized: false })
+const fetchAgent = new http.Agent({
+  keepAlive: true,
+  keepAliveMsecs: 5 * 1000,
+  maxSockets: 1024 * 10 // seems sensible
+});
+const fetchHttpsAgent = new https.Agent({
+  keepAlive: true,
+  keepAliveMsecs: 5 * 1000,
+  rejectUnauthorized: false, // for simplicity
+  maxSockets: 1024 * 10 // seems sensible
+})
 
 registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
   log.debug("native fetch with url:", urlStr)
@@ -32,7 +40,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
 
     try {
       bridge.fileStore.createReadStream(rt, urlStr.replace("file://", "")).then((stream) => {
-        stream.pause()
+        const id = streamManager.addPrefixed(rt, stream)
         cb.applyIgnored(null, [null,
           new ivm.ExternalCopy({
             status: 200,
@@ -41,7 +49,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
             url: urlStr,
             headers: {}
           }).copyInto({ release: true }),
-          new ProxyStream(stream).ref
+          id
         ])
       }).catch((err) => {
         cb.applyIgnored(null, [err.toString()])
@@ -80,6 +88,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     reqOptions.servername = reqOptions.hostname
   }
   req = httpFn(reqOptions)
+  req.setNoDelay(true)
 
   req.setHeader('fly-app', rt.app.name)
 
@@ -107,25 +116,20 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   function handleResponse(res: http.IncomingMessage) {
     req.removeListener('response', handleResponse)
     req.removeListener('error', handleError)
-    try {
-      res.pause()
 
-      cb.applyIgnored(null, [
-        null,
-        new ivm.ExternalCopy({
-          status: res.statusCode,
-          statusText: res.statusMessage,
-          ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
-          url: urlStr,
-          headers: res.headers
-        }).copyInto({ release: true }),
-        res.method === 'GET' || res.method === 'HEAD' ? null : new ProxyStream(res).ref
-      ])
+    const init = new ivm.ExternalCopy({
+      status: res.statusCode,
+      statusText: res.statusMessage,
+      ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
+      url: urlStr,
+      headers: res.headers
+    }).copyInto({ release: true })
 
-    } catch (err) {
-      log.error("caught error", err)
-      cb.applyIgnored(null, [err.toString()])
+    if (res.method === 'GET' || res.method === 'HEAD') {
+      return cb.applyIgnored(null, [null, init])
     }
+
+    cb.applyIgnored(null, [null, init, streamManager.addPrefixed(rt, res)])
   }
 
   function handleError(err: Error) {

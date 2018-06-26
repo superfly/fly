@@ -75,15 +75,15 @@ export default function initBridge(ivm, dispatch) {
 
     wrapFunction(fn, options = { release: true }) {
       const opts = Object.assign({}, DEFAULT_BRIDGE_TRANSFER_OPTIONS, options || {})
-      if (!opts.release)
-        return new ivm.Reference(fn);
+      // if (!opts.release)
+      return new ivm.Reference(fn);
 
-      const cb = new ivm.Reference(function bridgeAutoReleaseFn(...args) {
-        try { cb.release() } catch (err) { } finally {
-          fn(...args)
-        }
-      })
-      return cb
+      // const cb = new ivm.Reference(function bridgeAutoReleaseFn(...args) {
+      //   try { cb.release() } catch (err) { } finally {
+      //     fn(...args)
+      //   }
+      // })
+      // return cb
     },
 
     wrapValue(value, options = { release: true }) {

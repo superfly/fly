@@ -1,6 +1,6 @@
 import { logger } from './logger'
 import { EventEmitter2 as EventEmitter } from 'eventemitter2'
-import refToStream from './fly/streams'
+import refToStream, { streamIdPrefix } from './fly/streams'
 
 const invalidResponseType = new Error(`Invalid response type for 'fetch' event. Expecting a straight Response, a function returning a Promise<Response> or a Response.`)
 
@@ -92,8 +92,8 @@ export function fireFetchEvent(url, req, body, callback) {
 		}
 
 		let b = null
-		if (res.body && res.body._ref) {
-			b = res.body._ref
+		if (res.body && res.body.flyStreamId) {
+			b = `${streamIdPrefix}${res.body.flyStreamId}`
 		} else {
 			logger.debug("body source type:", res.bodySource.constructor.name)
 			if (typeof res.bodySource === 'string')

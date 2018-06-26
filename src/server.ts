@@ -6,18 +6,15 @@ import * as httpUtils from './utils/http'
 import { Writable } from 'stream'
 import { App } from './app'
 
-import { ProxyStream } from './bridge/proxy_stream';
+// import { ProxyStream } from './bridge/proxy_stream';
 import { FileAppStore } from './file_app_store';
 import { Bridge } from './bridge/bridge';
 import { LocalFileStore } from './local_file_store';
 import { randomBytes } from 'crypto';
 import { LocalRuntime } from './local_runtime';
 import { Runtime } from './runtime';
-import { Tags, Span, MockTracer } from 'opentracing';
 import { SQLiteDataStore } from './sqlite_data_store';
-
-const defaultFetchDispatchTimeout = 1000
-const defaultFetchEndTimeout = 5000
+import { streamManager, streamIdPrefix } from './stream_manager';
 
 const hopHeaders = [
 	// From RFC 2616 section 13.5.1
@@ -84,16 +81,9 @@ export class Server extends http.Server {
 	}
 
 	private async handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {
-		request.pause()
+		// request.pause()
+		const start = process.hrtime()
 		const reqId = randomBytes(12).toString('hex')
-		const tracer = new MockTracer()
-		const span = tracer.startSpan('http_request')
-		span.addTags({
-			"http.method": request.method,
-			"http.host": request.headers.host,
-			"http.url": request.url,
-			"http.request_id": reqId
-		});
 		if (request.url === undefined) // typescript check fix
 			return
 
@@ -118,29 +108,26 @@ export class Server extends http.Server {
 		try {
 			await this.runtime.setApp(app)
 		} catch (err) {
-			handleCriticalError(err, request, response, span)
+			handleCriticalError(err, request, response)
 			return
 		}
 
 		try {
-			await handleRequest(this.runtime, request, response, span)
+			await handleRequest(this.runtime, request, response)
 		} catch (err) {
 			log.error("error handling request:", err.stack)
-			handleCriticalError(err, request, response, span)
+			handleCriticalError(err, request, response)
 		} finally {
-			span.finish()
-			const pspan = tracer.report().spans[0]
-			this.runtime.log('info', `${request.connection.remoteAddress} ${request.method} ${request.url} ${response.statusCode} ${pspan.durationMs()}ms`)
+			const end = process.hrtime(start)
+			this.runtime.log('info', `${request.connection.remoteAddress} ${request.method} ${request.url} ${response.statusCode} ${(((end[0] * 1e9) + end[1]) / 1e6).toFixed(2)}ms`)
 		}
 	}
 
 }
 
-type V8ResponseBody = null | string | ArrayBuffer | Buffer | ivm.Reference<ProxyStream>
+type V8ResponseBody = null | string | ArrayBuffer | Buffer
 
-export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.ServerResponse, span: Span) {
-
-	span.log({ event: "handle_request" })
+export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.ServerResponse): Promise<number> {
 
 	const flyRecurseHeader = req.headers['fly-allow-recursion']
 	if (!flyRecurseHeader || !flyRecurseHeader[0]) {
@@ -151,14 +138,12 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
 				res.writeHead(400)
 				res.end("Too much recursion")
 				req.destroy() // stop everything I guess.
-				return
+				return Promise.resolve(0)
 			}
 		}
 	}
 
 	const fullURL = httpUtils.fullURL(req.protocol, req)
-
-	const feSpan = span.tracer().startSpan("fetch_event", { childOf: span })
 
 	let cbCalled = false
 	return new Promise((resolve, reject) => { // mainly to make try...finally work
@@ -173,19 +158,14 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
 				return // this can't happen twice
 			}
 			cbCalled = true
-			feSpan.log({ event: "respond_with_call" })
 
 			if (err) {
 				log.error("error from fetch callback:", err)
-				feSpan.setTag(Tags.ERROR, true);
-				feSpan.log({ event: "error", 'error.message': err })
 
 				writeHead(rt, res, 500)
 				res.end("Error: " + err)
 				return
 			}
-
-			feSpan.finish()
 
 			for (let n in v8res.headers) {
 				try {
@@ -225,7 +205,6 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
 					contentType.includes("application/javascript") ||
 					contentType.includes("application/json")
 				) {
-					span.log({ event: "requires_gzip" })
 					res.removeHeader("Content-Length")
 					res.setHeader("Content-Encoding", "gzip")
 					dst = zlib.createGzip({ level: 2 })
@@ -235,28 +214,29 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
 
 			writeHead(rt, res, v8res.status)
 
-			handleResponse(resBody, res, dst).then((len) => {
+			handleResponse(rt, resBody, res, dst).then((len) => {
 				rt.reportUsage("http", { dataOut: len })
 				if (!res.finished)
 					res.end() // we are done. triggers 'finish' event
-			}).then(() => resolve()).catch((e) => reject(e))
+				resolve(len)
+			}).catch((e) => reject(e))
 		}
 
 		rt.getSync("fireFetchEvent").apply(null, [
 			fullURL,
 			new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
-			req.method === 'GET' || req.method === 'HEAD' ? null : new ProxyStream(req).ref,
+			req.method === 'GET' || req.method === 'HEAD' ? null : streamManager.addPrefixed(rt, req),
 			new ivm.Reference(fetchCallback)
 		]).catch(reject)
 	})
 }
 
-function handleResponse(src: V8ResponseBody, res: http.ServerResponse, dst: Writable): Promise<number> {
+function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerResponse, dst: Writable): Promise<number> {
 	if (!src)
 		return Promise.resolve(0)
 
-	if (src instanceof ivm.Reference) {
-		return handleResponseStream(src.deref({ release: true }), res, dst)
+	if (typeof src == "string" && src.startsWith(streamIdPrefix)) {
+		return handleResponseStream(rt, src.replace(streamIdPrefix, ""), res, dst)
 	}
 
 	let totalLength = 0
@@ -279,27 +259,26 @@ function handleResponse(src: V8ResponseBody, res: http.ServerResponse, dst: Writ
 	})
 }
 
-function handleResponseStream(src: ProxyStream, res: http.ServerResponse, dst: Writable): Promise<number> {
-	return new Promise(function (resolve, reject) {
-		setImmediate(() => {
-			let dataOut = 0
-			dst.on("data", function (d) {
-				dataOut += d.byteLength
-			})
-			res.on("finish", function () {
-				resolve(dataOut)
-			}).on("error", reject)
-			for (const c of src.buffered) {
-				dst.write(c)
-			}
-			src.stream.pipe(dst)
+function handleResponseStream(rt: Runtime, streamId: string, res: http.ServerResponse, dst: Writable): Promise<number> {
+	// return new Promise(function (resolve, reject) {
+	return new Promise<number>((resolve, reject) => {
+		let dataOut = 0
+		dst.on("data", function (d) {
+			dataOut += d.byteLength
 		})
+		res.on("finish", function () {
+			resolve(dataOut)
+		}).on("error", reject)
+
+		try {
+			streamManager.pipeTo(rt, streamId, dst)
+		} catch (e) {
+			reject(e)
+		}
 	})
 }
 
-function handleCriticalError(err: Error, req: http.IncomingMessage, res: http.ServerResponse, span: Span) {
-	span.setTag(Tags.ERROR, true);
-	span.log({ event: "error", 'error.message': err.message, 'error.stack': err.stack })
+function handleCriticalError(err: Error, req: http.IncomingMessage, res: http.ServerResponse) {
 	log.error("critical error:", err)
 	if (res.finished)
 		return

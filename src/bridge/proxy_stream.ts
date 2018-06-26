@@ -1,114 +1,13 @@
 import { registerBridge } from './'
-import { Readable } from "stream";
 import { ivm } from "../";
-import { transferInto } from "../utils/buffer";
 import { Bridge } from './bridge';
 import { Runtime } from '../runtime';
+import { streamManager } from '../stream_manager';
 
-// get stream from http or whatever
-// pass reference back to v8
-//   * v8 optionally reads stream
-// pass reference from v8 -> node
-//   * cache set
-//   * returned response
-// once stream is read, it's dirty
-//   * if we're only reading from within node, we should handle this
-//   * can pipe it to both cache and http response
-
-export class ProxyStream {
-  stream: Readable
-  buffered: Buffer[]
-  bufferedByteLength: number
-  readLength: number
-  tainted: boolean
-  ended: boolean
-  private _ref: ivm.Reference<ProxyStream> | undefined
-
-  constructor(base: Readable) {
-    this.tainted = false
-    this.ended = false
-    this.stream = base
-    this.buffered = []
-    this.bufferedByteLength = 0
-    this.readLength = 0
-    this.stream.once("close", () => this.ended = true)
-    this.stream.once("end", () => this.ended = true)
-    this.stream.once("error", () => this.ended = true)
-  }
-
-  read(size?: number): Buffer | null {
-    let chunk = this.stream.read(size)
-    if (chunk && !this.tainted) this.bufferChunk(chunk)
-    if (chunk)
-      this.readLength += Buffer.byteLength(chunk)
-    return chunk
-  }
-
-  bufferChunk(chunk: Buffer): boolean {
-    if (this.tainted) return false
-    this.bufferedByteLength += chunk.byteLength
-    if (this.bufferedByteLength > 10 * 1024 * 1024) {
-      // no longer buffering, can't be used
-      this.tainted = true
-      this.buffered = []
-      this.bufferedByteLength = 0
-    } else {
-      this.buffered.push(chunk)
-    }
-    return !this.tainted
-  }
-
-  get ref() {
-    if (!this._ref) {
-      this._ref = new ivm.Reference<ProxyStream>(this)
-    }
-    return this._ref
-  }
-}
-
-registerBridge("subscribeProxyStream", function (rt: Runtime, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
-  // ctx.addReleasable(cb)
-  const proxyable = ref.deref({ release: true })
-  const stream = proxyable.stream
-  if (!stream) {
-    cb.applyIgnored(null, ["end"])
-    return
-  }
-  stream.once("close", streamClose)
-  stream.once("end", streamEnd)
-  stream.on("error", streamError)
-
-  function streamClose() {
-    cb.applyIgnored(null, ["close"])
-    stream.removeAllListeners()
-  }
-  function streamEnd() {
-    cb.applyIgnored(null, ["end"])
-  }
-  function streamError(err: Error) {
-    cb.applyIgnored(null, ["error", err.toString()])
-  }
+registerBridge("streamSubscribe", function (rt: Runtime, bridge: Bridge, id: string, cb: ivm.Reference<Function>) {
+  streamManager.subscribe(rt, id, cb)
 })
 
-registerBridge("readProxyStream", function (rt: Runtime, bridge: Bridge, ref: ivm.Reference<ProxyStream>, cb: ivm.Reference<Function>) {
-  const proxyable = ref.deref({ release: true })
-
-  let attempts = 0
-  const tryRead = function () {
-    attempts += 1
-    let chunk = proxyable.read(1024 * 1024)
-    let data: ivm.Copy<ArrayBuffer> | null = null
-    if (chunk) {
-      data = transferInto(chunk)
-    }
-    if (data || attempts >= 10 || proxyable.ended) {
-      cb.applyIgnored(null, [null, data, proxyable.tainted])
-    } else if (attempts >= 10 && !proxyable.ended) {
-      // wait a bit, with a backoff
-      setTimeout(tryRead, 20 * attempts)
-    } else {
-      cb.applyIgnored(null, [null, null, proxyable.tainted])
-    }
-  }
-  setImmediate(tryRead)
+registerBridge("streamRead", function (rt: Runtime, bridge: Bridge, id: string, cb: ivm.Reference<Function>) {
+  streamManager.read(rt, id, cb)
 })

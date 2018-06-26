@@ -1,8 +1,8 @@
 // import dispatcherInit from './fly/dispatcher'
 import bridgeInit from './bridge'
 
-import { fireFetchEvent, addEventListener, dispatchEvent, FetchEvent, emitter } from "./events"
-import { ReadableStream, WritableStream, TransformStream } from 'web-streams-polyfill'
+import { fireFetchEvent, addEventListener, dispatchEvent, FetchEvent } from "./events"
+import { ReadableStream, WritableStream, TransformStream } from './streams'
 
 import { console } from './console'
 import flyInit from './fly'

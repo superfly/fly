@@ -10,12 +10,15 @@ module.exports = {
     path: path.join(__dirname, '/dist/')
   },
   resolve: {
-    modules: ["../node_modules"],
+    modules: ["../node_modules", "../vendor"],
     extensions: [".ts", ".tsx", ".js"],
     alias: {
       "@fly/image": path.resolve(__dirname, "./v8env/lib/fly/image"),
       "@fly/data": path.resolve(__dirname, "./v8env/lib/fly/data")
     }
+  },
+  node: {
+    fs: 'empty'
   },
   module: {
     loaders: [

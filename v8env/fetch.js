@@ -1,5 +1,5 @@
 import { logger } from './logger'
-import refToStream from './fly/streams'
+import refToStream, { isFlyStream } from './fly/streams'
 
 /**
  * Starts the process of fetching a network request.
@@ -46,7 +46,8 @@ function _applyFetch(url, init, body) {
 					return
 				}
 				let b = nodeBody;
-				if (bridge.isReference(nodeBody))
+				logger.debug("is a stream?", isFlyStream(b))
+				if (isFlyStream(b))
 					b = refToStream(nodeBody)
 				resolve(new Response(b, nodeRes))
 			}
