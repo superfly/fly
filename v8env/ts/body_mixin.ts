@@ -25,6 +25,7 @@ export default class BodyMixin implements Body {
   private stream: ReadableStream | null
 
   constructor(obj: BodySource) {
+    validateBodyType(this, obj)
     this.bodySource = obj
     this.stream = null
   }
@@ -117,12 +118,37 @@ export default class BodyMixin implements Body {
     } else if (!this.bodySource) {
       return new ArrayBuffer(0)
     }
-    console.log("Unknown type:", this.bodySource instanceof ReadableStream)
-    throw new Error("not yet implemented")
+    throw new Error(`Body type not yet implemented: ${this.bodySource.constructor.name}`)
   }
 }
 
 /** @hidden */
+function validateBodyType(owner: any, bodySource: any) {
+  if (bodySource instanceof Int8Array ||
+    bodySource instanceof Int16Array ||
+    bodySource instanceof Int32Array ||
+    bodySource instanceof Uint8Array ||
+    bodySource instanceof Uint16Array ||
+    bodySource instanceof Uint32Array ||
+    bodySource instanceof Uint8ClampedArray ||
+    bodySource instanceof Float32Array ||
+    bodySource instanceof Float64Array
+  ) {
+    return true
+  } else if (bodySource instanceof ArrayBuffer) {
+    return true
+  } else if (typeof bodySource === 'string') {
+    return true
+  } else if (bodySource instanceof ReadableStream) {
+    return true
+  } else if (bodySource instanceof FormData) {
+    return true
+  } else if (!bodySource) {
+    return true // null body is fine
+  }
+  throw new Error(`Bad ${owner.constructor.name} body type: ${bodySource.constructor.name}`)
+}
+
 function bufferFromStream(stream: ReadableStreamReader): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     let parts: Array<Uint8Array> = [];
