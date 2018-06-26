@@ -114,7 +114,7 @@ export function fireFetchEvent(ivm, url, req, body, callback) {
 	})
 	let fn = emitter.listeners('fetch').slice(-1)[0]
 	if (typeof fn !== 'function')
-		return selfCleaningCallback.apply(null, ["No 'fetch' event listener attached."])
+		return selfCleaningCallback.apply(null, ["No HTTP handler attached: make sure your app calls `fly.http.respondWith(...)."])
 
 	if (fn(fetchEvent) instanceof Promise)
 		return selfCleaningCallback.apply(null, ["'fetch' event handler function cannot return a promise."])
