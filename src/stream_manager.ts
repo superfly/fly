@@ -87,12 +87,12 @@ export const streamManager = {
           info.readLength += Buffer.byteLength(chunk)
 
         if (!chunk && !info.endedAt && attempts < 10) {// no chunk, not ended, attemptable
-          setTimeout(tryRead, 10 * attempts)
+          setTimeout(tryRead, 20 * attempts)
           return
         }
 
         if (!chunk && attempts >= 10)
-          cb.applyIgnored(null, ["tried to get a data chunk 10 times, but gave up"])
+          cb.applyIgnored(null, [null, null])
         else if (chunk instanceof Buffer) // got a buffer
           cb.applyIgnored(null, [null, transferInto(chunk)])
         else // got something else
