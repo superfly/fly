@@ -47,10 +47,12 @@ Headers.prototype = {
 	 */
 	get: function get(name) {
 		name = name.toLowerCase();
+		const raw = []
 		for (var index = 0; index < this._headerList.length; ++index) {
 			if (this._headerList[index][0] === name)
-				return this._headerList[index][1];
+				raw.push(this._headerList[index][1])
 		}
+		if (raw.length > 0) return raw.join(", ")
 		return null;
 	},
 
