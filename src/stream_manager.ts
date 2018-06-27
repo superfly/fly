@@ -51,7 +51,6 @@ export const streamManager = {
       log.debug("stream closed, id:", id)
       cb.applyIgnored(null, ["close"])
       info.endedAt || (info.endedAt = Date.now())
-      info.stream.removeAllListeners()
     })
     info.stream.once("end", function streamEnd() {
       log.debug("stream ended, id:", id)
@@ -65,43 +64,54 @@ export const streamManager = {
     })
   },
 
-  read(rt: Runtime, id: string, cb: ivm.Reference<Function>, attemptN = 0) {
+  read(rt: Runtime, id: string, cb: ivm.Reference<Function>) {
     const key = streamKey(rt, id)
     log.debug("stream:read id:", id)
     const info = streams[key]
     if (!info)
       return cb.applyIgnored(null, ["stream closed, not found or destroyed after timeout"])
-    if (!info.stream.isPaused())
-      info.stream.pause()
 
-    attemptN += 1
-    setImmediate(function () {
+    let attempts = 0
+
+    setImmediate(tryRead)
+    function tryRead() {
+      attempts += 1
       try {
         const chunk = info.stream.read(1024 * 1024)
-        console.log("chunk is null? arraybuffer? string?", !!chunk, chunk instanceof Buffer, typeof chunk === "string")
-        if (!chunk && !info.endedAt && attemptN < 10) {
-          setTimeout(function () {
-            streamManager.read(rt, id, cb, attemptN)
-          }, 10 * attemptN)
-          return
-        }
-        if (chunk instanceof Buffer)
-          return cb.applyIgnored(null, [null, transferInto(chunk)])
-        else
-          return cb.applyIgnored(null, [null, chunk])
+        log.debug("chunk is null? arraybuffer? string?", !chunk, chunk instanceof Buffer, typeof chunk === "string")
+
+        if (chunk)
+          info.readLength += Buffer.byteLength(chunk)
+
+        if (!chunk && !info.endedAt && attempts < 10) // no chunk, not ended, attemptable
+          setTimeout(tryRead, 10 * attempts)
+        else if (chunk instanceof Buffer) // got a buffer
+          cb.apply(null, [null, transferInto(chunk)])
+        else // got something else
+          cb.apply(null, [null, chunk])
+
       } catch (e) {
-        cb.applyIgnored(null, [e.message])
+        cb.apply(null, [e.message])
       }
-    })
+    }
   },
 
-  pipeTo(rt: Runtime, id: string, dst: Writable) {
+  directRead(rt: Runtime, id: string) {
+    const key = streamKey(rt, id)
+    log.debug("stream:read id:", id)
+    const info = streams[key]
+    if (!info)
+      throw new Error("stream closed, not found or destroyed after timeout")
+
+    return info.stream.read(10024 * 1024)
+  },
+
+  pipe(rt: Runtime, id: string, dst: Writable) {
     const key = streamKey(rt, id)
     log.debug("stream:pipe id:", id)
     const info = streams[key]
     if (!info)
       throw new Error("stream closed, not found or destroyed")
-    // info.stream.resume()
     info.stream.pipe(dst)
   },
 }

@@ -270,8 +270,19 @@ function handleResponseStream(rt: Runtime, streamId: string, res: http.ServerRes
 			resolve(dataOut)
 		}).on("error", reject)
 
+		// let eof = false
+		// while (!eof) {
+		// 	const chunk = streamManager.directRead(rt, streamId)
+		// 	if (!chunk) {
+		// 		eof = true
+		// 		dst.end()
+		// 		break;
+		// 	}
+		// 	dst.write(chunk)
+		// }
+
 		try {
-			streamManager.pipeTo(rt, streamId, dst)
+			streamManager.pipe(rt, streamId, dst)
 		} catch (e) {
 			reject(e)
 		}

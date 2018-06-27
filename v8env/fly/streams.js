@@ -11,9 +11,8 @@ export default function refToStream(id) {
   const r = new ReadableStream({
     start(controller) {
       bridge.dispatch("streamSubscribe", id, bridge.wrapFunction(function (name, ...args) {
-        logger.debug("GOT EVENT:", name)
+        logger.debug("stream event:", name)
         if (name === "close" || name === "end") {
-          // try { cb.release() } catch (e) { }
           if (!closed) {
             closed = true
             controller.close()
@@ -21,11 +20,9 @@ export default function refToStream(id) {
         } else if (name === "error") {
           logger.error("error in stream:", args[0])
           controller.error(new Error(args[0]))
-          // } else if (name === "data") {
-          //   controller.enqueue(args[0])
         } else
-          logger.debug("unhandled event", name)
-      }, { release: false })) // don't necessarily want to release)
+          logger.error("unhandled event", name)
+      }, { release: false })) // no releasing here, we re-use it
     },
     pull(controller) {
       if (closed) {
@@ -38,14 +35,16 @@ export default function refToStream(id) {
             reject(err)
             return
           }
-          controller.enqueue(data)
+          // logger.info("data:", data && data.toString())
+          if (data)
+            controller.enqueue(data)
           resolve()
         })
 
       })
     },
     cancel() {
-      logger.debug("readable stream was cancelled")
+      logger.info(`stream ${id} was cancelled`)
     }
   }, {
       highWaterMark: 0
