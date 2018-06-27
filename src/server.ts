@@ -260,32 +260,22 @@ function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerRespon
 }
 
 function handleResponseStream(rt: Runtime, streamId: string, res: http.ServerResponse, dst: Writable): Promise<number> {
-	// return new Promise(function (resolve, reject) {
 	return new Promise<number>((resolve, reject) => {
-		let dataOut = 0
-		dst.on("data", function (d) {
-			dataOut += d.byteLength
+		setImmediate(() => {
+			let dataOut = 0
+			dst.on("data", function (d) {
+				dataOut += d.byteLength
+			})
+			res.on("finish", function () {
+				resolve(dataOut)
+			}).on("error", reject)
+
+			try {
+				streamManager.pipe(rt, streamId, dst)
+			} catch (e) {
+				reject(e)
+			}
 		})
-		res.on("finish", function () {
-			resolve(dataOut)
-		}).on("error", reject)
-
-		// let eof = false
-		// while (!eof) {
-		// 	const chunk = streamManager.directRead(rt, streamId)
-		// 	if (!chunk) {
-		// 		eof = true
-		// 		dst.end()
-		// 		break;
-		// 	}
-		// 	dst.write(chunk)
-		// }
-
-		try {
-			streamManager.pipe(rt, streamId, dst)
-		} catch (e) {
-			reject(e)
-		}
 	})
 }
 

@@ -96,16 +96,6 @@ export const streamManager = {
     }
   },
 
-  directRead(rt: Runtime, id: string) {
-    const key = streamKey(rt, id)
-    log.debug("stream:read id:", id)
-    const info = streams[key]
-    if (!info)
-      throw new Error("stream closed, not found or destroyed after timeout")
-
-    return info.stream.read(10024 * 1024)
-  },
-
   pipe(rt: Runtime, id: string, dst: Writable) {
     const key = streamKey(rt, id)
     log.debug("stream:pipe id:", id)
