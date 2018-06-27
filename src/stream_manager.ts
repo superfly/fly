@@ -49,18 +49,21 @@ export const streamManager = {
 
     info.stream.once("close", function streamClose() {
       log.debug("stream closed, id:", id)
-      cb.applyIgnored(null, ["close"])
+      try { cb.applyIgnored(null, ["close"]) } catch (e) { }
       info.endedAt || (info.endedAt = Date.now())
+      try { cb.release() } catch (e) { }
     })
     info.stream.once("end", function streamEnd() {
       log.debug("stream ended, id:", id)
-      cb.applyIgnored(null, ["end"])
+      try { cb.applyIgnored(null, ["end"]) } catch (e) { }
       info.endedAt || (info.endedAt = Date.now())
+      try { cb.release() } catch (e) { }
     })
     info.stream.on("error", function streamError(err: Error) {
       log.debug("stream error, id:", id, err)
-      cb.applyIgnored(null, ["error", err.toString()])
+      try { cb.applyIgnored(null, ["error", err.toString()]) } catch (e) { }
       info.endedAt || (info.endedAt = Date.now())
+      try { cb.release() } catch (e) { }
     })
   },
 
@@ -83,15 +86,22 @@ export const streamManager = {
         if (chunk)
           info.readLength += Buffer.byteLength(chunk)
 
-        if (!chunk && !info.endedAt && attempts < 10) // no chunk, not ended, attemptable
+        if (!chunk && !info.endedAt && attempts < 10) {// no chunk, not ended, attemptable
           setTimeout(tryRead, 10 * attempts)
+          return
+        }
+
+        if (!chunk && attempts >= 10)
+          cb.applyIgnored(null, ["tried to get a data chunk 10 times, but gave up"])
         else if (chunk instanceof Buffer) // got a buffer
-          cb.apply(null, [null, transferInto(chunk)])
+          cb.applyIgnored(null, [null, transferInto(chunk)])
         else // got something else
-          cb.apply(null, [null, chunk])
+          cb.applyIgnored(null, [null, chunk])
+        try { cb.release() } catch (e) { }
 
       } catch (e) {
-        cb.apply(null, [e.message])
+        cb.applyIgnored(null, [e.message])
+        try { cb.release() } catch (e) { }
       }
     }
   },

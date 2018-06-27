@@ -3,7 +3,7 @@ import Body from './ts/body_mixin'
 
 function byteUpperCase(s) {
 	return String(s)
-		.replace(/[a-z]/g, function (c) {
+		.replace(/[a-z]/g, function byteUpperCaseReplace(c) {
 			return c.toUpperCase();
 		});
 }

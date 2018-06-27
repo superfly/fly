@@ -66,7 +66,7 @@ global.bootstrap = function bootstrap() {
 
 	global.getHeapStatistics = function getHeapStatistics() {
 		return new Promise((resolve, reject) => {
-			bridge.dispatch("getHeapStatistics", function (err, heap) {
+			bridge.dispatch("getHeapStatistics", function getHeapStatisticsPromise(err, heap) {
 				if (err) {
 					reject(err)
 					return

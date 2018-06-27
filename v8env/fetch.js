@@ -12,45 +12,43 @@ import refToStream, { isFlyStream } from './fly/streams'
  * @returns {Promise<Response>} - A {@linkcode Promise} that resolves to a {@linkcode Response} object
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch}
  */
-export async function fetch(url, init) {
+export function fetch(url, init) {
 	logger.debug("fetch called", typeof url, typeof init)
-	try {
-		let req = new Request(url, init)
-		url = req.url
-		init = {
-			method: req.method,
-			headers: req.headers && req.headers.toJSON() || {},
-		}
-		if (!req.bodySource)
-			return await _applyFetch(url, init, null)
-		else if (typeof req.bodySource === 'string')
-			return await _applyFetch(url, init, req.bodySource)
-		return await _applyFetch(url, init, await req.arrayBuffer())
+	return new Promise(function fetchPromise(resolve, reject) {
+		try {
+			let req = new Request(url, init)
+			url = req.url
+			init = {
+				method: req.method,
+				headers: req.headers && req.headers.toJSON() || {},
+			}
+			if (!req.bodySource)
+				bridge.dispatch("fetch", url, init, null, fetchCb)
+			else if (typeof req.bodySource === 'string')
+				bridge.dispatch("fetch", url, init, req.bodySource, fetchCb)
+			else
+				req.arrayBuffer.then(function fetchArrayBufferPromise(body) {
+					bridge.dispatch("fetch", url, init, body, fetchCb)
+				}).catch(reject)
 
-	} catch (err) {
-		logger.debug("err applying nativeFetch", err.toString())
-		throw err
-	}
+		} catch (err) {
+			logger.debug("err applying nativeFetch", err.toString())
+			reject(err)
+		}
+		function fetchCb(err, nodeRes, nodeBody) {
+			if (err)
+				return reject(new Error(err))
+			resolve(new Response(isFlyStream(nodeBody) ? refToStream(nodeBody) : nodeBody,
+				nodeRes))
+		}
+	})
 };
 
-function _applyFetch(url, init, body) {
-	return new Promise(function (resolve, reject) {
-		logger.debug("gonna fetch", url, init && JSON.stringify(init))
+function _applyFetch(url, init, body, cb) {
+	// return new Promise(function (resolve, reject) {
+	logger.debug("gonna fetch", url, init && JSON.stringify(init))
 
-		bridge.dispatch("fetch",
-			url, init, body,
-			function applyFetchCallback(err, nodeRes, nodeBody) {
-				if (err != null) {
-					logger.debug("err :(", err)
-					reject(err)
-					return
-				}
-				let b = nodeBody;
-				if (isFlyStream(b))
-					b = refToStream(nodeBody)
-				resolve(new Response(b, nodeRes))
-			}
-		)
-		logger.debug("dispatched nativefetch")
-	})
+	bridge.dispatch("fetch", url, init, body, cb)
+	logger.debug("dispatched nativefetch")
+	// })
 }

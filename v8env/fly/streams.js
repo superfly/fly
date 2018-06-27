@@ -10,26 +10,29 @@ export default function refToStream(id) {
   id = id.replace(streamIdPrefix, "")
   const r = new ReadableStream({
     start(controller) {
-      bridge.dispatch("streamSubscribe", id, bridge.wrapFunction(function (name, ...args) {
+      const cb = bridge.wrapFunction(function streamSubscribe(name, ...args) {
         logger.debug("stream event:", name)
         if (name === "close" || name === "end") {
+          try { cb.release() } catch (e) { }
           if (!closed) {
             closed = true
             controller.close()
           }
         } else if (name === "error") {
+          try { cb.release() } catch (e) { }
           logger.error("error in stream:", args[0])
           controller.error(new Error(args[0]))
         } else
           logger.error("unhandled event", name)
-      }, { release: false })) // no releasing here, we re-use it
+      }, { release: false })
+      bridge.dispatch("streamSubscribe", id, cb) // no releasing here, we re-use it
     },
     pull(controller) {
       if (closed) {
         return Promise.resolve(null)
       }
-      return new Promise((resolve, reject) => {
-        bridge.dispatch("streamRead", id, (err, data) => {
+      return new Promise(function pullPromise(resolve, reject) {
+        bridge.dispatch("streamRead", id, function streamRead(err, data) {
           if (err) {
             controller.error(new Error(err))
             reject(err)

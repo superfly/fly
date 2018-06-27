@@ -79,7 +79,7 @@ export function fireFetchEvent(url, req, body, callback) {
 		request: new Request(url, Object.assign(req, {
 			body: body && refToStream(body) || null
 		}))
-	}, async function (err, res) {
+	}, async function fetchEventCallback(err, res) {
 		logger.debug("request event callback called", typeof err, typeof res, res instanceof Response)
 
 		if (err) {
