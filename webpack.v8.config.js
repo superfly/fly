@@ -14,7 +14,8 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js"],
     alias: {
       "@fly/image": path.resolve(__dirname, "./v8env/lib/fly/image"),
-      "@fly/data": path.resolve(__dirname, "./v8env/lib/fly/data")
+      "@fly/data": path.resolve(__dirname, "./v8env/lib/fly/data"),
+      "@fly/cache": path.resolve(__dirname, "./v8env/lib/fly/cache")
     }
   },
   node: {

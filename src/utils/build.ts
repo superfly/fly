@@ -104,7 +104,8 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     alias: Object.assign({}, conf.resolve.alias, {
       "@fly/image": v8EnvPath + "/fly/image",
       "@fly/proxy": v8EnvPath + "/fly/proxy",
-      "@fly/data": v8EnvPath + "/fly/data"
+      "@fly/data": v8EnvPath + "/fly/data",
+      "@fly/cache": v8EnvPath + "/fly/cache"
     })
   }, conf.resolve)
 
