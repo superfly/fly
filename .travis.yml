@@ -11,6 +11,9 @@ matrix:
           packages:
           - gcc-5
           - g++-5
+          - autoconf
+          - libtool
+          - nasm
       env:
         - MATRIX_EVAL="export CXX=g++-5"
     - os: linux
@@ -22,6 +25,9 @@ matrix:
           packages:
           - gcc-5
           - g++-5
+          - autoconf
+          - libtool
+          - nasm
       env:
         - MATRIX_EVAL="export CXX=g++-5"
     - os: osx
