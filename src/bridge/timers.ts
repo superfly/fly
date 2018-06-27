@@ -5,7 +5,8 @@ import { Runtime } from '../runtime';
 
 registerBridge('setTimeout', function (rt: Runtime, bridge: Bridge, fn: ivm.Reference<Function>, timeout: number) {
   return Promise.resolve(new ivm.Reference(setTimeout(function () {
-    fn.applyIgnored(null, [])
+    try { fn.applyIgnored(null, []) } catch (e) { }
+    try { fn.release() } catch (e) { }
   }, timeout)))
 })
 
@@ -15,7 +16,8 @@ registerBridge('clearTimeout', function (rt: Runtime, bridge: Bridge, id: ivm.Re
 
 registerBridge('setInterval', function (rt: Runtime, bridge: Bridge, fn: ivm.Reference<Function>, every: number) {
   return Promise.resolve(new ivm.Reference(setInterval(function () {
-    fn.applyIgnored(null, [])
+    try { fn.applyIgnored(null, []) } catch (e) { }
+    try { fn.release() } catch (e) { }
   }, every)))
 })
 
