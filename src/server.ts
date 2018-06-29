@@ -215,7 +215,7 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
 			writeHead(rt, res, v8res.status)
 
 			handleResponse(rt, resBody, res, dst).then((len) => {
-				rt.reportUsage("http", { dataOut: len })
+				rt.reportUsage("http", { data_out: len })
 				if (!res.finished)
 					res.end() // we are done. triggers 'finish' event
 				resolve(len)

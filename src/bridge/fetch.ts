@@ -92,18 +92,13 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
 
   req.setHeader('fly-app', rt.app.name)
 
+  req.on("error", handleError)
   req.once("response", handleResponse)
 
-  req.on("error", handleError)
+  const start = process.hrtime()
+  const dataOut = body ? Buffer.byteLength(body) : 0
 
   setImmediate(function () {
-    if (body)
-      rt.reportUsage("fetch", {
-        dataOut: Buffer.byteLength(body),
-        method: method,
-        host: u.host,
-        path: u.path
-      })
     if (body instanceof ArrayBuffer) {
       req.end(Buffer.from(body))
     } else {
@@ -114,6 +109,16 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   return
 
   function handleResponse(res: http.IncomingMessage) {
+    rt.reportUsage("fetch", {
+      data_out: dataOut,
+      method: method,
+      host: u.host,
+      path: u.path,
+      remote_addr: res.socket.remoteAddress,
+      status: res.statusCode,
+      response_time: process.hrtime(start)
+    })
+
     req.removeListener('response', handleResponse)
     req.removeListener('error', handleError)
 
