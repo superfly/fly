@@ -43,12 +43,3 @@ export function fetch(url, init) {
 		}
 	})
 };
-
-function _applyFetch(url, init, body, cb) {
-	// return new Promise(function (resolve, reject) {
-	logger.debug("gonna fetch", url, init && JSON.stringify(init))
-
-	bridge.dispatch("fetch", url, init, body, cb)
-	logger.debug("dispatched nativefetch")
-	// })
-}
