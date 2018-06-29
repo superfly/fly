@@ -27,7 +27,7 @@ export function fetch(url, init) {
 			else if (typeof req.bodySource === 'string')
 				bridge.dispatch("fetch", url, init, req.bodySource, fetchCb)
 			else
-				req.arrayBuffer.then(function fetchArrayBufferPromise(body) {
+				req.arrayBuffer().then(function fetchArrayBufferPromise(body) {
 					bridge.dispatch("fetch", url, init, body, fetchCb)
 				}).catch(reject)
 

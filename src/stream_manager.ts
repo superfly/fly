@@ -81,7 +81,7 @@ export const streamManager = {
       attempts += 1
       try {
         const chunk = info.stream.read(1024 * 1024)
-        log.debug("chunk is null? arraybuffer? string?", !chunk, chunk instanceof Buffer, typeof chunk === "string")
+        log.debug("chunk is null? arraybuffer?", !chunk, chunk instanceof Buffer)
 
         if (chunk)
           info.readLength += Buffer.byteLength(chunk)
