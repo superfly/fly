@@ -16,4 +16,18 @@ describe("@fly/cache", () => {
 
     expect(result).to.eq(v)
   })
+
+  it("deletes from cache", async () => {
+    const v = `cache-value-woo! ${Math.random()}`
+
+    const setResult = await cache.set("cache-delete-key", v)
+    expect(setResult).to.eq(true)
+
+    const result = await cache.del("cache-delete-key")
+
+    expect(result).to.eq(true)
+
+    const newVal = await cache.get("cache-delete-key")
+    expect(newVal).to.eq(null)
+  })
 })
