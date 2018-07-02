@@ -24,5 +24,16 @@ describe("timers", () => {
         done()
       }, 50)
     })
+    it("is cleared", function (done) {
+      const t = setTimeout(function () {
+        done(new Error("should not be called"))
+      }, 30)
+      setTimeout(function () {
+        clearTimeout(t)
+      }, 10)
+      setTimeout(function () {
+        done()
+      }, 50)
+    })
   })
 })

@@ -31,8 +31,7 @@ describe('Cache API', function () {
   it('sets a yuge value', async () => {
     let path = "cache-api/yuge/" + Math.random().toString()
     let res = await axios.get("http://127.0.0.1:3333/" + path, { headers: { 'Host': 'test' } })
-    expect(res.status).to.equal(500)
-    expect(res.data).to.equal("Cache does not support values > 2MB")
+    expect(res.status).to.equal(200)
   })
 
   it('gets a value', async () => {
