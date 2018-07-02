@@ -4,3 +4,5 @@ node_modules
 .nyc_output
 bin/fly
 .fly
+
+apps/matomo-open-source-analytics/.fly.secrets.yml

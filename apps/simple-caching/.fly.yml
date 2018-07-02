@@ -1,0 +1,4 @@
+app: sample
+config:
+  HOST:
+    fromSecret: HOST
