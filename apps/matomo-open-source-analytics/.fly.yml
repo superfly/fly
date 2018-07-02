@@ -1,0 +1,14 @@
+app: matomo-test
+config:
+  HOST:
+    fromSecret: HOST
+  LOADER_IO_KEY:
+    fromSecret: LOADER_IO_KEY
+  IMAGE_HOST:
+    fromSecret: IMAGE_HOST
+  MATOMO_TRACKING_URL:
+    fromSecret: MATOMO_TRACKING_URL
+  MATOMO_AUTH_TOKEN:
+    fromSecret: MATOMO_AUTH_TOKEN
+  MATOMO_TRACKING_NUMBER:
+    fromSecret: MATOMO_TRACKING_NUMBER
