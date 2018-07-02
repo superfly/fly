@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.34.0"></a>
+# [0.34.0](https://github.com/superfly/fly/compare/v0.33.4...v0.34.0) (2018-07-02)
+
+
+### Bug Fixes
+
+* calling respondWith with undefined would crash ([37e4f5a](https://github.com/superfly/fly/commit/37e4f5a))
+* Headers.get(name) returns multivalue properly ([#93](https://github.com/superfly/fly/issues/93)) ([c5463ba](https://github.com/superfly/fly/commit/c5463ba))
+* More durable buffer -> string decoding for weird files ([ab7f28d](https://github.com/superfly/fly/commit/ab7f28d))
+* More helpful error when fly.http.respondWith(...) isn't setup ([d0f5cda](https://github.com/superfly/fly/commit/d0f5cda))
+* Throw meaningful error when Response/Request have an unknown body type ([fffdd75](https://github.com/superfly/fly/commit/fffdd75))
+
+
+### Features
+
+* Object Storage via `[@fly](https://github.com/fly)/data` ([e1f17e2](https://github.com/superfly/fly/commit/e1f17e2))
+
+
+
 <a name="0.33.4"></a>
 ## [0.33.4](https://github.com/superfly/fly/compare/v0.33.3...v0.33.4) (2018-06-13)
 
