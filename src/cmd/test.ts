@@ -1,12 +1,12 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import * as winston from 'winston'
 
 import glob = require('glob')
 import { root } from './root'
 
-import log from '../log'
 import { Bridge } from '../bridge/bridge'
+import { LocalRuntime } from '../local_runtime';
+import { App } from '../app';
 import { SQLiteDataStore } from '../sqlite_data_store';
 
 const scripts = [
@@ -25,15 +25,14 @@ interface TestArgs {
   paths?: string[]
 }
 
+import { FileAppStore } from '../file_app_store';
+
 root
   .subCommand<any, TestArgs>("test [paths...]")
   .description("Run unit tests, defaults to {test,spec}/**/*.{test,spec}.js")
   .action((opts, args, rest) => {
     const { ivm } = require('../')
-    const { v8Env } = require('../v8env')
-    const { FileAppStore } = require('../file_app_store')
     const { getWebpackConfig, buildAppWithConfig } = require('../utils/build')
-    const { createContext } = require('../context')
 
     const cwd = process.cwd()
 
@@ -64,46 +63,36 @@ root
       const app = appStore.app
 
       try {
-        // await v8Env.waitForReadiness()
-        const iso = new ivm.Isolate({ snapshot: v8Env.snapshot })
-        const ctx = await createContext(iso, new Bridge({
-          dataStore: new SQLiteDataStore(app.name, 'test')
-        }))
+        const app = appStore.app
+        const rt = new LocalRuntime(
+          new App({ app: app.name, version: app.version, source: "", source_hash: "", config: {}, secrets: {}, env: "test" }),
+          new Bridge({
+            dataStore: new SQLiteDataStore(app.name, 'test')
+          })
+        )
 
-        await ctx.set('_log', new ivm.Reference(function (lvl: string, msg: string, ...args: any[]) {
-          log.log(lvl, msg, ...args)
-        }))
-
-        ctx.meta.app = app
-
-        ctx.logger.add(winston.transports.Console, {
-          formatter: function (options: any) {
-            return options.message
-          }
-        })
-
-        await ctx.set('_mocha_done', new ivm.Reference(function (failures: number) {
+        await rt.set('_mocha_done', new ivm.Reference(function (failures: number) {
           if (failures)
             return process.exit(1)
           process.exit()
         }))
 
         for (let script of scripts) {
-          const compiled = await iso.compileScript(script.code, script)
-          await compiled.run(ctx.ctx)
+          const compiled = await rt.isolate.compileScript(script.code, script)
+          await compiled.run(rt.context)
         }
 
-        await ctx.set('app', app.forV8())
+        await rt.setApp(app)
 
         const bundleName = `bundle-${hash}`
         const sourceFilename = `${bundleName}.js`
         const sourceMapFilename = `${bundleName}.map.json`
-        const bundleScript = await iso.compileScript(code, { filename: sourceFilename })
-        await bundleScript.run(ctx.ctx)
+        const bundleScript = await rt.isolate.compileScript(code, { filename: sourceFilename })
+        await bundleScript.run(rt.context)
 
-        const runScript = await iso.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })
+        const runScript = await rt.isolate.compileScript(fs.readFileSync(runPath).toString(), { filename: runPath })
         console.log("Running tests...")
-        await runScript.run(ctx.ctx)
+        await runScript.run(rt.context)
       } catch (err) {
         console.error(err.stack)
       }

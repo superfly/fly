@@ -1,19 +1,46 @@
 language: node_js
-node_js:
-- '8'
-- '9'
-- '10.1'
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - gcc-5
-    - g++-5
+compiler: clang
+matrix:
+  include:
+    - os: linux
+      node_js: "8"
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          packages:
+          - gcc-5
+          - g++-5
+          - autoconf
+          - libtool
+          - nasm
+      env:
+        - MATRIX_EVAL="export CXX=g++-5"
+    - os: linux
+      node_js: "10.3"
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          packages:
+          - gcc-5
+          - g++-5
+          - autoconf
+          - libtool
+          - nasm
+      env:
+        - MATRIX_EVAL="export CXX=g++-5"
+    - os: osx
+      osx_image: xcode9.4
+      node_js: "8"
+    - os: osx
+      osx_image: xcode9.4
+      node_js: "10.3"
+      
 before_install:
 - set -e
+- eval "${MATRIX_EVAL}"
 install:
-- export CXX="g++-5"
 - npm install
 - npm run build
 script:

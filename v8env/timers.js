@@ -1,8 +1,6 @@
 export function setTimeout(cb, ms) {
   const ref = bridge.wrapFunction(cb)
-  bridge.dispatch("setTimeout", ref, ms).catch(() => {
-    try { ref.release() } catch (e) { }
-  })
+  return bridge.dispatchSync("setTimeout", ref, ms)
 }
 
 export function clearTimeout(id) {
@@ -11,10 +9,7 @@ export function clearTimeout(id) {
 
 export function setInterval(cb, ms) {
   const ref = bridge.wrapFunction(cb)
-  releasables.push(ref)
-  bridge.dispatch("setInterval", ref, ms).catch(() => {
-    try { ref.release() } catch (e) { }
-  })
+  return bridge.dispatchSync("setInterval", ref, ms)
 }
 
 export function clearInterval(id) {

@@ -1,21 +1,27 @@
 import { registerBridge } from './'
 
-import { ivm, Context, Bridge } from '../'
-import log from "../log"
+import { ivm, Bridge } from '../'
+import { Runtime } from '../runtime';
 
-registerBridge('setTimeout', function (ctx: Context, bridge: Bridge, fn: ivm.Reference<Function>, timeout: number) {
-  ctx.setTimeout(fn, timeout)
+registerBridge('setTimeout', function (rt: Runtime, bridge: Bridge, fn: ivm.Reference<Function>, timeout: number) {
+  return Promise.resolve(new ivm.Reference(setTimeout(function () {
+    try { fn.applyIgnored(null, []) } catch (e) { }
+    try { fn.release() } catch (e) { }
+  }, timeout)))
 })
 
-registerBridge('clearTimeout', function (ctx: Context, bridge: Bridge, id: number) {
-  ctx.clearTimeout(id)
+registerBridge('clearTimeout', function (rt: Runtime, bridge: Bridge, id: ivm.Reference<NodeJS.Timer>) {
+  try { clearTimeout(id.deref()) } catch (e) { }
 })
 
-registerBridge('setInterval', function (ctx: Context, bridge: Bridge, fn: ivm.Reference<Function>, every: number) {
-  ctx.setInterval(fn, every)
+registerBridge('setInterval', function (rt: Runtime, bridge: Bridge, fn: ivm.Reference<Function>, every: number) {
+  return Promise.resolve(new ivm.Reference(setInterval(function () {
+    try { fn.applyIgnored(null, []) } catch (e) { }
+    try { fn.release() } catch (e) { }
+  }, every)))
 })
 
-registerBridge('clearInterval', function (ctx: Context, bridge: Bridge, id: number) {
-  ctx.clearInterval(id)
+registerBridge('clearInterval', function (rt: Runtime, bridge: Bridge, id: ivm.Reference<NodeJS.Timer>) {
+  try { clearInterval(id.deref()) } catch (e) { }
 })
 

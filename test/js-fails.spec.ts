@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { startServer, cacheStore, contextStore, stopServer } from './helper'
+import { startServer, cacheStore, stopServer } from './helper'
 import axios from 'axios'
 
 describe('JS Fails', function () {

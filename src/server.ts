@@ -1,30 +1,19 @@
 import * as http from 'http';
 import { ivm } from './'
-import * as url from 'url';
-import * as net from 'net';
-import * as fs from 'fs';
 import * as zlib from 'zlib';
 import log from './log'
-import { Trace } from './trace';
 import * as httpUtils from './utils/http'
-import { Readable, Writable, Transform } from 'stream'
-import { Context } from './context'
+import { Writable } from 'stream'
 import { App } from './app'
 
-import EventEmitter = require('events')
-import { DefaultContextStore } from './default_context_store';
-
-import { bufferToStream, transferInto } from './utils/buffer'
-import { ProxyStream } from './bridge/proxy_stream';
-import { TLSSocket } from 'tls';
 import { FileAppStore } from './file_app_store';
 import { Bridge } from './bridge/bridge';
 import { LocalFileStore } from './local_file_store';
 import { randomBytes } from 'crypto';
+import { LocalRuntime } from './local_runtime';
+import { Runtime } from './runtime';
 import { SQLiteDataStore } from './sqlite_data_store';
-
-const defaultFetchDispatchTimeout = 1000
-const defaultFetchEndTimeout = 5000
+import { streamManager, streamIdPrefix } from './stream_manager';
 
 const hopHeaders = [
 	// From RFC 2616 section 13.5.1
@@ -57,9 +46,9 @@ declare module 'http' {
 
 export interface ServerOptions {
 	env?: string
-	contextStore?: DefaultContextStore
 	appStore?: FileAppStore
 	bridge?: Bridge
+	inspect?: boolean
 }
 
 export interface RequestTask {
@@ -71,7 +60,7 @@ export class Server extends http.Server {
 	options: ServerOptions
 
 	bridge: Bridge
-	contextStore: DefaultContextStore
+	runtime: LocalRuntime
 	appStore: FileAppStore
 
 	constructor(options: ServerOptions = {}) {
@@ -82,7 +71,7 @@ export class Server extends http.Server {
 			fileStore: new LocalFileStore(process.cwd(), this.appStore.release),
 			dataStore: new SQLiteDataStore(this.appStore.app.name, options.env || 'development')
 		})
-		this.contextStore = options.contextStore || new DefaultContextStore()
+		this.runtime = new LocalRuntime(this.appStore.app, this.bridge, { inspect: !!options.inspect })
 		this.on("request", this.handleRequest.bind(this))
 		this.on("listening", () => {
 			const addr = this.address()
@@ -91,20 +80,21 @@ export class Server extends http.Server {
 	}
 
 	private async handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {
-		request.pause()
-		const startedAt = process.hrtime()
-		const trace = Trace.start("httpRequest")
-		if (request.url === undefined) // wtf
+		// request.pause()
+		const start = process.hrtime()
+		const reqId = randomBytes(12).toString('hex')
+		if (request.url === undefined) // typescript check fix
 			return
 
 		if (request.headers.host === undefined)
 			return
 
-		if (request.url == undefined) { // that can't really happen?
+		if (request.url == undefined) { // typescript check fix
 			return
 		}
 
 		request.protocol = 'http:'
+		request.headers['x-request-id'] = reqId
 
 		const app = this.appStore.app;
 
@@ -114,76 +104,46 @@ export class Server extends http.Server {
 			return
 		}
 
-		const contextErrorHandler = (err: Error) => {
-			handleCriticalError(err, request, response)
-		}
-
-		let t = trace.start("acquireContext")
-		let ctx: Context
 		try {
-			ctx = await this.contextStore.getContext(app, this.bridge, t)
+			await this.runtime.setApp(app)
 		} catch (err) {
 			handleCriticalError(err, request, response)
 			return
 		}
-		t.end()
-		ctx.trace = trace
-		Object.assign(ctx.logMetadata, {
-			method: request.method,
-			remote_addr: request.connection.remoteAddress,
-			user_agent: request.headers['user-agent']
-		})
-
-		ctx.once("error", contextErrorHandler)
-
-		request.headers['x-request-id'] = randomBytes(12).toString('hex')
 
 		try {
-			await handleRequest(app, ctx, request, response, trace)
+			await handleRequest(this.runtime, request, response)
 		} catch (err) {
 			log.error("error handling request:", err.stack)
+			handleCriticalError(err, request, response)
 		} finally {
-			ctx.removeListener('error', contextErrorHandler)
-			this.contextStore.putContext(ctx)
-			trace.end()
-			ctx.log('info', `${request.connection.remoteAddress} ${request.method} ${request.url} ${response.statusCode} ${Math.round(trace.milliseconds() * 100) / 100}ms`)
-			log.debug(trace.report())
+			const end = process.hrtime(start)
+			this.runtime.log('info', `${request.connection.remoteAddress} ${request.method} ${request.url} ${response.statusCode} ${(((end[0] * 1e9) + end[1]) / 1e6).toFixed(2)}ms`)
 		}
 	}
 
 }
 
-type V8ResponseBody = null | string | ArrayBuffer | Buffer | ivm.Reference<ProxyStream>
+type V8ResponseBody = null | string | ArrayBuffer | Buffer
 
-export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage, res: http.ServerResponse, ptrace?: Trace) {
+export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.ServerResponse): Promise<number> {
 
-	let trace = Trace.start("handleRequest", ptrace)
-	let t: Trace;
-
-	let flyDepth = 0
-	let flyDepthHeader = <string>req.headers["x-fly-depth"]
-	if (flyDepthHeader) {
-		flyDepth = parseInt(flyDepthHeader)
-		if (isNaN(flyDepth) || flyDepth < 0) {
-			flyDepth = 0
+	const flyRecurseHeader = req.headers['fly-allow-recursion']
+	if (!flyRecurseHeader || !flyRecurseHeader[0]) {
+		const flyAppHeader = req.headers['fly-app']
+		if (flyAppHeader) {
+			const flyAppName: string = Array.isArray(flyAppHeader) ? flyAppHeader[0] : flyAppHeader
+			if (flyAppName == rt.app.name) {
+				res.writeHead(400)
+				res.end("Too much recursion")
+				req.destroy() // stop everything I guess.
+				return Promise.resolve(0)
+			}
 		}
 	}
 
 	const fullURL = httpUtils.fullURL(req.protocol, req)
 
-	Object.assign(ctx.meta, {
-		app: app,
-
-		requestId: req.headers['x-request-id'],
-		originalScheme: req.protocol,
-		originalHost: req.headers.host,
-		originalPath: req.url,
-		originalURL: fullURL,
-		flyDepth: flyDepth
-	})
-
-	t = Trace.tryStart("fetchEvent", ctx.trace)
-	ctx.trace = t
 	let cbCalled = false
 	return new Promise((resolve, reject) => { // mainly to make try...finally work
 		let reqForV8 = {
@@ -197,12 +157,11 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 				return // this can't happen twice
 			}
 			cbCalled = true
-			t.end()
-			ctx.trace = t.parent
 
 			if (err) {
 				log.error("error from fetch callback:", err)
-				writeHead(ctx, res, 500)
+
+				writeHead(rt, res, 500)
 				res.end("Error: " + err)
 				return
 			}
@@ -215,7 +174,6 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 
 					const val = v8res.headers[n]
 
-					//console.log("setting header", n, val)
 					res.setHeader(n, val)
 				} catch (err) {
 					log.error("error setting header", err)
@@ -248,37 +206,36 @@ export function handleRequest(app: App, ctx: Context, req: http.IncomingMessage,
 				) {
 					res.removeHeader("Content-Length")
 					res.setHeader("Content-Encoding", "gzip")
-					//res.setHeader("Content-Type", contentType)
 					dst = zlib.createGzip({ level: 2 })
 					dst.pipe(res)
 				}
 			}
 
-			writeHead(ctx, res, v8res.status)
+			writeHead(rt, res, v8res.status)
 
-			handleResponse(resBody, res, dst).then((len) => {
-				if (ptrace)
-					ptrace.addTags({ dataOut: len, dataIn: 0 })
+			handleResponse(rt, resBody, res, dst).then((len) => {
+				rt.reportUsage("http", { data_out: len })
 				if (!res.finished)
 					res.end() // we are done. triggers 'finish' event
-			}).then(() => resolve()).catch((e) => reject(e))
+				resolve(len)
+			}).catch((e) => reject(e))
 		}
 
-		ctx.fireFetchEvent([
+		rt.getSync("fireFetchEvent").apply(null, [
 			fullURL,
 			new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
-			req.method === 'GET' || req.method === 'HEAD' ? null : new ProxyStream(req).ref,
+			req.method === 'GET' || req.method === 'HEAD' ? null : streamManager.addPrefixed(rt, req),
 			new ivm.Reference(fetchCallback)
 		]).catch(reject)
 	})
 }
 
-function handleResponse(src: V8ResponseBody, res: http.ServerResponse, dst: Writable): Promise<number> {
+function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerResponse, dst: Writable): Promise<number> {
 	if (!src)
 		return Promise.resolve(0)
 
-	if (src instanceof ivm.Reference) {
-		return handleResponseStream(src.deref({ release: true }), res, dst)
+	if (typeof src == "string" && src.startsWith(streamIdPrefix)) {
+		return handleResponseStream(rt, src.replace(streamIdPrefix, ""), res, dst)
 	}
 
 	let totalLength = 0
@@ -301,8 +258,8 @@ function handleResponse(src: V8ResponseBody, res: http.ServerResponse, dst: Writ
 	})
 }
 
-function handleResponseStream(src: ProxyStream, res: http.ServerResponse, dst: Writable): Promise<number> {
-	return new Promise(function (resolve, reject) {
+function handleResponseStream(rt: Runtime, streamId: string, res: http.ServerResponse, dst: Writable): Promise<number> {
+	return new Promise<number>((resolve, reject) => {
 		setImmediate(() => {
 			let dataOut = 0
 			dst.on("data", function (d) {
@@ -311,10 +268,12 @@ function handleResponseStream(src: ProxyStream, res: http.ServerResponse, dst: W
 			res.on("finish", function () {
 				resolve(dataOut)
 			}).on("error", reject)
-			for (const c of src.buffered) {
-				dst.write(c)
+
+			try {
+				streamManager.pipe(rt, streamId, dst)
+			} catch (e) {
+				reject(e)
 			}
-			src.stream.pipe(dst)
 		})
 	})
 }
@@ -328,7 +287,6 @@ function handleCriticalError(err: Error, req: http.IncomingMessage, res: http.Se
 	req.destroy() // stop everything I guess.
 }
 
-function writeHead(ctx: Context, res: http.ServerResponse, status: number) {
-	ctx.logMetadata.status = status
+function writeHead(rt: Runtime, res: http.ServerResponse, status: number) {
 	res.writeHead(status)
 }

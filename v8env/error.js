@@ -7,7 +7,7 @@ function originalPositionFor(source, position) {
 Error.prepareStackTrace = prepareStackTrace
 
 function prepareStackTrace(error, stack) {
-  return error + stack.map(function (frame) {
+  return error + stack.map(function mapStack(frame) {
     return '\n    at ' + wrapCallSite(frame);
   }).join('');
 }
@@ -31,10 +31,10 @@ function wrapCallSite(frame) {
       column: column
     });
     frame = cloneCallSite(frame);
-    frame.getFileName = function () { return position.source; };
-    frame.getLineNumber = function () { return position.line; };
-    frame.getColumnNumber = function () { return position.column + 1; };
-    frame.getScriptNameOrSourceURL = function () { return position.source; };
+    frame.getFileName = function getFileName() { return position.source; };
+    frame.getLineNumber = function getLineNumber() { return position.line; };
+    frame.getColumnNumber = function getColumnNumber() { return position.column + 1; };
+    frame.getScriptNameOrSourceURL = function getScriptNameOrSourceURL() { return position.source; };
     return frame;
   }
 
@@ -43,7 +43,7 @@ function wrapCallSite(frame) {
   if (origin) {
     origin = mapEvalOrigin(origin);
     frame = cloneCallSite(frame);
-    frame.getEvalOrigin = function () { return origin; };
+    frame.getEvalOrigin = function getEvalOrigin() { return origin; };
     return frame;
   }
 
@@ -136,8 +136,8 @@ function CallSiteToString() {
 
 function cloneCallSite(frame) {
   var object = {};
-  Object.getOwnPropertyNames(Object.getPrototypeOf(frame)).forEach(function (name) {
-    object[name] = /^(?:is|get)/.test(name) ? function () { return frame[name].call(frame); } : frame[name];
+  Object.getOwnPropertyNames(Object.getPrototypeOf(frame)).forEach(function cloneCallSiteForEach(name) {
+    object[name] = /^(?:is|get)/.test(name) ? function frameCallFn() { return frame[name].call(frame); } : frame[name];
   });
   object.toString = CallSiteToString;
   return object;

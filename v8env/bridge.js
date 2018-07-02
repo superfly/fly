@@ -79,7 +79,7 @@ export default function initBridge(ivm, dispatch) {
         return new ivm.Reference(fn);
 
       const cb = new ivm.Reference(function bridgeAutoReleaseFn(...args) {
-        try { cb.release() } finally {
+        try { cb.release() } catch (err) { } finally {
           fn(...args)
         }
       })

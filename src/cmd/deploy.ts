@@ -38,7 +38,7 @@ const deploy = root
     buildApp(cwd, { watch: false, uglify: true }, async (err: Error, source: string, hash: string, sourceMap: string) => {
       try {
         const entries = [
-          pathResolve('.fly.yml'),
+          '.fly.yml',
           ...glob.sync('.fly/*/**.{js,json}', { cwd: cwd }),
           ...release.files
         ].filter((f) => existsSync(pathResolve(cwd, f)))

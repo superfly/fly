@@ -1,8 +1,6 @@
-import * as winston from 'winston';
-
-export default new winston.Logger({
+export default require("console-log-level")({
   level: process.env.LOG_LEVEL || 'info',
-  transports: [
-    new winston.transports.Console({ timestamp: true }),
-  ]
+  prefix: function (level: string) {
+    return `[${level}]`
+  }
 })

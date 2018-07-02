@@ -1,15 +1,14 @@
 import { registerBridge } from './'
 
-import { ivm, Context } from '../'
-import log from "../log"
+import { ivm } from '../'
+import { Runtime } from '../runtime';
 
-registerBridge('getHeapStatistics', function (ctx: Context) {
-  return function (callback: ivm.Reference<Function>) {
-    ctx.addCallback(callback)
-    ctx.iso.getHeapStatistics().then((heap) => {
-      ctx.tryCallback(callback, [null, new ivm.ExternalCopy(heap).copyInto()])
+registerBridge('getHeapStatistics', function (rt: Runtime) {
+  return function (cb: ivm.Reference<Function>) {
+    rt.isolate.getHeapStatistics().then((heap) => {
+      cb.applyIgnored(null, [null, new ivm.ExternalCopy(heap).copyInto()])
     }).catch((err) => {
-      ctx.tryCallback(callback, [err.toString()])
+      cb.applyIgnored(null, [err.toString()])
     })
   }
 })

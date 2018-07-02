@@ -1,21 +1,17 @@
-import log from '../log'
-
 import { ivm } from '..';
 
 import { registerBridge } from '.';
-import { Context } from '../context';
 import { Bridge } from './bridge';
 import { createHash, Hash, HexBase64Latin1Encoding, randomBytes } from 'crypto';
 
 import { transferInto } from '../utils/buffer';
+import { Runtime } from '../runtime';
 
-const supportedAlgos = ["blake2b512", "blake2s256", "gost", "md4", "md5", "mdc2", "rmd160", "sha1", "sha224", "sha256", "sha384", "sha512"]
-
-registerBridge("digestHash", function (ctx: Context, bridge: Bridge, algo: string, data: ArrayBuffer | string, encoding?: HexBase64Latin1Encoding) {
+registerBridge("digestHash", function (rt: Runtime, bridge: Bridge, algo: string, data: ArrayBuffer | string, encoding?: HexBase64Latin1Encoding) {
   return digestHash(algo, data, encoding)
 })
 
-registerBridge("digestHashAsync", function (ctx: Context, bridge: Bridge, algo: string, data: ArrayBuffer | string, encoding?: HexBase64Latin1Encoding) {
+registerBridge("digestHashAsync", function (rt: Runtime, bridge: Bridge, algo: string, data: ArrayBuffer | string, encoding?: HexBase64Latin1Encoding) {
   try {
     let h = digestHash(algo, data, encoding)
     return Promise.resolve(h)
@@ -24,7 +20,7 @@ registerBridge("digestHashAsync", function (ctx: Context, bridge: Bridge, algo: 
   }
 })
 
-registerBridge("getRandomValues", function (ctx: Context, bridge: Bridge, bufLen: number) {
+registerBridge("getRandomValues", function (rt: Runtime, bridge: Bridge, bufLen: number) {
   return new Promise<ivm.Copy<ArrayBuffer> | null>((resolve, reject) => {
     if (bufLen > 65536) {
       return reject(new Error('Failed to execute \'getRandomValues\' on \'Crypto\': The ' +

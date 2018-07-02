@@ -1,8 +1,8 @@
 // import dispatcherInit from './fly/dispatcher'
 import bridgeInit from './bridge'
 
-import { fireFetchEvent, addEventListener, dispatchEvent, FetchEvent, emitter } from "./events"
-import { ReadableStream, WritableStream, TransformStream } from 'web-streams-polyfill'
+import { fireFetchEvent, addEventListener, dispatchEvent, FetchEvent } from "./events"
+import { ReadableStream, WritableStream, TransformStream } from './streams'
 
 import { console } from './console'
 import flyInit from './fly'
@@ -25,19 +25,16 @@ import { Document, Element } from './document'
 
 import { MiddlewareChain } from './middleware'
 
-global.releasables = []
 global.middleware = {}
 
+global.bootstrapBridge = function bootstrapBridge(ivm, dispatch) {
+	delete global.bootstrapBridge
+	bridgeInit(ivm, dispatch)
+}
+
 global.bootstrap = function bootstrap() {
-	const ivm = global._ivm
-
 	// Cleanup, early!
-	delete global._ivm
 	delete global.bootstrap
-
-	// Bridge is used everywhere to transfer values to node
-	bridgeInit(ivm, global._dispatch)
-	delete global._dispatch
 
 	// Sets up `Error.prepareStacktrace`, for source map support
 	require('./error')
@@ -57,7 +54,7 @@ global.bootstrap = function bootstrap() {
 	})
 
 	// Events
-	global.fireFetchEvent = fireFetchEvent.bind(null, ivm)
+	global.fireFetchEvent = fireFetchEvent
 	global.addEventListener = addEventListener
 	global.dispatchEvent = dispatchEvent
 
@@ -69,7 +66,7 @@ global.bootstrap = function bootstrap() {
 
 	global.getHeapStatistics = function getHeapStatistics() {
 		return new Promise((resolve, reject) => {
-			bridge.dispatch("getHeapStatistics", function (err, heap) {
+			bridge.dispatch("getHeapStatistics", function getHeapStatisticsPromise(err, heap) {
 				if (err) {
 					reject(err)
 					return
@@ -77,24 +74,5 @@ global.bootstrap = function bootstrap() {
 				resolve(heap)
 			})
 		})
-	}
-}
-
-global.finalizers = []
-
-global.finalize = function finalize() {
-	while (finalizers.length) {
-		try { finalizers.shift()() } catch (e) { }
-	}
-}
-
-global.teardown = global.release = function release() {
-	releaseReleasables()
-	emitter.removeAllListeners()
-}
-
-function releaseReleasables() {
-	while (releasables.length) {
-		try { releasables.shift().release() } catch (e) { }
 	}
 }

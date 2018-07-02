@@ -17,13 +17,12 @@ import './text-encoding'
 import './crypto'
 import './error'
 import './timers'
-import { ivm, CacheStore, FileStore } from '../'
+import { CacheStore, FileStore } from '../'
 
 import { catalog, BridgeFunction } from './'
-import { Context } from '../';
 import { MemoryCacheStore } from '../memory_cache_store';
+import { Runtime } from '../runtime';
 import { DataStore } from '../data_store';
-import { SQLiteDataStore } from '../sqlite_data_store';
 
 const errNoSuchBridgeFn = "Attempted to call a unregistered bridge function."
 
@@ -64,11 +63,11 @@ export class Bridge {
     )
   }
 
-  dispatch(ctx: Context, name: string, ...args: any[]) {
+  dispatch(rt: Runtime, name: string, ...args: any[]) {
     const fn = this.functions.get(name)
     if (!fn)
       throw new Error(errNoSuchBridgeFn + ` ${name}`)
-    return fn(ctx, this, ...args)
+    return fn(rt, this, ...args)
   }
 
   set(name: string, fn: BridgeFunction) {

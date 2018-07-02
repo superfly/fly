@@ -1,11 +1,17 @@
 import { logger } from '../logger'
 
-export default function refToStream(ref) {
+export const streamIdPrefix = "__fly_stream_id:"
+export function isFlyStream(id) {
+  return typeof id === "string" && id.startsWith(streamIdPrefix)
+}
+
+export default function refToStream(id) {
   let closed = false
+  id = id.replace(streamIdPrefix, "")
   const r = new ReadableStream({
     start(controller) {
-      const cb = bridge.wrapFunction(function (name, ...args) {
-        logger.debug("GOT EVENT:", name)
+      const cb = bridge.wrapFunction(function streamSubscribe(name, ...args) {
+        logger.debug("stream event:", name)
         if (name === "close" || name === "end") {
           try { cb.release() } catch (e) { }
           if (!closed) {
@@ -17,75 +23,35 @@ export default function refToStream(ref) {
           logger.error("error in stream:", args[0])
           controller.error(new Error(args[0]))
         } else
-          logger.debug("unhandled event", name)
-      }, { release: false }) // don't necessarily want to release
-      bridge.dispatch("subscribeProxyStream", ref, cb)
-      // dispatcher.dispatch("subscribeProxyStream",
-      //   ref,
-      //   cb
-      // ).catch((err) => {
-      //   try { cb.release() } catch (e) { }
-      //   controller.error(err)
-      // })
+          logger.error("unhandled event", name)
+      }, { release: false })
+      bridge.dispatch("streamSubscribe", id, cb) // no releasing here, we re-use it
     },
     pull(controller) {
-      //if(r.locked && !resumed){
       if (closed) {
         return Promise.resolve(null)
       }
-      return new Promise((resolve, reject) => {
-        bridge.dispatch("readProxyStream", ref, (err, data, tainted) => {
+      return new Promise(function pullPromise(resolve, reject) {
+        bridge.dispatch("streamRead", id, function streamRead(err, data) {
           if (err) {
             controller.error(new Error(err))
             reject(err)
             return
           }
-          // if data is blank the stream will keep pulling
-          // readProxyStream tries a few times to minimize bridge calls
-          controller.enqueue(data)
-          if (data && r._ref && tainted) {
-            // once underlying ref is tainted, we can't pass it around anymore
-            // but we can still use it internally
-            try { r._ref.release() } catch (e) { }
-            r._ref = undefined
-          }
+          // logger.info("data:", data && data.toString())
+          if (data)
+            controller.enqueue(data)
           resolve()
         })
 
-        // const cb = new ivm.Reference((err, data, tainted) => {
-        //   cb.release()
-        //   if (err) {
-        //     controller.error(new Error(err))
-        //     reject(err)
-        //     return
-        //   }
-        //   // if data is blank the stream will keep pulling
-        //   // readProxyStream tries a few times to minimize bridge calls
-        //   controller.enqueue(data)
-        //   if (data && r._ref && tainted) {
-        //     // once underlying ref is tainted, we can't pass it around anymore
-        //     // but we can still use it internally
-        //     try { r._ref.release() } catch (e) { }
-        //     r._ref = undefined
-        //   }
-        //   resolve()
-        // })
-
-
-
-        // dispatcher.dispatch("readProxyStream", ref, cb).catch((err) => {
-        //   try { cb.release() } catch (e) { }
-        //   controller.error(err)
-        // })
-
       })
-      //}
     },
     cancel() {
-      try { r._ref.release() } catch (e) { }
-      logger.debug("readable stream was cancelled")
+      logger.info(`stream ${id} was cancelled`)
     }
-  })
-  r._ref = ref
+  }, {
+      highWaterMark: 0
+    })
+  r.flyStreamId = id
   return r
 }

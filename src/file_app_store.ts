@@ -1,13 +1,9 @@
-import { App, Release } from './app'
+import { App } from './app'
 import * as path from 'path'
 import * as fs from 'fs-extra'
-import * as YAML from 'js-yaml'
 
 import { buildApp } from './utils/build'
 import { getEnv, getLocalRelease, LocalRelease } from './utils/local'
-
-import * as webpack from 'webpack'
-import { LocalFileStore } from './local_file_store';
 
 export interface FileAppStoreOptions {
   build?: boolean

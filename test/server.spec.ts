@@ -108,23 +108,6 @@ describe('Server', function () {
     })
   })
 
-  describe('fetch relative path', function () {
-    before(startServer("fetch-relative-path.js"))
-    after(stopServer)
-
-    before(() => {
-      nock('http://test')
-        .get('/foo')
-        .reply(200, "bar");
-    })
-
-    it('resolves relative paths to the original url properties', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(200);
-      expect(res.data).to.equal("bar")
-    })
-  })
-
   describe('fetch absolute path', function () {
     before(startServer("fetch-absolute-path.js"))
     after(stopServer)
@@ -146,10 +129,25 @@ describe('Server', function () {
     before(startServer("fetch-recursive.js"))
     after(stopServer)
 
-    it('returns an error', async () => {
+    it('returns an error w/o the header', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(500)
+      expect(res.status).to.equal(400)
       expect(res.data).to.equal("Too much recursion")
+    })
+
+    it('returns fine with the header', async () => {
+      let res = await axios.get("http://127.0.0.1:3333/wheader", { headers: { host: "test" } })
+      expect(res.status).to.equal(200)
+    })
+  })
+
+  describe('fetch relative path', function () {
+    before(startServer("fetch-relative-path.js"))
+    after(stopServer)
+
+    it('bombs', async () => {
+      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
+      expect(res.status).to.equal(500);
     })
   })
 
