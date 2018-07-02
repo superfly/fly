@@ -11,6 +11,8 @@ export { ivm }
 
 export { Runtime } from './runtime'
 
+export { streams, StreamInfo } from './stream_manager'
+
 export { v8Env } from './v8env'
 
 export const { version } = require('../package.json')

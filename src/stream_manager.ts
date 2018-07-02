@@ -5,27 +5,14 @@ import { transferInto } from "./utils/buffer";
 import log from "./log";
 import { randomBytes } from "crypto";
 
-interface StreamInfo {
+export interface StreamInfo {
   stream: Readable
   addedAt: number
   readLength: number
   endedAt: number
 }
 
-const streams: { [key: string]: StreamInfo } = {}
-
-const STREAM_TIMEOUT = 5 * 60 * 1000 // 5 minutes
-
-setInterval(function () {
-  log.debug("Checking for old streams.")
-  for (let k of Object.keys(streams)) {
-    const info = streams[k]
-    if (Date.now() - info.addedAt > STREAM_TIMEOUT) {
-      log.debug("Deleting old stream id:", k)
-      cleanupStream(k, info)
-    }
-  }
-}, 10000)
+export const streams: { [key: string]: StreamInfo } = {}
 
 export const streamIdPrefix = "__fly_stream_id:"
 
@@ -114,11 +101,6 @@ export const streamManager = {
       throw new Error("stream closed, not found or destroyed")
     info.stream.pipe(dst)
   },
-}
-
-function cleanupStream(key: string, info: StreamInfo) {
-  info.stream.destroy()
-  delete streams[key]
 }
 
 function streamKey(rt: Runtime, id: string) {
