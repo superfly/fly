@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.35.0"></a>
+# [0.35.0](https://github.com/superfly/fly/compare/v0.34.0...v0.35.0) (2018-07-03)
+
+
+### Bug Fixes
+
+* v8 stream not retrying properly ([2153798](https://github.com/superfly/fly/commit/2153798))
+
+
+### Features
+
+* import from [@fly](https://github.com/fly)/cache module, `del` implemented, cache any size data ([f6e2d9c](https://github.com/superfly/fly/commit/f6e2d9c))
+
+
+
 <a name="0.34.0"></a>
 # [0.34.0](https://github.com/superfly/fly/compare/v0.33.4...v0.34.0) (2018-07-02)
 
