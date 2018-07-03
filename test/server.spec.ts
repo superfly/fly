@@ -62,6 +62,33 @@ describe('Server', function () {
     })
   })
 
+  describe('basic fetch and read (slow)', function () {
+    before(startServer('basic-fetch-and-read.js'))
+    after(stopServer)
+
+    before(() => {
+      // this.timeout(5000)
+      nock('https://example.com')
+        .get('/')
+        .delay({
+          head: 500,
+          body: 2000
+        })
+        .socketDelay(1000)
+        .replyWithFile(200, __dirname + "/fixtures/http/fake.js", {
+          'Content-Type': 'application/javascript'
+        })
+        .once("readable", () => console.log("READABLE"))
+    })
+
+    it('may fetch responses externally', async () => {
+      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
+      expect(res.status).to.equal(200);
+      // expect(res.data).to.include(`<title>Example Domain</title>`)
+      // expect(res.headers['content-type']).to.equal('text/html')
+    })
+  })
+
   // describe('basic chain with google-analytics', function () {
   //   before(startServer("basic-google-analytics.js"))
   //   after(stopServer)

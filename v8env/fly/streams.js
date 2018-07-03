@@ -38,9 +38,7 @@ export default function refToStream(id) {
             reject(err)
             return
           }
-          // logger.info("data:", data && data.toString())
-          if (data)
-            controller.enqueue(data)
+          controller.enqueue(data)
           resolve()
         })
 
