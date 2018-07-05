@@ -33,16 +33,18 @@ describe("@fly/cache", () => {
 
   it("accepts empty arrayBuffer", async () => {
     const k = `cache-test${Math.random()}`
-    const result = await cache.set(k, new ArrayBuffer(0))
-    expect(result).to.eq(true)
-  })
-
-  it("handles failed get calls", async () => {
-    const k = `cache-test${Math.random()}`
 
     await cache.set(k, new ArrayBuffer(0))
 
     const result = await cache.get(k)
-    expect(result).to.eq(null)
+    expect(result).to.be.a('ArrayBuffer')
+    expect(result.byteLength).to.eq(0)
+  })
+
+  it("handles blank strings", async () => {
+    const k = `cache-test${Math.random()}`
+    await cache.set(k, '')
+    const result = await cache.get(k)
+    console.log(result)
   })
 })

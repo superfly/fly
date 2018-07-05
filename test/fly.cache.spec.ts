@@ -42,4 +42,12 @@ describe('Cache API', function () {
     expect(res.status).to.equal(200)
     expect(res.data).to.equal(data)
   })
+
+  it('getString with garbage cache data', async () => {
+    let data = new Buffer([-1, -1, -1, -1])
+    await cacheStore.set("cache:test-app-id:http://test/cache-api/get", data)
+
+    let res = await axios.get("http://127.0.0.1:3333/cache-api/get", { headers: { 'Host': 'test' } })
+    expect(res.status).to.equal(200)
+  })
 })

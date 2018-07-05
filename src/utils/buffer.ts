@@ -25,5 +25,8 @@ export function transferInto(buffer: Buffer | ArrayBuffer | TypedArray | null): 
 }
 
 function transferArrayBufferInto(buffer: ArrayBuffer | SharedArrayBuffer | TypedArray) {
+  if (buffer.byteLength === 0) {
+    return new ivm.ExternalCopy(buffer).copyInto({ release: true, transferIn: true })
+  }
   return new ivm.ExternalCopy(buffer, { transferOut: true }).copyInto({ release: true, transferIn: true });
 }
