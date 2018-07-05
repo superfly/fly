@@ -36,7 +36,11 @@ export function get(key: string) {
 export async function getString(key: string) {
   const buf = await get(key)
   if (!buf) { return buf }
-  return new TextDecoder("utf-8").decode(buf)
+  try {
+    return new TextDecoder("utf-8").decode(buf)
+  } catch (err) {
+    return null
+  }
 }
 
 /**
@@ -47,6 +51,9 @@ export async function getString(key: string) {
  * @returns true if the set was successful
  */
 export function set(key: string, value: string | ArrayBuffer, ttl?: number) {
+  if (typeof value !== "string" && !(value instanceof ArrayBuffer)) {
+    throw new Error("Cache values must be either a string or array buffer")
+  }
   return new Promise<boolean>(function cacheSetPromise(resolve, reject) {
     bridge.dispatch("flyCacheSet", key, value, ttl, function cacheSetCallback(err: string | null, ok?: boolean) {
       if (err != null) {

@@ -15,7 +15,13 @@ registerBridge('flyCacheSet', function cacheSet(rt: Runtime, bridge: Bridge, key
     return
   }
 
-  const buf = Buffer.from(value)
+  let buf: Buffer
+  try {
+    buf = Buffer.from(value)
+  } catch (err) {
+    callback.applyIgnored(null, [err.toString()])
+    return
+  }
   bridge.cacheStore.set(k, buf, ttl).then((ok) => {
     rt.reportUsage("cache:set", { size: buf.byteLength })
     callback.applyIgnored(null, [null, ok])
@@ -54,6 +60,6 @@ registerBridge('flyCacheGet',
       callback.applyIgnored(null, [null, transferInto(buf)])
     }).catch((err) => {
       log.error("got err in cache.get", err)
-      callback.applyIgnored(null, [err.toString()])
+      callback.applyIgnored(null, [null, null]) // swallow errors on get for now
     })
   })
