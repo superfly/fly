@@ -7,7 +7,7 @@ import { Runtime } from '../../runtime';
 
 const errCacheStoreUndefined = new Error("cacheStore is not defined in the config.")
 
-registerBridge('flyCacheSet', function cacheSet(rt: Runtime, bridge: Bridge, key: string, value: ArrayBuffer, ttl: number, callback: ivm.Reference<Function>) {
+registerBridge('flyCacheSet', function cacheSet(rt: Runtime, bridge: Bridge, key: string, value: ArrayBuffer | string, ttl: number, callback: ivm.Reference<Function>) {
   let k = "cache:" + rt.app.name + ":" + key
 
   if (!bridge.cacheStore) {
@@ -15,7 +15,18 @@ registerBridge('flyCacheSet', function cacheSet(rt: Runtime, bridge: Bridge, key
     return
   }
 
-  const buf = Buffer.from(value)
+  let buf: Buffer
+  try {
+    if (value instanceof ArrayBuffer) {
+      buf = Buffer.from(value)
+    } else {
+      // handle strings and garbage inputs reasonably
+      buf = Buffer.from(value.toString(), "utf8")
+    }
+  } catch (err) {
+    callback.applyIgnored(null, [err.toString()])
+    return
+  }
   bridge.cacheStore.set(k, buf, ttl).then((ok) => {
     rt.reportUsage("cache:set", { size: buf.byteLength })
     callback.applyIgnored(null, [null, ok])
@@ -54,6 +65,6 @@ registerBridge('flyCacheGet',
       callback.applyIgnored(null, [null, transferInto(buf)])
     }).catch((err) => {
       log.error("got err in cache.get", err)
-      callback.applyIgnored(null, [err.toString()])
+      callback.applyIgnored(null, [null, null]) // swallow errors on get for now
     })
   })

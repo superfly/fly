@@ -30,4 +30,21 @@ describe("@fly/cache", () => {
     const newVal = await cache.get("cache-delete-key")
     expect(newVal).to.eq(null)
   })
+
+  it("accepts empty arrayBuffer", async () => {
+    const k = `cache-test${Math.random()}`
+
+    await cache.set(k, new ArrayBuffer(0))
+
+    const result = await cache.get(k)
+    expect(result).to.be.a('ArrayBuffer')
+    expect(result.byteLength).to.eq(0)
+  })
+
+  it("handles blank strings", async () => {
+    const k = `cache-test${Math.random()}`
+    await cache.set(k, '')
+    const result = await cache.get(k)
+    console.log(result)
+  })
 })
