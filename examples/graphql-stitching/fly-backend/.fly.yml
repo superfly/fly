@@ -1,0 +1,10 @@
+app: graphql-plus-plus
+config:
+  userAgent:
+    fromSecret: userAgent
+  userToken:
+    fromSecret: userToken
+files:
+  - build/index.html
+  - build/static/js/main.bd786f89.js
+  - build/static/css/main.00d60b9e.css

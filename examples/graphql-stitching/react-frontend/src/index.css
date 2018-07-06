@@ -1,0 +1,142 @@
+body {
+    font: 14px "Century Gothic", Futura, sans-serif;
+    margin: 0;
+}
+
+header {
+    background: #24292e;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+#searchBox {
+    background-color: #fafbfc;
+    text-align: center;
+    padding: 25px;
+    margin: 0;
+    text-align: center;
+}
+
+#searchBox svg {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#searchBox form {
+    display: inline-block;
+    padding: 12px;
+}
+
+#searchBox form input[type='text'] {
+    padding: 5px;
+    margin: 0 3px;
+    width: 120px;
+    border: 1px solid #fff;
+}
+
+#searchBox form input[type='submit'] {
+    color: #fff;
+    background-color: #28a745;
+    background-image: linear-gradient(-180deg, #34d058 0%, #28a745 90%);
+    padding: 3px 10px;
+    font-size: 12px;
+    line-height: 19px;
+    user-select: none;
+    background-repeat: repeat-x;
+    background-position: -1px -1px;
+    background-size: 110% 110%;
+    border: 1px solid rgba(27,31,35,0.2);
+    border-radius: 0.25em;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.recharts-wrapper {
+    margin: 40px auto;
+}
+
+#issueList > p {
+    text-align: center;
+    margin: 50px auto;
+    font-style: italic;
+}
+
+.issueItem {
+    margin: 50px auto;
+    width: 75%;
+    border: 4px solid #fafbfc;
+    position: relative;
+    height: 180px;
+}
+
+.issueItem > div {
+    display: inline-block;
+    margin: 0;
+}
+
+.issueItem > div:nth-child(1) {
+    width: 25%;
+    text-align: center;
+}
+
+.issueItem > div:nth-child(2) {
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    height: 100%;
+}
+
+.issueItem > div:nth-child(3) {
+    width: 25%;
+    text-align: center;
+}
+
+.issueItem .issueNumber {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.issueItem .issueBody p {
+    line-height: 90px;
+    margin: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
+}
+
+.issueItem .issueBody p.title {
+    font-size: 22px;
+}
+
+.issueItem .issueBody p.body {
+    color: #bdc3c7;
+}
+
+.issueItem .issueNumber p, .issueItem .issueSent p {
+    line-height: 180px;
+    margin: 0;
+    font-size: 40px;
+}
+
+.issueItem .issueNumber p a {
+    color: #0366d6;
+}
+
+.issueItem .issueSent {
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
