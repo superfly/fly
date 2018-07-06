@@ -3,8 +3,6 @@ import polarity from 'polarity';
 
 fly.http.respondWith( async function( req ) {
 
-    console.log( "\n\n\n\n", app.config, "\n\n\n\n");
-
     let data, status, contentType;
     const url = new URL(req.url);
 
