@@ -31,7 +31,7 @@ root
     console.log(`Using ${cwd} as working directory.`)
     process.chdir(cwd)
 
-    const port = opts.port && opts.port[0] || 3000
+    const port = (opts.port && opts.port[0]) || (process.env['PORT'] && process.env['PORT']) || 3000
 
     // TODO: use env option for environment.
     const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env: "development" })
