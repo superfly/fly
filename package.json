@@ -95,6 +95,7 @@
     "isolated-vm": "1.6.1",
     "js-yaml": "^3.10.0",
     "mocha": "^4.0.1",
+    "potrace": "^2.1.1",
     "promise.prototype.finally": "^3.1.0",
     "promptly": "^3.0.3",
     "redis": "^2.8.0",

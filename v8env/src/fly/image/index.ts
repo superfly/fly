@@ -290,6 +290,10 @@ export class Image {
     i.info = result.info
     return i
   }
+
+  traceSVG(mode?: string): string {
+    return bridge.dispatchSync("fly.Image.traceSVG", this._ref, mode)
+  }
 }
 
 export namespace Image {

@@ -8,6 +8,8 @@ import * as sharp from 'sharp'
 import { Bridge } from '../bridge';
 import { Runtime } from '../../runtime';
 
+const potrace = require('potrace')
+
 interface sharpImage extends sharp.SharpInstance {
   options: any
 }
@@ -121,6 +123,33 @@ registerBridge('fly.Image.metadata', async function imageMetadata(rt: Runtime, b
   const img = ref.deref()
   const meta = await img.metadata()
   return new ivm.ExternalCopy(extractMetadata(meta)).copyInto({ release: true })
+})
+
+registerBridge('fly.Image.traceSVG', async function traceSVG(rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, mode?: string) {
+  const img = ref.deref()
+  const buffer = await img.toBuffer()
+  return new Promise<string>((resolve, reject) => {
+    let defaults = {
+      color: `lightgray`,
+      optTolerance: 0.4,
+      turdSize: 100,
+      turnPolicy: potrace.Potrace.TURNPOLICY_MAJORITY,
+    }
+
+    const fn = mode == "posterize" ? potrace.posterize : potrace.trace
+
+    fn(buffer, defaults, (err?: Error, result?: string) => {
+      if (err) {
+        reject(err.toString())
+        return
+      }
+      if (!result) {
+        reject("weird empty response")
+        return
+      }
+      resolve(result)
+    })
+  })
 })
 
 registerBridge("fly.Image.toBuffer", function imageToBuffer(rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, callback: ivm.Reference<Function>) {
