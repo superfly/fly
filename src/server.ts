@@ -163,7 +163,7 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
 
 				writeHead(rt, res, 500)
 				res.end("Error: " + err)
-				return
+				return reject(err)
 			}
 
 			for (let n in v8res.headers) {
@@ -218,7 +218,7 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
 				if (!res.finished)
 					res.end() // we are done. triggers 'finish' event
 				resolve(len)
-			}).catch((e) => reject(e))
+			}).catch(reject)
 		}
 
 		rt.getSync("fireFetchEvent").apply(null, [

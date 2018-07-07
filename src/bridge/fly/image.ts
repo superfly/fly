@@ -89,7 +89,6 @@ registerBridge('fly.Image.operation', function imageOperation(rt: Runtime, bridg
     if (!operation) {
       throw new Error("Invalid image operation: " + name)
     }
-    const applyFn = () => operation.apply(img, args)
 
     for (let i = 0; i < args.length; i++) {
       const v = args[i]
