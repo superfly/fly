@@ -41,6 +41,12 @@ process.on("unhandledRejection", function (err) {
 // export const contextStore = new DefaultContextStore()
 export const cacheStore = new MemoryCacheStore("test cache")
 
+declare module 'mocha' {
+  interface IHookCallbackContext {
+    server: Server
+  }
+}
+
 export function startServer(cwd: string, options: ServerOptions = {}) {
   let port = options.port
   if (!port || port == 0) {
@@ -54,7 +60,7 @@ export function startServer(cwd: string, options: ServerOptions = {}) {
 }
 
 export function stopServer(this: IHookCallbackContext, done: MochaDone) {
-  if (this.server.listening)
+  if (this.server && this.server.listening)
     this.server.close(done)
   else
     done()
