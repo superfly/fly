@@ -9,6 +9,7 @@ import { Release } from '../app';
 
 const secretsFile = ".fly.secrets.yml"
 const configFile = ".fly.yml"
+const webpackFile = "webpack.fly.config.js"
 
 const releases: { [key: string]: LocalRelease } = {}
 
@@ -92,7 +93,7 @@ export class LocalRelease extends EventEmitter implements Release {
   }
 
   watchConfig() {
-    const watcher = chokidar.watch([configFile, secretsFile], {
+    const watcher = chokidar.watch([configFile, secretsFile, webpackFile], {
       cwd: this.cwd
     })
     watcher.on('add', this.update.bind(this, 'add'))
