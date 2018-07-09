@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.36.2"></a>
+## [0.36.2](https://github.com/superfly/fly/compare/v0.36.1...v0.36.2) (2018-07-09)
+
+
+### Bug Fixes
+
+* reload dev server when webpack config changes ([88a7718](https://github.com/superfly/fly/commit/88a7718))
+
+
+
 <a name="0.36.1"></a>
 ## [0.36.1](https://github.com/superfly/fly/compare/v0.36.0...v0.36.1) (2018-07-09)
 
