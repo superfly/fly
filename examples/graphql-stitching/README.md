@@ -2,7 +2,9 @@
 
 This is a demonstration of using Fly to build an app that fetches data from GitHub and _quickly_ stitches in additional insights.
 
-Specifically, the user picks a repository. The app fetches issues in that repository through GitHub's API, evaluates the prevailing sentiment of each issue using a natural language processing algorithm, and then displays the combined results graphically.
+Specifically, the user picks a repository. The app fetches the last 50 issues in the repository through GitHub's API, evaluates the prevailing sentiment of each issue using a natural language processing algorithm, and then displays the combined results graphically.
+
+Alternatively, you can make your own custom POST requests to `/custom` just like you would to `https://api.github.com/graphql` and sentiment will be added to _all_ issues in the response.
 
 ## What does it demonstrate?
 
@@ -32,13 +34,13 @@ curl -X POST -H "Content-Type: text/plain" -H "Authorization: bearer <your token
 ### React app
 ```javascript
 // Install project dependencies
-yarn install
+npm install
 
 // Run the app in development mode
-yarn start
+npm start
 
 // Build production 
-yarn build
+npm build
 ```
 
 After building the React app to your satisfaction, you can serve the compiled JavaScript directly from Fly using its distributed `files` store. See more details on that [here](https://fly.io/docs/apps/).
