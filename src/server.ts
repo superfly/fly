@@ -221,12 +221,14 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
 			}).catch(reject)
 		}
 
-		rt.getSync("fireFetchEvent").apply(null, [
-			fullURL,
-			new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
-			req.method === 'GET' || req.method === 'HEAD' ? null : streamManager.addPrefixed(rt, req),
-			new ivm.Reference(fetchCallback)
-		]).catch(reject)
+		rt.get("fireFetchEvent").then((fn) => {
+			fn.apply(null, [
+				fullURL,
+				new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
+				req.method === 'GET' || req.method === 'HEAD' ? null : streamManager.addPrefixed(rt, req),
+				new ivm.Reference(fetchCallback)
+			]).catch(reject)
+		}).catch(reject)
 	})
 }
 
