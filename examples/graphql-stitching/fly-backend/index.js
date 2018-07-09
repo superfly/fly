@@ -1,5 +1,5 @@
 import { request, GraphQLClient } from 'graphql-request';
-import polarity from 'polarity';
+import polarity from 'polarity-webpack';
 
 fly.http.respondWith( async function( req ) {
 
@@ -7,7 +7,7 @@ fly.http.respondWith( async function( req ) {
     const url = new URL(req.url);
 
     if( req.method === 'POST' ) {
-        ({ data, status, contentType } = await serveAPI( req, url ));
+        ({ data, status, contentType } = await getGitHubData( req, url ));
     } else {
         ({ data, status, contentType } = await serveGUI( url ));
     }
@@ -46,24 +46,25 @@ async function serveGUI( url ) {
  * is not coming from the gui
  */
 
-async function serveAPI( req, url ) {
+async function getGitHubData( req, url ) {
 
     let cacheKey = "", queryString = "";
     let reqString = await req.text();
-    let reqStringJSON = await JSON.parse( reqString );
 
     const client = new GraphQLClient( 'https://api.github.com/graphql', {
         headers: {
             'User-Agent': req.headers.get('User-Agent') || app.config.userAgent,
-            'Authorization': req.headers.get('Authorization') || app.config.userToken
+            'Authorization': req.headers.get('Authorization') || 'Bearer ' + app.config.userToken
         }
     });
 
-    queryString = reqStringJSON.query;
+    //only requests from gui are json; non-gui requests use graphql syntax
     if( url.pathname === '/standard' ) {
+        let reqStringJSON = await JSON.parse( reqString );
         cacheKey = reqStringJSON.org + "-" + reqStringJSON.repo;
+        queryString = reqStringJSON.query;
     } else {
-        queryString = addRequiredQueryFields( queryString );
+        queryString = addRequiredQueryFields( reqString );
     }
 
     const { dataString, status } = await getIssues( queryString, client, cacheKey );
@@ -72,7 +73,7 @@ async function serveAPI( req, url ) {
 }
 
 /****
- * add missing query fields (if any);
+ * add missing query fields (if any) for custom queries;
  * we need id, number, title, and bodyText to deliver sentiment
  */
 
@@ -100,7 +101,7 @@ function addRequiredQueryFields( query ) {
 
 async function getIssues( query, client, cacheKey ) {
 
-    let data, dataString, dataJson, status, cachedResponse;
+    let data, dataString, dataJson, status, cachedResponse = null;
 
     if( cacheKey ) { cachedResponse = await fly.cache.getString( cacheKey ); }
     if( cachedResponse !== null ) {
@@ -133,7 +134,7 @@ async function getIssues( query, client, cacheKey ) {
         dataString = await JSON.stringify( dataJson );
 
         if( cacheKey && ( status !== 500 ) ) {
-            fly.cache.set( cacheKey, dataString, 172800 );   //cache for 2 days
+            fly.cache.set( cacheKey, dataString, 172800 );   //cache for 2 days (only non-custom requests)
         }
 
         return { dataString, status };

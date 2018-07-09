@@ -3,6 +3,10 @@ body {
     margin: 0;
 }
 
+.code {
+    font-family: 'Courier New', Courier, monospace;
+}
+
 header {
     background: #24292e;
     color: #fff;
@@ -64,10 +68,18 @@ header h1 {
     margin: 40px auto;
 }
 
-#issueList > p {
+#issueList > p:nth-child(1) {
     text-align: center;
     margin: 50px auto;
     font-style: italic;
+}
+
+#issueList > p:nth-child(2) {
+    text-align: center;
+    font-style: normal;
+    padding: 50px;
+    margin: 0 50px 50px 50px;
+    background-color: #fafbfc;
 }
 
 .issueItem {

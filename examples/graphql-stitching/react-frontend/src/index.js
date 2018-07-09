@@ -14,7 +14,6 @@ class SearchAndDisplayRepos extends React.Component {
         this.state = { org: '', repo: '', issues: [] };
     }
 
-
     changeOrg(newOrg) {
         this.setState({
             org: newOrg
@@ -28,7 +27,7 @@ class SearchAndDisplayRepos extends React.Component {
 
     handleSubmit = async() => {
         try {
-            let resp = await axios.post( 'http://localhost:3000/standard', `{ "org": "${this.state.org}", "repo": "${this.state.repo}", "query": "{ repository(owner: \\"${this.state.org}\\", name: \\"${this.state.repo}\\") { issues(first: 50) { edges { node { id number title bodyText } } } } }" }`, {
+            let resp = await axios.post( 'http://localhost:3000/standard', `{ "org": "${this.state.org}", "repo": "${this.state.repo}", "query": "{ repository(owner: \\"${this.state.org}\\", name: \\"${this.state.repo}\\") { issues(last: 50) { edges { node { id number title bodyText } } } } }" }`, {
                 headers: { 'Content-Type': 'text/plain' }
             });
             this.setState( { issues: resp.data.repository.issues.edges } );
@@ -159,7 +158,7 @@ class IssueResults extends React.Component {
             );
         } else {
             return (
-                <div id='issueList'><p>No issues to show.</p></div>
+                <div id='issueList'><p>No issues to show.</p><p>FYI: This GUI limits responses to the last 50 issues in a repo. If you want something different, POST to <span class='code'>/custom</span> just like you would to <span class='code'>https://api.github.com/graphql!</span></p></div>
             );
         }
     }
