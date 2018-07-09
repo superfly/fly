@@ -1,6 +1,7 @@
 import * as path from 'path'
 import * as YAML from 'js-yaml'
 import * as fs from 'fs-extra'
+import * as glob from 'glob'
 import { EventEmitter } from 'events';
 import * as chokidar from 'chokidar';
 
@@ -32,6 +33,7 @@ export interface FlyConfig {
   app_id?: string // legacy
   config?: any
   files?: string[]
+  expandedFiles?: string[]
 }
 
 export class LocalRelease extends EventEmitter implements Release {
@@ -70,16 +72,31 @@ export class LocalRelease extends EventEmitter implements Release {
 
   getConfig(): FlyConfig {
     const localConfigPath = path.join(this.cwd, configFile)
+    const builtConfigPath = path.join(this.cwd, '.fly', configFile)
     let config: any = {};
     if (fs.existsSync(localConfigPath)) {
 
       config = YAML.load(fs.readFileSync(localConfigPath).toString())
+      this.expandFiles(config)
+      fs.writeFileSync(builtConfigPath, YAML.dump(config))
     }
 
     config = config[this.env] || config || {}
     config.app = config.app_id || config.app
 
     return config
+  }
+
+  expandFiles(config: FlyConfig) {
+    if (!config.files) return
+    const files = config.files
+    config.files = []
+
+    for (const p of files) {
+      for (const f of glob.sync(p, { cwd: this.cwd })) {
+        config.files.push(f)
+      }
+    }
   }
 
   getSecrets() {

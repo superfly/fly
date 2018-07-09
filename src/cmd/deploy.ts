@@ -38,7 +38,7 @@ const deploy = root
     buildApp(cwd, { watch: false, uglify: true }, async (err: Error, source: string, hash: string, sourceMap: string) => {
       try {
         const entries = [
-          '.fly.yml',
+          ".fly/.fly.yml", // processed .fly.yml
           ...glob.sync('.fly/*/**.{js,json}', { cwd: cwd }),
           ...release.files
         ].filter((f) => existsSync(pathResolve(cwd, f)))
@@ -46,6 +46,13 @@ const deploy = root
         const res = await new Promise<AxiosResponse<any>>((resolve, reject) => {
           const packer: Readable = tar.pack(cwd, {
             entries: entries,
+            map: (header) => {
+              if (header.name === ".fly/.fly.yml") {
+                // use generated .fly.yml as config (for globbing)
+                header.name = ".fly.yml"
+              }
+              return header
+            },
             dereference: true,
             finish: function () {
               log.debug("Finished packing.")
