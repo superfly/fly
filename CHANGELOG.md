@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.36.0"></a>
+# [0.36.0](https://github.com/superfly/fly/compare/v0.35.0...v0.36.0) (2018-07-09)
+
+
+### Bug Fixes
+
+* use $PORT environment variable for dev server if set ([f2b04c5](https://github.com/superfly/fly/commit/f2b04c5))
+
+
+### Features
+
+* run example apps with `fly server <app-name>` ([2c2005f](https://github.com/superfly/fly/commit/2c2005f))
+
+
+
 <a name="0.35.0"></a>
 # [0.35.0](https://github.com/superfly/fly/compare/v0.34.0...v0.35.0) (2018-07-03)
 
