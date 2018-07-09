@@ -77,8 +77,14 @@ export class LocalRelease extends EventEmitter implements Release {
     if (fs.existsSync(localConfigPath)) {
 
       config = YAML.load(fs.readFileSync(localConfigPath).toString())
-      this.expandFiles(config)
-      fs.writeFileSync(builtConfigPath, YAML.dump(config))
+      if (this.expandFiles(config)) {
+        // write generated config if it was dirty
+        fs.mkdirpSync(path.join(this.cwd, ".fly"))
+        fs.writeFileSync(builtConfigPath, YAML.dump(config))
+      } else if (fs.existsSync(builtConfigPath)) {
+        // nuke any lingering one
+        fs.unlinkSync(builtConfigPath)
+      }
     }
 
     config = config[this.env] || config || {}
@@ -89,14 +95,17 @@ export class LocalRelease extends EventEmitter implements Release {
 
   expandFiles(config: FlyConfig) {
     if (!config.files) return
+    let dirty = false
     const files = config.files
     config.files = []
 
     for (const p of files) {
       for (const f of glob.sync(p, { cwd: this.cwd })) {
+        if (f !== p) dirty = true // at least one glob
         config.files.push(f)
       }
     }
+    return dirty
   }
 
   getSecrets() {

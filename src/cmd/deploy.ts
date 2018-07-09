@@ -36,9 +36,11 @@ const deploy = root
     const release = getLocalRelease(cwd, env, { noWatch: true })
 
     buildApp(cwd, { watch: false, uglify: true }, async (err: Error, source: string, hash: string, sourceMap: string) => {
+      // look for generated config
+      const configPath = existsSync(pathResolve(".fly", ".fly.yml")) ? ".fly/.fly.yml" : ".fly.yml"
       try {
         const entries = [
-          ".fly/.fly.yml", // processed .fly.yml
+          configPath, // processed .fly.yml
           ...glob.sync('.fly/*/**.{js,json}', { cwd: cwd }),
           ...release.files
         ].filter((f) => existsSync(pathResolve(cwd, f)))
