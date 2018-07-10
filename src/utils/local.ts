@@ -99,7 +99,12 @@ export class LocalRelease extends EventEmitter implements Release {
     const files = config.files
     config.files = []
 
-    for (const p of files) {
+    for (let p of files) {
+      const stat = fs.statSync(path.join(this.cwd, p))
+      if (stat.isDirectory) {
+        // glob full directories by default
+        p = path.join(p, "**")
+      }
       for (const f of glob.sync(p, { cwd: this.cwd })) {
         if (f !== p) dirty = true // at least one glob
         config.files.push(f)
