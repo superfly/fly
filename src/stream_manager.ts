@@ -3,23 +3,31 @@ import { Readable, Writable } from "stream";
 import { ivm } from ".";
 import { transferInto } from "./utils/buffer";
 import log from "./log";
-import { randomBytes } from "crypto";
 
 export interface StreamInfo {
   stream: Readable
   addedAt: number
   readLength: number
   endedAt: number
+  readTimeout: NodeJS.Timer
 }
 
 export const streams: { [key: string]: StreamInfo } = {}
 
 export const streamIdPrefix = "__fly_stream_id:"
 
+let lastStreamId = 0
+
 export const streamManager = {
-  add(rt: Runtime, stream: Readable): string {
+  add(rt: Runtime, stream: Readable): number {
     const id = generateStreamId()
-    streams[streamKey(rt, id)] = { stream, readLength: 0, addedAt: Date.now(), endedAt: 0 }
+    const key = streamKey(rt, id)
+    const readTimeout = setTimeout(cleanupStream.bind(null, key), 30 * 1000)
+    readTimeout.unref()
+    streams[key] = {
+      stream, readLength: 0, addedAt: Date.now(), endedAt: 0,
+      readTimeout
+    }
     return id
   },
 
@@ -27,7 +35,7 @@ export const streamManager = {
     return `${streamIdPrefix}${streamManager.add(rt, stream)}`
   },
 
-  subscribe(rt: Runtime, id: string, cb: ivm.Reference<Function>) {
+  subscribe(rt: Runtime, id: number | string, cb: ivm.Reference<Function>) {
     const key = streamKey(rt, id)
     log.debug("stream subscribe id:", id)
     const info = streams[key]
@@ -37,30 +45,28 @@ export const streamManager = {
     info.stream.once("close", function streamClose() {
       log.debug("stream closed, id:", id)
       try { cb.applyIgnored(null, ["close"]) } catch (e) { }
-      info.endedAt || (info.endedAt = Date.now())
-      try { cb.release() } catch (e) { }
+      endStream(key, cb)
     })
     info.stream.once("end", function streamEnd() {
       log.debug("stream ended, id:", id)
       try { cb.applyIgnored(null, ["end"]) } catch (e) { }
-      info.endedAt || (info.endedAt = Date.now())
-      try { cb.release() } catch (e) { }
+      endStream(key, cb)
     })
     info.stream.on("error", function streamError(err: Error) {
       log.debug("stream error, id:", id, err)
       try { cb.applyIgnored(null, ["error", err.toString()]) } catch (e) { }
-      info.endedAt || (info.endedAt = Date.now())
-      try { cb.release() } catch (e) { }
+      endStream(key, cb)
     })
   },
 
-  read(rt: Runtime, id: string, cb: ivm.Reference<Function>) {
+  read(rt: Runtime, id: number | string, cb: ivm.Reference<Function>) {
     const key = streamKey(rt, id)
     log.debug("stream:read id:", id)
     const info = streams[key]
     if (!info)
       return cb.applyIgnored(null, ["stream closed, not found or destroyed after timeout"])
 
+    clearTimeout(info.readTimeout)
     let attempts = 0
 
     setImmediate(tryRead)
@@ -93,7 +99,7 @@ export const streamManager = {
     }
   },
 
-  pipe(rt: Runtime, id: string, dst: Writable) {
+  pipe(rt: Runtime, id: number | string, dst: Writable) {
     const key = streamKey(rt, id)
     log.debug("stream:pipe id:", id)
     const info = streams[key]
@@ -103,10 +109,31 @@ export const streamManager = {
   },
 }
 
-function streamKey(rt: Runtime, id: string) {
+function streamKey(rt: Runtime, id: number | string) {
   return `${rt.app.name}:${id}`
 }
 
-function generateStreamId() {
-  return randomBytes(4).toString('hex')
+function generateStreamId(): number {
+  return ++lastStreamId
+}
+
+function cleanupStream(key: string) {
+  const info = streams[key]
+  if (!info)
+    return
+
+  try { info.stream.destroy() } catch (e) { }
+  delete streams[key]
+}
+
+function endStream(key: string, cb?: ivm.Reference<Function>) {
+  const info = streams[key]
+  if (!info)
+    return
+
+  clearTimeout(info.readTimeout)
+  info.endedAt || (info.endedAt = Date.now())
+  if (cb)
+    try { cb.release() } catch (e) { }
+  info.stream.removeAllListeners()
 }
