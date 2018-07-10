@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.37.0-1"></a>
+# [0.37.0-1](https://github.com/superfly/fly/compare/v0.37.0-0...v0.37.0-1) (2018-07-10)
+
+
+### Features
+
+* static site server in [@fly](https://github.com/fly)/fetch ([c9e3df2](https://github.com/superfly/fly/commit/c9e3df2))
+
+
+
 <a name="0.37.0-0"></a>
 # [0.37.0-0](https://github.com/superfly/fly/compare/v0.36.1...v0.37.0-0) (2018-07-09)
 
