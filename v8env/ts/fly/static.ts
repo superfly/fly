@@ -2,7 +2,7 @@
  * ```javascript
  * import { staticServer } from "@fly/fetch"
  * ```
- * @module fly/fetch
+ * @module fly/static-server
  */
 /**
  * A basic static file server. Generates a fetch function that serves requests 
@@ -10,7 +10,7 @@
  * to mime types.
  * @param opts options for this server instance
  */
-export function staticServer(opts?: StaticServerOptions) {
+export default function staticServer(opts?: StaticServerOptions) {
   if (!opts) {
     opts = {}
   }

@@ -1,4 +1,4 @@
-import { staticServer } from "@fly/fetch"
+import staticServer from "@fly/static"
 
 const site = staticServer({ root: "/files/" })
 
