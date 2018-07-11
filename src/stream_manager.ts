@@ -127,7 +127,7 @@ function cleanupStream(key: string) {
     return
 
   try { info.stream.destroy() } catch (e) { }
-  delete streams[key]
+  removeStream(key)
 }
 
 function endStream(key: string, cb?: ivm.Reference<Function>) {
@@ -136,8 +136,17 @@ function endStream(key: string, cb?: ivm.Reference<Function>) {
     return
 
   clearTimeout(info.readTimeout)
-  info.endedAt || (info.endedAt = Date.now())
+  info.endedAt = Date.now()
   if (cb)
     try { cb.release() } catch (e) { }
+  removeStream(key)
+}
+
+function removeStream(key: string) {
+  const info = streams[key]
+  if (!info)
+    return
+
   info.stream.removeAllListeners()
+  delete streams[key]
 }
