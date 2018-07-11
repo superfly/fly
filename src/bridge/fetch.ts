@@ -14,13 +14,15 @@ import { makeRe } from 'minimatch';
 const fetchAgent = new http.Agent({
   keepAlive: true,
   keepAliveMsecs: 5 * 1000,
-  maxSockets: 1024 * 10 // seems sensible
+  maxSockets: 64, // seems sensible, this is per origin
+  maxFreeSockets: 64
 });
 const fetchHttpsAgent = new https.Agent({
   keepAlive: true,
   keepAliveMsecs: 5 * 1000,
   rejectUnauthorized: false, // for simplicity
-  maxSockets: 1024 * 10 // seems sensible
+  maxSockets: 64,
+  maxFreeSockets: 64
 })
 
 function makeResponse(status: number, statusText: string, url: string, headers?: any) {
@@ -52,7 +54,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
 
     try {
       bridge.fileStore.createReadStream(rt, urlStr.replace("file://", "")).then((stream) => {
-        const id = streamManager.addPrefixed(rt, stream)
+        const id = streamManager.add(rt, stream)
         cb.applyIgnored(null, [null,
           new ivm.ExternalCopy(makeResponse(200, "OK", urlStr)).copyInto({ release: true }),
           id
@@ -134,7 +136,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     req.removeListener('response', handleResponse)
     req.removeListener('error', handleError)
 
-    const init = new ivm.ExternalCopy({
+    const retInit = new ivm.ExternalCopy({
       status: res.statusCode,
       statusText: res.statusMessage,
       ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
@@ -143,10 +145,10 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     }).copyInto({ release: true })
 
     if (res.method === 'GET' || res.method === 'HEAD') {
-      return cb.applyIgnored(null, [null, init])
+      return cb.applyIgnored(null, [null, retInit])
     }
 
-    cb.applyIgnored(null, [null, init, streamManager.addPrefixed(rt, res)])
+    cb.applyIgnored(null, [null, retInit, streamManager.add(rt, res, { readTimeout: init.readTimeout })])
   }
 
   function handleError(err: Error) {

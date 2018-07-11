@@ -21,6 +21,7 @@ export function fetch(url, init) {
 			init = {
 				method: req.method,
 				headers: req.headers && req.headers.toJSON() || {},
+				readTimeout: init && init.readTimeout || 30 * 1000
 			}
 			if (!req.bodySource)
 				bridge.dispatch("fetch", url, init, null, fetchCb)
