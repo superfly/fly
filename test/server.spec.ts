@@ -3,6 +3,8 @@ import { startServer, stopServer } from './helper'
 import axios from 'axios'
 import * as http from 'http'
 import * as url from 'url'
+import * as zlib from 'zlib'
+import * as brotli from "iltorb"
 
 import * as nock from 'nock'
 import { createReadStream } from 'fs';
@@ -284,59 +286,66 @@ describe('Server', function () {
     })
   })
 
-  describe("gzip", function () {
+  describe("compress", function () {
     describe("when not gzipped", () => {
-      before(startServer("gzip.js"))
+      before(startServer("compress.js"))
       after(stopServer)
 
-      it('gzips if accepts encoding is right', function (done) {
-        http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/"), {
-          method: "GET",
-          headers: {
-            "accept-encoding": "gzip"
-          }
-        }), function (res) {
-          res.on("error", (err) => {
-            console.log("ERROR GZIPIING", err)
-            done(err)
-          })
-          expect(res.statusCode).to.equal(200)
-          expect(res.headers['content-encoding']).to.equal('gzip')
-          res.on('data', (chunk: Buffer) => {
-            //expect(chunk.byteLength).to.equal(parseInt(<string>res.headers['content-length'], 10))
-            expect(chunk.toString()).to.not.equal('notgzipped')
-            done()
+      const types: { [key: string]: (raw: Buffer) => Buffer } = {
+        "br": brotli.decompressSync,
+        "gzip": zlib.gunzipSync
+      }
+      for (const accept of Object.getOwnPropertyNames(types)) {
+        it(`${accept} if accepts encoding is right`, function (done) {
+          http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/"), {
+            method: "GET",
+            headers: {
+              "accept-encoding": accept
+            }
+          }), function (res) {
+            res.on("error", (err) => {
+              console.log("ERROR " + accept, err)
+              done(err)
+            })
+            expect(res.statusCode).to.equal(200)
+            expect(res.headers['content-encoding']).to.equal(accept)
+            res.on('data', (chunk: Buffer) => {
+              //expect(chunk.byteLength).to.equal(parseInt(<string>res.headers['content-length'], 10))
+              const body = types[accept](chunk).toString()
+              expect(body).to.equal('notcompressed')
+              done()
+            })
           })
         })
-      })
 
-      it('does not gzipped if image', function (done) {
-        http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/image.jpg"), {
-          method: "GET",
-        }), function (res) {
-          res.on("error", done)
-          expect(res.statusCode).to.equal(200)
-          expect(res.headers['content-type']).to.equal("image/jpg")
-          expect(res.headers['content-encoding']).to.be.undefined
-          res.on('data', (chunk: Buffer) => {
-            expect(chunk.toString()).to.equal('pretend-image')
-            done()
+        it(`does not ${accept} if image`, function (done) {
+          http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/image.jpg"), {
+            method: "GET",
+          }), function (res) {
+            res.on("error", done)
+            expect(res.statusCode).to.equal(200)
+            expect(res.headers['content-type']).to.equal("image/jpg")
+            expect(res.headers['content-encoding']).to.be.undefined
+            res.on('data', (chunk: Buffer) => {
+              expect(chunk.toString()).to.equal('pretend-image')
+              done()
+            })
           })
         })
-      })
-      it('does not gzip if not accepted', function (done) {
-        http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/"), {
-          method: "GET",
-        }), function (res) {
-          res.on("error", done)
-          expect(res.statusCode).to.equal(200)
-          expect(res.headers['content-encoding']).to.be.undefined
-          res.on('data', (chunk: Buffer) => {
-            expect(chunk.toString()).to.equal('notgzipped')
-            done()
+        it(`does not ${accept} if not accepted`, function (done) {
+          http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/"), {
+            method: "GET",
+          }), function (res) {
+            res.on("error", done)
+            expect(res.statusCode).to.equal(200)
+            expect(res.headers['content-encoding']).to.be.undefined
+            res.on('data', (chunk: Buffer) => {
+              expect(chunk.toString()).to.equal('notcompressed')
+              done()
+            })
           })
         })
-      })
+      }
     })
 
     describe('pre-gzipped', function () {

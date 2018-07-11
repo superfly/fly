@@ -14,6 +14,7 @@ import { LocalRuntime } from './local_runtime';
 import { Runtime } from './runtime';
 import { SQLiteDataStore } from './sqlite_data_store';
 import { streamManager } from './stream_manager';
+import { compressResponse } from './utils/compressor';
 
 const hopHeaders = [
 	// From RFC 2616 section 13.5.1
@@ -191,25 +192,7 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
 				acceptEncoding = acceptEncoding.join(", ")
 			}
 
-			// gzip if no encoding
-			if (!contentEncoding && contentType && acceptEncoding && acceptEncoding.includes("gzip")) {
-				if (contentType && contentType instanceof Array) {
-					contentType = contentType.join(", ")
-				} else {
-					contentType = contentType.toString()
-				}
-				// only gzip text
-				if (
-					contentType.includes("text/") ||
-					contentType.includes("application/javascript") ||
-					contentType.includes("application/json")
-				) {
-					res.removeHeader("Content-Length")
-					res.setHeader("Content-Encoding", "gzip")
-					dst = zlib.createGzip({ level: 2 })
-					dst.pipe(res)
-				}
-			}
+			dst = compressResponse(req, res)
 
 			writeHead(rt, res, v8res.status)
 

@@ -1,7 +1,7 @@
 addEventListener('fetch', (event) => {
   const url = new URL(event.request.url)
   if (url.pathname === '/') {
-    event.respondWith(new Response("notgzipped", {
+    event.respondWith(new Response("notcompressed", {
       headers: {
         "content-type": "text/plain",
         "wat": "wat"
