@@ -1,0 +1,18 @@
+{
+  "name": "fly-rate-limiter",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "npx tsc && npx fly server",
+    "test": "fly test"
+  },
+  "author": "",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "files": [
+    "lib/*"
+  ],
+  "devDependencies": {
+    "typescript": "^2.9.2"
+  }
+}
