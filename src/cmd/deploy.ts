@@ -83,7 +83,8 @@ const deploy = root
         })
 
         processResponse(res, (res: any) => {
-          console.log(`Deploying v${res.data.data.attributes.version} globally, should be updated in a few seconds.`)
+          console.log(`Deploying v${res.data.data.attributes.version} globally @ https://${appName}.edgeapp.net`)
+          console.log(`App should be updated in a few seconds.`)
         })
 
       } catch (e) {
