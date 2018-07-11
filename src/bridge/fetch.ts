@@ -13,13 +13,15 @@ import { streamManager } from '../stream_manager';
 const fetchAgent = new http.Agent({
   keepAlive: true,
   keepAliveMsecs: 5 * 1000,
-  maxSockets: 1024 * 10 // seems sensible
+  maxSockets: 64, // seems sensible, this is per origin
+  maxFreeSockets: 64
 });
 const fetchHttpsAgent = new https.Agent({
   keepAlive: true,
   keepAliveMsecs: 5 * 1000,
   rejectUnauthorized: false, // for simplicity
-  maxSockets: 1024 * 10 // seems sensible
+  maxSockets: 64,
+  maxFreeSockets: 64
 })
 
 registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
