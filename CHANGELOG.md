@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.37.0"></a>
+# [0.37.0](https://github.com/superfly/fly/compare/v0.36.2...v0.37.0) (2018-07-11)
+
+
+### Bug Fixes
+
+* Self-cleaning streams ([#109](https://github.com/superfly/fly/issues/109)) ([0cd824c](https://github.com/superfly/fly/commit/0cd824c))
+
+
+### Features
+
+* glob support for files array ([#106](https://github.com/superfly/fly/issues/106)) ([c02eb62](https://github.com/superfly/fly/commit/c02eb62))
+* static site server in [@fly](https://github.com/fly)/static ([4088133](https://github.com/superfly/fly/commit/4088133))
+
+
+
 <a name="0.36.2"></a>
 ## [0.36.2](https://github.com/superfly/fly/compare/v0.36.1...v0.36.2) (2018-07-09)
 
