@@ -10,18 +10,4 @@ declare module 'util' {
   export interface DecodeOptions {
     stream?: boolean
   }
-  export class TextDecoder {
-    constructor(encoding?: string, options?: TextDecoderOptions)
-    decode(input: ArrayBuffer | DataView | TypedArray, options?: DecodeOptions): string
-
-    encoding: string
-    fatal: boolean
-    ignoreBOM: boolean
-  }
-
-  export class TextEncoder {
-    constructor()
-    encode(input?: string): Uint8Array
-    encoding: string
-  }
 }
