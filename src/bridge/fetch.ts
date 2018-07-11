@@ -9,6 +9,7 @@ import { parse as parseURL } from 'url'
 import { Bridge } from './bridge';
 import { Runtime } from '../runtime';
 import { streamManager } from '../stream_manager';
+import { makeRe } from 'minimatch';
 
 const fetchAgent = new http.Agent({
   keepAlive: true,
@@ -24,6 +25,15 @@ const fetchHttpsAgent = new https.Agent({
   maxFreeSockets: 64
 })
 
+function makeResponse(status: number, statusText: string, url: string, headers?: any) {
+  return {
+    status: status,
+    statusText: statusText,
+    ok: (status >= 200 && status < 300),
+    url: url,
+    headers: headers || {}
+  }
+}
 registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
   log.debug("native fetch with url:", urlStr)
   init || (init = {})
@@ -36,7 +46,9 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     }
 
     if (init.method && init.method != 'GET') {
-      cb.applyIgnored(null, ["only GET allowed on file:// URIs"])
+      cb.applyIgnored(null, [null,
+        makeResponse(405, "Method Not Allowed", urlStr)
+      ])
       return
     }
 
@@ -44,21 +56,21 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
       bridge.fileStore.createReadStream(rt, urlStr.replace("file://", "")).then((stream) => {
         const id = streamManager.add(rt, stream)
         cb.applyIgnored(null, [null,
-          new ivm.ExternalCopy({
-            status: 200,
-            statusText: "OK",
-            ok: true,
-            url: urlStr,
-            headers: {}
-          }).copyInto({ release: true }),
+          new ivm.ExternalCopy(makeResponse(200, "OK", urlStr)).copyInto({ release: true }),
           id
         ])
       }).catch((err) => {
-        cb.applyIgnored(null, [err.toString()])
+        cb.applyIgnored(null, [null,
+          new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({ release: true }),
+          ""
+        ])
       })
     } catch (e) {
       // Might throw FileNotFound
-      cb.applyIgnored(null, [e.toString()])
+      cb.applyIgnored(null, [null,
+        new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({ release: true }),
+        ""
+      ])
     }
     return
   }
