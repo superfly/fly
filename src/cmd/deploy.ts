@@ -46,7 +46,7 @@ const deploy = root
         ].filter((f) => existsSync(pathResolve(cwd, f)))
 
         const res = await new Promise<AxiosResponse<any>>((resolve, reject) => {
-          const packer: Readable = tar.pack(cwd, {
+          tar.pack(cwd, {
             entries: entries,
             map: (header) => {
               if (header.name === ".fly/.fly.yml") {
