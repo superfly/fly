@@ -1,6 +1,7 @@
 import * as path from 'path'
 import * as YAML from 'js-yaml'
 import * as fs from 'fs-extra'
+import * as glob from 'glob'
 import { EventEmitter } from 'events';
 import * as chokidar from 'chokidar';
 
@@ -32,6 +33,7 @@ export interface FlyConfig {
   app_id?: string // legacy
   config?: any
   files?: string[]
+  expandedFiles?: string[]
 }
 
 export class LocalRelease extends EventEmitter implements Release {
@@ -70,16 +72,47 @@ export class LocalRelease extends EventEmitter implements Release {
 
   getConfig(): FlyConfig {
     const localConfigPath = path.join(this.cwd, configFile)
+    const builtConfigPath = path.join(this.cwd, '.fly', configFile)
     let config: any = {};
     if (fs.existsSync(localConfigPath)) {
 
       config = YAML.load(fs.readFileSync(localConfigPath).toString())
+      if (this.expandFiles(config)) {
+        // write generated config if it was dirty
+        fs.mkdirpSync(path.join(this.cwd, ".fly"))
+        fs.writeFileSync(builtConfigPath, YAML.dump(config))
+      } else if (fs.existsSync(builtConfigPath)) {
+        // nuke any lingering one
+        fs.unlinkSync(builtConfigPath)
+      }
     }
 
     config = config[this.env] || config || {}
     config.app = config.app_id || config.app
 
     return config
+  }
+
+  expandFiles(config: FlyConfig) {
+    if (!config.files) return
+    let dirty = false
+    const files = config.files
+    config.files = []
+
+    for (let p of files) {
+      if (fs.existsSync(p)) {
+        const stat = fs.statSync(path.join(this.cwd, p))
+        if (stat.isDirectory()) {
+          // glob full directories by default
+          p = path.join(p, "**")
+        }
+      }
+      for (const f of glob.sync(p, { cwd: this.cwd })) {
+        if (f !== p) dirty = true // at least one glob
+        config.files.push(f)
+      }
+    }
+    return dirty
   }
 
   getSecrets() {

@@ -105,7 +105,8 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
       "@fly/image": v8EnvPath + "/fly/image",
       "@fly/proxy": v8EnvPath + "/fly/proxy",
       "@fly/data": v8EnvPath + "/fly/data",
-      "@fly/cache": v8EnvPath + "/fly/cache"
+      "@fly/cache": v8EnvPath + "/fly/cache",
+      "@fly/static": v8EnvPath + "/fly/static"
     })
   }, conf.resolve)
 
