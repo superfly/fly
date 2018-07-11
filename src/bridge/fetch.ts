@@ -40,7 +40,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
 
     try {
       bridge.fileStore.createReadStream(rt, urlStr.replace("file://", "")).then((stream) => {
-        const id = streamManager.addPrefixed(rt, stream)
+        const id = streamManager.add(rt, stream)
         cb.applyIgnored(null, [null,
           new ivm.ExternalCopy({
             status: 200,
@@ -122,7 +122,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     req.removeListener('response', handleResponse)
     req.removeListener('error', handleError)
 
-    const init = new ivm.ExternalCopy({
+    const retInit = new ivm.ExternalCopy({
       status: res.statusCode,
       statusText: res.statusMessage,
       ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
@@ -131,10 +131,10 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     }).copyInto({ release: true })
 
     if (res.method === 'GET' || res.method === 'HEAD') {
-      return cb.applyIgnored(null, [null, init])
+      return cb.applyIgnored(null, [null, retInit])
     }
 
-    cb.applyIgnored(null, [null, init, streamManager.addPrefixed(rt, res)])
+    cb.applyIgnored(null, [null, retInit, streamManager.add(rt, res, { readTimeout: init.readTimeout })])
   }
 
   function handleError(err: Error) {

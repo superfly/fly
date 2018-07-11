@@ -78,7 +78,6 @@ describe('Server', function () {
         .replyWithFile(200, __dirname + "/fixtures/http/fake.js", {
           'Content-Type': 'application/javascript'
         })
-        .once("readable", () => console.log("READABLE"))
     })
 
     it('may fetch responses externally', async () => {
@@ -86,6 +85,24 @@ describe('Server', function () {
       expect(res.status).to.equal(200);
       // expect(res.data).to.include(`<title>Example Domain</title>`)
       // expect(res.headers['content-type']).to.equal('text/html')
+    })
+  })
+
+  describe('fetch read body after readTimeout', function () {
+    before(startServer('fetch-read-timeout.js'))
+    after(stopServer)
+
+    before(() => {
+      // this.timeout(5000)
+      nock('https://example.com')
+        .get('/')
+        .reply(200, "hello")
+    })
+
+    it('may fetch responses externally', async () => {
+      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
+      expect(res.status).to.equal(200);
+      expect(res.data).to.equal("got an error")
     })
   })
 

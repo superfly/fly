@@ -14,25 +14,29 @@ export interface StreamInfo {
 
 export const streams: { [key: string]: StreamInfo } = {}
 
-export const streamIdPrefix = "__fly_stream_id:"
-
 let lastStreamId = 0
 
+export interface StreamOptions {
+  readTimeout?: number
+}
+
+const MIN_READ_TIMEOUT = 30 * 1000
+const MAX_READ_TIMEOUT = 2 * 60 * 1000
+
 export const streamManager = {
-  add(rt: Runtime, stream: Readable): number {
+  add(rt: Runtime, stream: Readable, opts: StreamOptions = {}): number {
     const id = generateStreamId()
     const key = streamKey(rt, id)
-    const readTimeout = setTimeout(cleanupStream.bind(null, key), 30 * 1000)
+    const readTimeoutMS = opts.readTimeout ?
+      Math.max(Math.min(opts.readTimeout, MAX_READ_TIMEOUT), 0) :
+      MIN_READ_TIMEOUT
+    const readTimeout = setTimeout(cleanupStream.bind(null, key), readTimeoutMS)
     readTimeout.unref()
     streams[key] = {
       stream, readLength: 0, addedAt: Date.now(), endedAt: 0,
       readTimeout
     }
     return id
-  },
-
-  addPrefixed(rt: Runtime, stream: Readable) {
-    return `${streamIdPrefix}${streamManager.add(rt, stream)}`
   },
 
   subscribe(rt: Runtime, id: number | string, cb: ivm.Reference<Function>) {

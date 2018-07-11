@@ -1,13 +1,11 @@
 import { logger } from '../logger'
 
-export const streamIdPrefix = "__fly_stream_id:"
 export function isFlyStream(id) {
-  return typeof id === "string" && id.startsWith(streamIdPrefix)
+  return typeof id === "number"
 }
 
 export default function refToStream(id) {
   let closed = false
-  id = id.replace(streamIdPrefix, "")
   const r = new ReadableStream({
     start(controller) {
       const cb = bridge.wrapFunction(function streamSubscribe(name, ...args) {

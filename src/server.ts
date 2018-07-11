@@ -13,7 +13,7 @@ import { randomBytes } from 'crypto';
 import { LocalRuntime } from './local_runtime';
 import { Runtime } from './runtime';
 import { SQLiteDataStore } from './sqlite_data_store';
-import { streamManager, streamIdPrefix } from './stream_manager';
+import { streamManager } from './stream_manager';
 
 const hopHeaders = [
 	// From RFC 2616 section 13.5.1
@@ -124,7 +124,7 @@ export class Server extends http.Server {
 
 }
 
-type V8ResponseBody = null | string | ArrayBuffer | Buffer
+type V8ResponseBody = null | string | number | ArrayBuffer | Buffer
 
 export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.ServerResponse): Promise<number> {
 
@@ -225,7 +225,7 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
 			fn.apply(null, [
 				fullURL,
 				new ivm.ExternalCopy(reqForV8).copyInto({ release: true }),
-				req.method === 'GET' || req.method === 'HEAD' ? null : streamManager.addPrefixed(rt, req),
+				req.method === 'GET' || req.method === 'HEAD' ? null : streamManager.add(rt, req),
 				new ivm.Reference(fetchCallback)
 			]).catch(reject)
 		}).catch(reject)
@@ -236,8 +236,8 @@ function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerRespon
 	if (!src)
 		return Promise.resolve(0)
 
-	if (typeof src == "string" && src.startsWith(streamIdPrefix)) {
-		return handleResponseStream(rt, src.replace(streamIdPrefix, ""), res, dst)
+	if (typeof src == "number") {
+		return handleResponseStream(rt, src, res, dst)
 	}
 
 	let totalLength = 0
@@ -260,7 +260,7 @@ function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerRespon
 	})
 }
 
-function handleResponseStream(rt: Runtime, streamId: string, res: http.ServerResponse, dst: Writable): Promise<number> {
+function handleResponseStream(rt: Runtime, streamId: number, res: http.ServerResponse, dst: Writable): Promise<number> {
 	return new Promise<number>((resolve, reject) => {
 		setImmediate(() => {
 			let dataOut = 0
