@@ -1,4 +1,5 @@
 import { assert } from "./helpers"
+import cache from "@fly/cache"
 
 interface fly {
     cache: {
@@ -60,11 +61,10 @@ export function throttle(handler: HandlerFunc, options: Options): HandlerFunc {
 }
 
 async function incr(key: string, ttl: number): Promise<number> {
-    // TODO: replace with @fly/cache
-    var rawCount = await fly.cache.getString(key)
+    var rawCount = await cache.getString(key)
     var requestCount = rawCount == null ? 0 : parseInt(rawCount)
     requestCount++
-    fly.cache.set(key, requestCount.toString(), ttl) // don't block request awaiting set
+    cache.set(key, requestCount.toString(), ttl) // don't block request awaiting set
     return requestCount
 }
 

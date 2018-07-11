@@ -14,5 +14,8 @@
   ],
   "devDependencies": {
     "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "@fly/fly": "^0.36.2"
   }
 }
