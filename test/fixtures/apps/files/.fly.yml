@@ -1,3 +1,4 @@
 app: got-files
 files:
   - dummy.txt
+  - no-file-dummy.txt
