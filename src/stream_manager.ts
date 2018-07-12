@@ -126,8 +126,8 @@ function cleanupStream(key: string) {
   if (!info)
     return
 
-  try { info.stream.destroy() } catch (e) { }
   removeStream(key)
+  try { info.stream.destroy() } catch (e) { }
 }
 
 function endStream(key: string, cb?: ivm.Reference<Function>) {
