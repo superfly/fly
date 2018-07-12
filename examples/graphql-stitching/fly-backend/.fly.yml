@@ -6,5 +6,5 @@ config:
     fromSecret: userToken
 files:
   - build/index.html
-  - build/static/js/main.b9317702.js
-  - build/static/css/main.daa945be.css
+  - build/static/js/main.*.js
+  - build/static/css/main.*.css

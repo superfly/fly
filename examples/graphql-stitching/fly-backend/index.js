@@ -1,3 +1,4 @@
+import cache from '@fly/cache';
 import { request, GraphQLClient } from 'graphql-request';
 import polarity from 'polarity-webpack';
 
@@ -103,7 +104,7 @@ async function getIssues( query, client, cacheKey ) {
 
     let data, dataString, dataJson, status, cachedResponse = null;
 
-    if( cacheKey ) { cachedResponse = await fly.cache.getString( cacheKey ); }
+    if( cacheKey ) { cachedResponse = await cache.getString( cacheKey ); }
     if( cachedResponse !== null ) {
         status = 200;
         dataString = cachedResponse;
@@ -134,7 +135,7 @@ async function getIssues( query, client, cacheKey ) {
         dataString = await JSON.stringify( dataJson );
 
         if( cacheKey && ( status !== 500 ) ) {
-            fly.cache.set( cacheKey, dataString, 172800 );   //cache for 2 days (only non-custom requests)
+            cache.set( cacheKey, dataString, 172800 );   //cache for 2 days (only non-custom requests)
         }
 
         return { dataString, status };
