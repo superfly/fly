@@ -29,7 +29,7 @@ import { FileAppStore } from '../file_app_store';
 
 root
   .subCommand<any, TestArgs>("test [paths...]")
-  .description("Run unit tests, defaults to {test,spec}/**/*.{test,spec}.js")
+  .description("Run unit tests, defaults to {test,spec}/**/*.{test,spec}.{js,ts}")
   .action((opts, args, rest) => {
     const { ivm } = require('../')
     const { getWebpackConfig, buildAppWithConfig } = require('../utils/build')
@@ -44,7 +44,7 @@ root
           )
         )
       ) :
-      glob.sync('./test/**/*.+(spec|test).js');
+      glob.sync('./test/**/*.+(spec|test).[jt]s');
 
     if (paths.length === 0) {
       console.log("No test files found")
