@@ -202,6 +202,7 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
 				if (
 					contentType.includes("text/") ||
 					contentType.includes("application/javascript") ||
+					contentType.includes("application/x-javascript") ||
 					contentType.includes("application/json")
 				) {
 					res.removeHeader("Content-Length")
