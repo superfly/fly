@@ -302,9 +302,12 @@ describe('Server', function () {
           })
           expect(res.statusCode).to.equal(200)
           expect(res.headers['content-encoding']).to.equal('gzip')
+          const body: Buffer[] = []
           res.on('data', (chunk: Buffer) => {
-            //expect(chunk.byteLength).to.equal(parseInt(<string>res.headers['content-length'], 10))
-            expect(chunk.toString()).to.not.equal('notgzipped')
+            body.push(chunk)
+          })
+          res.on('end', () => {
+            expect(Buffer.concat(body).toString()).to.not.equal('notgzipped')
             done()
           })
         })
