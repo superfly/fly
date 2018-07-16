@@ -17,6 +17,11 @@
 
 /** */
 declare var bridge: any
+export interface CacheSetOptions {
+  ttl?: number,
+  surrogates?: string[]
+}
+
 
 /**
  * Get an ArrayBuffer value (or null) from the cache
@@ -62,12 +67,12 @@ export async function getString(key: string) {
  * @param ttl Time to live (in seconds)
  * @returns true if the set was successful
  */
-export function set(key: string, value: string | ArrayBuffer, ttl?: number) {
+export function set(key: string, value: string | ArrayBuffer, options?: CacheSetOptions | number) {
   if (typeof value !== "string" && !(value instanceof ArrayBuffer)) {
     throw new Error("Cache values must be either a string or array buffer")
   }
   return new Promise<boolean>(function cacheSetPromise(resolve, reject) {
-    bridge.dispatch("flyCacheSet", key, value, ttl, function cacheSetCallback(err: string | null, ok?: boolean) {
+    bridge.dispatch("flyCacheSet", key, value, options && JSON.stringify(options), function cacheSetCallback(err: string | null, ok?: boolean) {
       if (err != null) {
         reject(err)
         return
@@ -95,6 +100,37 @@ export function expire(key: string, ttl: number) {
   })
 }
 
+export function addSurrogates(key: string, surrogates: string[]) {
+  return new Promise<boolean>(function cacheAddSurrogatesPromise(resolve, reject) {
+    bridge.dispatch("flyCacheAddSurrogates", key, surrogates, function cacheAddSurrogatesCallback(err: string | null, ok?: boolean) {
+      if (err != null) {
+        reject(err)
+        return
+      }
+      resolve(ok)
+    })
+  })
+}
+
+export function purgeSurrogates(key: string, surrogates: string[]) {
+  return new Promise<string[]>(function cachePurgeSurrogatesPromise(resolve, reject) {
+    bridge.dispatch("flyCachePurgeSurrogates", key, function cachePurgeSurrogatesCallback(err: string | null, keys?: string) {
+      if (err != null || !keys) {
+        reject(err || "weird result")
+        return
+      }
+      const result = JSON.parse(keys)
+      if (result instanceof Array) {
+        resolve(<string[]>result)
+        return
+      } else {
+        reject("got back gibberish")
+      }
+    })
+  })
+}
+
+
 /**
  * Deletes the value (if any) at the specified key
  * @param key Key to delete
@@ -109,7 +145,9 @@ const cache = {
   getString,
   set,
   expire,
-  del
+  del,
+  addSurrogates,
+  purgeSurrogates
 }
 export default cache
 

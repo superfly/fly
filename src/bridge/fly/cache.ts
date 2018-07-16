@@ -7,11 +7,13 @@ import { Runtime } from '../../runtime';
 
 const errCacheStoreUndefined = new Error("cacheStore is not defined in the config.")
 
-registerBridge('flyCacheSet', function cacheSet(rt: Runtime, bridge: Bridge, key: string, value: ArrayBuffer | string, ttl: number, callback: ivm.Reference<Function>) {
+registerBridge('flyCacheSet', function cacheSet(rt: Runtime, bridge: Bridge, key: string, value: ArrayBuffer | string, options: string | undefined, callback: ivm.Reference<Function>) {
   if (!bridge.cacheStore) {
     callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
     return
   }
+
+  const opts = options && JSON.parse(options) || undefined
 
   let buf: Buffer
   try {
@@ -25,7 +27,7 @@ registerBridge('flyCacheSet', function cacheSet(rt: Runtime, bridge: Bridge, key
     callback.applyIgnored(null, [err.toString()])
     return
   }
-  bridge.cacheStore.set(rt, key, buf, ttl).then((ok) => {
+  bridge.cacheStore.set(rt, key, buf, opts).then((ok) => {
     rt.reportUsage("cache:set", { size: buf.byteLength })
     callback.applyIgnored(null, [null, ok])
   }).catch((err) => {
@@ -60,6 +62,53 @@ registerBridge('flyCacheGet',
       callback.applyIgnored(null, [null, transferInto(buf)])
     }).catch((err) => {
       log.error("got err in cache.get", err)
+      callback.applyIgnored(null, [null, null]) // swallow errors on get for now
+    })
+  })
+
+registerBridge('flyCacheDel',
+  function cacheDel(rt: Runtime, bridge: Bridge, key: string, callback: ivm.Reference<Function>) {
+    if (!bridge.cacheStore) {
+      callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
+      return
+    }
+
+    bridge.cacheStore.del(rt, key).then((result) => {
+      callback.applyIgnored(null, [null, result])
+    }).catch((err) => {
+      log.error("got err in cache.del", err)
+      callback.applyIgnored(null, [null, null]) // swallow errors on get for now
+    })
+  })
+
+registerBridge('flyCacheAddSurrogates',
+  function flyCacheAddSurrogates(rt: Runtime, bridge: Bridge, key: string, surrogates: string[], callback: ivm.Reference<Function>) {
+    if (!bridge.cacheStore) {
+      callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
+      return
+    }
+
+    bridge.cacheStore.addSurrogates(rt, key, surrogates).then((result) => {
+      callback.applyIgnored(null, [null, result])
+    }).catch((err) => {
+      log.error("got err in cache.del", err)
+      callback.applyIgnored(null, [null, null]) // swallow errors on get for now
+    })
+  })
+
+registerBridge('flyCachePurgeSurrogates',
+  function flyCacheAddSurrogates(rt: Runtime, bridge: Bridge, key: string, callback: ivm.Reference<Function>) {
+    if (!bridge.cacheStore) {
+      callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
+      return
+    }
+
+    bridge.cacheStore.purgeSurrogates(rt, key).then((result) => {
+      setImmediate(() => {
+        callback.applyIgnored(null, [null, JSON.stringify(result)])
+      })
+    }).catch((err) => {
+      log.error("got err in cache.del", err)
       callback.applyIgnored(null, [null, null]) // swallow errors on get for now
     })
   })

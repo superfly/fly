@@ -11,7 +11,7 @@ describe("@fly/cache", () => {
     const v = `cache-value-woo! ${Math.random()}`
 
     const setResult = await cache.set("cache-test-key", v)
-    expect(setResult).to.eq(true)
+    expect(setResult).to.eq(true, "couldn't set test value")
     const result = await cache.getString("cache-test-key")
 
     expect(result).to.eq(v)
@@ -44,7 +44,7 @@ describe("@fly/cache", () => {
   it("handles blank strings", async () => {
     const k = `cache-test${Math.random()}`
     await cache.set(k, '')
-    const result = await cache.get(k)
-    console.log(result)
+    const result = await cache.getString(k)
+    expect(result).to.eq('')
   })
 })
