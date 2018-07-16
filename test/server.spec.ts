@@ -103,6 +103,7 @@ describe('Server', function () {
         .replyWithFile(200, __dirname + "/fixtures/http/fake.js", {
           'Content-Type': 'application/javascript'
         })
+        .on("error", (e) => { })
     })
     it('errors on timeout', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test", timeout: "100" } })
