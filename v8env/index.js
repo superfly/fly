@@ -49,7 +49,7 @@ global.bootstrap = function bootstrap() {
 		TextEncoder, TextDecoder,
 		Headers, Request, Response, fetch, Body,
 		Blob, FormData, URL, URLSearchParams,
-		cache, crypto,
+		cache, crypto, TimeoutError,
 		MiddlewareChain // ugh
 	})
 
@@ -76,3 +76,5 @@ global.bootstrap = function bootstrap() {
 		})
 	}
 }
+
+class TimeoutError extends Error { }

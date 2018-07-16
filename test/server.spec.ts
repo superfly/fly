@@ -87,6 +87,29 @@ describe('Server', function () {
       // expect(res.headers['content-type']).to.equal('text/html')
     })
   })
+  describe("fetch with timeout", function () {
+    before(startServer('basic-fetch-and-read.js'))
+    after(stopServer)
+
+    before(() => {
+      // this.timeout(5000)
+      nock('https://example.com')
+        .get('/')
+        .delay({
+          head: 500,
+          body: 2000
+        })
+        .socketDelay(1000)
+        .replyWithFile(200, __dirname + "/fixtures/http/fake.js", {
+          'Content-Type': 'application/javascript'
+        })
+    })
+    it('errors on timeout', async () => {
+      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test", timeout: "100" } })
+      expect(res.status).to.equal(502)
+      expect(res.data).to.equal("timeout")
+    })
+  })
 
   describe('fetch read body after readTimeout', function () {
     before(startServer('fetch-read-timeout.js'))

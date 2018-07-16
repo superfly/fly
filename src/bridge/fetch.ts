@@ -9,7 +9,7 @@ import { parse as parseURL } from 'url'
 import { Bridge } from './bridge';
 import { Runtime } from '../runtime';
 import { streamManager } from '../stream_manager';
-import { makeRe } from 'minimatch';
+import { isNumber } from 'util';
 
 const fetchAgent = new http.Agent({
   keepAlive: true,
@@ -87,6 +87,10 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   if (u.query != null) {
     path = path + "?" + u.query
   }
+  let timeout: NodeJS.Timer | undefined
+  if (init.timeout && isNumber(init.timeout) && init.timeout > 0) {
+    timeout = setTimeout(handleTimeout, init.timeout)
+  }
   const reqOptions: https.RequestOptions = {
     agent: httpAgent,
     protocol: u.protocol,
@@ -98,6 +102,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     headers: headers,
     timeout: 60 * 1000
   }
+  //console.log(reqOptions)
   if (httpFn == https.request) {
     reqOptions.servername = reqOptions.hostname
   }
@@ -107,6 +112,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   req.setHeader('fly-app', rt.app.name)
 
   req.on("error", handleError)
+  req.on("timeout", handleError)
   req.once("response", handleResponse)
 
   const start = process.hrtime()
@@ -122,7 +128,13 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
 
   return
 
+  function clearFetchTimeout() {
+    if (timeout) {
+      clearInterval(timeout)
+    }
+  }
   function handleResponse(res: http.IncomingMessage) {
+    clearFetchTimeout()
     rt.reportUsage("fetch", {
       data_out: dataOut,
       method: method,
@@ -152,9 +164,15 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   }
 
   function handleError(err: Error) {
+    clearFetchTimeout()
     log.error("error requesting http resource", err)
     cb.applyIgnored(null, [err.toString()])
     req.removeListener('response', handleResponse)
     req.removeListener('error', handleError)
+  }
+
+  function handleTimeout() {
+    handleError(new Error("http request timeout"))
+    req.end()
   }
 })

@@ -9,6 +9,8 @@ import refToStream, { isFlyStream } from './fly/streams'
  * @param {Object} [init] - Options for the request
  * @param {Headers} [init.headers] Headers to send with the http request
  * @param {string} [init.method=GET] HTTP request method, defaults to `GET`
+ * @param {number} [init.timeout] (non-standard) request timeout, errors if response hasn't been received by timeout
+ * @param {number} [init.readTimeout] (non-standard) specifies the read timeout on the underlying socket
  * @returns {Promise<Response>} - A {@linkcode Promise} that resolves to a {@linkcode Response} object
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch}
  */
@@ -21,6 +23,7 @@ export function fetch(url, init) {
 			init = {
 				method: req.method,
 				headers: req.headers && req.headers.toJSON() || {},
+				timeout: init && init.timeout,
 				readTimeout: init && init.readTimeout || 30 * 1000
 			}
 			if (!req.bodySource)
@@ -37,6 +40,8 @@ export function fetch(url, init) {
 			reject(err)
 		}
 		function fetchCb(err, nodeRes, nodeBody) {
+			if (err && typeof err === "string" && err.includes("timeout"))
+				return reject(new TimeoutError(err))
 			if (err)
 				return reject(new Error(err))
 			resolve(new Response(isFlyStream(nodeBody) ? refToStream(nodeBody) : nodeBody,
