@@ -111,8 +111,8 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
 
   req.setHeader('fly-app', rt.app.name)
 
-  req.on("error", handleError)
-  req.on("timeout", handleError)
+  req.once("error", handleError)
+  req.once("timeout", handleError)
   req.once("response", handleResponse)
 
   const start = process.hrtime()
@@ -145,8 +145,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
       response_time: process.hrtime(start)
     })
 
-    req.removeListener('response', handleResponse)
-    req.removeListener('error', handleError)
+    req.removeAllListeners()
 
     const retInit = new ivm.ExternalCopy({
       status: res.statusCode,
@@ -167,12 +166,11 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     clearFetchTimeout()
     log.error("error requesting http resource", err)
     cb.applyIgnored(null, [err.toString()])
-    req.removeListener('response', handleResponse)
-    req.removeListener('error', handleError)
+    req.removeAllListeners()
+    req.abort()
   }
 
   function handleTimeout() {
     handleError(new Error("http request timeout"))
-    req.end()
   }
 })
