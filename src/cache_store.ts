@@ -2,7 +2,7 @@ import { Runtime } from "./runtime";
 
 export interface CacheSetOptions {
   ttl?: number,
-  surrogates?: string[]
+  tags?: string[]
 }
 export interface CacheStore {
   get(rt: Runtime, key: string): Promise<Buffer | null>
@@ -10,7 +10,7 @@ export interface CacheStore {
   del(rt: Runtime, key: string): Promise<boolean>
   expire(rt: Runtime, key: string, ttl: number): Promise<boolean>
   ttl(rt: Runtime, key: string): Promise<number>,
-  addSurrogates(rt: Runtime, key: string, surrogates: string[]): Promise<boolean>,
-  purgeSurrogates(rt: Runtime, surrogate: string): Promise<string[]>
+  setTags(rt: Runtime, key: string, tags: string[]): Promise<boolean>,
+  purgeTags(rt: Runtime, tags: string): Promise<string[]>
   rand?: number
 }

@@ -36,14 +36,14 @@ export class MemoryCacheStore implements CacheStore {
 
     pipeline.set(k, value, ...args)
 
-    if (typeof options !== "number" && options && options.surrogates instanceof Array) {
-      pipeline.sadd(k + ":surrogates", ...options.surrogates)
-      this.addSurrogates(rt, key, options.surrogates, pipeline)
+    if (typeof options !== "number" && options && options.tags instanceof Array) {
+      pipeline.sadd(k + ":tags", ...options.tags)
+      this.setTags(rt, key, options.tags, pipeline)
       if (ttl) {
-        pipeline.expire(k + ":surrogates", ttl)
+        pipeline.expire(k + ":tags", ttl)
       }
     } else {
-      pipeline.del(k + ":surrogates")
+      pipeline.del(k + ":tags")
     }
     const result = await pipeline.exec()
     return pipelineResultOK(result)
@@ -62,14 +62,14 @@ export class MemoryCacheStore implements CacheStore {
     return this.redis.ttl(keyFor(rt, key))
   }
 
-  async addSurrogates(rt: Runtime, key: string, surrogates: string[], pipeline?: IORedis.Pipeline): Promise<boolean> {
+  async setTags(rt: Runtime, key: string, tags: string[], pipeline?: IORedis.Pipeline): Promise<boolean> {
     const doSave = !pipeline
     if (!pipeline) {
       pipeline = this.redis.pipeline()
     }
     const k = keyFor(rt, key)
-    for (let s of surrogates) {
-      s = surrogateFor(rt, s)
+    for (let s of tags) {
+      s = tagKeyFor(rt, s)
       pipeline.sadd(s, k)
     }
     if (doSave) {
@@ -80,8 +80,8 @@ export class MemoryCacheStore implements CacheStore {
     }
   }
 
-  async purgeSurrogates(rt: Runtime, surrogate: string): Promise<string[]> {
-    const s = surrogateFor(rt, surrogate)
+  async purgeTags(rt: Runtime, tags: string): Promise<string[]> {
+    const s = tagKeyFor(rt, tags)
     const checks = this.redis.pipeline()
     const keysToDelete = new Array<string>()
     const keysToCheck = []
@@ -90,7 +90,7 @@ export class MemoryCacheStore implements CacheStore {
     }
 
     for (const k of keysToCheck) {
-      checks.sismember(k + ":surrogates", surrogate)
+      checks.sismember(k + ":tags", tags)
     }
     const result = await checks.exec()
     const deletes = this.redis.pipeline()
@@ -109,7 +109,8 @@ export class MemoryCacheStore implements CacheStore {
   }
 }
 
-(<any>Symbol).asyncIterator = Symbol.asyncIterator || Symbol.for("Symbol.asyncIterator");
+if (Symbol && !Symbol.asyncIterator)
+  (<any>Symbol).asyncIterator = Symbol.for("Symbol.asyncIterator");
 async function* setScanner(redis: IORedis.Redis, key: string) {
   let cursor = 0
   do {
@@ -119,8 +120,8 @@ async function* setScanner(redis: IORedis.Redis, key: string) {
   } while (cursor > 0)
 }
 
-function surrogateFor(rt: Runtime, key: string) {
-  return `surrogatekey:${rt.app.name}:${key}`
+function tagKeyFor(rt: Runtime, tag: string) {
+  return `tag:${rt.app.name}:${tag}`
 }
 function keyFor(rt: Runtime, key: string) {
   return `cache:${rt.app.name}:${key}`

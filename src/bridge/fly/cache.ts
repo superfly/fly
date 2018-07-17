@@ -81,34 +81,34 @@ registerBridge('flyCacheDel',
     })
   })
 
-registerBridge('flyCacheAddSurrogates',
-  function flyCacheAddSurrogates(rt: Runtime, bridge: Bridge, key: string, surrogates: string[], callback: ivm.Reference<Function>) {
+registerBridge('flyCacheSetTags',
+  function flyCaceSettTags(rt: Runtime, bridge: Bridge, key: string, tags: string[], callback: ivm.Reference<Function>) {
     if (!bridge.cacheStore) {
       callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
       return
     }
 
-    bridge.cacheStore.addSurrogates(rt, key, surrogates).then((result) => {
+    bridge.cacheStore.setTags(rt, key, tags).then((result) => {
       callback.applyIgnored(null, [null, result])
     }).catch((err) => {
-      log.error("got err in cache.addSurrogates", err)
+      log.error("got err in cache.setTags", err)
       callback.applyIgnored(null, [null, null]) // swallow errors on get for now
     })
   })
 
-registerBridge('flyCachePurgeSurrogates',
-  function flyCacheAddSurrogates(rt: Runtime, bridge: Bridge, key: string, callback: ivm.Reference<Function>) {
+registerBridge('flyCachePurgeTags',
+  function flyCacheSetTags(rt: Runtime, bridge: Bridge, key: string, callback: ivm.Reference<Function>) {
     if (!bridge.cacheStore) {
       callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
       return
     }
 
-    bridge.cacheStore.purgeSurrogates(rt, key).then((result) => {
+    bridge.cacheStore.purgeTags(rt, key).then((result) => {
       setImmediate(() => {
         callback.applyIgnored(null, [null, JSON.stringify(result)])
       })
     }).catch((err) => {
-      log.error("got err in cache.purgeSurrogates", err)
+      log.error("got err in cache.purgeTags", err)
       callback.applyIgnored(null, [null, null]) // swallow errors on get for now
     })
   })
