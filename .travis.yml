@@ -1,14 +1,14 @@
 language: node_js
+node_js:
+  - "8"
+  - "10.3"
+  - "node"
 compiler: clang
 matrix:
   allow_failures:
     - osx_image: xcode9.4
   include:
     - os: linux
-      node_js:
-        - "8"
-        - "10.3"
-        - "node"
       addons:
         apt:
           sources:
