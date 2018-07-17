@@ -15,6 +15,7 @@ matrix:
           - nasm
       env: &linux_env
       - MATRIX_EVAL="export CXX=g++-5"
+      - REDIS_CACHE_URL=redis://localhost
       node_js: 8
     - ox: linux
       addons: *linux_addons
