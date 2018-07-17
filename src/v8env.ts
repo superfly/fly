@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs'
+import * as semver from 'semver'
 
 import * as webpack from 'webpack'
 
@@ -12,7 +13,7 @@ import * as ivm from 'isolated-vm';
 let v8EnvHash = "";
 let v8EnvCode = "";
 let v8EnvSourceMap = "";
-let v8EnvSnapshot: ivm.ExternalCopy<ArrayBuffer>;
+let v8EnvSnapshot: ivm.ExternalCopy<ArrayBuffer> | undefined;
 
 const v8dist = path.join(__dirname, '..', 'dist', 'v8env.js')
 const v8distSnapshot = path.join(__dirname, '..', 'dist', 'v8env.bin')
@@ -23,17 +24,28 @@ if (fs.existsSync(v8dist)) {
   v8EnvHash = createHash("sha1").update(v8EnvCode).digest("hex")
 }
 
-if (fs.existsSync(v8distSnapshot)) {
-  v8EnvSnapshot = new ivm.ExternalCopy(<ArrayBuffer>fs.readFileSync(v8distSnapshot).buffer)
-} else if (v8EnvCode) {
-  v8EnvSnapshot = ivm.Isolate.createSnapshot([{
-    code: v8EnvCode,
-    filename: 'dist/v8env.js'
-  }])
+const v8SnapshotsEnabled = semver.lt(process.version, '10.4.0')
+if (!v8SnapshotsEnabled) {
+  console.warn("can't use v8 snapshots with this version of node, boot will be slower", process.version)
 }
+else {
+  console.log("v8 snapshots enabled")
 
-if (fs.existsSync(v8mapDist)) {
-  v8EnvSourceMap = fs.readFileSync(v8mapDist).toString()
+  if (fs.existsSync(v8distSnapshot)) {
+    console.log("loading snapshot:", v8distSnapshot)
+    v8EnvSnapshot = new ivm.ExternalCopy(<ArrayBuffer>fs.readFileSync(v8distSnapshot).buffer)
+  } else if (v8EnvCode) {
+    console.log("building snapshot")
+    v8EnvSnapshot = ivm.Isolate.createSnapshot([{
+      code: v8EnvCode,
+      filename: 'dist/v8env.js'
+    }])
+  }
+
+
+  if (fs.existsSync(v8mapDist)) {
+    v8EnvSourceMap = fs.readFileSync(v8mapDist).toString()
+  }
 }
 
 export class V8Environment extends EventEmitter {
@@ -46,7 +58,7 @@ export class V8Environment extends EventEmitter {
   }
 
   get isReady() {
-    return !!v8Env && !!v8EnvSnapshot
+    return !!v8Env && (!!v8EnvSnapshot || !v8SnapshotsEnabled)
   }
 
   get source() {
