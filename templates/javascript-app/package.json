@@ -1,0 +1,9 @@
+{
+    "name": "appName",
+    "version": "0.1.0",
+    "scripts": {
+        "serve": "fly serve",
+        "deploy": "fly deploy"
+    },
+    "dependencies": {}
+}
