@@ -1,9 +1,6 @@
 import { CacheStore, CacheSetOptions } from './cache_store'
 import * as IORedis from 'ioredis'
 import { Runtime } from './runtime';
-import { Readable } from 'stream'
-import { isString } from 'util';
-import { resolve } from 'dns';
 
 const Redis = require('ioredis-mock')
 const OK = 'OK'
@@ -112,6 +109,7 @@ export class MemoryCacheStore implements CacheStore {
   }
 }
 
+(<any>Symbol).asyncIterator = Symbol.asyncIterator || Symbol.for("Symbol.asyncIterator");
 async function* setScanner(redis: IORedis.Redis, key: string) {
   let cursor = 0
   do {

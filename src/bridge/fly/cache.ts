@@ -91,7 +91,7 @@ registerBridge('flyCacheAddSurrogates',
     bridge.cacheStore.addSurrogates(rt, key, surrogates).then((result) => {
       callback.applyIgnored(null, [null, result])
     }).catch((err) => {
-      log.error("got err in cache.del", err)
+      log.error("got err in cache.addSurrogates", err)
       callback.applyIgnored(null, [null, null]) // swallow errors on get for now
     })
   })
@@ -108,7 +108,7 @@ registerBridge('flyCachePurgeSurrogates',
         callback.applyIgnored(null, [null, JSON.stringify(result)])
       })
     }).catch((err) => {
-      log.error("got err in cache.del", err)
+      log.error("got err in cache.purgeSurrogates", err)
       callback.applyIgnored(null, [null, null]) // swallow errors on get for now
     })
   })
