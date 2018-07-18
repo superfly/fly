@@ -2,78 +2,180 @@ import { root, CommonOptions, addCommonOptions, getAppName } from "./root"
 import * as path from "path"
 import * as fs from "fs"
 import { sync as glob } from "glob"
+import * as execa from "execa"
 
 export interface NewOptions {
-    template: string[]
+  template: string[]
+  list: boolean
 }
 export interface NewArgs {
-    name: string
+  name: string
 }
 
 const newCommand = root
-    .subCommand<NewOptions, NewArgs>("new <name>")
-    .description("Create a new Fly app.")
-    .option("-t, --template [template]", "Name of the template to use. default: javascript-app", "javascript-app")
-    .action((options, args) => {
-        const templateName = options.template[0]
-        const cwd = process.cwd()
+  .subCommand<NewOptions, NewArgs>("new [name]")
+  .description("Create a new Fly app.")
+  .option("-t, --template [template]", "Name of the template to use. default: getting-started", "getting-started")
+  .option("-l, --list", "List available templates.")
+  .action(async (options, args) => {
+    const templateIndex = new TemplateIndex([
+      path.resolve(__dirname, "..", "..", "templates"),
+      path.resolve(__dirname, "..", "..", "examples")
+    ])
 
-        generate({
-            cwd: cwd,
-            appName: args.name,
-            rootDir: path.resolve(cwd, args.name),
-            templateName: templateName,
-            templatePath: getTemplatePath(templateName)
-        })
+    if (args.name === undefined || options.list) {
+      listTemplates(templateIndex)
+      return
+    }
+
+    const template = templateIndex.getTemplate(options.template[0])
+
+    if (template == null) {
+      console.warn(`The template '${options.template[0]}' could not be found`)
+      console.log()
+      listTemplates(templateIndex)
+      return
+    }
+
+    const generator = new Generator({
+      appName: args.name,
+      template: template,
     })
 
+    console.log(`Using template ${generator.template.name}`)
+    console.log(`Creating project in ${generator.rootDir}...`)
+
+    try {
+      generator.create()
+    } catch (error) {
+      console.warn("Failed to create app directory:")
+      console.error(error)
+      return
+    }
+
+    try {
+      generator.copy()
+    } catch (error) {
+      console.warn("Failed to copy to app directory:")
+      console.error(error)
+      return
+    }
+
+    try {
+      await generator.configure()
+    } catch (error) {
+      console.warn("Failed to configure:")
+      console.error(error)
+      return
+    }
+
+    console.log(`Successfully created project ${generator.appName}`)
+    console.log(`Get started with the following commands:`)
+    console.log(`  $ cd ${generator.relativePath()}`)
+    console.log(`  $ fly server`)
+  })
+
+
 interface GeneratorOptions {
-    cwd: string,
-    appName: string
-    rootDir: string,
-    templateName: string,
-    templatePath: string
+  appName: string
+  path?: string,
+  template: TemplateInfo,
 }
 
-function getTemplatePath(templateName: string): string {
-    return path.resolve(__dirname, "..", "..", "templates", templateName)
+interface TemplateInfo {
+  name: string,
+  path: string
+}
+
+class TemplateIndex {
+  templates: TemplateInfo[] = []
+
+  constructor(sources: string[]) {
+    for (const source of sources) {
+      this.addTemplates(source)
+    }
+  }
+
+  addTemplates(sourcePath: string) {
+    for (const relPath of fs.readdirSync(sourcePath)) {
+      const templatePath = path.join(sourcePath, relPath)
+      if (!fs.lstatSync(templatePath).isDirectory) {
+        continue
+      }
+
+      this.templates.push({
+        name: path.basename(templatePath),
+        path: templatePath
+      })
+    }
+  }
+
+  getTemplate(name: string): TemplateInfo | undefined {
+    return this.templates.find(ti => ti.name === name)
+  }
+}
+
+function listTemplates(index: TemplateIndex) {
+  console.log("Start a new project with one of the following templates:")
+
+  index.templates.forEach(template => {
+    console.log(`  ${template.name}`)
+  })
+
+  console.log("Browse template source at https://github.com/superfly/fly/tree/master/examples")
 }
 
 export class GeneratorError extends Error { }
 
-function generate(options: GeneratorOptions) {
-    checkTemplate(options)
+class Generator {
+  readonly cwd: string
+  readonly appName: string
+  readonly rootDir: string
+  readonly template: TemplateInfo
 
-    console.log(`Using template ${options.templateName}`)
+  constructor(options: GeneratorOptions) {
+    this.cwd = process.cwd()
+    this.appName = options.appName
+    this.rootDir = options.path || path.resolve(this.cwd, this.appName)
+    this.template = options.template
+  }
 
-    console.log(`Creating project in ${options.rootDir}...`)
-    createOutputDirectory(options)
-    copyTemplateToOutput(options)
+  relativePath() {
+    return path.relative(this.cwd, this.rootDir)
+  }
 
-    console.log(`Successfully created project ${options.appName}`)
-    console.log(`Get started with the following commands:`)
-    console.log(`  $ cd ${path.relative(options.cwd, options.rootDir)}`)
-    console.log(`  $ fly server`)
-}
+  create() {
+    fs.mkdirSync(this.rootDir)
+  }
 
-function checkTemplate(options: GeneratorOptions) {
-    if (!fs.existsSync(options.templatePath)) {
-        throw new GeneratorError(`Invalid template '${options.templateName}'`)
-    }
-}
-
-function createOutputDirectory(options: GeneratorOptions) {
-    fs.mkdirSync(options.rootDir)
-}
-
-function copyTemplateToOutput(options: GeneratorOptions) {
-    glob(path.join(options.templatePath, "**", "*")).forEach(inputPath => {
-        const outputPath = translateOutputPath(inputPath, options)
-        fs.copyFileSync(inputPath, outputPath)
+  copy() {
+    glob(path.join(this.template.path, "**", "*")).forEach(templateFile => {
+      const outputPath = this.translateTemplateFilePath(templateFile)
+      fs.copyFileSync(templateFile, outputPath)
     })
+  }
+
+  async configure() {
+    const packageFile = path.join(this.rootDir, "package.json")
+    if (!fs.existsSync(packageFile)) {
+      return
+    }
+
+    var packageData = JSON.parse(fs.readFileSync(packageFile, "utf8"))
+    packageData["name"] = this.appName
+    fs.writeFileSync(packageFile, JSON.stringify(packageData), "utf8")
+
+    console.log("Installing packages...")
+    var exec = execa("npm", ['install'], { cwd: this.rootDir })
+    exec.stdout.pipe(process.stdout);
+    exec.stderr.pipe(process.stderr);
+
+    await exec
+  }
+
+  private translateTemplateFilePath(inputPath: string): string {
+    var templateRelativePath = path.relative(this.template.path, inputPath)
+    return path.join(this.rootDir, templateRelativePath)
+  }
 }
 
-function translateOutputPath(templateFile: string, options: GeneratorOptions): string {
-    var templateRelativePath = path.relative(options.templatePath, templateFile)
-    return path.join(options.rootDir, templateRelativePath)
-}
