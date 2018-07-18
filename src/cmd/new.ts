@@ -149,7 +149,7 @@ class Generator {
   }
 
   copy() {
-    glob(path.join(this.template.path, "**", "*")).forEach(templateFile => {
+    glob(path.join(this.template.path, "**", "*"), { dot: true }).forEach(templateFile => {
       const outputPath = this.translateTemplateFilePath(templateFile)
       fs.copyFileSync(templateFile, outputPath)
     })
