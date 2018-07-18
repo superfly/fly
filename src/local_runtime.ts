@@ -29,8 +29,8 @@ export class LocalRuntime implements Runtime {
     public bridge: Bridge,
     options: LocalRuntimeOptions = {}
   ) {
-    if (!v8Env.snapshot)
-      throw new Error("base snapshot is not ready, maybe you need to compile v8env?")
+    //if (!v8Env.snapshot)
+    //  throw new Error("base snapshot is not ready, maybe you need to compile v8env?")
 
     console.log("new runtime, app:", app.name, app.sourceHash)
 
@@ -79,6 +79,13 @@ export class LocalRuntime implements Runtime {
     if (current)
       current.release()
     const context = this.isolate.createContextSync({ inspector: !!this.options.inspect })
+
+    if (!v8Env.snapshot) {
+      const start = Date.now()
+      const script = this.isolate.compileScriptSync(v8Env.source, { filename: "bundle.js" })
+      script.runSync(context)
+      console.log("v8env loaded in", Date.now() - start, "ms")
+    }
     const g = context.global
     g.setSync("global", g.derefInto())
     g.setSync('_log', new ivm.Reference(function (lvl: string, ...args: any[]) {
@@ -107,6 +114,7 @@ export class LocalRuntime implements Runtime {
       this.app = app
       if (this.lastSourceHash != "") // we had not setup the context
         this.context = this.resetContext(this.context)
+
       await this.runApp(app)
       this.lastSourceHash = app.sourceHash
     }

@@ -1,12 +1,9 @@
 language: node_js
 compiler: clang
 matrix:
-  allow_failures:
-    - osx_image: xcode9.4
   include:
     - os: linux
-      node_js: "8"
-      addons:
+      addons: &linux_addons
         apt:
           sources:
           - ubuntu-toolchain-r-test
@@ -16,28 +13,26 @@ matrix:
           - autoconf
           - libtool
           - nasm
-      env:
-        - MATRIX_EVAL="export CXX=g++-5"
-    - os: linux
-      node_js: "10.3"
-      addons:
-        apt:
-          sources:
-          - ubuntu-toolchain-r-test
-          packages:
-          - gcc-5
-          - g++-5
-          - autoconf
-          - libtool
-          - nasm
-      env:
-        - MATRIX_EVAL="export CXX=g++-5"
+      env: &linux_env
+      - MATRIX_EVAL="export CXX=g++-5"
+      node_js: 8
+    - ox: linux
+      addons: *linux_addons
+      env: *linux_env
+      node_js: 10.3
+    - ox: linux
+      addons: *linux_addons
+      env: *linux_env
+      node_js: node 
     - os: osx
       osx_image: xcode9.4
-      node_js: "8"
+      node_js: 8
     - os: osx
       osx_image: xcode9.4
-      node_js: "10.3"
+      node_js: 10.3
+    - os: osx
+      osx_image: xcode9.4
+      node_js: node
       
 before_install:
 - set -e
