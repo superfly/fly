@@ -19,9 +19,13 @@ export default function flyInit() {
 }
 
 function deprecatedProxy(obj, message) {
+  let warnSent = false
   return new Proxy(obj, {
     get: function (receiver, name) {
-      console.warn(message)
+      if (!warnSent) {
+        console.warn(message)
+        warnSent = true
+      }
       return receiver[name]
     }
   })
