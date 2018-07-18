@@ -25,10 +25,10 @@ describe("@fly/cache", () => {
 
     const result = await cache.del("cache-delete-key")
 
-    expect(result).to.eq(true)
+    expect(result).to.eq(true, "del should return true")
 
-    const newVal = await cache.get("cache-delete-key")
-    expect(newVal).to.eq(null)
+    let newVal = await cache.get("cache-delete-key")
+    expect(newVal).to.eq(null, "previously deleted key should be null")
   })
 
   it("accepts empty arrayBuffer", async () => {

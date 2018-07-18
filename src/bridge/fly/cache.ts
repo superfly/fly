@@ -74,7 +74,7 @@ registerBridge('flyCacheDel',
     }
 
     bridge.cacheStore.del(rt, key).then((result) => {
-      callback.applyIgnored(null, [null, result])
+      callback.applyIgnored(null, [null, !!result])
     }).catch((err) => {
       log.error("got err in cache.del", err)
       callback.applyIgnored(null, [null, null]) // swallow errors on get for now

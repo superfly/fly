@@ -1,4 +1,6 @@
 import { Runtime } from "./runtime";
+import { RedisCacheStore } from "./redis_cache_store";
+import { MemoryCacheStore } from "./memory_cache_store";
 
 export interface CacheSetOptions {
   ttl?: number,
@@ -13,4 +15,16 @@ export interface CacheStore {
   setTags(rt: Runtime, key: string, tags: string[]): Promise<boolean>,
   purgeTags(rt: Runtime, tags: string): Promise<string[]>
   rand?: number
+}
+
+let _defaultCacheStore: CacheStore | undefined
+export function defaultCacheStore(): CacheStore {
+  if (_defaultCacheStore) return _defaultCacheStore
+  const url = process.env['REDIS_CACHE_URL']
+  if (url) {
+    _defaultCacheStore = new RedisCacheStore(url)
+  } else {
+    _defaultCacheStore = new MemoryCacheStore()
+  }
+  return _defaultCacheStore
 }

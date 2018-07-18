@@ -15,7 +15,7 @@ matrix:
           - nasm
       env: &linux_env
       - MATRIX_EVAL="export CXX=g++-5"
-      - REDIS_CACHE_URL=redis://localhost
+      - REDIS_CACHE_URL=redis://localhost/
       node_js: 8
     - ox: linux
       addons: *linux_addons
@@ -40,6 +40,10 @@ cache:
   directories:
     - node_modules
 
+      node_js: node
+      
+services:
+  - redis-server
 before_install:
 - set -e
 - eval "${MATRIX_EVAL}"

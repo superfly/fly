@@ -37,5 +37,5 @@ describe("@fly/cache#tags", () => {
 
     expect(v2).to.not.be.null
     expect(v2).to.eq(v, "post-purge value is wrong")
-  }).timeout(10000) // this is hella slow, I don't know why
+  })
 })
