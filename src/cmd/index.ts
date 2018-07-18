@@ -2,6 +2,7 @@
 
 import { root } from './root';
 
+require("./new");
 require("./apps");
 require("./orgs");
 require("./deploy");
