@@ -30,7 +30,7 @@ async function continuouslyGetLogs(API: AxiosInstance, appName: string) {
         console.log(e.stack)
       break;
     }
-    await sleep(5000) // give it a rest!
+    await sleep(500) // give it a rest!
   }
 }
 
