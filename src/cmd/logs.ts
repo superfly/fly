@@ -16,11 +16,25 @@ const logs = root
     continuouslyGetLogs(apiClient(this), getAppName(this))
   })
 
+
+const levels: { [key: number]: string } = {
+  7: 'debug',
+  6: 'info',
+  5: 'notice',
+  4: 'warning',
+  3: 'error',
+  2: 'crit',
+  1: 'alert',
+  0: 'emerg'
+}
+
 async function continuouslyGetLogs(API: AxiosInstance, appName: string) {
   let lastNextToken: string | undefined;
   while (true) {
+    let count = 0
     try {
       const [logs, nextToken] = await getLogs(API, appName, lastNextToken)
+      count = logs.length
       lastNextToken = nextToken
       showLogs(logs)
     } catch (e) {
@@ -30,14 +44,15 @@ async function continuouslyGetLogs(API: AxiosInstance, appName: string) {
         console.log(e.stack)
       break;
     }
-    await sleep(500) // give it a rest!
+    await sleep(count > 5 ? 200 : 2500) // give it a rest!
   }
 }
 
 const levelColorFn: { [lvl: string]: (message: string) => string } = {
-  "info": colors.blue,
+  "info": colors.grey,
   "debug": colors.cyan,
   "error": colors.red,
+  "warning": colors.magenta
 }
 
 interface LogAttributes {
@@ -53,8 +68,11 @@ interface Log {
 
 async function showLogs(logs: Log[]) {
   for (const l of logs) {
-    const levelColor = levelColorFn[l.attributes.level] || colors.white
-    console.log(`${colors.dim(new Date(l.attributes.timestamp).toISOString())} [${levelColor(l.attributes.level)}] ${l.attributes.message}`)
+    const region = l.attributes.meta.region
+    const ts = new Date(l.attributes.timestamp)
+    const lvl = levels[parseInt(l.attributes.level)] || l.attributes.level
+    const levelColor = levelColorFn[lvl] || colors.white
+    console.log(`${colors.dim(ts.toISOString().split('.')[0] + "Z")} ${colors.green(region)} [${levelColor(lvl)}] ${l.attributes.message}`)
   }
 }
 
@@ -63,8 +81,9 @@ async function getLogs(API: AxiosInstance, appName: string, nextToken?: string):
     params: { next_token: nextToken }
   })
   if (res.data.data && res.data.meta) {
-    return [res.data.data, res.data.meta.next_token]
+    return [res.data.data, res.data.meta.next_token || nextToken]
   }
+  console.log("Got no data:", res.data.data)
   // no data that we want, likely an error, continuouslyGetLogs will catch and
   // process errors accordingly
   throw new LogResponseError(res)
