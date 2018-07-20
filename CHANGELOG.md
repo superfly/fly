@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.38.0"></a>
+# [0.38.0](https://github.com/superfly/fly/compare/v0.37.0...v0.38.0) (2018-07-20)
+
+
+### Bug Fixes
+
+* allow .ts tests, still need ts-loader in webpack config ([f00d774](https://github.com/superfly/fly/commit/f00d774))
+* auto gzip application/x-javascript types ([d1609a7](https://github.com/superfly/fly/commit/d1609a7))
+* only show deprecation warning the first time a global is used ([965380d](https://github.com/superfly/fly/commit/965380d))
+* workaround for crashes loading v8 snapshot ([#101](https://github.com/superfly/fly/issues/101)) ([#115](https://github.com/superfly/fly/issues/115)) ([57d851f](https://github.com/superfly/fly/commit/57d851f))
+
+
+### Features
+
+* cli app generator ([c237e5b](https://github.com/superfly/fly/commit/c237e5b))
+* show region in logs ([ef344f4](https://github.com/superfly/fly/commit/ef344f4))
+* timeout option on fetch ([#113](https://github.com/superfly/fly/issues/113)) ([7f7d5f5](https://github.com/superfly/fly/commit/7f7d5f5))
+
+
+
 <a name="0.37.0"></a>
 # [0.37.0](https://github.com/superfly/fly/compare/v0.36.2...v0.37.0) (2018-07-11)
 
