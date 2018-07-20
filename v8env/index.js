@@ -19,7 +19,7 @@ import { crypto } from './ts/crypto.ts'
 import { Response } from './response'
 import { Request } from './request'
 import cache from './cache'
-import { setTimeout, clearTimeout, setInterval, clearInterval } from './timers'
+import { setTimeout, setImmediate, clearTimeout, setInterval, clearInterval } from './timers'
 
 import { Document, Element } from './document'
 
@@ -44,7 +44,7 @@ global.bootstrap = function bootstrap() {
 	global.console = console
 
 	Object.assign(global, {
-		setTimeout, clearTimeout, setInterval, clearInterval,
+		setTimeout, clearTimeout, setImmediate, setInterval, clearInterval,
 		ReadableStream, WritableStream, TransformStream,
 		TextEncoder, TextDecoder,
 		Headers, Request, Response, fetch, Body,

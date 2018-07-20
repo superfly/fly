@@ -23,4 +23,9 @@ describe("timers", () => {
       }, 50)
     })
   })
+  describe("setImmediate", () => {
+    it("calls the callback", function (done) {
+      setImmediate(done)
+    })
+  })
 })
