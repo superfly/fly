@@ -19,7 +19,6 @@ const newCommand = root
   .option("-l, --list", "List available templates.")
   .action(async (options, args) => {
     const templateIndex = new TemplateIndex([
-      path.resolve(__dirname, "..", "..", "templates"),
       path.resolve(__dirname, "..", "..", "examples")
     ])
 
