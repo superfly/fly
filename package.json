@@ -21,7 +21,7 @@
     "build:live": "./node_modules/.bin/concurrently -n \"core,v8env.ts,v8env\" \"tsc -w --pretty\" \"tsc -w --pretty -p v8env/ts\" \"webpack --config webpack.v8.config.js -w\"",
     "build:core": "rm -rf lib && ./node_modules/.bin/tsc",
     "build:v8env": "rm -rf dist v8env/lib && ./node_modules/.bin/tsc -p v8env && npm run build:v8env:types && ./node_modules/.bin/webpack --config webpack.v8.config.js",
-    "build:v8env:types": "./node_modules/.bin/tsc -p v8env -d --allowJs false",
+    "build:v8env:types": "./node_modules/.bin/tsc -p v8env -d --allowJs false --emitDeclarationOnly",
     "build:cli": "./node_modules/.bin/tsc bin/fly.ts",
     "build:cli:live": "npm run build:cli -- -w",
     "prepublishOnly": "npm run build",
