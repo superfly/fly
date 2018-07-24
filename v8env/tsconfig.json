@@ -13,9 +13,7 @@
     ],
     "sourceMap": true,
     "declaration": false, // can't emit declarations w/ allowJs, enable once js gone & remove v8env:types build step
-    // "strict": true,
-    // "noImplicitAny": true,
-    // "strictNullChecks": true,
+    "strict": true,
     "baseUrl": ".",
     "paths": {
       "source-map": [
