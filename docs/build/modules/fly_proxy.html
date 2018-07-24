@@ -51,12 +51,11 @@
 <span class="hljs-comment">// `Host` header passes through from visitor request</span>
 <span class="hljs-keyword">const</span> origin = proxy(<span class="hljs-string">"https://elb1298.amazonaws.com"</span>)
 </code></pre>
-					<p>Always send a known host header to origins that route with it. This is useful for third
-					party services that provide per-application subdomains, or origins with shared IPs.</p>
-					<pre><code class="lang-javascript"><span class="hljs-comment">// sends all traffic to an Amazon ELB,</span>
-<span class="hljs-comment">// always sends "example.com" as the host header</span>
+					<p>By default, this function sends the <code>Host</code> header inferred from the origin URL. To forward
+					host headers sent by visitors, set <code>forwardHostHeader</code> to true.</p>
+					<pre><code class="lang-javascript"><span class="hljs-comment">// sends all traffic to an Amazon ELB, include host header from original request.</span>
 <span class="hljs-keyword">const</span> origin = proxy(<span class="hljs-string">"https://elb1298.amazonaws.com"</span>, {
- <span class="hljs-attr">headers</span>: { <span class="hljs-attr">host</span>: <span class="hljs-string">"example.com"</span>}
+ <span class="hljs-attr">forwardHostHeader</span>: <span class="hljs-literal">true</span>
 })
 </code></pre>
 					<p>And then way more rare, no host header at all. Usually you&#39;d strip out <code>x-forwarded-host</code>,
@@ -99,7 +98,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/fly/proxy.ts#L43">fly/proxy.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/56f1c24/v8env/src/fly/proxy.ts#L42">fly/proxy.ts:42</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -136,15 +135,6 @@
 				<ul>
 					<li class="globals  ">
 						<a href="../globals.html"><em>Libraries</em></a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="fetch.html">fetch</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-private">
-						<a href="fly.html">fly</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="fly_image.html">fly/image</a>
 					</li>
 					<li class="current tsd-kind-external-module">
 						<a href="fly_proxy.html">fly/proxy</a>
