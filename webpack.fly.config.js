@@ -1,5 +1,5 @@
 module.exports = {
-  entry: `./v8env_test/index.js`,
+  entry: `./v8env/test/index.js`,
   resolve: {
     extensions: ['.js', '.png']
   },

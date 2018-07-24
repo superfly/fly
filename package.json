@@ -15,7 +15,7 @@
     "start": "./lib/cmd/index.js server ./examples/getting-started",
     "test": "npm run test:v8env && npm run test:core",
     "test:core": "./node_modules/.bin/mocha -r ts-node/register",
-    "test:v8env": "npm run build:v8env && node ./lib/cmd/index.js test v8env_test/**/*.spec.js",
+    "test:v8env": "npm run build:v8env && node ./lib/cmd/index.js test v8env/test/**/*.spec.js",
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "build": "./node_modules/.bin/concurrently -n \"core,v8env\" \"npm run build:core\" \"npm run build:v8env\"",
     "build:live": "./node_modules/.bin/concurrently -n \"core,v8env.ts,v8env\" \"tsc -w --pretty\" \"tsc -w --pretty -p v8env/ts\" \"webpack --config webpack.v8.config.js -w\"",
