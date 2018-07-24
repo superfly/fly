@@ -1,5 +1,5 @@
 import CookieJar from './cookie_jar'
-import Body from './ts/body_mixin'
+import Body from './body_mixin'
 
 function ushort(x) { return x & 0xFFFF; }
 

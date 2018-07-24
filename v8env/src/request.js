@@ -1,5 +1,5 @@
 import CookieJar from './cookie_jar'
-import Body from './ts/body_mixin'
+import Body from './body_mixin'
 
 function byteUpperCase(s) {
 	return String(s)
