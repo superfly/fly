@@ -26,7 +26,7 @@
     "build:cli:live": "npm run build:cli -- -w",
     "prepublishOnly": "npm run build",
     "release": "standard-version",
-    "doc:v8env": "./node_modules/typedoc/bin/typedoc --tsconfig ./v8env/ts/tsconfig.json"
+    "doc:v8env": "./node_modules/typedoc/bin/typedoc --tsconfig ./v8env/tsconfig.json"
   },
   "bin": {
     "fly": "lib/cmd/index.js"
