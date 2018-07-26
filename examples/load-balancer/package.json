@@ -1,0 +1,28 @@
+{
+  "name": "@fly/load-balancer",
+  "private": false,
+  "version": "0.1.1",
+  "description": "",
+  "scripts": {
+    "start": "npx tsc && npx fly server",
+    "test": "fly test",
+    "build": "npx tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "main": "lib/balancer.js",
+  "files": [
+    "lib/*"
+  ],
+  "devDependencies": {
+    "@fly/fly": "^0.38.0",
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.4",
+    "chai": "^4.1.2",
+    "standard-version": "^4.4.0",
+    "ts-loader": "^3.5.0",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {}
+}
