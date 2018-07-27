@@ -21,8 +21,8 @@ export type BodySource = Blob | BufferSource |
 
 /** @hidden */
 export default class BodyMixin implements Body {
-  private readonly bodySource: BodySource
-  private stream: ReadableStream | null
+  protected bodySource: BodySource
+  protected stream: ReadableStream | null
 
   constructor(obj: BodySource) {
     validateBodyType(this, obj)

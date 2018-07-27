@@ -1,3 +1,5 @@
+declare var bridge: any
+
 /**
  * Image manipulation APIs. Resize, convert, crop, etc. You can use this library to optimize images on-the-fly. Or, do clever things like adding watermarks.
  * 

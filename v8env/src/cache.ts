@@ -1,6 +1,9 @@
 import { logger } from './logger'
 import CachePolicy from 'http-cache-semantics'
 
+declare var fly: any
+declare var cache: any
+
 /**
  * export:
  * 	match(req): res | null
@@ -75,7 +78,7 @@ export default {
 	}
 }
 
-function hashData(req, vary) {
+function hashData(req, vary?) {
 	let toHash = ``
 
 	const u = normalizeURL(req.url)

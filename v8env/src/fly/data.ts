@@ -1,3 +1,5 @@
+declare var bridge: any
+
 export class Collection {
   name: string
   constructor(name: string) {

@@ -16,6 +16,8 @@ const WritableParser = htmlparser.WritableStream
 import * as css from 'css-select'
 
 export class Node {
+	protected _dom: any
+
 	constructor(dom) {
 		this._dom = dom
 	}
@@ -60,6 +62,8 @@ export class Node {
 }
 
 export class Document extends Node {
+	public static Parser: any
+
 	constructor(dom) {
 		super(dom)
 	}
@@ -119,6 +123,9 @@ export class Element extends Node {
 }
 
 class DocumentParser {
+	parser: any
+	selectors: any
+
 	constructor() {
 		this.parser = parseDOMStreaming(this.onElement.bind(this))
 		this.selectors = []
@@ -151,6 +158,13 @@ class DocumentParser {
 			this.parser.write(value)
 		}
 		this.parser.end()
+	}
+
+	parseSync(arg: any) {
+		// TODO: this method wasn't declared prior to the move to TS but referred from the parse
+		// method if stream is a string. This might be an overlooked bug, will fix once we know
+		// the desired behavior
+		throw new Error("This wasn't a method before TS, wtf?")
 	}
 }
 

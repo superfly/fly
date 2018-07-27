@@ -1,4 +1,7 @@
 import { logger } from '../logger'
+import { ReadableStream } from "../streams"
+
+declare var bridge: any
 
 export function isFlyStream(id) {
   return typeof id === "number"

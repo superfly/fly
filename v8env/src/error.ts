@@ -1,5 +1,7 @@
 import { logger } from './logger'
 
+declare var bridge: any
+
 function originalPositionFor(source, position) {
   return bridge.dispatchSync("SourceMapConsumer.originalPositionFor", source, position)
 }
@@ -152,7 +154,7 @@ function mapEvalOrigin(origin) {
     var position = mapSourcePosition({
       source: match[2],
       line: +match[3],
-      column: match[4] - 1
+      column: parseInt(match[4]) - 1
     });
     return 'eval at ' + match[1] + ' (' + position.source + ':' +
       position.line + ':' + (position.column + 1) + ')';

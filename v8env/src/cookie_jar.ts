@@ -8,6 +8,9 @@ const cookieAttributeNames = ['Max-Age', 'Expires', 'HttpOnly', 'Secure', 'Path'
  * @param {Response|Request} [parent] Underlying resource that contains cookies in headers
  */
 export default class CookieJar {
+	private cookies: any
+	private parent: any
+
 	constructor(parent) {
 		this.parent = parent
 		if (parent instanceof Request)

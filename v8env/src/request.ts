@@ -22,6 +22,16 @@ function normalizeMethod(m) {
  * @mixes Body
  */
 export class Request extends Body {
+	method: string
+	url: string
+	referrer: string
+	mode: string
+	credentials: string
+	headers: Headers
+	remoteAddr: string
+
+	private cookieJar: CookieJar
+
 	constructor(input, init) {
 		if (arguments.length < 1) throw TypeError('Not enough arguments');
 
@@ -63,14 +73,15 @@ export class Request extends Body {
 		// readonly attribute RequestCredentials credentials;
 		this.credentials = 'omit';
 
+		this.headers = new Headers()
+
 		if (input instanceof Request) {
 			if (input.bodyUsed) throw TypeError();
 			this.method = input.method;
 			this.url = input.url;
 			this.headers = new Headers(input.headers);
-			this.headers._guard = input.headers._guard;
 			this.credentials = input.credentials;
-			this._stream = input._stream;
+			this.stream = input.stream;
 			this.remoteAddr = input.remoteAddr;
 			this.referrer = input.referrer;
 			this.mode = input.mode;
@@ -94,8 +105,6 @@ export class Request extends Body {
 			 * @type {Headers}
 			 */
 			this.headers = new Headers(init.headers);
-		} else if (!('headers' in this)) {
-			this.headers = new Headers()
 		}
 
 		if ('credentials' in init &&

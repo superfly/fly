@@ -1,6 +1,8 @@
 import { logger } from './logger'
 import refToStream, { isFlyStream } from './fly/streams'
 
+declare var bridge: any
+
 /**
  * Starts the process of fetching a network request.
  * @function fetch
@@ -49,3 +51,5 @@ export function fetch(url, init) {
 		}
 	})
 };
+
+export class TimeoutError extends Error { }

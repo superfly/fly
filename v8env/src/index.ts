@@ -5,13 +5,13 @@ import { fireFetchEvent, addEventListener, dispatchEvent, FetchEvent } from "./e
 import { ReadableStream, WritableStream, TransformStream } from './streams'
 
 import { console } from './console'
-import flyInit from './fly'
+import flyInit from './fly/index'
 
 import { URL, URLSearchParams } from 'universal-url-lite'//'whatwg-url'
 import Headers from './headers'
 
 import { TextEncoder, TextDecoder } from './text-encoding'
-import { fetch } from './fetch'
+import { fetch, TimeoutError } from './fetch'
 import Body from './body_mixin'
 import Blob from './blob'
 import FormData from './form_data'
@@ -66,7 +66,7 @@ global.bootstrap = function bootstrap() {
 
 	global.getHeapStatistics = function getHeapStatistics() {
 		return new Promise((resolve, reject) => {
-			bridge.dispatch("getHeapStatistics", function getHeapStatisticsPromise(err, heap) {
+			global.bridge.dispatch("getHeapStatistics", function getHeapStatisticsPromise(err, heap) {
 				if (err) {
 					reject(err)
 					return
@@ -76,5 +76,3 @@ global.bootstrap = function bootstrap() {
 		})
 	}
 }
-
-class TimeoutError extends Error { }

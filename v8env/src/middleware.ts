@@ -1,6 +1,9 @@
 import { logger } from './logger'
 
+declare var middleware: any
+
 class MiddlewareSettings {
+	settings: {}
 	constructor(settings) {
 		this.settings = settings || {}
 	}
@@ -29,6 +32,10 @@ const errMiddlewareNotPromise = new Error("Middleware did not return a promise")
  * @param {Object.<string,Object>} [props.settings] Settings to hand off to the middleware
  */
 export class Middleware {
+	type: any
+	settings: MiddlewareSettings
+	fn: any
+
 	constructor(props) {
 		this.type = props.type
 		this.settings = new MiddlewareSettings(props.settings)
@@ -52,6 +59,9 @@ export class Middleware {
  * A chain of middleware to execute in order
  */
 export class MiddlewareChain {
+	currentPos: number
+	chain: any[]
+
 	constructor() {
 		this.currentPos = 0
 		this.chain = []
