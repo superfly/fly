@@ -1,0 +1,145 @@
+body {
+    font: 14px "Century Gothic", Futura, sans-serif;
+    margin: 0;
+}
+
+.code {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+header {
+    background-color: #fafbfc;
+    color: #000;
+    text-align: left;
+    padding: 20px;
+}
+
+header svg {
+    display: inline-block;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+header p {
+    display: inline-block;
+    padding-left: 15px;
+    font-size: 16px;
+}
+
+header p a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+header p a:nth-child(2) {
+    font-weight: 700;
+}
+
+
+
+
+#searchBox form {
+    display: inline-block;
+    padding: 12px;
+}
+
+#searchBox form input[type='text'] {
+    padding: 5px;
+    margin: 0 3px;
+    width: 120px;
+    border: 1px solid #fff;
+}
+
+#actions p {
+    padding: 20px;
+    width: 50%;
+    float: left;
+}
+
+#actions button {
+    color: #fff;
+    background-color: #28a745;
+    background-image: linear-gradient(-180deg, #34d058 0%, #28a745 90%);
+    padding: 3px 10px;
+    font-size: 12px;
+    line-height: 19px;
+    user-select: none;
+    background-repeat: repeat-x;
+    background-position: -1px -1px;
+    background-size: 110% 110%;
+    border: 1px solid rgba(27,31,35,0.2);
+    border-radius: 0.25em;
+    white-space: nowrap;
+    cursor: pointer;
+    display: block;
+    font-weight: 600;
+    margin-left: 8px;
+    float: right;
+    margin: 35px;
+}
+
+form {
+    clear: both;
+    width: 50%;
+    margin: 0 auto;
+}
+
+form textarea, form input[type='text'] {
+    display: block;
+    min-height: 34px;
+    padding: 6px 8px;
+    font-size: 16px;
+    font-family: sans-serif;
+    line-height: 20px;
+    color: #24292e;
+    background-color: #fafbfc;
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    border: 1px solid #d1d5da;
+    border-radius: 3px;
+    width: 100%;
+    margin: 0 0 25px 0;
+    margin: 10px 0;
+    height: 50px;
+}
+
+form input[type='text'] {
+    height: 32px;
+}
+
+form textarea:active, form textarea:focus, form input[type='text']:active, form input[type='text']:focus {
+    border-color: #2188ff;
+    background-color: #fff;
+}
+
+form input[type='submit'] {
+    color: #24292e;
+    background-color: #eff3f6;
+    background-image: linear-gradient(-180deg, #fafbfc 0%, #eff3f6 90%);
+    user-select: none;
+    background-repeat: repeat-x;
+    background-position: -1px -1px;
+    background-size: 110% 110%;
+    border: 1px solid rgba(27,31,35,0.2);
+    border-radius: 0.25em;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    padding: 5px 20px;
+    margin: 40px auto 20px auto;
+}
+
+form input[type='submit']:hover {
+    background-color: #e6ebf1;
+    background-image: linear-gradient(-180deg, #f0f3f6 0%, #e6ebf1 90%);
+    background-position: -.5em;
+    border-color: rgba(27,31,35,0.35);
+}
+
+.error {
+    color: #e74c3c;
+    text-align: center;
+    margin: 0 auto 40px auto;
+}

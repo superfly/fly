@@ -1,0 +1,10 @@
+app: github-auth
+config:
+  clientId:
+    fromSecret: clientId
+  clientSecret:
+    fromSecret: clientSecret
+files:
+  - build/index.html
+  - build/static/js/main.*.js
+  - build/static/css/main.*.css
