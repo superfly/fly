@@ -31,12 +31,24 @@ root
     console.log(`Using ${cwd} as working directory.`)
     process.chdir(cwd)
 
-    const port = (opts.port && opts.port[0]) || (process.env['PORT'] && process.env['PORT']) || 3000
+    let port = parseInt((opts.port && opts.port[0]) || (process.env['PORT'] && process.env['PORT']) || '3000')
 
     // TODO: use env option for environment.
     const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env: "development" })
 
     const server = new Server({ appStore, inspect: !!opts.inspect })
+    if (port === 3000) { // auto increment if default port in use
+      server.on('error', (e: any) => {
+        if (e.code === 'EADDRINUSE') {
+          port = port + 1
+          console.log('Port in use, trying:', port);
+          setTimeout(() => {
+            server.close();
+            server.listen(port);
+          }, 1000);
+        }
+      });
+    }
     server.listen(port)
   })
 
