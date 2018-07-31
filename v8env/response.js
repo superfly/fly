@@ -13,6 +13,14 @@ function ushort(x) { return x & 0xFFFF; }
  * @mixes Body
  */
 export class Response extends Body {
+	static redirect(url, status = 302) {
+		return new Response('', {
+			status,
+			headers: {
+				Location: url
+			}
+		})
+	}
 	constructor(body, init) {
 		if (arguments.length < 1)
 			body = '';
