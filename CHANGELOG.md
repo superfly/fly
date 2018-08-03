@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.39.0-0"></a>
+# [0.39.0-0](https://github.com/superfly/fly/compare/v0.38.1...v0.39.0-0) (2018-08-03)
+
+
+### Bug Fixes
+
+* `fly server` will keep trying new ports if default is in use (fixes [#128](https://github.com/superfly/fly/issues/128)) ([5f3624d](https://github.com/superfly/fly/commit/5f3624d))
+* move load balancer example into core repository ([08b63cf](https://github.com/superfly/fly/commit/08b63cf))
+* setTimeout hangs (fixes [#122](https://github.com/superfly/fly/issues/122)) ([15d0ab4](https://github.com/superfly/fly/commit/15d0ab4))
+
+
+### Features
+
+* [@fly](https://github.com/fly)/fetch/mount, easily mount paths ([1578b98](https://github.com/superfly/fly/commit/1578b98))
+* [@fly](https://github.com/fly)/fetch/pipeline, combine fetch generators ([c288530](https://github.com/superfly/fly/commit/c288530))
+* Compile v8env with Typescript ([#125](https://github.com/superfly/fly/issues/125)) ([35e3bc3](https://github.com/superfly/fly/commit/35e3bc3))
+* port v8env javascript to typescript ([#126](https://github.com/superfly/fly/issues/126)) ([7f2b55f](https://github.com/superfly/fly/commit/7f2b55f))
+
+
+
 <a name="0.38.1"></a>
 ## [0.38.1](https://github.com/superfly/fly/compare/v0.38.0...v0.38.1) (2018-07-20)
 
