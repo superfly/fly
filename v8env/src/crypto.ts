@@ -5,6 +5,8 @@
  */
 type CryptoData = BufferSource | string
 
+declare var bridge: any
+
 /** @hidden */
 export const crypto = {
   subtle: {

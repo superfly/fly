@@ -2,6 +2,8 @@ import { logger } from './logger'
 import { EventEmitter2 as EventEmitter } from 'eventemitter2'
 import refToStream from './fly/streams'
 
+declare var bridge: any
+
 const invalidResponseType = new Error(`Invalid response type for 'fetch' event. Expecting a straight Response, a function returning a Promise<Response> or a Response.`)
 
 /**
@@ -15,6 +17,11 @@ const invalidResponseType = new Error(`Invalid response type for 'fetch' event. 
  * @class
  */
 export class FetchEvent {
+	type: any
+	request: any
+	callback: any
+	respondWithEntered: boolean
+
 	constructor(type, init, callback) {
 		this.type = type
 		this.request = init.request
@@ -116,7 +123,7 @@ export function fireFetchEvent(url, req, body, callback) {
 	if (typeof fn !== 'function')
 		return selfCleaningCallback.apply(null, ["No HTTP handler attached: make sure your app calls `fly.http.respondWith(...)."])
 
-	if (fn(fetchEvent) instanceof Promise)
+	if ((fn(fetchEvent) as any) instanceof Promise)
 		return selfCleaningCallback.apply(null, ["'fetch' event handler function cannot return a promise."])
 
 	if (!fetchEvent.respondWithEntered)

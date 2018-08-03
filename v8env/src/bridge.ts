@@ -5,9 +5,14 @@ const DEFAULT_BRIDGE_TRANSFER_OPTIONS = {
   transfer: false
 }
 
+export interface BridgeTransferOptions {
+  release?: boolean
+  transfer?: boolean
+}
+
 export default function initBridge(ivm, dispatch) {
   const bridge = global.bridge = {
-    prepareValue(arg, opts = {}) {
+    prepareValue(arg, opts: { release?: any } = {}) {
       if (!arg) // false, undefined, null, 0, "" (all transferable)
         return arg
 
@@ -73,7 +78,7 @@ export default function initBridge(ivm, dispatch) {
       return dispatch.applySyncPromise(null, [name, ...args.map((a) => bridge.prepareValue(a))])
     },
 
-    wrapFunction(fn, options = { release: true }) {
+    wrapFunction(fn, options: BridgeTransferOptions = { release: true }) {
       const opts = Object.assign({}, DEFAULT_BRIDGE_TRANSFER_OPTIONS, options || {})
       if (!opts.release)
         return new ivm.Reference(fn);
@@ -86,7 +91,7 @@ export default function initBridge(ivm, dispatch) {
       return cb
     },
 
-    wrapValue(value, options = { release: true }) {
+    wrapValue(value, options: BridgeTransferOptions = { release: true }) {
       const opts = Object.assign({}, DEFAULT_BRIDGE_TRANSFER_OPTIONS, options || {})
       if (!!opts.transfer)
         return new ivm.ExternalCopy(value, { transferOut: true }).copyInto({ release: !!opts.release, transferIn: true });

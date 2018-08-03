@@ -1,3 +1,6 @@
+
+declare var bridge: any
+
 export function setTimeout(cb, ms) {
   const ref = bridge.wrapFunction(cb)
   return bridge.dispatchSync("setTimeout", ref, ms)

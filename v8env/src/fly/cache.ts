@@ -5,6 +5,7 @@
  * @module fly/cache
  */
 
+declare var bridge: any
 
 /**
  * Get an ArrayBuffer value (or null) from the cache

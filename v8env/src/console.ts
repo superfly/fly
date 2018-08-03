@@ -1,5 +1,17 @@
+declare var fly: any
+
 // Console
-export const console = {
+export const console: Console = {
+	// TODO: adding junk to conform to merged Console interface from node & lib.dom
+	memory: undefined,
+	markTimeline: undefined,
+	msIsIndependentlyComposed: undefined,
+	select: undefined,
+	timeStamp: undefined,
+	timeline: undefined,
+	timelineEnd: undefined,
+	Console: undefined,
+
 	log(...args) {
 		fly.log('info', ...args)
 	},
@@ -37,7 +49,10 @@ export const console = {
 	group: noop,
 	groupCollapsed: noop,
 	groupEnd: noop,
-	timestamp: noop,
+	// TODO: commenting out to resolve definition conflict between @types/node & lib.dom
+	//  see: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/node/v4/index.d.ts#L15
+	//  note: 'timestamp' here & 'timeStamp' above...
+	// timestamp: noop,
 
 	// TODO: Implement
 	profile: noop,

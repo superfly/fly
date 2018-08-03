@@ -4,7 +4,7 @@
   ],
   "compilerOptions": {
     "outDir": "./lib",
-    "allowJs": true,
+    "allowJs": false,
     "target": "es2017",
     "module": "commonjs",
     "lib": [
@@ -12,8 +12,9 @@
       "dom"
     ],
     "sourceMap": true,
-    "declaration": false, // can't emit declarations w/ allowJs, enable once js gone & remove v8env:types build step
-    "strict": true,
+    "declaration": true,
+    "strict": false, // temporarily disable during transition to typescript
+    "skipLibCheck": true, // resolves a conflict w/ `Console` between @types/node & lib.dom, remove this later
     "baseUrl": ".",
     "paths": {
       "source-map": [
