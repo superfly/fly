@@ -219,7 +219,7 @@ describe('Server', function () {
     })
   })
 
-  describe('cache', function () {
+  describe.skip('cache', function () {
     before(startServer("cache.js"))
     after(stopServer)
 

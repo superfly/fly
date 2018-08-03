@@ -1,0 +1,40 @@
+{
+  "include": [
+    "./src/**/*"
+  ],
+  "compilerOptions": {
+    "outDir": "./lib",
+    "allowJs": true,
+    "target": "es2017",
+    "module": "commonjs",
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "sourceMap": true,
+    "declaration": false, // can't emit declarations w/ allowJs, enable once js gone & remove v8env:types build step
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "source-map": [
+        // hacky fix for these errors:
+        //  node_modules/@types/uglify-js/index.d.ts:9:30 - error TS2307: Cannot find module 'source-map'.
+        //  node_modules/@types/webpack/index.d.ts:20:30 - error TS2307: Cannot find module 'source-map'.
+        // I *think* we can drop this once v8env has it's own package.json and module resolutions are simpler
+        "../node_modules/source-map/source-map.d.ts"
+      ]
+    }
+  },
+  "typedocOptions": {
+    "out": "./docs/build/",
+    "includeDeclarations": true,
+    "excludeExternals": true,
+    "excludeNotExported": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "plugin": "all",
+    "mode": "modules",
+    "theme": "./docs/theme/",
+    "ignoreCompilerErrors": true
+  }
+}

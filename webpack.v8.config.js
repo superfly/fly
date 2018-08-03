@@ -1,6 +1,6 @@
 let path = require('path')
 module.exports = {
-  entry: path.join(__dirname, "v8env", "index"),
+  entry: path.join(__dirname, "v8env", "lib", "index"),
   devtool: 'source-map',
   output: {
     filename: 'v8env.js',

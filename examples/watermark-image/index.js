@@ -1,7 +1,7 @@
 import { Image } from '@fly/image'
 
-const pictureURL = "https://raw.githubusercontent.com/superfly/fly/147f2a327dc76ce6cf10c46b7ea1c19a9d8f2d87/v8env_test/fixtures/picture.jpg"
-const logoURL = "https://raw.githubusercontent.com/superfly/fly/147f2a327dc76ce6cf10c46b7ea1c19a9d8f2d87/v8env_test/fixtures/overlay.png"
+const pictureURL = "https://raw.githubusercontent.com/superfly/fly/147f2a327dc76ce6cf10c46b7ea1c19a9d8f2d87/v8env/test/fixtures/picture.jpg"
+const logoURL = "https://raw.githubusercontent.com/superfly/fly/147f2a327dc76ce6cf10c46b7ea1c19a9d8f2d87/v8env/test/fixtures/overlay.png"
 
 fly.http.respondWith(async function (req) {
   const url = new URL(req.url)

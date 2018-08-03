@@ -12,6 +12,9 @@ export const logger = {
   info(fmt: any, ...params: any[]) {
     flyLog('info', format(fmt, ...params))
   },
+  warn(fmt: any, ...params: any[]) {
+    flyLog('warn', format(fmt, ...params))
+  },
   error(fmt: any, ...params: any[]) {
     flyLog('error', format(fmt, ...params))
   },
