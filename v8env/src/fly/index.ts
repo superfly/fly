@@ -7,6 +7,7 @@ import { log } from './log'
 /**
  * @namespace fly
  * @private
+ * @hidden
  */
 export default function flyInit() {
   return {

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>cache | @fly/fly</title>
+	<title>timers | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -31,13 +31,10 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="fly.html">fly</a>
-				</li>
-				<li>
-					<a href="fly.cache.html">cache</a>
+					<a href="timers.html">timers</a>
 				</li>
 			</ul>
-			<h1>External module cache</h1>
+			<h1>External module timers</h1>
 		</div>
 	</div>
 </header>
@@ -51,10 +48,11 @@
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly.cache.html#expire" class="tsd-kind-icon">expire</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly.cache.html#get" class="tsd-kind-icon">get</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly.cache.html#getstring" class="tsd-kind-icon">get<wbr>String</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly.cache.html#set" class="tsd-kind-icon">set</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="timers.html#clearinterval" class="tsd-kind-icon">clear<wbr>Interval</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="timers.html#cleartimeout" class="tsd-kind-icon">clear<wbr>Timeout</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="timers.html#setimmediate" class="tsd-kind-icon">set<wbr>Immediate</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="timers.html#setinterval" class="tsd-kind-icon">set<wbr>Interval</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="timers.html#settimeout" class="tsd-kind-icon">set<wbr>Timeout</a></li>
 							</ul>
 						</section>
 					</div>
@@ -63,146 +61,171 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="expire" class="tsd-anchor"></a>
-					<h3>expire</h3>
+					<a name="clearinterval" class="tsd-anchor"></a>
+					<h3>clear<wbr>Interval</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">expire<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, ttl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">clear<wbr>Interval<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/fly.d.ts#L64">fly.d.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/timers.ts#L49">timers.ts:49</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sets or overwrites a key&#39;s time to live (in seconds)</p>
+									<p>Cancels the previously created interval</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<h5>id: <span class="tsd-signature-type">any</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The key to modify</p>
-									</div>
-								</li>
-								<li>
-									<h5>ttl: <span class="tsd-signature-type">number</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Expiration time remaining in seconds</p>
+										<p>The interval ID to cancel</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>true if ttl was set successfully</p>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="get" class="tsd-anchor"></a>
-					<h3>get</h3>
+					<a name="cleartimeout" class="tsd-anchor"></a>
+					<h3>clear<wbr>Timeout</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">clear<wbr>Timeout<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/fly.d.ts#L40">fly.d.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/timers.ts#L22">timers.ts:22</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get an ArrayBuffer value (or null) from the cache. See <code>getString</code> if you
-									want a string value.</p>
+									<p>Cancels a previously specified timeout</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<h5>id: <span class="tsd-signature-type">any</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The key to get</p>
+										<p>the id of the timeout to cancel</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Raw bytes stored for provided key or null if empty.</p>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="getstring" class="tsd-anchor"></a>
-					<h3>get<wbr>String</h3>
+					<a name="setimmediate" class="tsd-anchor"></a>
+					<h3>set<wbr>Immediate</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>String<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Immediate<span class="tsd-signature-symbol">(</span>cb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/fly.d.ts#L47">fly.d.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/timers.ts#L30">timers.ts:30</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a string value (or null) from the cache</p>
+									<p>Fires a callback after the current task yields</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<h5>cb: <span class="tsd-signature-type">any</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The key to get</p>
+										<p>The callback to fire asynchronously</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Data stored at the key, or null if none exists</p>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="set" class="tsd-anchor"></a>
-					<h3>set</h3>
+					<a name="setinterval" class="tsd-anchor"></a>
+					<h3>set<wbr>Interval</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">set<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span>, ttl<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Interval<span class="tsd-signature-symbol">(</span>cb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, ms<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/fly.d.ts#L56">fly.d.ts:56</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/timers.ts#L40">timers.ts:40</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sets a value at a certain key, with an optional ttl</p>
+									<p>Fires a callback over and over</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<h5>cb: <span class="tsd-signature-type">any</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The key to add or overwrite</p>
+										<p>The callback to fire every <ms> milliseconds</p>
 									</div>
 								</li>
 								<li>
-									<h5>value: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span></h5>
+									<h5>ms: <span class="tsd-signature-type">any</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Data to store at the specified key, up to 2MB</p>
+										<p>Milliseconds to wait between intervals</p>
 									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> ttl: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>true if the set was successful</p>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<p>id of newly created interval</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="settimeout" class="tsd-anchor"></a>
+					<h3>set<wbr>Timeout</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Timeout<span class="tsd-signature-symbol">(</span>cb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, ms<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/timers.ts#L13">timers.ts:13</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Fires a callback function after the specified time elapses.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>cb: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>function to execute after time elapses</p>
+									</div>
+								</li>
+								<li>
+									<h5>ms: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>milliseconds to wait before executing</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<p>an ID for the newly created timeout</p>
 						</li>
 					</ul>
 				</section>
@@ -217,22 +240,8 @@
 					<li class=" tsd-kind-external-module">
 						<a href="fetch.html">fetch</a>
 					</li>
-					<li class="current tsd-kind-external-module tsd-is-private">
+					<li class=" tsd-kind-external-module tsd-is-private">
 						<a href="fly.html">fly</a>
-						<ul>
-							<li class="current tsd-kind-external-module tsd-parent-kind-external-module">
-								<a href="fly.cache.html">cache</a>
-							</li>
-							<li class=" tsd-kind-external-module tsd-parent-kind-external-module">
-								<a href="fly.http.html">http</a>
-							</li>
-							<li class=" tsd-kind-external-module tsd-parent-kind-external-module">
-								<a href="fly.log.html">log</a>
-							</li>
-							<li class=" tsd-kind-external-module tsd-parent-kind-external-module">
-								<a href="fly.util.html">util</a>
-							</li>
-						</ul>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="fly_cache.html">fly/cache</a>
@@ -258,7 +267,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="fly_static_server.html">fly/static-<wbr>server</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="timers.html">timers</a>
 					</li>
 				</ul>
@@ -266,16 +275,19 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly.cache.html#expire" class="tsd-kind-icon">expire</a>
+						<a href="timers.html#clearinterval" class="tsd-kind-icon">clear<wbr>Interval</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly.cache.html#get" class="tsd-kind-icon">get</a>
+						<a href="timers.html#cleartimeout" class="tsd-kind-icon">clear<wbr>Timeout</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly.cache.html#getstring" class="tsd-kind-icon">get<wbr>String</a>
+						<a href="timers.html#setimmediate" class="tsd-kind-icon">set<wbr>Immediate</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly.cache.html#set" class="tsd-kind-icon">set</a>
+						<a href="timers.html#setinterval" class="tsd-kind-icon">set<wbr>Interval</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="timers.html#settimeout" class="tsd-kind-icon">set<wbr>Timeout</a>
 					</li>
 				</ul>
 			</nav>

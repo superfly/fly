@@ -1,6 +1,5 @@
 /**
- * @module fly
- * @private
+ * @module fetch
  */
 import CookieJar from './cookie_jar'
 import Body from './body_mixin'

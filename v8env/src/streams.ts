@@ -2,6 +2,10 @@
  * @module fly
  * @private
  */
+
+/**
+ * @hidden
+ */
 export const
   { ReadableStream } = require('whatwg-streams/reference-implementation/lib/readable-stream'),
   { WritableStream } = require('whatwg-streams/reference-implementation/lib/writable-stream'),
@@ -9,6 +13,9 @@ export const
   CountQueuingStrategy = require('whatwg-streams/reference-implementation/lib/count-queuing-strategy'),
   { TransformStream } = require('whatwg-streams/reference-implementation/lib/transform-stream');
 
+/**
+ * @hidden
+ */
 const interfaces = {
   ReadableStream,
   WritableStream,
@@ -18,6 +25,9 @@ const interfaces = {
 };
 
 // Export
+/**
+ * @hidden
+ */
 export default interfaces;
 
 // Add classes to window

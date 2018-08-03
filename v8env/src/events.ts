@@ -12,13 +12,14 @@ const invalidResponseType = new Error(`Invalid response type for 'fetch' event. 
 
 /**
  * The fetch event fires when your app receives an HTTP request
+ * @hidden
  * @event #fetch
  * @type {FetchEvent}
  * @property {FetchEvent} event
  */
 
 /**
- * @class
+ * @hidden
  */
 export class FetchEvent {
 	type: any
@@ -71,12 +72,21 @@ export class FetchEvent {
 	}
 }
 
+/**
+ * @hidden
+ */
 export const emitter = new EventEmitter()
 
+/**
+ * @hidden
+ */
 export function addEventListener(name, fn) {
 	emitter.addListener(name, fn)
 }
 
+/**
+ * @hidden
+ */
 export function fireFetchEvent(url, req, body, callback) {
 	logger.debug("handling request event")
 	let selfCleaningCallback = function selfCleaningCallback(...args) {
@@ -134,6 +144,9 @@ export function fireFetchEvent(url, req, body, callback) {
 		return selfCleaningCallback.apply(null, ["respondWith was not called for FetchEvent"])
 }
 
+/**
+ * @hidden
+ */
 export function dispatchEvent(event) {
 	emitter.emit(event.type, event)
 }

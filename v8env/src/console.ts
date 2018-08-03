@@ -5,6 +5,10 @@
 declare var fly: any
 
 // Console
+
+/**
+ * @hidden
+ */
 export const console: Console = {
 	// TODO: adding junk to conform to merged Console interface from node & lib.dom
 	memory: undefined,

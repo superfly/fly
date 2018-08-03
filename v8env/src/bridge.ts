@@ -9,11 +9,18 @@ const DEFAULT_BRIDGE_TRANSFER_OPTIONS = {
   transfer: false
 }
 
+/**
+ * @hidden
+ */
 export interface BridgeTransferOptions {
   release?: boolean
   transfer?: boolean
 }
 
+
+/**
+ * @hidden
+ */
 export default function initBridge(ivm, dispatch) {
   const bridge = global.bridge = {
     prepareValue(arg, opts: { release?: any } = {}) {

@@ -7,10 +7,16 @@ import { ReadableStream } from "../streams"
 
 declare var bridge: any
 
+/**
+ * @hidden
+ */
 export function isFlyStream(id) {
   return typeof id === "number"
 }
 
+/**
+ * @hidden
+ */
 export default function refToStream(id) {
   let closed = false
   const r = new ReadableStream({

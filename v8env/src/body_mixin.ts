@@ -1,9 +1,8 @@
 /** @module fly
- * @private
  */
 import { parse as queryParse } from 'querystring'
 
-/** @hidden */
+
 interface ReadableStreamController {
   enqueue(chunk: string | ArrayBuffer): void
   close(): void
@@ -14,12 +13,12 @@ declare var ReadableStream: {
   new(source: any | undefined): ReadableStream;
 };
 
-/** @hidden */
+
 export type BodySource = Blob | BufferSource |
   FormData | URLSearchParams |
   ReadableStream | String
 
-/** @hidden */
+
 export default class BodyMixin implements Body {
   protected bodySource: BodySource
   protected stream: ReadableStream | null

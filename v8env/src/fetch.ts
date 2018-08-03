@@ -1,31 +1,33 @@
 /**
- * @module fly
- * @private
+ * @module fetch
  */
 import { logger } from './logger'
 import refToStream, { isFlyStream } from './fly/streams'
 
 declare var bridge: any
 
+export interface FlyRequestInit extends RequestInit {
+	timeout?: number,
+	readTimeout?: number
+}
+
 /**
  * Starts the process of fetching a network request.
- * @function fetch
+ * 
+ * See https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
  * @global
- * @param {String} url - The direct URL of the resource you wish to fetch
- * @param {Object} [init] - Options for the request
- * @param {Headers} [init.headers] Headers to send with the http request
- * @param {string} [init.method=GET] HTTP request method, defaults to `GET`
- * @param {number} [init.timeout] (non-standard) request timeout, errors if response hasn't been received by timeout
- * @param {number} [init.readTimeout] (non-standard) specifies the read timeout on the underlying socket
- * @returns {Promise<Response>} - A {@linkcode Promise} that resolves to a {@linkcode Response} object
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch}
+ * @param req - The direct URL or Request for the resource you wish to fetch
+ * @param init - Options for the request
+ * @return A Promise that resolves to a {@linkcode Response} object
  */
-export function fetch(url, init) {
-	logger.debug("fetch called", typeof url, typeof init)
+export function fetch(req: RequestInfo, init?: FlyRequestInit): Promise<Response> {
+	logger.debug("fetch called", typeof req, typeof init)
 	return new Promise(function fetchPromise(resolve, reject) {
 		try {
-			let req = new Request(url, init)
-			url = req.url
+			if (typeof req === "string") {
+				req = new Request(req, init)
+			}
+			const url = req.url
 			init = {
 				method: req.method,
 				headers: req.headers && req.headers.toJSON() || {},

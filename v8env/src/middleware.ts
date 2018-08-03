@@ -1,6 +1,7 @@
 /**
  * @module fly
  * @private
+ * @hidden
  */
 import { logger } from './logger'
 
@@ -26,6 +27,7 @@ const errMiddlewareNotPromise = new Error("Middleware did not return a promise")
  * @param {Request} request The HTTP request to operate on
  * @param {function} next A function to process subsequent middleware
  * @returns {Response} The response to serve to the user
+ * @hidden
  */
 
 /**
@@ -34,6 +36,7 @@ const errMiddlewareNotPromise = new Error("Middleware did not return a promise")
  * @param {string} [props.type] Key for a prebuilt middleware
  * @param {string} [props.fn] A function to use as middleware
  * @param {Object.<string,Object>} [props.settings] Settings to hand off to the middleware
+ * @hidden
  */
 export class Middleware {
 	type: any
@@ -61,6 +64,7 @@ export class Middleware {
 
 /**
  * A chain of middleware to execute in order
+ * @hidden
  */
 export class MiddlewareChain {
 	currentPos: number

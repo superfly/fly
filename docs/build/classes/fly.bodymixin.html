@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>CookieJar | @fly/fly</title>
+	<title>BodyMixin | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -34,36 +34,36 @@
 					<a href="../modules/fly.html">fly</a>
 				</li>
 				<li>
-					<a href="fly.cookiejar.html">CookieJar</a>
+					<a href="fly.bodymixin.html">BodyMixin</a>
 				</li>
 			</ul>
-			<h1>Class CookieJar</h1>
+			<h1>Class BodyMixin</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>A jar for storing delicious cookies.</p>
-					</div>
-					<dl class="tsd-comment-tags">
-						<dt>class</dt>
-						<dd></dd>
-						<dt>param</dt>
-						<dd><p>Underlying resource that contains cookies in headers</p>
-						</dd>
-					</dl>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">CookieJar</span>
+						<span class="target">BodyMixin</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="fetch.response.html" class="tsd-signature-type">Response</a>
+							</li>
+							<li>
+								<a href="fetch.request.html" class="tsd-signature-type">Request</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><span class="tsd-signature-type">Body</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -73,14 +73,24 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="fly.cookiejar.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="fly.bodymixin.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Accessors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="fly.bodymixin.html#body" class="tsd-kind-icon">body</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="fly.bodymixin.html#bodyused" class="tsd-kind-icon">body<wbr>Used</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.cookiejar.html#append" class="tsd-kind-icon">append</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.cookiejar.html#get" class="tsd-kind-icon">get</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.bodymixin.html#arraybuffer" class="tsd-kind-icon">array<wbr>Buffer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.bodymixin.html#blob" class="tsd-kind-icon">blob</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.bodymixin.html#formdata" class="tsd-kind-icon">form<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.bodymixin.html#json" class="tsd-kind-icon">json</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.bodymixin.html#text" class="tsd-kind-icon">text</a></li>
 							</ul>
 						</section>
 					</div>
@@ -92,22 +102,62 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Cookie<wbr>Jar<span class="tsd-signature-symbol">(</span>parent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.cookiejar.html" class="tsd-signature-type">CookieJar</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Body<wbr>Mixin<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><a href="../modules/fly.html#bodysource" class="tsd-signature-type">BodySource</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.bodymixin.html" class="tsd-signature-type">BodyMixin</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/cookie_jar.ts#L16">cookie_jar.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/body_mixin.ts#L24">body_mixin.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>parent: <span class="tsd-signature-type">any</span></h5>
+									<h5>obj: <a href="../modules/fly.html#bodysource" class="tsd-signature-type">BodySource</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="fly.cookiejar.html" class="tsd-signature-type">CookieJar</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="fly.bodymixin.html" class="tsd-signature-type">BodyMixin</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="body" class="tsd-anchor"></a>
+					<h3>body</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> body<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReadableStream</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/body_mixin.ts#L32">body_mixin.ts:32</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ReadableStream</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">null</span>
+							</h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="bodyused" class="tsd-anchor"></a>
+					<h3>body<wbr>Used</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> bodyUsed<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/body_mixin.ts#L50">body_mixin.ts:50</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -115,66 +165,87 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="append" class="tsd-anchor"></a>
-					<h3>append</h3>
+					<a name="arraybuffer" class="tsd-anchor"></a>
+					<h3>array<wbr>Buffer</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">append<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">array<wbr>Buffer<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/cookie_jar.ts#L40">cookie_jar.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/body_mixin.ts#L96">body_mixin.ts:96</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Sets a cookie, and applies it to the underlying <a href="fetch.request.html"><code>Request</code></a> or <a href="fetch.response.html"><code>Response</code></a></p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>name: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5>value: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5>options: <span class="tsd-signature-type">any</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="get" class="tsd-anchor"></a>
-					<h3>get</h3>
+					<a name="blob" class="tsd-anchor"></a>
+					<h3>blob</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">blob<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Blob</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/cookie_jar.ts#L30">cookie_jar.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/body_mixin.ts#L57">body_mixin.ts:57</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Gets a cookie by name</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>name: <span class="tsd-signature-type">any</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Blob</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="formdata" class="tsd-anchor"></a>
+					<h3>form<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">form<wbr>Data<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">FormData</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/body_mixin.ts#L61">body_mixin.ts:61</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">FormData</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="json" class="tsd-anchor"></a>
+					<h3>json</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">json<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/body_mixin.ts#L91">body_mixin.ts:91</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="text" class="tsd-anchor"></a>
+					<h3>text</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">text<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/6088889/v8env/src/body_mixin.ts#L82">body_mixin.ts:82</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -237,27 +308,42 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="fly.bodymixin.html" class="tsd-kind-icon">Body<wbr>Mixin</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="fly.cookiejar.html" class="tsd-kind-icon">Cookie<wbr>Jar</a>
+						<a href="fly.bodymixin.html" class="tsd-kind-icon">Body<wbr>Mixin</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="fly.cookiejar.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="fly.bodymixin.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="fly.bodymixin.html#body" class="tsd-kind-icon">body</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="fly.bodymixin.html#bodyused" class="tsd-kind-icon">body<wbr>Used</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="fly.cookiejar.html#append" class="tsd-kind-icon">append</a>
+								<a href="fly.bodymixin.html#arraybuffer" class="tsd-kind-icon">array<wbr>Buffer</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="fly.cookiejar.html#get" class="tsd-kind-icon">get</a>
+								<a href="fly.bodymixin.html#blob" class="tsd-kind-icon">blob</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fly.bodymixin.html#formdata" class="tsd-kind-icon">form<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fly.bodymixin.html#json" class="tsd-kind-icon">json</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fly.bodymixin.html#text" class="tsd-kind-icon">text</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="fly.cookiejar.html" class="tsd-kind-icon">Cookie<wbr>Jar</a>
+					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
 						<a href="fly.document.html" class="tsd-kind-icon">Document</a>
 					</li>

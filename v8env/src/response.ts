@@ -1,6 +1,5 @@
 /**
- * @module fly
- * @private
+ * @module fetch
  */
 import CookieJar from './cookie_jar'
 import Body from './body_mixin'
@@ -9,12 +8,6 @@ function ushort(x) { return x & 0xFFFF; }
 
 /**
  * Class representing a fetch response.
- * @param {Blob|String} [body]
- * @param {Object} [init]
- * @param {Number} [init.status]
- * @param {String} [init.statusText]
- * @param {String} [init.url]
- * @mixes Body
  */
 export class Response extends Body {
 	headers: Headers
