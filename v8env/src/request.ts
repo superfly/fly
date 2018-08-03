@@ -32,7 +32,7 @@ export class Request extends Body {
 
 	private cookieJar: CookieJar
 
-	constructor(input, init) {
+	constructor(input, init?) {
 		if (arguments.length < 1) throw TypeError('Not enough arguments');
 
 		let body = null

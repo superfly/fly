@@ -6,6 +6,8 @@
  * @module fly/fetch/mount
  */
 
+import { FetchFunction, normalizeRequest } from ".";
+
 /**
  * Mount different handlers on URL paths. Example:
  * 
@@ -19,14 +21,10 @@
  * fly.http.respondWith(mounts)
  * ```
  */
-export function mount(paths: MountInfo) {
+export function mount(paths: MountInfo): FetchFunction {
   return async function mountFetch(req: RequestInfo, init?: RequestInit) {
-    if (typeof req === "string") {
-      req = new Request(req, init)
-    }
-    if (!(req instanceof Request)) {
-      throw new Error("req must be either a string or a Request object")
-    }
+    req = normalizeRequest(req)
+
     const url = new URL(req.url)
     for (const p of Object.getOwnPropertyNames(paths)) {
       if (url.pathname.startsWith(p)) {
@@ -41,7 +39,7 @@ export function mount(paths: MountInfo) {
  * Path and fetch function map for `mount` handler
  */
 export interface MountInfo {
-  [prefix: string]: (req: RequestInfo, init?: RequestInit) => Promise<Response>
+  [prefix: string]: FetchFunction
 }
 
 export default mount;

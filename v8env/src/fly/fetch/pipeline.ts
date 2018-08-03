@@ -4,12 +4,9 @@
  * @preferred
  * @module fly/fetch/pipeline
  */
-/**
- * A function that generates a fetch-like function with additional logic
- */
-export interface FetchGenerator {
-  (...any: any[]): (req: RequestInfo, init?: RequestInit) => Promise<Response>
-}
+
+import { FetchGenerator, FetchFunction } from "./"
+
 
 /**
  * PipeplineStage can either be a FetchGenerator function, or a tuple of 
@@ -45,7 +42,7 @@ export function pipeline(...stages: PipelineStage[]) {
   /**
    * @param fetch the "origin" fetch function to call at the end of the pipeline
    */
-  function pipelineFetch(fetch: (req: RequestInfo, init?: RequestInit) => Promise<Response>) {
+  function pipelineFetch(fetch: FetchFunction) {
     for (let i = stages.length - 1; i >= 0; i--) {
       const s = stages[i]
       const fn = (typeof s === "function") ? s : s[0]

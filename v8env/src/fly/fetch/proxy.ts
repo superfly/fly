@@ -30,6 +30,7 @@
  * @preferred
  * @module fly/fetch/proxy
  */
+import { normalizeRequest, FetchFunction } from ".";
 
 /**
  * This generates a `fetch` like function for proxying requests to a given origin.
@@ -39,7 +40,7 @@
  * @param origin A URL to an origin, can include a path to rebase requests.
  * @param options Options and headers to control origin request.
  */
-export function proxy(origin: string | URL, options?: ProxyOptions) {
+export function proxy(origin: string | URL, options?: ProxyOptions): FetchFunction {
   return function proxyFetch(req: RequestInfo, init?: RequestInit) {
     if (!options) {
       options = {}
@@ -51,10 +52,6 @@ export function proxy(origin: string | URL, options?: ProxyOptions) {
 
 export default proxy
 
-interface FlyRequest extends Request {
-  url: string
-}
-
 /**
  * @protected
  * @hidden
@@ -63,19 +60,13 @@ interface FlyRequest extends Request {
  * @param req 
  * @param init 
  */
-export function buildProxyRequest(origin: string | URL, options: ProxyOptions, req: RequestInfo, init?: RequestInit) {
+export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r: RequestInfo, init?: RequestInit) {
+  let req = normalizeRequest(r)
 
-  if (typeof req === "string") {
-    req = new Request(req)
-  }
   const url = new URL(req.url)
-  let breq: FlyRequest | null = null
+  let breq: Request | null = null
 
-  if (req instanceof Request) {
-    breq = req.clone()
-  } else {
-    breq = new Request(req)
-  }
+  breq = req.clone()
 
   if (typeof origin === "string") {
     origin = new URL(origin)
@@ -96,9 +87,11 @@ export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r
     url.pathname = url.pathname.substring(1)
   }
 
-  breq.url = url.toString()
+  if (url.toString() != breq.url) {
+    breq = new Request(url.toString(), breq)
+  }
   // we extend req with remoteAddr
-  breq.headers.set("x-forwarded-for", (<any>req).remoteAddr)
+  breq.headers.set("x-forwarded-for", req.remoteAddr)
   breq.headers.set("x-forwarded-host", url.hostname)
 
   if (!options.forwardHostHeader) {
@@ -116,7 +109,7 @@ export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r
       }
     }
   }
-  return <Request>breq
+  return breq
 }
 
 /**
