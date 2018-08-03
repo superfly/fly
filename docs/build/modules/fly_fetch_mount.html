@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>fly/proxy | @fly/fly</title>
+	<title>fly/fetch/mount | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -31,43 +31,16 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="fly_proxy.html">fly/proxy</a>
+					<a href="fly_fetch_mount.html">fly/fetch/mount</a>
 				</li>
 			</ul>
-			<h1>External module fly/proxy</h1>
+			<h1>External module fly/fetch/mount</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Library for proxying requests to origins. Use this to create <code>fetch</code> like functions
-						for making requests to other services. For example:</p>
-					</div>
-					<pre><code class="lang-javascript"><span class="hljs-comment">// sends all traffic to an Amazon ELB,</span>
-<span class="hljs-comment">// `Host` header passes through from visitor request</span>
-<span class="hljs-keyword">const</span> origin = proxy(<span class="hljs-string">"https://elb1298.amazonaws.com"</span>)
-</code></pre>
-					<p>Always send a known host header to origins that route with it. This is useful for third
-					party services that provide per-application subdomains, or origins with shared IPs.</p>
-					<pre><code class="lang-javascript"><span class="hljs-comment">// sends all traffic to an Amazon ELB,</span>
-<span class="hljs-comment">// always sends "example.com" as the host header</span>
-<span class="hljs-keyword">const</span> origin = proxy(<span class="hljs-string">"https://elb1298.amazonaws.com"</span>, {
- <span class="hljs-attr">headers</span>: { <span class="hljs-attr">host</span>: <span class="hljs-string">"example.com"</span>}
-})
-</code></pre>
-					<p>And then way more rare, no host header at all. Usually you&#39;d strip out <code>x-forwarded-host</code>,
-					since some origins don&#39;t like that:</p>
-					<pre><code class="lang-javascript"><span class="hljs-comment">// sends all traffic to an Amazon ELB, never sends a host header</span>
-<span class="hljs-keyword">const</span> origin = proxy(<span class="hljs-string">"https://elb1298.amazonaws.com"</span>, {
- <span class="hljs-attr">headers</span>: { <span class="hljs-attr">host</span>: <span class="hljs-literal">false</span>}
-})
-</code></pre>
-				</div>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -75,13 +48,13 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/fly_proxy.proxyoptions.html" class="tsd-kind-icon">Proxy<wbr>Options</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/fly_fetch_mount.mountinfo.html" class="tsd-kind-icon">Mount<wbr>Info</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_proxy.html#proxy" class="tsd-kind-icon">proxy</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_fetch_mount.html#mount" class="tsd-kind-icon">mount</a></li>
 							</ul>
 						</section>
 					</div>
@@ -90,42 +63,38 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="proxy" class="tsd-anchor"></a>
-					<h3>proxy</h3>
+					<a name="mount" class="tsd-anchor"></a>
+					<h3>mount</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">proxy<span class="tsd-signature-symbol">(</span>origin<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">URL</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/fly_proxy.proxyoptions.html" class="tsd-signature-type">ProxyOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">proxyFetch</span></li>
+						<li class="tsd-signature tsd-kind-icon">mount<span class="tsd-signature-symbol">(</span>paths<span class="tsd-signature-symbol">: </span><a href="../interfaces/fly_fetch_mount.mountinfo.html" class="tsd-signature-type">MountInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/fly_fetch.fetchfunction.html" class="tsd-signature-type">FetchFunction</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/fly/proxy.ts#L43">fly/proxy.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/fly/fetch/mount.ts#L24">fly/fetch/mount.ts:24</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>This generates a <code>fetch</code> like function for proxying requests to a given origin.
-										When this function makes origin requests, it adds standard proxy headers like
-										<code>X-Forwarded-Host</code> and <code>X-Forwarded-For</code>. It also passes headers from the original
-									request to the origin.</p>
+									<p>Mount different handlers on URL paths. Example:</p>
 								</div>
+								<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { mount } <span class="hljs-keyword">from</span> <span class="hljs-string">"@fly/fetch/mount"</span>
+<span class="hljs-keyword">const</span> mounts = mount({
+ <span class="hljs-string">"/hello/"</span>: <span class="hljs-function">(<span class="hljs-params">req, init</span>) =&gt;</span> <span class="hljs-keyword">new</span> Response(<span class="hljs-string">"hello"</span>)
+ <span class="hljs-string">"/"</span>: <span class="hljs-function">(<span class="hljs-params">req, init</span>) =&gt;</span> <span class="hljs-keyword">new</span> Response(<span class="hljs-string">"index"</span>)
+})
+
+fly.http.respondWith(mounts)
+</code></pre>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>origin: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">URL</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>A URL to an origin, can include a path to rebase requests.</p>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/fly_proxy.proxyoptions.html" class="tsd-signature-type">ProxyOptions</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Options and headers to control origin request.</p>
-									</div>
+									<h5>paths: <a href="../interfaces/fly_fetch_mount.mountinfo.html" class="tsd-signature-type">MountInfo</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">proxyFetch</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/fly_fetch.fetchfunction.html" class="tsd-signature-type">FetchFunction</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -137,27 +106,42 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Libraries</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="fetch.html">fetch</a>
-					</li>
 					<li class=" tsd-kind-external-module tsd-is-private">
 						<a href="fly.html">fly</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="fly_image.html">fly/image</a>
+						<a href="fly_cache.html">fly/cache</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_data.html">fly/data</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_fetch.html">fly/fetch</a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="fly_proxy.html">fly/proxy</a>
+						<a href="fly_fetch_mount.html">fly/fetch/mount</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_fetch_pipeline.html">fly/fetch/pipeline</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_fetch_proxy.html">fly/fetch/proxy</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_image.html">fly/image</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_static_server.html">fly/static-<wbr>server</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/fly_proxy.proxyoptions.html" class="tsd-kind-icon">Proxy<wbr>Options</a>
+						<a href="../interfaces/fly_fetch_mount.mountinfo.html" class="tsd-kind-icon">Mount<wbr>Info</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly_proxy.html#proxy" class="tsd-kind-icon">proxy</a>
+						<a href="fly_fetch_mount.html#mount" class="tsd-kind-icon">mount</a>
 					</li>
 				</ul>
 			</nav>

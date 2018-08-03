@@ -1,7 +1,12 @@
+/**
+ * @module fly
+ * @private
+ */
 import { log } from './log'
 
 /**
  * @namespace fly
+ * @private
  */
 export default function flyInit() {
   return {

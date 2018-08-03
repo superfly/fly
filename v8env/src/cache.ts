@@ -1,3 +1,7 @@
+/**
+ * @module fly
+ * @private
+ */
 import { logger } from './logger'
 import CachePolicy from 'http-cache-semantics'
 

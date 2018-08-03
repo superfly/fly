@@ -1,4 +1,8 @@
 
+/**
+ * @module fly
+ * @private
+ */
 declare var bridge: any
 
 export class TextEncoder {

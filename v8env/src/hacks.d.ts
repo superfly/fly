@@ -1,3 +1,7 @@
+/**
+ * @module fly
+ * @private
+ */
 // These declarations are shims to help the transition to typescript. If they
 // are still here by 8/9 please hastle md
 

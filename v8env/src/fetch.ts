@@ -1,3 +1,7 @@
+/**
+ * @module fly
+ * @private
+ */
 import { logger } from './logger'
 import refToStream, { isFlyStream } from './fly/streams'
 

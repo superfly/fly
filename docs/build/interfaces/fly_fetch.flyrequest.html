@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Response | @fly/fly</title>
+	<title>FlyRequest | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -31,30 +31,35 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../modules/fetch.html">fetch</a>
+					<a href="../modules/fly_fetch.html">fly/fetch</a>
 				</li>
 				<li>
-					<a href="fetch.response.html">Response</a>
+					<a href="fly_fetch.flyrequest.html">FlyRequest</a>
 				</li>
 			</ul>
-			<h1>Interface Response</h1>
+			<h1>Interface FlyRequest</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Fly augmented Request, adds extra relevant fields for proxy level
+						Requests.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="tsd-signature-type">Object</span>
-					</li>
-					<li>
-						<span class="tsd-signature-type">Body</span>
+						<span class="tsd-signature-type">Request</span>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">Response</span>
+								<span class="target">FlyRequest</span>
 							</li>
 						</ul>
 					</li>
@@ -67,34 +72,43 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fetch.response.html#object" class="tsd-kind-icon">Object</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fetch.response.html#body" class="tsd-kind-icon">body</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fetch.response.html#bodyused" class="tsd-kind-icon">body<wbr>Used</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fetch.response.html#constructor" class="tsd-kind-icon">constructor</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fetch.response.html#headers" class="tsd-kind-icon">headers</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fetch.response.html#ok" class="tsd-kind-icon">ok</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fetch.response.html#redirected" class="tsd-kind-icon">redirected</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fetch.response.html#status" class="tsd-kind-icon">status</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fetch.response.html#statustext" class="tsd-kind-icon">status<wbr>Text</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fetch.response.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fetch.response.html#url" class="tsd-kind-icon">url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly_fetch.flyrequest.html#request" class="tsd-kind-icon">Request</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#bodysource" class="tsd-kind-icon">body<wbr>Source</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#bodyused" class="tsd-kind-icon">body<wbr>Used</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#cache" class="tsd-kind-icon">cache</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#credentials" class="tsd-kind-icon">credentials</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#destination" class="tsd-kind-icon">destination</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#headers" class="tsd-kind-icon">headers</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#integrity" class="tsd-kind-icon">integrity</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#keepalive" class="tsd-kind-icon">keepalive</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#method" class="tsd-kind-icon">method</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#mode" class="tsd-kind-icon">mode</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#redirect" class="tsd-kind-icon">redirect</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#referrer" class="tsd-kind-icon">referrer</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#referrerpolicy" class="tsd-kind-icon">referrer<wbr>Policy</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly_fetch.flyrequest.html#remoteaddr" class="tsd-kind-icon">remote<wbr>Addr</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#should" class="tsd-kind-icon">should</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#signal" class="tsd-kind-icon">signal</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#url" class="tsd-kind-icon">url</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fetch.response.html#arraybuffer" class="tsd-kind-icon">array<wbr>Buffer</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fetch.response.html#blob" class="tsd-kind-icon">blob</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="fetch.response.html#clone" class="tsd-kind-icon">clone</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fetch.response.html#formdata" class="tsd-kind-icon">form<wbr>Data</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-overwrite tsd-is-inherited"><a href="fetch.response.html#hasownproperty" class="tsd-kind-icon">has<wbr>Own<wbr>Property</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fetch.response.html#isprototypeof" class="tsd-kind-icon">is<wbr>Prototype<wbr>Of</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fetch.response.html#json" class="tsd-kind-icon">json</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-overwrite tsd-is-inherited"><a href="fetch.response.html#propertyisenumerable" class="tsd-kind-icon">property<wbr>IsEnumerable</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fetch.response.html#text" class="tsd-kind-icon">text</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fetch.response.html#tolocalestring" class="tsd-kind-icon">to<wbr>Locale<wbr>String</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fetch.response.html#tostring" class="tsd-kind-icon">to<wbr>String</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fetch.response.html#valueof" class="tsd-kind-icon">value<wbr>Of</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#arraybuffer" class="tsd-kind-icon">array<wbr>Buffer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#blob" class="tsd-kind-icon">blob</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#clone" class="tsd-kind-icon">clone</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#formdata" class="tsd-kind-icon">form<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-overwrite tsd-is-inherited"><a href="fly_fetch.flyrequest.html#hasownproperty" class="tsd-kind-icon">has<wbr>Own<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#isprototypeof" class="tsd-kind-icon">is<wbr>Prototype<wbr>Of</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#json" class="tsd-kind-icon">json</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-overwrite tsd-is-inherited"><a href="fly_fetch.flyrequest.html#propertyisenumerable" class="tsd-kind-icon">property<wbr>IsEnumerable</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#text" class="tsd-kind-icon">text</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#tolocalestring" class="tsd-kind-icon">to<wbr>Locale<wbr>String</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#tostring" class="tsd-kind-icon">to<wbr>String</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="fly_fetch.flyrequest.html#valueof" class="tsd-kind-icon">value<wbr>Of</a></li>
 							</ul>
 						</section>
 					</div>
@@ -103,27 +117,28 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="object" class="tsd-anchor"></a>
-					<h3>Object</h3>
-					<div class="tsd-signature tsd-kind-icon">Object<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ObjectConstructor</span></div>
+					<a name="request" class="tsd-anchor"></a>
+					<h3>Request</h3>
+					<div class="tsd-signature tsd-kind-icon">Request<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.es5.d.ts:257</li>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9264</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Provides functionality common to all JavaScript objects.</p>
-						</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+						</ul>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="body" class="tsd-anchor"></a>
-					<h3>body</h3>
-					<div class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReadableStream</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="bodysource" class="tsd-anchor"></a>
+					<h3>body<wbr>Source</h3>
+					<div class="tsd-signature tsd-kind-icon">body<wbr>Source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from Request.bodySource</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/fetch.d.ts#L31">types/fetch.d.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/hacks.d.ts#L20">hacks.d.ts:20</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -134,7 +149,18 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Body.bodyUsed</p>
 						<ul>
-							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.dom.d.ts:13912</li>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:13912</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="cache" class="tsd-anchor"></a>
+					<h3>cache</h3>
+					<div class="tsd-signature tsd-kind-icon">cache<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RequestCache</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Request.cache</p>
+						<ul>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9247</li>
 						</ul>
 					</aside>
 				</section>
@@ -145,7 +171,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Object.constructor</p>
 						<ul>
-							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.es5.d.ts:112</li>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.es5.d.ts:112</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -154,78 +180,172 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="credentials" class="tsd-anchor"></a>
+					<h3>credentials</h3>
+					<div class="tsd-signature tsd-kind-icon">credentials<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RequestCredentials</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Request.credentials</p>
+						<ul>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9248</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="destination" class="tsd-anchor"></a>
+					<h3>destination</h3>
+					<div class="tsd-signature tsd-kind-icon">destination<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RequestDestination</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Request.destination</p>
+						<ul>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9249</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="headers" class="tsd-anchor"></a>
 					<h3>headers</h3>
 					<div class="tsd-signature tsd-kind-icon">headers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Headers</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from Request.headers</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/fetch.d.ts#L32">types/fetch.d.ts:32</a></li>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9250</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="integrity" class="tsd-anchor"></a>
+					<h3>integrity</h3>
+					<div class="tsd-signature tsd-kind-icon">integrity<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Request.integrity</p>
+						<ul>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9251</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="keepalive" class="tsd-anchor"></a>
+					<h3>keepalive</h3>
+					<div class="tsd-signature tsd-kind-icon">keepalive<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Request.keepalive</p>
+						<ul>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9252</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="method" class="tsd-anchor"></a>
+					<h3>method</h3>
+					<div class="tsd-signature tsd-kind-icon">method<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Request.method</p>
+						<ul>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9253</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="mode" class="tsd-anchor"></a>
+					<h3>mode</h3>
+					<div class="tsd-signature tsd-kind-icon">mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RequestMode</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Request.mode</p>
+						<ul>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9254</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="redirect" class="tsd-anchor"></a>
+					<h3>redirect</h3>
+					<div class="tsd-signature tsd-kind-icon">redirect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RequestRedirect</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Request.redirect</p>
+						<ul>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9255</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="referrer" class="tsd-anchor"></a>
+					<h3>referrer</h3>
+					<div class="tsd-signature tsd-kind-icon">referrer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Request.referrer</p>
+						<ul>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9256</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="referrerpolicy" class="tsd-anchor"></a>
+					<h3>referrer<wbr>Policy</h3>
+					<div class="tsd-signature tsd-kind-icon">referrer<wbr>Policy<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReferrerPolicy</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Request.referrerPolicy</p>
+						<ul>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9257</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="ok" class="tsd-anchor"></a>
-					<h3>ok</h3>
-					<div class="tsd-signature tsd-kind-icon">ok<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="remoteaddr" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> remote<wbr>Addr</h3>
+					<div class="tsd-signature tsd-kind-icon">remote<wbr>Addr<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/fetch.d.ts#L33">types/fetch.d.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/fly/fetch/index.ts#L13">fly/fetch/index.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="redirected" class="tsd-anchor"></a>
-					<h3>redirected</h3>
-					<div class="tsd-signature tsd-kind-icon">redirected<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="should" class="tsd-anchor"></a>
+					<h3>should</h3>
+					<div class="tsd-signature tsd-kind-icon">should<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Assertion</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from Object.should</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/fetch.d.ts#L38">types/fetch.d.ts:38</a></li>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/@types/chai/index.d.ts:1705</li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="status" class="tsd-anchor"></a>
-					<h3>status</h3>
-					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="signal" class="tsd-anchor"></a>
+					<h3>signal</h3>
+					<div class="tsd-signature tsd-kind-icon">signal<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AbortSignal</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from Request.signal</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/fetch.d.ts#L34">types/fetch.d.ts:34</a></li>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9260</li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="statustext" class="tsd-anchor"></a>
-					<h3>status<wbr>Text</h3>
-					<div class="tsd-signature tsd-kind-icon">status<wbr>Text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/fetch.d.ts#L35">types/fetch.d.ts:35</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ResponseType</span></div>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RequestType</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from Request.type</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/fetch.d.ts#L36">types/fetch.d.ts:36</a></li>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9258</li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="url" class="tsd-anchor"></a>
 					<h3>url</h3>
 					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from Request.url</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/fetch.d.ts#L37">types/fetch.d.ts:37</a></li>
+							<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9259</li>
 						</ul>
 					</aside>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 					<a name="arraybuffer" class="tsd-anchor"></a>
@@ -238,7 +358,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Body.arrayBuffer</p>
 								<ul>
-									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.dom.d.ts:13913</li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:13913</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -256,27 +376,28 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Body.blob</p>
 								<ul>
-									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.dom.d.ts:13914</li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:13914</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Blob</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 					<a name="clone" class="tsd-anchor"></a>
 					<h3>clone</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">clone<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fetch.response.html" class="tsd-signature-type">Response</a></li>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">clone<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Request</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from Request.clone</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/fetch.d.ts#L39">types/fetch.d.ts:39</a></li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:9261</li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="fetch.response.html" class="tsd-signature-type">Response</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Request</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -291,7 +412,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Body.formData</p>
 								<ul>
-									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.dom.d.ts:13917</li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:13917</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">FormData</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -310,7 +431,7 @@
 								<p>Inherited from Object.hasOwnProperty</p>
 								<p>Overrides Object.hasOwnProperty</p>
 								<ul>
-									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.es5.d.ts:127</li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.es5.d.ts:127</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -342,7 +463,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Object.isPrototypeOf</p>
 								<ul>
-									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.es5.d.ts:133</li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.es5.d.ts:133</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -374,7 +495,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Body.json</p>
 								<ul>
-									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.dom.d.ts:13915</li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:13915</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -393,7 +514,7 @@
 								<p>Inherited from Object.propertyIsEnumerable</p>
 								<p>Overrides Object.propertyIsEnumerable</p>
 								<ul>
-									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.es5.d.ts:139</li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.es5.d.ts:139</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -425,7 +546,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Body.text</p>
 								<ul>
-									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.dom.d.ts:13916</li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.dom.d.ts:13916</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -443,7 +564,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Object.toLocaleString</p>
 								<ul>
-									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.es5.d.ts:118</li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.es5.d.ts:118</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -466,7 +587,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Object.toString</p>
 								<ul>
-									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.es5.d.ts:115</li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.es5.d.ts:115</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -489,7 +610,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Object.valueOf</p>
 								<ul>
-									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typescript/lib/lib.es5.d.ts:121</li>
+									<li>Defined in /Users/kurt/code/fly.io/core/node_modules/typedoc/node_modules/typescript/lib/lib.es5.d.ts:121</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -509,108 +630,150 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Libraries</em></a>
 					</li>
-					<li class="current tsd-kind-external-module">
-						<a href="../modules/fetch.html">fetch</a>
-					</li>
 					<li class=" tsd-kind-external-module tsd-is-private">
 						<a href="../modules/fly.html">fly</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_cache.html">fly/cache</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_data.html">fly/data</a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/fly_fetch.html">fly/fetch</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_fetch_mount.html">fly/fetch/mount</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_fetch_pipeline.html">fly/fetch/pipeline</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_fetch_proxy.html">fly/fetch/proxy</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/fly_image.html">fly/image</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/fly_proxy.html">fly/proxy</a>
+						<a href="../modules/fly_static_server.html">fly/static-<wbr>server</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="fetch.requestinit.html" class="tsd-kind-icon">Request<wbr>Init</a>
+						<a href="fly_fetch.fetchfunction.html" class="tsd-kind-icon">Fetch<wbr>Function</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="fly_fetch.fetchgenerator.html" class="tsd-kind-icon">Fetch<wbr>Generator</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="fetch.response.html" class="tsd-kind-icon">Response</a>
+						<a href="fly_fetch.flyrequest.html" class="tsd-kind-icon">Fly<wbr>Request</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fetch.response.html#object" class="tsd-kind-icon">Object</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fetch.response.html#body" class="tsd-kind-icon">body</a>
+								<a href="fly_fetch.flyrequest.html#request" class="tsd-kind-icon">Request</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="fetch.response.html#bodyused" class="tsd-kind-icon">body<wbr>Used</a>
+								<a href="fly_fetch.flyrequest.html#bodysource" class="tsd-kind-icon">body<wbr>Source</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="fetch.response.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="fly_fetch.flyrequest.html#bodyused" class="tsd-kind-icon">body<wbr>Used</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#cache" class="tsd-kind-icon">cache</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#credentials" class="tsd-kind-icon">credentials</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#destination" class="tsd-kind-icon">destination</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#headers" class="tsd-kind-icon">headers</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#integrity" class="tsd-kind-icon">integrity</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#keepalive" class="tsd-kind-icon">keepalive</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#method" class="tsd-kind-icon">method</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#mode" class="tsd-kind-icon">mode</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#redirect" class="tsd-kind-icon">redirect</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#referrer" class="tsd-kind-icon">referrer</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#referrerpolicy" class="tsd-kind-icon">referrer<wbr>Policy</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fetch.response.html#headers" class="tsd-kind-icon">headers</a>
+								<a href="fly_fetch.flyrequest.html#remoteaddr" class="tsd-kind-icon">remote<wbr>Addr</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fetch.response.html#ok" class="tsd-kind-icon">ok</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#should" class="tsd-kind-icon">should</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fetch.response.html#redirected" class="tsd-kind-icon">redirected</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#signal" class="tsd-kind-icon">signal</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fetch.response.html#status" class="tsd-kind-icon">status</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#type" class="tsd-kind-icon">type</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fetch.response.html#statustext" class="tsd-kind-icon">status<wbr>Text</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fetch.response.html#type" class="tsd-kind-icon">type</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fetch.response.html#url" class="tsd-kind-icon">url</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#url" class="tsd-kind-icon">url</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="fetch.response.html#arraybuffer" class="tsd-kind-icon">array<wbr>Buffer</a>
+								<a href="fly_fetch.flyrequest.html#arraybuffer" class="tsd-kind-icon">array<wbr>Buffer</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="fetch.response.html#blob" class="tsd-kind-icon">blob</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="fetch.response.html#clone" class="tsd-kind-icon">clone</a>
+								<a href="fly_fetch.flyrequest.html#blob" class="tsd-kind-icon">blob</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="fetch.response.html#formdata" class="tsd-kind-icon">form<wbr>Data</a>
+								<a href="fly_fetch.flyrequest.html#clone" class="tsd-kind-icon">clone</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+								<a href="fly_fetch.flyrequest.html#formdata" class="tsd-kind-icon">form<wbr>Data</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-overwrite tsd-is-inherited">
-								<a href="fetch.response.html#hasownproperty" class="tsd-kind-icon">has<wbr>Own<wbr>Property</a>
+								<a href="fly_fetch.flyrequest.html#hasownproperty" class="tsd-kind-icon">has<wbr>Own<wbr>Property</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="fetch.response.html#isprototypeof" class="tsd-kind-icon">is<wbr>Prototype<wbr>Of</a>
+								<a href="fly_fetch.flyrequest.html#isprototypeof" class="tsd-kind-icon">is<wbr>Prototype<wbr>Of</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="fetch.response.html#json" class="tsd-kind-icon">json</a>
+								<a href="fly_fetch.flyrequest.html#json" class="tsd-kind-icon">json</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-overwrite tsd-is-inherited">
-								<a href="fetch.response.html#propertyisenumerable" class="tsd-kind-icon">property<wbr>IsEnumerable</a>
+								<a href="fly_fetch.flyrequest.html#propertyisenumerable" class="tsd-kind-icon">property<wbr>IsEnumerable</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="fetch.response.html#text" class="tsd-kind-icon">text</a>
+								<a href="fly_fetch.flyrequest.html#text" class="tsd-kind-icon">text</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="fetch.response.html#tolocalestring" class="tsd-kind-icon">to<wbr>Locale<wbr>String</a>
+								<a href="fly_fetch.flyrequest.html#tolocalestring" class="tsd-kind-icon">to<wbr>Locale<wbr>String</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="fetch.response.html#tostring" class="tsd-kind-icon">to<wbr>String</a>
+								<a href="fly_fetch.flyrequest.html#tostring" class="tsd-kind-icon">to<wbr>String</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="fetch.response.html#valueof" class="tsd-kind-icon">value<wbr>Of</a>
+								<a href="fly_fetch.flyrequest.html#valueof" class="tsd-kind-icon">value<wbr>Of</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/fetch.html#requestinfo" class="tsd-kind-icon">Request<wbr>Info</a>
-					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/fetch.html#fetch-1" class="tsd-kind-icon">fetch</a>
+						<a href="../modules/fly_fetch.html#normalizerequest" class="tsd-kind-icon">normalize<wbr>Request</a>
 					</li>
 				</ul>
 			</nav>

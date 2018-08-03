@@ -1,3 +1,7 @@
+/**
+ * @module fly
+ * @private
+ */
 import CookieJar from './cookie_jar'
 import Body from './body_mixin'
 

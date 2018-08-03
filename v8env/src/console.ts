@@ -1,3 +1,7 @@
+/**
+ * @module fly
+ * @private
+ */
 declare var fly: any
 
 // Console

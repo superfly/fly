@@ -1,3 +1,7 @@
+/**
+ * @module fly
+ * @private
+ */
 import * as cookie from 'cookie'
 
 const cookieAttributeNames = ['Max-Age', 'Expires', 'HttpOnly', 'Secure', 'Path', 'SameSite', 'Domain']

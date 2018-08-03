@@ -1,3 +1,8 @@
+/**
+ * @module fly
+ * @private
+ */
+
 // import dispatcherInit from './fly/dispatcher'
 import bridgeInit from './bridge'
 

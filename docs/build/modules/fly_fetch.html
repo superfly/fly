@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>fetch | @fly/fly</title>
+	<title>fly/fetch | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -31,10 +31,10 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="fetch.html">fetch</a>
+					<a href="fly_fetch.html">fly/fetch</a>
 				</li>
 			</ul>
-			<h1>External module fetch</h1>
+			<h1>External module fly/fetch</h1>
 		</div>
 	</div>
 </header>
@@ -44,8 +44,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Fetch is a set of methods and classes for making HTTP requests. This module implements
-						the <a href="https://fetch.spec.whatwg.org">WhatWG fetch standard</a>.</p>
+						<p>Utilities and types for working with <code>fetch</code> functions.</p>
 					</div>
 				</div>
 			</section>
@@ -56,70 +55,50 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/fetch.requestinit.html" class="tsd-kind-icon">Request<wbr>Init</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/fetch.response.html" class="tsd-kind-icon">Response</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Type aliases</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="fetch.html#requestinfo" class="tsd-kind-icon">Request<wbr>Info</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/fly_fetch.fetchfunction.html" class="tsd-kind-icon">Fetch<wbr>Function</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/fly_fetch.fetchgenerator.html" class="tsd-kind-icon">Fetch<wbr>Generator</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/fly_fetch.flyrequest.html" class="tsd-kind-icon">Fly<wbr>Request</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fetch.html#fetch-1" class="tsd-kind-icon">fetch</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_fetch.html#normalizerequest" class="tsd-kind-icon">normalize<wbr>Request</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Type aliases</h2>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
-					<a name="requestinfo" class="tsd-anchor"></a>
-					<h3>Request<wbr>Info</h3>
-					<div class="tsd-signature tsd-kind-icon">Request<wbr>Info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Request</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/fetch.d.ts#L13">types/fetch.d.ts:13</a></li>
-						</ul>
-					</aside>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="fetch-1" class="tsd-anchor"></a>
-					<h3>fetch</h3>
+					<a name="normalizerequest" class="tsd-anchor"></a>
+					<h3>normalize<wbr>Request</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">fetch<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><a href="fetch.html#requestinfo" class="tsd-signature-type">RequestInfo</a>, init<span class="tsd-signature-symbol">?: </span><a href="../interfaces/fetch.requestinit.html" class="tsd-signature-type">RequestInit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/fetch.response.html" class="tsd-signature-type">Response</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">normalize<wbr>Request<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestInfo</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/fly_fetch.flyrequest.html" class="tsd-signature-type">FlyRequest</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/fetch.d.ts#L11">types/fetch.d.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/fly/fetch/index.ts#L33">fly/fetch/index.ts:33</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>The <code>fetch()</code> method starts the process of fetching a resource form the network.
-										This returns a promise that resolves to the <code>Response</code> object representing the
-									response to your request.</p>
+									<p>Converts RequestInfo into a Request object.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>input: <a href="fetch.html#requestinfo" class="tsd-signature-type">RequestInfo</a></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> init: <a href="../interfaces/fetch.requestinit.html" class="tsd-signature-type">RequestInit</a></h5>
+									<h5>req: <span class="tsd-signature-type">RequestInfo</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>raw request</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/fetch.response.html" class="tsd-signature-type">Response</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/fly_fetch.flyrequest.html" class="tsd-signature-type">FlyRequest</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -131,33 +110,48 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Libraries</em></a>
 					</li>
-					<li class="current tsd-kind-external-module">
-						<a href="fetch.html">fetch</a>
-					</li>
 					<li class=" tsd-kind-external-module tsd-is-private">
 						<a href="fly.html">fly</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_cache.html">fly/cache</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_data.html">fly/data</a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="fly_fetch.html">fly/fetch</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_fetch_mount.html">fly/fetch/mount</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_fetch_pipeline.html">fly/fetch/pipeline</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="fly_fetch_proxy.html">fly/fetch/proxy</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="fly_image.html">fly/image</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="fly_proxy.html">fly/proxy</a>
+						<a href="fly_static_server.html">fly/static-<wbr>server</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/fetch.requestinit.html" class="tsd-kind-icon">Request<wbr>Init</a>
+						<a href="../interfaces/fly_fetch.fetchfunction.html" class="tsd-kind-icon">Fetch<wbr>Function</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/fetch.response.html" class="tsd-kind-icon">Response</a>
+						<a href="../interfaces/fly_fetch.fetchgenerator.html" class="tsd-kind-icon">Fetch<wbr>Generator</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="fetch.html#requestinfo" class="tsd-kind-icon">Request<wbr>Info</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="../interfaces/fly_fetch.flyrequest.html" class="tsd-kind-icon">Fly<wbr>Request</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fetch.html#fetch-1" class="tsd-kind-icon">fetch</a>
+						<a href="fly_fetch.html#normalizerequest" class="tsd-kind-icon">normalize<wbr>Request</a>
 					</li>
 				</ul>
 			</nav>

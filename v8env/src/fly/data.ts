@@ -1,3 +1,8 @@
+/**
+ * @module fly/data
+ * @private
+ * Needs docs + release
+ */
 declare var bridge: any
 
 export class Collection {

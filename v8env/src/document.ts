@@ -1,3 +1,7 @@
+/**
+ * @module fly
+ * @private
+ */
 import * as htmlparser from 'htmlparser2'
 
 import {

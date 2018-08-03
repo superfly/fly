@@ -44,22 +44,11 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>A Document represents an HTML in its parsed DOM format.</p>
-					</div>
-					<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> html = <span class="hljs-string">'&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;h1&gt;Hello&lt;/h1&gt;&lt;/body&lt;/html&gt;'</span>
-<span class="hljs-keyword">let</span> doc = Document.parse(html)
-<span class="hljs-built_in">console</span>.log(doc.querySelector(<span class="hljs-string">'h1'</span>).textContent
-</code></pre>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="tsd-signature-type">Node</span>
+						<a href="fly.node.html" class="tsd-signature-type">Node</a>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">Document</span>
@@ -72,15 +61,31 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="fly.document.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="fly.document.html#children" class="tsd-kind-icon">children</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="fly.document.html#parser" class="tsd-kind-icon">Parser</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Accessors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><a href="fly.document.html#children" class="tsd-kind-icon">children</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="fly.document.html#documentelement" class="tsd-kind-icon">document<wbr>Element</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="fly.document.html#_withparent" class="tsd-kind-icon">_with<wbr>Parent</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="fly.document.html#appendchild" class="tsd-kind-icon">append<wbr>Child</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.document.html#createelement" class="tsd-kind-icon">create<wbr>Element</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fly.document.html#getelementbyid" class="tsd-kind-icon">get<wbr>Element<wbr>ById</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="fly.document.html#queryselector" class="tsd-kind-icon">query<wbr>Selector</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="fly.document.html#queryselectorall" class="tsd-kind-icon">query<wbr>Selector<wbr>All</a></li>
@@ -90,52 +95,190 @@
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="children" class="tsd-anchor"></a>
-					<h3>children</h3>
-					<div class="tsd-signature tsd-kind-icon">children<span class="tsd-signature-symbol">:</span> <a href="fly.element.html" class="tsd-signature-type">Element</a><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from Node.children</p>
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/document.d.ts#L33">types/document.d.ts:33</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Any child Elements, these are what normally get queried.</p>
-						</div>
-					</div>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Document<span class="tsd-signature-symbol">(</span>dom<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.document.html" class="tsd-signature-type">Document</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="fly.node.html">Node</a>.<a href="fly.node.html#constructor">constructor</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L69">document.ts:69</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>dom: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="fly.document.html" class="tsd-signature-type">Document</a></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getelementbyid" class="tsd-anchor"></a>
-					<h3>get<wbr>Element<wbr>ById</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Element<wbr>ById<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.element.html" class="tsd-signature-type">Element</a></li>
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="parser" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> Parser</h3>
+					<div class="tsd-signature tsd-kind-icon">Parser<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L69">document.ts:69</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited">
+					<a name="children" class="tsd-anchor"></a>
+					<h3>children</h3>
+					<ul class="tsd-signatures tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> children<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">set</span> children<span class="tsd-signature-symbol">(</span>children<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="fly.node.html">Node</a>.<a href="fly.node.html#children">children</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L50">document.ts:50</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="fly.node.html">Node</a>.<a href="fly.node.html#children">children</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L46">document.ts:46</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>children: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="documentelement" class="tsd-anchor"></a>
+					<h3>document<wbr>Element</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> documentElement<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.element.html" class="tsd-signature-type">Element</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/document.d.ts#L55">types/document.d.ts:55</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L79">document.ts:79</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Find an element by its ID.</p>
-								</div>
-							</div>
+							<h4 class="tsd-returns-title">Returns <a href="fly.element.html" class="tsd-signature-type">Element</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="_withparent" class="tsd-anchor"></a>
+					<h3>_with<wbr>Parent</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">_with<wbr>Parent<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="fly.node.html">Node</a>.<a href="fly.node.html#_withparent">_withParent</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L41">document.ts:41</a></li>
+								</ul>
+							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>The id=<id> attribute to query for</p>
-									</div>
+									<h5>node: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="appendchild" class="tsd-anchor"></a>
+					<h3>append<wbr>Child</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">append<wbr>Child<span class="tsd-signature-symbol">(</span>html<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="fly.node.html">Node</a>.<a href="fly.node.html#appendchild">appendChild</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L54">document.ts:54</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>html: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createelement" class="tsd-anchor"></a>
+					<h3>create<wbr>Element</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Element<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.element.html" class="tsd-signature-type">Element</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L83">document.ts:83</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>tagName: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="fly.element.html" class="tsd-signature-type">Element</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getelementbyid" class="tsd-anchor"></a>
+					<h3>get<wbr>Element<wbr>ById</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Element<wbr>ById<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.element.html" class="tsd-signature-type">Element</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L75">document.ts:75</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="fly.element.html" class="tsd-signature-type">Element</a></h4>
@@ -146,34 +289,23 @@
 					<a name="queryselector" class="tsd-anchor"></a>
 					<h3>query<wbr>Selector</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">query<wbr>Selector<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.element.html" class="tsd-signature-type">Element</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+						<li class="tsd-signature tsd-kind-icon">query<wbr>Selector<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.element.html" class="tsd-signature-type">Element</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from Node.querySelector</p>
+								<p>Inherited from <a href="fly.node.html">Node</a>.<a href="fly.node.html#queryselector">querySelector</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/document.d.ts#L23">types/document.d.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L29">document.ts:29</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Get a single Element by CSS selector</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>selector: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>The css selector to query for</p>
-									</div>
+									<h5>selector: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="fly.element.html" class="tsd-signature-type">Element</a>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">null</span>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <a href="fly.element.html" class="tsd-signature-type">Element</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -181,31 +313,23 @@
 					<a name="queryselectorall" class="tsd-anchor"></a>
 					<h3>query<wbr>Selector<wbr>All</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">query<wbr>Selector<wbr>All<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.element.html" class="tsd-signature-type">Element</a><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">query<wbr>Selector<wbr>All<span class="tsd-signature-symbol">(</span>selector<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from Node.querySelectorAll</p>
+								<p>Inherited from <a href="fly.node.html">Node</a>.<a href="fly.node.html#queryselectorall">querySelectorAll</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/document.d.ts#L28">types/document.d.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L36">document.ts:36</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Get all Elements by CSS selector</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>selector: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>The css selector to query for</p>
-									</div>
+									<h5>selector: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="fly.element.html" class="tsd-signature-type">Element</a><span class="tsd-signature-symbol">[]</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -213,27 +337,19 @@
 					<a name="parse" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> parse</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">parse<span class="tsd-signature-symbol">(</span>html<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.document.html" class="tsd-signature-type">Document</a></li>
+						<li class="tsd-signature tsd-kind-icon">parse<span class="tsd-signature-symbol">(</span>html<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fly.document.html" class="tsd-signature-type">Document</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/types/document.d.ts#L49">types/document.d.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/document.ts#L87">document.ts:87</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Parses HTML into a Document that can be queried and modified.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>html: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>The raw HTML to parse into a Document + DOM</p>
-									</div>
+									<h5>html: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="fly.document.html" class="tsd-signature-type">Document</a></h4>
@@ -248,29 +364,65 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Libraries</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/fetch.html">fetch</a>
-					</li>
 					<li class="current tsd-kind-external-module tsd-is-private">
 						<a href="../modules/fly.html">fly</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_cache.html">fly/cache</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_data.html">fly/data</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_fetch.html">fly/fetch</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_fetch_mount.html">fly/fetch/mount</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_fetch_pipeline.html">fly/fetch/pipeline</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_fetch_proxy.html">fly/fetch/proxy</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/fly_image.html">fly/image</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/fly_proxy.html">fly/proxy</a>
+						<a href="../modules/fly_static_server.html">fly/static-<wbr>server</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="fly.cookiejar.html" class="tsd-kind-icon">Cookie<wbr>Jar</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
 						<a href="fly.document.html" class="tsd-kind-icon">Document</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+								<a href="fly.document.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="fly.document.html#parser" class="tsd-kind-icon">Parser</a>
+							</li>
+							<li class=" tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited">
 								<a href="fly.document.html#children" class="tsd-kind-icon">children</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="fly.document.html#documentelement" class="tsd-kind-icon">document<wbr>Element</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="fly.document.html#_withparent" class="tsd-kind-icon">_with<wbr>Parent</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="fly.document.html#appendchild" class="tsd-kind-icon">append<wbr>Child</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="fly.document.html#createelement" class="tsd-kind-icon">create<wbr>Element</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="fly.document.html#getelementbyid" class="tsd-kind-icon">get<wbr>Element<wbr>ById</a>
@@ -290,6 +442,102 @@
 				<ul class="after-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
 						<a href="fly.element.html" class="tsd-kind-icon">Element</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="fly.fetchevent.html" class="tsd-kind-icon">Fetch<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="fly.middleware.html" class="tsd-kind-icon">Middleware</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="fly.middlewarechain.html" class="tsd-kind-icon">Middleware<wbr>Chain</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="fly.node.html" class="tsd-kind-icon">Node</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="fly.request.html" class="tsd-kind-icon">Request</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="fly.response.html" class="tsd-kind-icon">Response</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="fly.textdecoder.html" class="tsd-kind-icon">Text<wbr>Decoder</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="fly.textencoder.html" class="tsd-kind-icon">Text<wbr>Encoder</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="fly.timeouterror.html" class="tsd-kind-icon">Timeout<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="../interfaces/fly.bridgetransferoptions.html" class="tsd-kind-icon">Bridge<wbr>Transfer<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-private">
+						<a href="../modules/fly.html#bytelengthqueuingstrategy" class="tsd-kind-icon">Byte<wbr>Length<wbr>Queuing<wbr>Strategy</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-private">
+						<a href="../modules/fly.html#countqueuingstrategy" class="tsd-kind-icon">Count<wbr>Queuing<wbr>Strategy</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#readablestream" class="tsd-kind-icon">Readable<wbr>Stream</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#transformstream" class="tsd-kind-icon">Transform<wbr>Stream</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#writablestream" class="tsd-kind-icon">Writable<wbr>Stream</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#emitter" class="tsd-kind-icon">emitter</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#headers" class="tsd-kind-icon">Headers</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#addeventlistener" class="tsd-kind-icon">add<wbr>Event<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#clearinterval" class="tsd-kind-icon">clear<wbr>Interval</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#cleartimeout" class="tsd-kind-icon">clear<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#dispatchevent" class="tsd-kind-icon">dispatch<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#fetch" class="tsd-kind-icon">fetch</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#firefetchevent" class="tsd-kind-icon">fire<wbr>Fetch<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-private">
+						<a href="../modules/fly.html#flyinit" class="tsd-kind-icon">fly<wbr>Init</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#initbridge" class="tsd-kind-icon">init<wbr>Bridge</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#isflystream" class="tsd-kind-icon">is<wbr>Fly<wbr>Stream</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#log-1" class="tsd-kind-icon">log</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#reftostream" class="tsd-kind-icon">ref<wbr>ToStream</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#setimmediate" class="tsd-kind-icon">set<wbr>Immediate</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#setinterval" class="tsd-kind-icon">set<wbr>Interval</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#settimeout" class="tsd-kind-icon">set<wbr>Timeout</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module">
+						<a href="../modules/fly.html#console" class="tsd-kind-icon">console</a>
 					</li>
 				</ul>
 			</nav>

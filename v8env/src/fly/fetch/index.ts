@@ -2,7 +2,7 @@
  * Utilities and types for working with `fetch` functions.
  * 
  * @preferred
- * @module fly/fetch/proxy
+ * @module fly/fetch
  */
 
 /**

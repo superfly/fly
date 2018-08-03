@@ -1,3 +1,10 @@
+/**
+ * Fly API for working with HTTP requests.
+ * @module fly
+ * @private
+ */
+
+declare var fly;
 let fetchEventBound = false
 let flyFetchHandler = null
 

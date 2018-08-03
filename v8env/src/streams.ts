@@ -1,3 +1,7 @@
+/**
+ * @module fly
+ * @private
+ */
 export const
   { ReadableStream } = require('whatwg-streams/reference-implementation/lib/readable-stream'),
   { WritableStream } = require('whatwg-streams/reference-implementation/lib/writable-stream'),

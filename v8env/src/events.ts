@@ -1,3 +1,7 @@
+/**
+ * @module fly
+ * @private
+ */
 import { logger } from './logger'
 import { EventEmitter2 as EventEmitter } from 'eventemitter2'
 import refToStream from './fly/streams'

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ProxyOptions | @fly/fly</title>
+	<title>FetchFunction | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -31,13 +31,13 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../modules/fly_proxy.html">fly/proxy</a>
+					<a href="../modules/fly_fetch.html">fly/fetch</a>
 				</li>
 				<li>
-					<a href="fly_proxy.proxyoptions.html">ProxyOptions</a>
+					<a href="fly_fetch.fetchfunction.html">FetchFunction</a>
 				</li>
 			</ul>
-			<h1>Interface ProxyOptions</h1>
+			<h1>Interface FetchFunction</h1>
 		</div>
 	</div>
 </header>
@@ -47,7 +47,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Options for <code>proxy</code>.</p>
+						<p>A fetch-like function.</p>
 					</div>
 				</div>
 			</section>
@@ -55,66 +55,39 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ProxyOptions</span>
+						<span class="target">FetchFunction</span>
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly_proxy.proxyoptions.html#headers" class="tsd-kind-icon">headers</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fly_proxy.proxyoptions.html#strippath" class="tsd-kind-icon">strip<wbr>Path</a></li>
-							</ul>
-						</section>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="headers" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> headers</h3>
-					<div class="tsd-signature tsd-kind-icon">headers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/fly/proxy.ts#L138">fly/proxy.ts:138</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Headers to set on backend request. Each header accepts either a <code>boolean</code> or <code>string</code>.</p>
+			<section class="tsd-panel">
+				<h3 class="tsd-before-signature">Callable</h3>
+				<ul class="tsd-signatures tsd-kind-interface tsd-parent-kind-external-module">
+					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RequestInfo</span>, init<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">RequestInit</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
 							<ul>
-								<li>If set to <code>false</code>, strip header entirely before sending.</li>
-								<li><code>true</code> or <code>undefined</code> send the header through unmodified from the original request.</li>
-								<li><code>string</code> header values are sent as is</li>
+								<li>Defined in <a href="https://github.com/superfly/fly/blob/3bd0492/v8env/src/fly/fetch/index.ts#L18">fly/fetch/index.ts:18</a></li>
 							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>A fetch-like function.</p>
+							</div>
 						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="strippath" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> strip<wbr>Path</h3>
-					<div class="tsd-signature tsd-kind-icon">strip<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/superfly/fly/blob/1923f8a/v8env/ts/fly/proxy.ts#L130">fly/proxy.ts:130</a></li>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>req: <span class="tsd-signature-type">RequestInfo</span></h5>
+							</li>
+							<li>
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> init: <span class="tsd-signature-type">RequestInit</span></h5>
+							</li>
 						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Replace this portion of URL path before making request to origin.</p>
-						</div>
-						<p>For example, this makes a request to <code>https://fly.io/path1/to/document.html</code>:</p>
-						<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> opts = { <span class="hljs-attr">stripPath</span>: <span class="hljs-string">"/path2/"</span>}
-<span class="hljs-keyword">const</span> origin = proxy(<span class="hljs-string">"https://fly.io/path1/"</span>, opts)
-origin(<span class="hljs-string">"https://somehostname.com/path2/to/document.html"</span>)
-</code></pre>
-					</div>
-				</section>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -123,17 +96,32 @@ origin(<span class="hljs-string">"https://somehostname.com/path2/to/document.htm
 					<li class="globals  ">
 						<a href="../globals.html"><em>Libraries</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/fetch.html">fetch</a>
-					</li>
 					<li class=" tsd-kind-external-module tsd-is-private">
 						<a href="../modules/fly.html">fly</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/fly_image.html">fly/image</a>
+						<a href="../modules/fly_cache.html">fly/cache</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_data.html">fly/data</a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/fly_proxy.html">fly/proxy</a>
+						<a href="../modules/fly_fetch.html">fly/fetch</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_fetch_mount.html">fly/fetch/mount</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_fetch_pipeline.html">fly/fetch/pipeline</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_fetch_proxy.html">fly/fetch/proxy</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_image.html">fly/image</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/fly_static_server.html">fly/static-<wbr>server</a>
 					</li>
 				</ul>
 			</nav>
@@ -142,20 +130,18 @@ origin(<span class="hljs-string">"https://somehostname.com/path2/to/document.htm
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="fly_proxy.proxyoptions.html" class="tsd-kind-icon">Proxy<wbr>Options</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fly_proxy.proxyoptions.html#headers" class="tsd-kind-icon">headers</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fly_proxy.proxyoptions.html#strippath" class="tsd-kind-icon">strip<wbr>Path</a>
-							</li>
-						</ul>
+						<a href="fly_fetch.fetchfunction.html" class="tsd-kind-icon">Fetch<wbr>Function</a>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="fly_fetch.fetchgenerator.html" class="tsd-kind-icon">Fetch<wbr>Generator</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="fly_fetch.flyrequest.html" class="tsd-kind-icon">Fly<wbr>Request</a>
+					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/fly_proxy.html#proxy" class="tsd-kind-icon">proxy</a>
+						<a href="../modules/fly_fetch.html#normalizerequest" class="tsd-kind-icon">normalize<wbr>Request</a>
 					</li>
 				</ul>
 			</nav>
