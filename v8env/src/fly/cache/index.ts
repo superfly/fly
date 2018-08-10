@@ -1,10 +1,21 @@
 /**
- * An API for accessing a regional, volatile cache. Data stored in the `fly.cache` can have an associated per-key time to live (TTL), and we will evict key data automatically after the elapsed TTL. We will also evict unused data periodically.
+ * An API for accessing a regional, volatile cache. Data stored in `@fly/cache` can have an associated per-key time to live (TTL), and we will evict key data automatically after the elapsed TTL. We will also evict unused data when we need to reclaim space.
+ * 
+ * ```javascript
+ * import cache from "@fly/cache"
+ * 
+ * await cache.set("test-key", "test-value")
+ * 
+ * const s = await cache.getString("test-key")
+ * ```
+ * 
+ * See {@link fly/cache/response} for caching HTTP Response objects.
  * 
  * @preferred
  * @module fly/cache
  */
 
+/** */
 declare var bridge: any
 
 /**
@@ -36,7 +47,7 @@ export function get(key: string) {
  */
 export async function getString(key: string) {
   const buf = await get(key)
-  if (!buf) { return buf }
+  if (!buf) { return null }
   try {
     return new TextDecoder("utf-8").decode(buf)
   } catch (err) {
@@ -101,3 +112,5 @@ const cache = {
   del
 }
 export default cache
+
+export { default as responseCache } from "./response"
