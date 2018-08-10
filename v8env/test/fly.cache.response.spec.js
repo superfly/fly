@@ -1,7 +1,6 @@
 import { expect } from 'chai'
 
-import responseCache from '@fly/cache/response'
-import cache from "@fly/cache"
+import cache, { responseCache } from "@fly/cache"
 
 let counter = 0
 async function makeResponse() {

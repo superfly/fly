@@ -1,9 +1,25 @@
 /**
  * An API for efficiently caching Response objects in the regional Fly cache.
  * 
+ * Usage:
+ * 
+ * ```javascript
+ * import { responseCache } from "@fly/cache"
+ * 
+ * const resp = await fetch("http://example.com")
+ * 
+ * // cache for an hour
+ * await responseCache.set("example-com", resp, 3600)
+ * 
+ * const cachedResponse = await responseCache.get("example-com")
+ * ```
+ * 
+ * See {@link fly/cache} for caching lower level types.
  * @preferred
  * @module fly/cache/response
  */
+
+/** */
 import cache from "."
 
 /**
