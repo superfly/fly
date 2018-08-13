@@ -34,7 +34,7 @@ function makeResponse(status: number, statusText: string, url: string, headers?:
     headers: headers || {}
   }
 }
-registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
+registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cert: any | undefined, cb: ivm.Reference<Function>) {
   log.debug("native fetch with url:", urlStr)
   init || (init = {})
   const u = parseURL(urlStr)
@@ -102,7 +102,15 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     headers: headers,
     timeout: 60 * 1000
   }
-  //console.log(reqOptions)
+
+  if (cert) {
+    const c: string = cert.toString()
+    const keyEnd = c.indexOf("-----BEGIN CERTIFICATE-----")
+    if (keyEnd > 1) {
+      reqOptions.key = c.substring(0, keyEnd - 1)
+      reqOptions.cert = c.substring(keyEnd)
+    }
+  }
   if (httpFn == https.request) {
     reqOptions.servername = reqOptions.hostname
   }

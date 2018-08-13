@@ -6,9 +6,13 @@ import refToStream, { isFlyStream } from './fly/streams'
 
 declare var bridge: any
 
+export interface TLSOptions {
+	cert: string
+}
 export interface FlyRequestInit extends RequestInit {
 	timeout?: number,
-	readTimeout?: number
+	readTimeout?: number,
+	tls?: TLSOptions
 }
 
 /**
@@ -27,6 +31,7 @@ export function fetch(req: RequestInfo, init?: FlyRequestInit): Promise<Response
 			if (typeof req === "string") {
 				req = new Request(req, init)
 			}
+			const certString = (init.tls && init.tls.cert) ? init.tls.cert.toString() : null
 			const url = req.url
 			init = {
 				method: req.method,
@@ -35,12 +40,12 @@ export function fetch(req: RequestInfo, init?: FlyRequestInit): Promise<Response
 				readTimeout: init && init.readTimeout || 30 * 1000
 			}
 			if (!req.bodySource)
-				bridge.dispatch("fetch", url, init, null, fetchCb)
+				bridge.dispatch("fetch", url, init, null, certString, fetchCb)
 			else if (typeof req.bodySource === 'string')
-				bridge.dispatch("fetch", url, init, req.bodySource, fetchCb)
+				bridge.dispatch("fetch", url, init, req.bodySource, certString, fetchCb)
 			else
 				req.arrayBuffer().then(function fetchArrayBufferPromise(body) {
-					bridge.dispatch("fetch", url, init, body, fetchCb)
+					bridge.dispatch("fetch", url, init, body, certString, fetchCb)
 				}).catch(reject)
 
 		} catch (err) {
