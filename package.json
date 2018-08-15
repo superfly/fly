@@ -77,8 +77,7 @@
     "ts-loader": "^3.2.0",
     "ts-node": "^3.3.0",
     "typedoc": "git+https://github.com/mrkurt/typedoc.git#build",
-    "typescript": "^2.9.0",
-    "url-search-params": "^0.10.0"
+    "typescript": "^2.9.0"
   },
   "dependencies": {
     "ansi-colors": "^1.1.0",
