@@ -3513,10 +3513,6 @@ glogg@^1.0.0:
   dependencies:
     sparkles "^1.0.0"
 
-glossy@0.x.x:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/glossy/-/glossy-0.1.7.tgz#769b5984a96f6066ab9ea758224825ee6c210f0b"
-
 got@^5.0.0:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/got/-/got-5.7.1.tgz#5f81635a61e4a6589f180569ea4e381680a51f35"
