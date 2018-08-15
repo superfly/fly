@@ -74,7 +74,6 @@
     "nock": "^9.2.6",
     "nyc": "^13.0.0",
     "standard-version": "^4.4.0",
-    "string-to-stream": "^1.1.0",
     "to-arraybuffer": "^1.0.1",
     "ts-loader": "^3.2.0",
     "ts-node": "^3.3.0",
