@@ -21,10 +21,12 @@ export class MemoryCacheStore implements CacheStore {
   }
 
   async set(rt: Runtime, key: string, value: any, ttl?: number): Promise<boolean> {
-    let args = []
-    if (ttl && !isNaN(ttl))
-      args.push('EX', ttl)
-    const result = await this.redis.set(keyFor(rt, key), value, ...args)
+    let result
+    if (ttl && !isNaN(ttl)) {
+      result = await this.redis.set(keyFor(rt, key), value, "EX", ttl)
+    } else {
+      result = await this.redis.set(keyFor(rt, key), value)
+    }
     return result === OK
   }
 
