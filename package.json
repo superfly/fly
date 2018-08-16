@@ -1,6 +1,6 @@
 {
   "name": "@fly/fly",
-  "version": "0.39.0-0",
+  "version": "0.39.0",
   "description": "",
   "main": "lib/index.js",
   "files": [
