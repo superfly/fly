@@ -19,8 +19,8 @@
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "build": "yarn run concurrently -n \"core,v8env\" \"yarn build:core\" \"yarn build:v8env\"",
     "build:live": "yarn run concurrently -n \"core,v8env.ts,v8env\" \"tsc -w --pretty\" \"tsc -w --pretty -p v8env/ts\" \"webpack --config webpack.v8.config.js -w\"",
-    "build:core": "rm -rf lib && yarn run tsc",
-    "build:v8env": "rm -rf dist v8env/lib && yarn run tsc -p v8env && yarn run webpack --config webpack.v8.config.js",
+    "build:core": "rm -rf lib && ./node_modules/.bin/tsc",
+    "build:v8env": "rm -rf dist v8env/lib && ./node_modules/.bin/tsc -p v8env && ./node_modules/.bin/webpack --config webpack.v8.config.js",
     "prepublishOnly": "yarn build",
     "release": "standard-version",
     "doc:v8env": "./node_modules/typedoc/bin/typedoc --tsconfig ./v8env/tsconfig.json"
