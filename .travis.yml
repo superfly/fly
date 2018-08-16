@@ -23,7 +23,7 @@ matrix:
     - ox: linux
       addons: *linux_addons
       env: *linux_env
-      node_js: node
+      node_js: 10.8.0
     - os: osx
       osx_image: xcode9.4
       node_js: 8
@@ -32,7 +32,7 @@ matrix:
       node_js: 10.3
     - os: osx
       osx_image: xcode9.4
-      node_js: node
+      node_js: 10.8.0
 
 cache:
   yarn: true
