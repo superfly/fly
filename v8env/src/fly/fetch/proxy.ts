@@ -72,6 +72,7 @@ export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r
     origin = new URL(origin)
   }
 
+  const requestedHostname = req.headers.get("host") || url.hostname
   url.hostname = origin.hostname
   url.protocol = origin.protocol
   url.port = origin.port
@@ -92,7 +93,7 @@ export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r
   }
   // we extend req with remoteAddr
   breq.headers.set("x-forwarded-for", req.remoteAddr)
-  breq.headers.set("x-forwarded-host", url.hostname)
+  breq.headers.set("x-forwarded-host", requestedHostname)
 
   if (!options.forwardHostHeader) {
     // set host header to origin.hostnames
