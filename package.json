@@ -60,7 +60,6 @@
     "@types/ws": "^4.0.0",
     "arraybuffer-loader": "^1.0.3",
     "babel-eslint": "^8.2.1",
-    "better-assert": "^1.0.2",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "concurrently": "^3.5.1",
@@ -86,6 +85,7 @@
     "url-search-params": "^0.10.0"
   },
   "dependencies": {
+    "@mattiasbuelens/web-streams-polyfill": "^0.1.0",
     "ansi-colors": "^1.1.0",
     "axios": "^0.18.0",
     "better-sqlite3": "^4.1.4",
