@@ -4,9 +4,6 @@ import { RedisClient } from 'redis';
 import { Runtime } from "./runtime";
 import { promisify } from 'util';
 
-const OK = 'OK'
-const OK_BUFFER = Buffer.from('OK')
-
 export class RedisCacheStore implements CacheStore {
   redis: FlyRedis
 
@@ -71,6 +68,7 @@ export class RedisCacheStore implements CacheStore {
       this.redis.delAsync(k),
       this.redis.delAsync(k + ":tags")
     ])
+    console.log("Got del result from redis:", cmds)
     return redisGroupOK(cmds)
   }
   async setTags(rt: Runtime, key: string, tags: string[]): Promise<boolean> {

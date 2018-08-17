@@ -23,7 +23,6 @@ export class MemoryCacheStore implements CacheStore {
   async set(rt: Runtime, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean> {
     const k = keyFor(rt, key)
     const pipeline = this.redis.pipeline()
-    let args = []
     let ttl: number | undefined
     if (typeof options === "number") {
       ttl = options
@@ -31,10 +30,11 @@ export class MemoryCacheStore implements CacheStore {
       ttl = options.ttl
     }
 
-    if (ttl && !isNaN(ttl))
-      args.push('EX', ttl)
-
-    pipeline.set(k, value, ...args)
+    if (ttl && !isNaN(ttl)) {
+      pipeline.set(k, value, 'EX', ttl)
+    } else {
+      pipeline.set(k, value)
+    }
 
     if (typeof options !== "number" && options && options.tags instanceof Array) {
       pipeline.sadd(k + ":tags", ...options.tags)
