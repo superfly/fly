@@ -45,7 +45,6 @@ export class RedisCacheStore implements CacheStore {
       commands.push(this.redis.delAsync(k + ":tags"))
     }
     const result = await Promise.all(commands)
-    console.log("Set finished:", commands.length, Date.now() - start)
     return redisGroupOK(result)
   }
 
@@ -68,7 +67,6 @@ export class RedisCacheStore implements CacheStore {
       this.redis.delAsync(k),
       this.redis.delAsync(k + ":tags")
     ])
-    console.log("Got del result from redis:", cmds)
     return redisGroupOK(cmds)
   }
   async setTags(rt: Runtime, key: string, tags: string[]): Promise<boolean> {
@@ -134,9 +132,7 @@ if (Symbol && !Symbol.asyncIterator)
 async function* setScanner(redis: FlyRedis, key: string) {
   let cursor = 0
   do {
-    console.log("sscan with cursor:", cursor)
     const result = await redis.sscanAsync(key, cursor)
-    console.log("sscan result:", result)
     cursor = parseInt(result[0])
     yield* (<string[]>result[1])
   } while (cursor > 0)
