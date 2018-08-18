@@ -22,7 +22,7 @@ export class FileAppStore {
   release: LocalRelease
 
   options: FileAppStoreOptions
-  private readonly app: App
+  public readonly app: App
 
   constructor(cwd: string, options: FileAppStoreOptions = {}) {
     this.cwd = cwd
