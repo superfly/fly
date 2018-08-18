@@ -107,10 +107,10 @@ export class RedisCacheStore implements CacheStore {
 }
 
 function tagKeyFor(rt: Runtime, tag: string) {
-  return `tag:${rt.app.name}:${tag}`
+  return `tag:${rt.app.id}:${tag}`
 }
 function keyFor(rt: Runtime, key: string) {
-  return `cache:${rt.app.name}:${key}`
+  return `cache:${rt.app.id}:${key}`
 }
 
 function redisGroupOK(result: any) {
