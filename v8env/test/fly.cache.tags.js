@@ -13,7 +13,7 @@ describe("@fly/cache#tags", () => {
     let r = await cache.getString(k)
     expect(r).to.eq(v)
 
-    const purged = await cache.purgeTags(s)
+    const purged = await cache.purgeTag(s)
     expect(purged).to.includes(k)
     r = await cache.getString(k)
     expect(r).to.eq(null)
@@ -30,7 +30,7 @@ describe("@fly/cache#tags", () => {
     // set it without
     await cache.set(k, v)
 
-    const purged = await cache.purgeTags(s)
+    const purged = await cache.purgeTag(s)
     expect(purged).to.not.includes(k)
 
     let v2 = await cache.getString(k)

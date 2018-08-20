@@ -100,6 +100,12 @@ export function expire(key: string, ttl: number) {
   })
 }
 
+/**
+ * Replace tags for a given cache key
+ * @param key The key to modify
+ * @param tags Tags to apply to key
+ * @returns true if tags were successfully updated
+ */
 export function setTags(key: string, tags: string[]) {
   return new Promise<boolean>(function cacheSetTagsPromise(resolve, reject) {
     bridge.dispatch("flyCacheSetTags", key, tags, function cacheSetTagsCallback(err: string | null, ok?: boolean) {
@@ -112,9 +118,13 @@ export function setTags(key: string, tags: string[]) {
   })
 }
 
-export function purgeTags(key: string, tags: string[]) {
+/**
+ * Purges all cache entries with the given tag
+ * @param tag Tag to purge
+ */
+export function purgeTag(tag: string) {
   return new Promise<string[]>(function cachePurgeTagsPromise(resolve, reject) {
-    bridge.dispatch("flyCachePurgeTags", key, function cachePurgeTagsCallback(err: string | null, keys?: string) {
+    bridge.dispatch("flyCachePurgeTags", tag, function cachePurgeTagsCallback(err: string | null, keys?: string) {
       if (err != null || !keys) {
         reject(err || "weird result")
         return
@@ -147,8 +157,11 @@ const cache = {
   expire,
   del,
   setTags,
-  purgeTags
+  purgeTag
 }
 export default cache
 
+/**
+ * A library for caching/retrieving Response objects
+ */
 export { default as responseCache } from "./response"
