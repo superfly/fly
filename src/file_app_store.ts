@@ -22,6 +22,7 @@ export class FileAppStore {
   release: LocalRelease
 
   options: FileAppStoreOptions
+  public readonly app: App
 
   constructor(cwd: string, options: FileAppStoreOptions = {}) {
     this.cwd = cwd
@@ -40,6 +41,8 @@ export class FileAppStore {
       this.release = new LocalRelease(cwd, env, { noWatch: options.noWatch })
     else
       this.release = getLocalRelease(cwd, env, { noWatch: options.noWatch })
+
+    this.app = new App(this.release)
 
     if (this.options.config)
       this.release.config = this.options.config
@@ -67,9 +70,5 @@ export class FileAppStore {
       this.release.source_hash = hash
       this.release.source_map = sourceMap
     })
-  }
-
-  get app() {
-    return new App(this.release)
   }
 }

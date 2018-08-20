@@ -20,9 +20,9 @@ import './timers'
 import { CacheStore, FileStore } from '../'
 
 import { catalog, BridgeFunction } from './'
-import { MemoryCacheStore } from '../memory_cache_store';
 import { Runtime } from '../runtime';
 import { DataStore } from '../data_store';
+import { defaultCacheStore } from '../cache_store';
 
 const errNoSuchBridgeFn = "Attempted to call a unregistered bridge function."
 
@@ -53,7 +53,7 @@ export class Bridge {
   functions: Map<string, BridgeFunction>
 
   constructor(opts: BridgeOptions = {}) {
-    this.cacheStore = opts.cacheStore || new MemoryCacheStore()
+    this.cacheStore = opts.cacheStore || defaultCacheStore()
     this.fileStore = opts.fileStore
     this.dataStore = opts.dataStore
     this.functions = new Map<string, BridgeFunction>(

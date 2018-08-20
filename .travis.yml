@@ -15,6 +15,7 @@ matrix:
           - nasm
       env: &linux_env
       - MATRIX_EVAL="export CXX=g++-5"
+      - REDIS_CACHE_URL=redis://localhost/
       node_js: 8
     - ox: linux
       addons: *linux_addons
@@ -23,7 +24,7 @@ matrix:
     - ox: linux
       addons: *linux_addons
       env: *linux_env
-      node_js: node
+      node_js: 10.8.0
     - os: osx
       osx_image: xcode9.4
       node_js: 8
@@ -32,13 +33,15 @@ matrix:
       node_js: 10.3
     - os: osx
       osx_image: xcode9.4
-      node_js: node
+      node_js: 10.8.0
 
 cache:
   yarn: true
   directories:
     - node_modules
-
+      
+services:
+  - redis-server
 before_install:
 - set -e
 - eval "${MATRIX_EVAL}"

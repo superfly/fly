@@ -32,7 +32,7 @@ export class LocalRuntime implements Runtime {
     //if (!v8Env.snapshot)
     //  throw new Error("base snapshot is not ready, maybe you need to compile v8env?")
 
-    console.log("new runtime, app:", app.name, app.sourceHash)
+    console.log("new runtime, app:", app.id, app.sourceHash)
 
     this.options = Object.assign({}, LOCAL_RUNTIME_DEFAULTS, options)
 

@@ -9,6 +9,7 @@ describe("proxy", () => {
     const breq = proxy.buildProxyRequest(origin, {}, req)
     const url = new URL(breq.url)
     expect(breq.headers.get("host")).to.eq("fly.io")
+    expect(breq.headers.get("x-forwarded-host")).to.eq("notwat.com")
     expect(url.pathname).to.eq("/proxy/path/to/thing")
   })
 
@@ -16,6 +17,7 @@ describe("proxy", () => {
     const breq = proxy.buildProxyRequest(origin, { forwardHostHeader: true }, req)
     const url = new URL(breq.url)
     expect(breq.headers.get("host")).to.eq("notwat.com")
+    expect(breq.headers.get("x-forwarded-host")).to.eq("notwat.com")
     expect(url.pathname).to.eq("/proxy/path/to/thing")
   })
 

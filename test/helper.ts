@@ -8,8 +8,6 @@ import * as promiseFinally from 'promise.prototype.finally'
 promiseFinally.shim()
 
 import { Server } from '../src/server'
-import log from "../src/log"
-import * as fs from 'fs'
 import axios from 'axios'
 axios.defaults.validateStatus = undefined
 
@@ -17,12 +15,12 @@ import http = require('http')
 
 import { FileAppStore, FileAppStoreOptions } from '../src/file_app_store'
 // import { DefaultContextStore } from '../src/default_context_store';
-import { MemoryCacheStore } from '../src/memory_cache_store';
 import { Bridge } from '../src/bridge/bridge';
 import { LocalFileStore } from '../src/local_file_store';
 import { IHookCallbackContext } from 'mocha';
 
 import * as nock from 'nock';
+import { defaultCacheStore } from '../src/cache_store';
 nock.disableNetConnect();
 nock.enableNetConnect('127.0.0.1');
 
@@ -39,8 +37,7 @@ process.on("unhandledRejection", function (err) {
 })
 
 // export const contextStore = new DefaultContextStore()
-export const cacheStore = new MemoryCacheStore("test cache")
-
+export const cacheStore = defaultCacheStore()
 declare module 'mocha' {
   interface IHookCallbackContext {
     server: Server

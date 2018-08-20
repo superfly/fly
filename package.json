@@ -1,6 +1,6 @@
 {
   "name": "@fly/fly",
-  "version": "0.39.0-0",
+  "version": "0.40.0-caching.2",
   "description": "",
   "main": "lib/index.js",
   "files": [
@@ -19,8 +19,8 @@
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "build": "yarn run concurrently -n \"core,v8env\" \"yarn build:core\" \"yarn build:v8env\"",
     "build:live": "yarn run concurrently -n \"core,v8env.ts,v8env\" \"tsc -w --pretty\" \"tsc -w --pretty -p v8env/ts\" \"webpack --config webpack.v8.config.js -w\"",
-    "build:core": "rm -rf lib && yarn run tsc",
-    "build:v8env": "rm -rf dist v8env/lib && yarn run tsc -p v8env && yarn run webpack --config webpack.v8.config.js",
+    "build:core": "rm -rf lib && ./node_modules/.bin/tsc",
+    "build:v8env": "rm -rf dist v8env/lib && ./node_modules/.bin/tsc -p v8env && ./node_modules/.bin/webpack --config webpack.v8.config.js",
     "prepublishOnly": "yarn build",
     "release": "standard-version",
     "doc:v8env": "./node_modules/typedoc/bin/typedoc --tsconfig ./v8env/tsconfig.json"
@@ -32,7 +32,7 @@
   "author": "",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=8"
+    "node": ">=8 <10.9.0"
   },
   "devDependencies": {
     "@fly/typedoc-plugin-external-module-name": "^1.1.3",
@@ -62,28 +62,22 @@
     "babel-eslint": "^8.2.1",
     "better-assert": "^1.0.2",
     "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
     "concurrently": "^3.5.1",
     "cookie": "^0.3.1",
     "coveralls": "^3.0.0",
     "css-select": "^1.3.0-rc0",
     "domutils": "^1.6.2",
     "eventemitter2": "^5.0.1",
-    "find-my-way": "^1.10.1",
     "htmlparser2": "^3.9.2",
     "http-cache-semantics": "^3.8.1",
     "image-webpack-loader": "^4.3.1",
     "nock": "^9.2.6",
     "nyc": "^13.0.0",
     "standard-version": "^4.4.0",
-    "string-to-stream": "^1.1.0",
-    "to-arraybuffer": "^1.0.1",
     "ts-loader": "^3.2.0",
     "ts-node": "^3.3.0",
     "typedoc": "git+https://github.com/mrkurt/typedoc.git#build",
-    "typescript": "3.0.1",
-    "url-parse": "^1.2.0",
-    "url-search-params": "^0.10.0"
+    "typescript": "^3.0.1"
   },
   "dependencies": {
     "ansi-colors": "^1.1.0",
@@ -93,16 +87,17 @@
     "cli-table3": "^0.5.0",
     "commandpost": "^1.3.0",
     "console-log-level": "^1.4.0",
+    "execa": "^0.7.0",
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",
-    "glossy": "0.x.x",
     "ioredis": "^3.2.2",
-    "ioredis-mock": "^3.6.1",
+    "ioredis-mock": "^3.10.2",
     "isolated-vm": "1.6.1",
     "js-yaml": "^3.10.0",
     "mocha": "^4.0.1",
     "promise.prototype.finally": "^3.1.0",
     "promptly": "^3.0.3",
+    "redis": "^2.8.0",
     "segfault-handler": "^1.0.1",
     "semver": "^5.5.0",
     "sharp": "^0.20.5",
@@ -111,8 +106,7 @@
     "uglifyjs-webpack-plugin": "^1.2.2",
     "universal-url-lite": "^1.0.0",
     "webpack": "^3.11.0",
-    "ws": "^4.0.0",
-    "execa": "^0.7.0"
+    "ws": "^4.0.0"
   },
   "publishConfig": {
     "access": "public"

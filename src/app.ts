@@ -15,9 +15,12 @@ export interface Release {
 }
 
 export class App {
+  /** a unique app identifier, used for scoping cache/etc */
+  public id: any
   private _config: any
 
   constructor(public release: Release) {
+    this.id = this.release.app
   }
 
   get name() {
