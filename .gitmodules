@@ -1,3 +1,0 @@
-[submodule "vendor/whatwg-streams"]
-	path = vendor/whatwg-streams
-	url = https://github.com/whatwg/streams

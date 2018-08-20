@@ -60,7 +60,6 @@
     "@types/ws": "^4.0.0",
     "arraybuffer-loader": "^1.0.3",
     "babel-eslint": "^8.2.1",
-    "better-assert": "^1.0.2",
     "chai": "^4.1.2",
     "concurrently": "^3.5.1",
     "cookie": "^0.3.1",
@@ -80,6 +79,7 @@
     "typescript": "^3.0.1"
   },
   "dependencies": {
+    "@mattiasbuelens/web-streams-polyfill": "^0.1.0",
     "ansi-colors": "^1.1.0",
     "axios": "^0.18.0",
     "better-sqlite3": "^4.1.4",

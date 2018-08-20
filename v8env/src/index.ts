@@ -8,7 +8,6 @@ import bridgeInit from './bridge'
 
 import { fireFetchEvent, addEventListener, dispatchEvent, FetchEvent } from "./events"
 import { ReadableStream, WritableStream, TransformStream } from './streams'
-
 import { console } from './console'
 import flyInit from './fly/index'
 
