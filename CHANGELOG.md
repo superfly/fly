@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.39.0"></a>
+# [0.39.0](https://github.com/superfly/fly/compare/v0.39.0-0...v0.39.0) (2018-08-16)
+
+
+### Bug Fixes
+
+* cleaned up fetch types ([3bd0492](https://github.com/superfly/fly/commit/3bd0492))
+* proxy sets wrong x-forwarded-host header ([bcf6408](https://github.com/superfly/fly/commit/bcf6408))
+
+
+### Features
+
+* `responseCache` for caching Response objects ([6a9182f](https://github.com/superfly/fly/commit/6a9182f))
+
+
+
 <a name="0.39.0-0"></a>
 # [0.39.0-0](https://github.com/superfly/fly/compare/v0.38.1...v0.39.0-0) (2018-08-03)
 
