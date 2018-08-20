@@ -20,7 +20,7 @@
  */
 
 /** */
-import cache from "."
+import cache, { CacheSetOptions } from "."
 
 /**
  * Response metadata suitable for caching
@@ -29,7 +29,8 @@ export interface Metadata {
   status: number,
   headers: any,
   at?: number,
-  ttl: number
+  ttl: number,
+  tags?: string[]
 }
 
 /**
@@ -83,10 +84,10 @@ export async function getMeta(key: string) {
  * 
  * @param key Cache key to set
  * @param meta Metadata for the Response
- * @param ttl Time to live
+ * @param opts Time to live
  */
-export function setMeta(key: string, meta: Metadata, ttl?: number) {
-  return cache.set(key + ":meta", JSON.stringify(meta), ttl)
+export function setMeta(key: string, meta: Metadata, options?: CacheSetOptions | number) {
+  return cache.set(key + ":meta", JSON.stringify(meta), options)
 }
 
 const goodHeaders = [
@@ -104,15 +105,18 @@ const goodHeaders = [
  * Stores a Response object in the Fly cache.
  * @param key Cache key to set
  * @param resp The response to cache
- * @param ttl Time to live
+ * @param options Time to live
  */
-export async function set(key: string, resp: Response, ttl?: number) {
-  let meta = {
+export async function set(key: string, resp: Response, options?: CacheSetOptions | number) {
+  const ttl = typeof options === "number" ? options : (options && options.ttl)
+  const tags = typeof options === "object" ? options.tags : undefined
+  const meta = {
     status: resp.status,
     headers: {},
     at: Math.round(Date.now() / 1000),
-    ttl: ttl
-  };
+    ttl: ttl,
+    tags: tags
+  }
 
   const body = await resp.clone().arrayBuffer();
 
@@ -129,8 +133,8 @@ export async function set(key: string, resp: Response, ttl?: number) {
     }
   }
   return cacheResult([
-    setMeta(key, meta, ttl),
-    cache.set(key + ':body', body, ttl)
+    setMeta(key, meta, options),
+    cache.set(key + ':body', body, options)
   ]);
 }
 
@@ -142,7 +146,7 @@ export async function touch(key: string) {
   let meta = await getMeta(key)
   if (!meta) return false
   meta.at = Math.round(Date.now() / 1000)
-  return await setMeta(key, meta, meta.ttl)
+  return await setMeta(key, meta, { ttl: meta.ttl, tags: meta.tags })
 }
 
 /**
@@ -152,8 +156,21 @@ export async function touch(key: string) {
  */
 export async function expire(key: string, ttl: number) {
   return cacheResult([
-    cache.expire(key + ":meta", 1),
-    cache.expire(key + ":body", 1)
+    cache.expire(key + ":meta", ttl),
+    cache.expire(key + ":body", ttl)
+  ])
+}
+
+/**
+ * Replace tags for a cached Response
+ * @param key The key to modify
+ * @param tags Tags to apply to key
+ * @returns true if tags were successfully updated
+ */
+export function setTags(key: string, tags: string[]) {
+  return cacheResult([
+    cache.setTags(key + ":meta", tags),
+    cache.setTags(key + ":body", tags)
   ])
 }
 
@@ -172,6 +189,7 @@ export default {
   get,
   getMeta,
   set,
+  setTags,
   touch,
   expire,
   del

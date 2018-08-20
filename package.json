@@ -1,6 +1,6 @@
 {
   "name": "@fly/fly",
-  "version": "0.39.0",
+  "version": "0.40.0-caching.2",
   "description": "",
   "main": "lib/index.js",
   "files": [
@@ -91,12 +91,13 @@
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",
     "ioredis": "^3.2.2",
-    "ioredis-mock": "^3.6.1",
+    "ioredis-mock": "^3.10.2",
     "isolated-vm": "1.6.1",
     "js-yaml": "^3.10.0",
     "mocha": "^4.0.1",
     "promise.prototype.finally": "^3.1.0",
     "promptly": "^3.0.3",
+    "redis": "^2.8.0",
     "segfault-handler": "^1.0.1",
     "semver": "^5.5.0",
     "sharp": "^0.20.5",

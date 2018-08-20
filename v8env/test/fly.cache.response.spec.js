@@ -16,6 +16,7 @@ describe("@fly/cache/response", () => {
     const [key, resp] = await makeResponse()
     const cachedResponse = await responseCache.get(key)
 
+    expect(cachedResponse).instanceOf(Response)
     const cachedBody = await cachedResponse.text()
     const body = await resp.text()
 

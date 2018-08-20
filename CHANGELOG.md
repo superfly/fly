@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.40.0-caching.2"></a>
+# [0.40.0-caching.2](https://github.com/superfly/fly/compare/v0.40.0-caching.1...v0.40.0-caching.2) (2018-08-18)
+
+
+
+<a name="0.40.0-caching.1"></a>
+# [0.40.0-caching.1](https://github.com/superfly/fly/compare/v0.40.0-caching.0...v0.40.0-caching.1) (2018-08-18)
+
+
+
+<a name="0.40.0-caching.0"></a>
+# [0.40.0-caching.0](https://github.com/superfly/fly/compare/v0.39.0...v0.40.0-caching.0) (2018-08-18)
+
+
+### Bug Fixes
+
+* send x-forwarded-proto with proxy call ([21cb949](https://github.com/superfly/fly/commit/21cb949))
+
+
+### Features
+
+* cache entries with surrogate keys ([2a2bf8f](https://github.com/superfly/fly/commit/2a2bf8f))
+* cache in Redis ([2a36ccc](https://github.com/superfly/fly/commit/2a36ccc))
+
+
+
 <a name="0.39.0"></a>
 # [0.39.0](https://github.com/superfly/fly/compare/v0.39.0-0...v0.39.0) (2018-08-16)
 

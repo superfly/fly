@@ -17,6 +17,11 @@
 
 /** */
 declare var bridge: any
+export interface CacheSetOptions {
+  ttl?: number,
+  tags?: string[]
+}
+
 
 /**
  * Get an ArrayBuffer value (or null) from the cache
@@ -62,12 +67,12 @@ export async function getString(key: string) {
  * @param ttl Time to live (in seconds)
  * @returns true if the set was successful
  */
-export function set(key: string, value: string | ArrayBuffer, ttl?: number) {
+export function set(key: string, value: string | ArrayBuffer, options?: CacheSetOptions | number) {
   if (typeof value !== "string" && !(value instanceof ArrayBuffer)) {
     throw new Error("Cache values must be either a string or array buffer")
   }
   return new Promise<boolean>(function cacheSetPromise(resolve, reject) {
-    bridge.dispatch("flyCacheSet", key, value, ttl, function cacheSetCallback(err: string | null, ok?: boolean) {
+    bridge.dispatch("flyCacheSet", key, value, options && JSON.stringify(options), function cacheSetCallback(err: string | null, ok?: boolean) {
       if (err != null) {
         reject(err)
         return
@@ -96,6 +101,47 @@ export function expire(key: string, ttl: number) {
 }
 
 /**
+ * Replace tags for a given cache key
+ * @param key The key to modify
+ * @param tags Tags to apply to key
+ * @returns true if tags were successfully updated
+ */
+export function setTags(key: string, tags: string[]) {
+  return new Promise<boolean>(function cacheSetTagsPromise(resolve, reject) {
+    bridge.dispatch("flyCacheSetTags", key, tags, function cacheSetTagsCallback(err: string | null, ok?: boolean) {
+      if (err != null) {
+        reject(err)
+        return
+      }
+      resolve(ok)
+    })
+  })
+}
+
+/**
+ * Purges all cache entries with the given tag
+ * @param tag Tag to purge
+ */
+export function purgeTag(tag: string) {
+  return new Promise<string[]>(function cachePurgeTagsPromise(resolve, reject) {
+    bridge.dispatch("flyCachePurgeTags", tag, function cachePurgeTagsCallback(err: string | null, keys?: string) {
+      if (err != null || !keys) {
+        reject(err || "weird result")
+        return
+      }
+      const result = JSON.parse(keys)
+      if (result instanceof Array) {
+        resolve(<string[]>result)
+        return
+      } else {
+        reject("got back gibberish")
+      }
+    })
+  })
+}
+
+
+/**
  * Deletes the value (if any) at the specified key
  * @param key Key to delete
  * @returns true if delete was successful
@@ -109,8 +155,13 @@ const cache = {
   getString,
   set,
   expire,
-  del
+  del,
+  setTags,
+  purgeTag
 }
 export default cache
 
+/**
+ * A library for caching/retrieving Response objects
+ */
 export { default as responseCache } from "./response"
