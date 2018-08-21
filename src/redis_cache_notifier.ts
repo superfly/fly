@@ -1,7 +1,6 @@
 import { CacheNotifierAdapter, CacheNotifierOperation, ReceiveHandler } from "./cache_notifier";
 import { RedisClient, ClientOpts } from "redis";
 import { RedisConnectionOptions, initRedisClient } from "./redis_adapter";
-import { hostname } from "os";
 import { promisify } from "util";
 
 export interface RedisCacheNotifierConfig {
@@ -57,7 +56,8 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
       await configAsync("set", "notify-keyspace-events", conf)
     }
     this._lastEventTime = Date.now()
-    this.subscriber.subscribe(`__keyspace@0__:notifier:cache`)
+    const dbIndex = parseInt((<any>this.subscriber).selected_db || 0)
+    this.subscriber.subscribe(`__keyspace@${dbIndex}__:notifier:cache`)
     this.subscriber.on('message', async (channel, message) => {
       const start = this._lastEventTime
       this._lastEventTime = Date.now()

@@ -171,7 +171,6 @@ class FlyRedis {
   async sscanShim(key: string, cursor: number, count?: number) {
     if (!count) count = 10
     const members = await this.smembersAsync(key)
-    console.log("got members:", members)
     if (members && cursor < members.length) {
       let newCursor = cursor + count
       if (newCursor > members.length) {
