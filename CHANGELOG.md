@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 <a name="0.40.0-caching.6"></a>
 # [0.40.0-caching.6](https://github.com/superfly/fly/compare/v0.39.0...v0.40.0-caching.6) (2018-08-22)
+<a name="0.40.0-caching.3"></a>
+# [0.40.0-caching.3](https://github.com/superfly/fly/compare/v0.39.0...v0.40.0-caching.3) (2018-08-22)
 
 
 ### Bug Fixes
@@ -19,7 +21,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
+* adds cache.set onlyIfEmpty option ([43e9601](https://github.com/superfly/fly/commit/43e9601))
 * cache tagging, expire related cache entries ([#114](https://github.com/superfly/fly/issues/114)) ([2242a5a](https://github.com/superfly/fly/commit/2242a5a))
+* global cache del/purgeTags ([703cfe6](https://github.com/superfly/fly/commit/703cfe6))
 
 
 

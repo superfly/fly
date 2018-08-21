@@ -1,51 +1,68 @@
 import { CacheStore } from "./cache_store"
 import { RedisCacheNotifier } from "./redis_cache_notifier"
+import { hostname } from "os";
 
-export enum CacheNotifierOperation {
+export enum CacheOperation {
   del = "del",
   purgeTag = "purgeTag"
 }
 
+export interface CacheNotifyMessage {
+  type: CacheOperation,
+  ns: string,
+  value: string,
+  ts: number
+}
+
 export interface ReceiveHandler {
-  (op: CacheNotifierOperation, ns: string, value: string): void
+  (msg: CacheNotifyMessage): void
 }
 export interface CacheNotifierAdapter {
-  send(op: CacheNotifierOperation, ns: string, value: string): Promise<boolean>
+  send(op: CacheNotifyMessage): Promise<boolean>
   start(handler: ReceiveHandler): void
 }
 
 export class CacheNotifier {
+  pid: string
   constructor(
     public cacheStore: CacheStore,
     public adapter: CacheNotifierAdapter
   ) {
-    adapter.start((type, ns, value) => this.handle(type, ns, value))
+    this.pid = `${hostname()}-${process.pid}`
+    adapter.start(this.handle.bind(this))
   }
 
-  async send(op: CacheNotifierOperation, ns: string, value: string) {
-    return this.adapter.send(op, ns, value)
+  async send(type: CacheOperation, ns: string, value: string) {
+    return this.adapter.send({ type, ns, value, ts: Date.now() })
   }
 
-  async handle(type: CacheNotifierOperation, ns: string, value: string) {
-    switch (type) {
-      case CacheNotifierOperation.del: {
-        return await this.cacheStore.del(ns, value)
+  async handle({ type, ns, value, ts }: CacheNotifyMessage): Promise<boolean> {
+    const lockKey = "lock:" + [type, value, ts].join(":")
+    const hasLock = await this.cacheStore.set(ns, lockKey, this.pid, { ttl: 10, onlyIfEmpty: true })
+    if (!hasLock) return false
+    try {
+      switch (type) {
+        case CacheOperation.del: {
+          return await this.cacheStore.del(ns, value)
+        }
+        case CacheOperation.purgeTag: {
+          const res = await this.cacheStore.purgeTag(ns, value)
+          return res.length > 0
+        }
+        default:
+          throw new Error(`Unknown CacheNotifierOperation: ${type}`)
       }
-      case CacheNotifierOperation.purgeTag: {
-        const res = await this.cacheStore.purgeTag(ns, value)
-        return res.length > 0
-      }
-      default:
-        throw new Error(`Unknown CacheNotifierOperation: ${type}`)
+    } finally {
+      // clean up lock
+      await this.cacheStore.del(ns, lockKey)
     }
   }
-
 }
 
-export function isCacheNotifierOperation(op: any): op is CacheNotifierOperation {
+export function isCacheOperation(op: any): op is CacheOperation {
   if (typeof op !== "string") return false
 
-  const v = Object.getOwnPropertyNames(CacheNotifierOperation)
+  const v = Object.getOwnPropertyNames(CacheOperation)
 
   if (v.includes(op)) {
     return true
@@ -55,11 +72,14 @@ export function isCacheNotifierOperation(op: any): op is CacheNotifierOperation 
 
 export class LocalCacheNotifier implements CacheNotifierAdapter {
   private _handler: ReceiveHandler | undefined
-  async send(op: CacheNotifierOperation, ns: string, value: string) {
-    if (this._handler) {
-      this._handler(op, ns, value)
-    }
-    return true
+  async send(msg: CacheNotifyMessage) {
+    // using setImmediate here to fake an async adapter
+    return new Promise<boolean>((resolve, ) => {
+      setImmediate(() => {
+        this._handler && this._handler(msg)
+        resolve(true)
+      })
+    })
   }
 
   start(handler: ReceiveHandler) {

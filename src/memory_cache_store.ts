@@ -23,12 +23,22 @@ export class MemoryCacheStore implements CacheStore {
     const k = keyFor(ns, key)
     const pipeline = this.redis.pipeline()
     let ttl: number | undefined
+    let mode: string | undefined
     if (typeof options === "number") {
       ttl = options
     } else if (options) {
       ttl = options.ttl
+      mode = options.onlyIfEmpty && "NX" || undefined
     }
 
+    if (mode) {
+      const p = ttl ?
+        this.redis.set(k, value, "EX", ttl, "NX") :
+        this.redis.set(k, value, "NX")
+      const result = await p
+      // this happens if the key already exists
+      if (result !== "OK") return false
+    }
     if (ttl && !isNaN(ttl)) {
       pipeline.set(k, value, 'EX', ttl)
     } else {
@@ -49,13 +59,21 @@ export class MemoryCacheStore implements CacheStore {
   }
 
   async del(ns: string, key: string): Promise<boolean> {
-    console.log("memory cache del", key)
-    const result = await this.redis.del(keyFor(ns, key))
-    return result === OK
+    key = keyFor(ns, key)
+    await Promise.all([
+      this.redis.del(key),
+      this.redis.del(key + ":tags")
+    ])
+    return true
   }
 
   async expire(ns: string, key: string, ttl: number): Promise<boolean> {
-    return (await this.redis.expire(keyFor(ns, key), ttl)) === 1
+    key = keyFor(ns, key)
+    await Promise.all([
+      this.redis.expire(key, ttl),
+      this.redis.expire(key + ":tags", ttl)
+    ])
+    return true
   }
 
   async ttl(ns: string, key: string): Promise<number> {

@@ -4,7 +4,8 @@ import { MemoryCacheStore } from "./memory_cache_store";
 
 export interface CacheSetOptions {
   ttl?: number,
-  tags?: string[]
+  tags?: string[],
+  onlyIfEmpty?: boolean
 }
 export interface CacheStore {
   get(ns: string, key: string): Promise<Buffer | null>
