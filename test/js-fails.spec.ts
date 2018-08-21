@@ -22,7 +22,7 @@ describe('JS Fails', function () {
     describe("setTimeout fires after response", function () {
       before(startServer(`fails/async-app`))
       before(function () {
-        return cacheStore.set(this.server.runtime, "long-wait-after-response", "no")
+        return cacheStore.set(this.server.runtime.app.id, "long-wait-after-response", "no")
       })
       after(stopServer)
 
