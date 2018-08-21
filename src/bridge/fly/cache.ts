@@ -6,6 +6,7 @@ import { Bridge } from '../bridge';
 import { Runtime } from '../../runtime';
 
 const errCacheStoreUndefined = new Error("cacheStore is not defined in the config.")
+const errCacheNotifierUndefined = new Error("cacheNotifier is not defined in the config")
 
 registerBridge('flyCacheSet', function cacheSet(rt: Runtime, bridge: Bridge, key: string, value: ArrayBuffer | string, options: string | undefined, callback: ivm.Reference<Function>) {
   if (!bridge.cacheStore) {
@@ -27,7 +28,7 @@ registerBridge('flyCacheSet', function cacheSet(rt: Runtime, bridge: Bridge, key
     callback.applyIgnored(null, [err.toString()])
     return
   }
-  bridge.cacheStore.set(rt, key, buf, opts).then((ok) => {
+  bridge.cacheStore.set(rt.app.id, key, buf, opts).then((ok) => {
     rt.reportUsage("cache:set", { size: buf.byteLength })
     callback.applyIgnored(null, [null, ok])
   }).catch((err) => {
@@ -43,7 +44,7 @@ registerBridge('flyCacheExpire', function cacheExpire(rt: Runtime, bridge: Bridg
     return
   }
 
-  bridge.cacheStore.expire(rt, key, ttl).then((ok) => {
+  bridge.cacheStore.expire(rt.app.id, key, ttl).then((ok) => {
     callback.applyIgnored(null, [null, ok])
   }).catch((err) => {
     callback.applyIgnored(null, [err.toString()])
@@ -57,7 +58,7 @@ registerBridge('flyCacheGet',
       return
     }
 
-    bridge.cacheStore.get(rt, key).then((buf) => {
+    bridge.cacheStore.get(rt.app.id, key).then((buf) => {
       rt.reportUsage("cache:get", { size: buf ? buf.byteLength : 0 })
       callback.applyIgnored(null, [null, transferInto(buf)])
     }).catch((err) => {
@@ -73,7 +74,7 @@ registerBridge('flyCacheDel',
       return
     }
 
-    bridge.cacheStore.del(rt, key).then((result) => {
+    bridge.cacheStore.del(rt.app.id, key).then((result) => {
       callback.applyIgnored(null, [null, !!result])
     }).catch((err) => {
       log.error("got err in cache.del", err)
@@ -88,7 +89,7 @@ registerBridge('flyCacheSetTags',
       return
     }
 
-    bridge.cacheStore.setTags(rt, key, tags).then((result) => {
+    bridge.cacheStore.setTags(rt.app.id, key, tags).then((result) => {
       callback.applyIgnored(null, [null, result])
     }).catch((err) => {
       log.error("got err in cache.setTags", err)
@@ -103,12 +104,28 @@ registerBridge('flyCachePurgeTags',
       return
     }
 
-    bridge.cacheStore.purgeTags(rt, key).then((result) => {
+    bridge.cacheStore.purgeTags(rt.app.id, key).then((result) => {
       setImmediate(() => {
         callback.applyIgnored(null, [null, JSON.stringify(result)])
       })
     }).catch((err) => {
       log.error("got err in cache.purgeTags", err)
+      callback.applyIgnored(null, [null, null]) // swallow errors on get for now
+    })
+  })
+
+
+registerBridge('flyCacheNotifierDel',
+  function cacheDel(rt: Runtime, bridge: Bridge, key: string, callback: ivm.Reference<Function>) {
+    if (!bridge.cacheStore || !bridge.cacheNotifier) {
+      callback.applyIgnored(null, [errCacheNotifierUndefined.toString()])
+      return
+    }
+
+    bridge.cacheNotifier.sendDel(rt.app.id, key).then((result) => {
+      callback.applyIgnored(null, [null, !!result])
+    }).catch((err) => {
+      log.error("got err in cacheNotifier.del", err)
       callback.applyIgnored(null, [null, null]) // swallow errors on get for now
     })
   })
