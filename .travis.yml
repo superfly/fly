@@ -3,6 +3,7 @@ compiler: clang
 matrix:
   include:
     - os: linux
+      name: "Linux + node 8"
       addons: &linux_addons
         apt:
           sources:
@@ -17,25 +18,44 @@ matrix:
       - MATRIX_EVAL="export CXX=g++-5"
       node_js: 8
     - os: linux
+      name: "Linux + node 10.3"
       addons: *linux_addons
       env: *linux_env
       node_js: 10.3
     - os: linux
+      name: "Linux + node 10.8"
       addons: *linux_addons
       env: *linux_env
       node_js: 10.8.0
+
+    - os: linux
+      name: "Linux + Redis + node 10.3"
+      addons: *linux_addons
+      env: &linux_env_redis
+      - MATRIX_EVAL="export CXX=g++-5" REDIS_CACHE_URL=redis://localhost/ REDIS_CACHE_NOTIFICATION_URL=redis://localhost
+      node_js: 10.3 
+    - os: linux
+      name: "Linux + Redis + node 10.3"
+      addons: *linux_addons
+      env: *linux_env_redis
+      node_js: 10.3
+    - os: linux
+      name: "Linux + Redis + node 10.8"
+      addons: *linux_addons
+      env: *linux_env_redis
+      node_js: 10.8.0
     - os: osx
+      name: "OSX + Node 8"
       osx_image: xcode9.4
       node_js: 8
     - os: osx
+      name: "OSX + Node 10.3"
       osx_image: xcode9.4
       node_js: 10.3
     - os: osx
+      name: "OSX + Node 10.8"
       osx_image: xcode9.4
       node_js: 10.8.0
-env:
-  - REDIS_CACHE_URL=redis://localhost/ REDIS_CACHE_NOTIFICATION_URL=redis://localhost
-  - MEMORY_STORAGE=yes
 
 cache:
   yarn: true
