@@ -4,6 +4,7 @@ import log from '../../log'
 import { transferInto } from '../../utils/buffer'
 import { Bridge } from '../bridge';
 import { Runtime } from '../../runtime';
+import { CacheNotifierOperation, isCacheNotifierOperation } from '../../cache_notifier';
 
 const errCacheStoreUndefined = new Error("cacheStore is not defined in the config.")
 const errCacheNotifierUndefined = new Error("cacheNotifier is not defined in the config")
@@ -78,7 +79,7 @@ registerBridge('flyCacheDel',
       callback.applyIgnored(null, [null, !!result])
     }).catch((err) => {
       log.error("got err in cache.del", err)
-      callback.applyIgnored(null, [null, null]) // swallow errors on get for now
+      callback.applyIgnored(null, [err.toString()])
     })
   })
 
@@ -93,7 +94,7 @@ registerBridge('flyCacheSetTags',
       callback.applyIgnored(null, [null, result])
     }).catch((err) => {
       log.error("got err in cache.setTags", err)
-      callback.applyIgnored(null, [null, null]) // swallow errors on get for now
+      callback.applyIgnored(null, [err.toString()])
     })
   })
 
@@ -104,28 +105,32 @@ registerBridge('flyCachePurgeTags',
       return
     }
 
-    bridge.cacheStore.purgeTags(rt.app.id, key).then((result) => {
+    bridge.cacheStore.purgeTag(rt.app.id, key).then((result) => {
       setImmediate(() => {
         callback.applyIgnored(null, [null, JSON.stringify(result)])
       })
     }).catch((err) => {
       log.error("got err in cache.purgeTags", err)
-      callback.applyIgnored(null, [null, null]) // swallow errors on get for now
+      callback.applyIgnored(null, [err.toString()])
     })
   })
 
 
-registerBridge('flyCacheNotifierDel',
-  function cacheDel(rt: Runtime, bridge: Bridge, key: string, callback: ivm.Reference<Function>) {
+registerBridge('flyCacheNotify',
+  function cacheDel(rt: Runtime, bridge: Bridge, type: string | CacheNotifierOperation, key: string, callback: ivm.Reference<Function>) {
     if (!bridge.cacheStore || !bridge.cacheNotifier) {
       callback.applyIgnored(null, [errCacheNotifierUndefined.toString()])
       return
     }
 
-    bridge.cacheNotifier.sendDel(rt.app.id, key).then((result) => {
+    if (!isCacheNotifierOperation(type)) {
+      callback.applyIgnored(null, ["Invalid cache notification type"])
+      return
+    }
+    bridge.cacheNotifier.send(type, rt.app.id, key).then((result) => {
       callback.applyIgnored(null, [null, !!result])
     }).catch((err) => {
-      log.error("got err in cacheNotifier.del", err)
-      callback.applyIgnored(null, [null, null]) // swallow errors on get for now
+      log.error("got err in cacheNotify", err)
+      callback.applyIgnored(null, [err.toString()])
     })
   })

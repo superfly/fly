@@ -13,7 +13,7 @@ export interface CacheStore {
   expire(ns: string, key: string, ttl: number): Promise<boolean>
   ttl(ns: string, key: string): Promise<number>,
   setTags(ns: string, key: string, tags: string[]): Promise<boolean>,
-  purgeTags(ns: string, tag: string): Promise<string[]>
+  purgeTag(ns: string, tag: string): Promise<string[]>
   rand?: number
 }
 

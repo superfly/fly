@@ -3,7 +3,7 @@ import { RedisCacheNotifier } from "./redis_cache_notifier"
 
 export enum CacheNotifierOperation {
   del = "del",
-  purgeTags = "purgeTags"
+  purgeTag = "purgeTag"
 }
 
 export interface ReceiveHandler {
@@ -22,24 +22,35 @@ export class CacheNotifier {
     adapter.start((type, ns, value) => this.handle(type, ns, value))
   }
 
-  async sendDel(ns: string, key: string) {
-    return this.send(CacheNotifierOperation.del, ns, key)
-  }
   async send(op: CacheNotifierOperation, ns: string, value: string) {
     return this.adapter.send(op, ns, value)
   }
 
   async handle(type: CacheNotifierOperation, ns: string, value: string) {
     switch (type) {
-      case CacheNotifierOperation.del:
-        const res = await this.cacheStore.del(ns, value)
-      case CacheNotifierOperation.purgeTags:
-        return !!(await this.cacheStore.purgeTags(ns, value))
+      case CacheNotifierOperation.del: {
+        return await this.cacheStore.del(ns, value)
+      }
+      case CacheNotifierOperation.purgeTag: {
+        const res = await this.cacheStore.purgeTag(ns, value)
+        return res.length > 0
+      }
       default:
         throw new Error(`Unknown CacheNotifierOperation: ${type}`)
     }
   }
 
+}
+
+export function isCacheNotifierOperation(op: any): op is CacheNotifierOperation {
+  if (typeof op !== "string") return false
+
+  const v = Object.getOwnPropertyNames(CacheNotifierOperation)
+
+  if (v.includes(op)) {
+    return true
+  }
+  return false
 }
 
 export class LocalCacheNotifier implements CacheNotifierAdapter {

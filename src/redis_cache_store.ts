@@ -79,7 +79,7 @@ export class RedisCacheStore implements CacheStore {
     return result.filter((r) => !r).length > 0
   }
 
-  async purgeTags(ns: string, tags: string): Promise<string[]> {
+  async purgeTag(ns: string, tags: string): Promise<string[]> {
     const s = tagKeyFor(ns, tags)
     const keysToDelete = new Array<string>()
     const keysToCheck = new Array<string>()

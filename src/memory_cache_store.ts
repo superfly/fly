@@ -80,7 +80,7 @@ export class MemoryCacheStore implements CacheStore {
     }
   }
 
-  async purgeTags(ns: string, tags: string): Promise<string[]> {
+  async purgeTag(ns: string, tags: string): Promise<string[]> {
     const s = tagKeyFor(ns, tags)
     const checks = this.redis.pipeline()
     const keysToDelete = new Array<string>()

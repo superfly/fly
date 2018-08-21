@@ -19,4 +19,15 @@ describe("@fly/cache/global", () => {
     expect(res).to.eq(null)
 
   })
+
+  it("sends purgeTag notifications", async () => {
+    const key = "purge_test_key_" + Math.random()
+    await cache.set(key, "jklm", { tags: ["purge_test"] })
+
+    await cache.global.purgeTag("purge_test")
+
+    await sleep(20)
+    const res = await cache.getString(key)
+    expect(res).to.eq(null)
+  })
 })
