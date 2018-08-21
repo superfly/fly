@@ -4,7 +4,7 @@ import log from '../../log'
 import { transferInto } from '../../utils/buffer'
 import { Bridge } from '../bridge';
 import { Runtime } from '../../runtime';
-import { CacheNotifierOperation, isCacheNotifierOperation } from '../../cache_notifier';
+import { CacheOperation, isCacheOperation } from '../../cache_notifier';
 
 const errCacheStoreUndefined = new Error("cacheStore is not defined in the config.")
 const errCacheNotifierUndefined = new Error("cacheNotifier is not defined in the config")
@@ -117,13 +117,13 @@ registerBridge('flyCachePurgeTags',
 
 
 registerBridge('flyCacheNotify',
-  function cacheDel(rt: Runtime, bridge: Bridge, type: string | CacheNotifierOperation, key: string, callback: ivm.Reference<Function>) {
+  function cacheDel(rt: Runtime, bridge: Bridge, type: string | CacheOperation, key: string, callback: ivm.Reference<Function>) {
     if (!bridge.cacheStore || !bridge.cacheNotifier) {
       callback.applyIgnored(null, [errCacheNotifierUndefined.toString()])
       return
     }
 
-    if (!isCacheNotifierOperation(type)) {
+    if (!isCacheOperation(type)) {
       callback.applyIgnored(null, ["Invalid cache notification type"])
       return
     }

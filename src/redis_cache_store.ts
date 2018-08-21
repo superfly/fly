@@ -23,7 +23,6 @@ export class RedisCacheStore implements CacheStore {
   }
 
   async set(ns: string, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean> {
-    const start = Date.now()
     const k = keyFor(ns, key)
     let ttl: number | undefined
     if (typeof options === "number") {
@@ -32,11 +31,23 @@ export class RedisCacheStore implements CacheStore {
       ttl = options.ttl
     }
     const commands = new Array<any>()
-    if (ttl) {
-      commands.push(this.redis.setAsync(k, value, 'EX', ttl))
-    } else {
+    if (typeof options === "object" && options.onlyIfEmpty === true) {
+      // can't pipeline set NX
+      const p = ttl ?
+        this.redis.setAsync(k, value, "EX", ttl, "NX") :
+        this.redis.setAsync(k, value, "NX")
+      const result = await p
+      // this happens if the key already exists
+      if (result !== "OK") return false
 
-      commands.push(this.redis.setAsync(k, value))
+      // otherwise we carry on
+    } else {
+      if (ttl) {
+        this.redis.setAsync(k, value, "EX", ttl, "NX")
+        commands.push(this.redis.setAsync(k, value, 'EX', ttl))
+      } else {
+        commands.push(this.redis.setAsync(k, value))
+      }
     }
     if (typeof options === "object" && options && options.tags instanceof Array) {
       commands.push(this.redis.saddAsync(k + ":tags", options.tags))
@@ -143,7 +154,7 @@ async function* setScanner(redis: FlyRedis, key: string) {
 
 class FlyRedis {
   getBufferAsync: (key: Buffer | string) => Promise<Buffer>
-  setAsync: (key: string, value: Buffer, mode?: number | string, duration?: number) => Promise<"OK" | undefined>
+  setAsync: (key: string, value: Buffer, mode?: number | string, duration?: number, exists?: string) => Promise<"OK" | undefined>
   expireAsync: (key: string, ttl: number) => Promise<boolean>
   ttlAsync: (key: string) => Promise<number>
   delAsync: (...keys: string[]) => Promise<boolean>

@@ -1,5 +1,5 @@
-import { CacheNotifierAdapter, CacheNotifierOperation, ReceiveHandler } from "./cache_notifier";
-import { RedisClient, ClientOpts } from "redis";
+import { CacheNotifierAdapter, CacheOperation, ReceiveHandler, CacheNotifyMessage } from "./cache_notifier";
+import { RedisClient } from "redis";
 import { RedisConnectionOptions, initRedisClient } from "./redis_adapter";
 import { promisify } from "util";
 
@@ -27,15 +27,9 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
     this.writer = initRedisClient(opts.writer)
   }
 
-  send(type: CacheNotifierOperation, ns: string, value: string) {
-    const msg = {
-      type: type,
-      ns: ns,
-      value: value
-    }
-
+  send(msg: CacheNotifyMessage) {
     return new Promise<boolean>((resolve, reject) => {
-      this.writer.zadd(notifierKey, Date.now(), JSON.stringify(msg), (err, _) => {
+      this.writer.zadd(notifierKey, msg.ts, JSON.stringify(msg), (err, _) => {
         if (err) {
           return reject(err)
         }
@@ -50,7 +44,7 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
     const zrangebyscore = promisify(this.reader.zrangebyscore).bind(this.reader)
 
     let [, conf] = await configAsync("get", "notify-keyspace-events")
-    if (!conf.includes("E") && !conf.includes('z')) {
+    if (!conf.includes("E") || !conf.includes('z')) {
       conf = conf + "KEz"
       console.log("Enabling zset notifications in redis:", conf)
       await configAsync("set", "notify-keyspace-events", conf)
@@ -68,7 +62,7 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
           try {
             const msg = JSON.parse(raw)
             if (this._handler && isNotifierMessage(msg)) {
-              this._handler(msg.type, msg.ns, msg.value)
+              this._handler(msg)
             }
           } catch (err) {
             console.error("Error handling cache notifier:", err)
@@ -79,17 +73,6 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
   }
 }
 
-function tryLock(redis: RedisClient, id: string, cb: Function) {
-  return new Promise<boolean>((resolve, reject) => {
-    redis.set("notifier:cache:lock", id, "NX", (err, result) => {
-      if (err) {
-        return reject(err)
-      }
-      resolve(result === "OK")
-    })
-  })
-}
-
 function isRedisCacheNotifierConfig(opts: any): opts is RedisCacheNotifierConfig {
   if (typeof opts === "object" && opts.reader) {
     return true
@@ -97,10 +80,11 @@ function isRedisCacheNotifierConfig(opts: any): opts is RedisCacheNotifierConfig
   return false
 }
 
-function isNotifierMessage(msg: any): msg is { type: CacheNotifierOperation, ns: string, value: string } {
+function isNotifierMessage(msg: any): msg is CacheNotifyMessage {
   if (typeof msg.type === "string" &&
     typeof msg.ns === "string" &&
-    typeof msg.value === "string") {
+    typeof msg.value === "string" &&
+    typeof msg.ts === "number") {
     return true
   }
   return false

@@ -23,12 +23,22 @@ export class MemoryCacheStore implements CacheStore {
     const k = keyFor(ns, key)
     const pipeline = this.redis.pipeline()
     let ttl: number | undefined
+    let mode: string | undefined
     if (typeof options === "number") {
       ttl = options
     } else if (options) {
       ttl = options.ttl
+      mode = options.onlyIfEmpty && "NX" || undefined
     }
 
+    if (mode) {
+      const p = ttl ?
+        this.redis.set(k, value, "EX", ttl, "NX") :
+        this.redis.set(k, value, "NX")
+      const result = await p
+      // this happens if the key already exists
+      if (result !== "OK") return false
+    }
     if (ttl && !isNaN(ttl)) {
       pipeline.set(k, value, 'EX', ttl)
     } else {

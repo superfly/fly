@@ -19,7 +19,8 @@
 declare var bridge: any
 export interface CacheSetOptions {
   ttl?: number,
-  tags?: string[]
+  tags?: string[],
+  onlyIfEmpty?: boolean
 }
 
 
@@ -147,7 +148,15 @@ export function purgeTag(tag: string) {
  * @returns true if delete was successful
  */
 export function del(key: string) {
-  return expire(key, 0)
+  return new Promise<boolean>(function cacheDelPromise(resolve, reject) {
+    bridge.dispatch("flyCacheDel", key, function cacheDelCallback(err: string | null, ok?: boolean) {
+      if (err != null) {
+        reject(err)
+        return
+      }
+      resolve(ok)
+    })
+  })
 }
 
 /**
