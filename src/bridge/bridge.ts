@@ -23,6 +23,7 @@ import { catalog, BridgeFunction } from './'
 import { Runtime } from '../runtime';
 import { DataStore } from '../data_store';
 import { defaultCacheStore } from '../cache_store';
+import { defaultCacheNotifier, CacheNotifier } from '../cache_notifier';
 
 const errNoSuchBridgeFn = "Attempted to call a unregistered bridge function."
 
@@ -40,8 +41,8 @@ export interface BridgeOptions {
   cacheStore?: CacheStore
   fileStore?: FileStore
   dataStore?: DataStore
+  cacheNotifier?: CacheNotifier
 }
-
 /**
  * @private
  */
@@ -49,11 +50,13 @@ export class Bridge {
   cacheStore: CacheStore
   fileStore?: FileStore
   dataStore?: DataStore
+  cacheNotifier?: CacheNotifier
 
   functions: Map<string, BridgeFunction>
 
   constructor(opts: BridgeOptions = {}) {
     this.cacheStore = opts.cacheStore || defaultCacheStore()
+    this.cacheNotifier = opts.cacheNotifier || defaultCacheNotifier(this.cacheStore)
     this.fileStore = opts.fileStore
     this.dataStore = opts.dataStore
     this.functions = new Map<string, BridgeFunction>(

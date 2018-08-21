@@ -7,13 +7,13 @@ export interface CacheSetOptions {
   tags?: string[]
 }
 export interface CacheStore {
-  get(rt: Runtime, key: string): Promise<Buffer | null>
-  set(rt: Runtime, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean>
-  del(rt: Runtime, key: string): Promise<boolean>
-  expire(rt: Runtime, key: string, ttl: number): Promise<boolean>
-  ttl(rt: Runtime, key: string): Promise<number>,
-  setTags(rt: Runtime, key: string, tags: string[]): Promise<boolean>,
-  purgeTags(rt: Runtime, tags: string): Promise<string[]>
+  get(ns: string, key: string): Promise<Buffer | null>
+  set(ns: string, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean>
+  del(ns: string, key: string): Promise<boolean>
+  expire(ns: string, key: string, ttl: number): Promise<boolean>
+  ttl(ns: string, key: string): Promise<number>,
+  setTags(ns: string, key: string, tags: string[]): Promise<boolean>,
+  purgeTag(ns: string, tag: string): Promise<string[]>
   rand?: number
 }
 

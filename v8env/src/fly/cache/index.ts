@@ -150,6 +150,16 @@ export function del(key: string) {
   return expire(key, 0)
 }
 
+/**
+ * A library for caching/retrieving Response objects
+ */
+export { default as responseCache } from "./response"
+
+/**
+ * Global cache operations
+ */
+import { default as global } from "./global"
+
 const cache = {
   get,
   getString,
@@ -157,11 +167,7 @@ const cache = {
   expire,
   del,
   setTags,
-  purgeTag
+  purgeTag,
+  global
 }
 export default cache
-
-/**
- * A library for caching/retrieving Response objects
- */
-export { default as responseCache } from "./response"
