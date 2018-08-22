@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.common.json",
+  "include": [
+    "./src/**/*"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./lib",
+    "lib": [
+      "es2017",
+      "esnext.asynciterable"
+    ],
+  }
+}

@@ -1,130 +1,18 @@
 {
-  "name": "@fly/fly",
-  "version": "0.40.0-caching.2",
-  "description": "",
-  "main": "lib/index.js",
-  "files": [
-    "examples/",
-    "lib/",
-    "dist/",
-    "v8env",
-    "docs/build/",
-    "vendor/"
-  ],
+  "name": "fly-root",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "scripts": {
-    "start": "./lib/cmd/index.js server ./examples/getting-started",
-    "test": "yarn test:v8env && yarn test:core",
-    "test:core": "yarn run mocha -r ts-node/register",
-    "test:v8env": "yarn build:v8env && node ./lib/cmd/index.js test v8env/test/**/*.spec.js",
-    "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
-    "build": "yarn run concurrently -n \"core,v8env\" \"yarn build:core\" \"yarn build:v8env\"",
-    "build:live": "yarn run concurrently -n \"core,v8env.ts,v8env\" \"tsc -w --pretty\" \"tsc -w --pretty -p v8env/ts\" \"webpack --config webpack.v8.config.js -w\"",
-    "build:core": "rm -rf lib && ./node_modules/.bin/tsc",
-    "build:v8env": "rm -rf dist v8env/lib && ./node_modules/.bin/tsc -p v8env && ./node_modules/.bin/webpack --config webpack.v8.config.js",
-    "prepublishOnly": "yarn build",
-    "release": "standard-version",
-    "doc:v8env": "./node_modules/typedoc/bin/typedoc --tsconfig ./v8env/tsconfig.json"
-  },
-  "bin": {
-    "fly": "lib/cmd/index.js"
-  },
-  "types": "./lib/index.d.ts",
-  "author": "",
-  "license": "Apache-2.0",
-  "engines": {
-    "node": ">=8 <10.9.0"
+    "build": "lerna run --parallel build",
+    "rebuild": "lerna run --parallel rebuild",
+    "clean": "lerna run --parallel clean"
   },
   "devDependencies": {
-    "@fly/typedoc-plugin-external-module-name": "^1.1.3",
-    "@types/better-sqlite3": "^3.1.3",
-    "@types/chai": "^4.0.8",
-    "@types/chokidar": "^1.7.5",
-    "@types/cookie": "^0.3.1",
-    "@types/execa": "^0.7.0",
-    "@types/fs-extra": "^5.0.0",
-    "@types/glob": "^5.0.35",
-    "@types/ioredis": "^3.2.14",
-    "@types/js-yaml": "^3.10.1",
-    "@types/mocha": "^2.2.44",
-    "@types/nock": "^9.1.3",
-    "@types/node": "^8.5.8",
-    "@types/pako": "^1.0.0",
-    "@types/promise.prototype.finally": "^2.0.2",
-    "@types/redis": "^2.8.1",
-    "@types/semver": "^5.5.0",
-    "@types/sharp": "^0.17.6",
-    "@types/tar-fs": "^1.16.0",
-    "@types/url-parse": "^1.1.0",
-    "@types/webpack": "^3.8.2",
-    "@types/whatwg-streams": "0.0.7",
-    "@types/ws": "^4.0.0",
-    "arraybuffer-loader": "^1.0.3",
-    "babel-eslint": "^8.2.1",
-    "better-assert": "^1.0.2",
-    "chai": "^4.1.2",
-    "concurrently": "^3.5.1",
-    "cookie": "^0.3.1",
-    "coveralls": "^3.0.0",
-    "css-select": "^1.3.0-rc0",
-    "domutils": "^1.6.2",
-    "eventemitter2": "^5.0.1",
-    "htmlparser2": "^3.9.2",
-    "http-cache-semantics": "^3.8.1",
-    "image-webpack-loader": "^4.3.1",
-    "nock": "^9.2.6",
-    "nyc": "^13.0.0",
-    "standard-version": "^4.4.0",
-    "ts-loader": "^3.2.0",
-    "ts-node": "^3.3.0",
-    "typedoc": "git+https://github.com/mrkurt/typedoc.git#build",
-    "typescript": "^3.0.1"
-  },
-  "dependencies": {
-    "ansi-colors": "^1.1.0",
-    "axios": "^0.18.0",
-    "better-sqlite3": "^4.1.4",
-    "chokidar": "^2.0.4",
-    "cli-table3": "^0.5.0",
-    "commandpost": "^1.3.0",
-    "console-log-level": "^1.4.0",
-    "execa": "^0.7.0",
-    "fs-extra": "^5.0.0",
-    "glob": "^7.1.2",
-    "ioredis": "^3.2.2",
-    "ioredis-mock": "^3.10.2",
-    "isolated-vm": "1.6.1",
-    "js-yaml": "^3.10.0",
-    "mocha": "^4.0.1",
-    "promise.prototype.finally": "^3.1.0",
-    "promptly": "^3.0.3",
-    "redis": "^2.8.0",
-    "segfault-handler": "^1.0.1",
-    "semver": "^5.5.0",
-    "sharp": "^0.20.5",
-    "source-map": "^0.6.1",
-    "tar-fs": "^1.16.0",
-    "uglifyjs-webpack-plugin": "^1.2.2",
-    "universal-url-lite": "^1.0.0",
-    "webpack": "^3.11.0",
-    "ws": "^4.0.0"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "nyc": {
-    "extension": [
-      ".ts",
-      ".tsx"
-    ],
-    "exclude": [
-      "**/*.d.ts",
-      "test/**/*",
-      "**/*.js",
-      "v8env/"
-    ],
-    "reporter": [
-      "text"
-    ],
-    "all": true
+    "lerna": "^3.1.1",
+    "typescript": "3.0.1"
   }
 }

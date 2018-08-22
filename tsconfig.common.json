@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "declaration": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "baseUrl": "packages/",
+    "paths": {
+      "@fly/*": [
+        "./*/src"
+      ]
+    },
+  }
+}

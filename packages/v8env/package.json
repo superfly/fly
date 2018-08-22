@@ -1,0 +1,34 @@
+{
+    "name": "@fly/v8env",
+    "version": "0.0.0",
+    "description": "> TODO: description",
+    "author": "Michael Dwan <m@dwan.io>",
+    "homepage": "",
+    "license": "ISC",
+    "main": "lib/index.js",
+    "directories": {
+        "lib": "lib",
+        "test": "__tests__"
+    },
+    "files": [
+        "lib"
+    ],
+    "scripts": {
+        "clean": "tsc -b --clean .",
+        "build": "tsc -b .",
+        "rebuild": "yarn clean && yarn build",
+        "test": "echo \"Error: run tests from root\" && exit 1"
+    },
+    "dependencies": {
+        "css-select": "^1.3.0-rc0",
+        "cookie": "^0.3.1",
+        "domutils": "^1.6.2",
+        "eventemitter2": "^5.0.1",
+        "htmlparser2": "^3.9.2",
+        "http-cache-semantics": "^3.8.1",
+        "universal-url-lite": "^1.0.0"
+    },
+    "devDependencies": {
+        "@types/cookie": "^0.3.1"
+    }
+}

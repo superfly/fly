@@ -1,0 +1,30 @@
+{
+  "extends": "../../tsconfig.common.json",
+  "include": [
+    "./src/**/*"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./lib",
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    // ease the transition to TypeScript, remove after 2018-09-01 plzthx
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+  },
+  "typedocOptions": {
+    "out": "./docs/build/",
+    "includeDeclarations": true,
+    "excludeExternals": true,
+    "excludeNotExported": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "plugin": "all",
+    "mode": "modules",
+    "theme": "./docs/theme/",
+    "ignoreCompilerErrors": true
+  }
+}

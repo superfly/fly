@@ -2,6 +2,5 @@ lib
 dist
 node_modules
 .nyc_output
-bin/fly
 .fly
-package-lock.json
+*.log
