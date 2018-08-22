@@ -52,6 +52,7 @@ export const console: Console = {
 	// unimplemented
 	clear: noop,
 	count: noop,
+	countReset: noop,
 	dir: noop,
 	dirxml: noop,
 	group: noop,
