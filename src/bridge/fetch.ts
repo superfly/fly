@@ -89,7 +89,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   }
   let timeout: NodeJS.Timer | undefined
   if (init.timeout && isNumber(init.timeout) && init.timeout > 0) {
-    timeout = setTimeout(handleTimeout, init.timeout)
+    timeout = setTimeout(handleUserTimeout, init.timeout)
   }
   const reqOptions: https.RequestOptions = {
     agent: httpAgent,
@@ -171,9 +171,20 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
       try { req.abort() } catch (e) { }
   }
 
+  function handleUserTimeout() {
+    clearFetchTimeout()
+    log.error("fetch timeout")
+    cb.applyIgnored(null, ["http request timeout"])
+    req.removeAllListeners()
+    req.once("error", (err) => log.debug("error after fetch timeout:", err)) // swallow next errors
+    req.once("timeout", () => log.debug("timeout after fetch timeout")) // swallow next errors
+    req.abort()
+  }
   function handleTimeout() {
     clearFetchTimeout()
     cb.applyIgnored(null, ["http request timeout"])
     req.removeAllListeners()
+    req.once("error", (err) => log.debug("error after timeout:", err)) // swallow possible error before abort
+    req.abort()
   }
 })
