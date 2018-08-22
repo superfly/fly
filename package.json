@@ -10,6 +10,7 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run --parallel build",
     "rebuild": "lerna run --parallel rebuild",
+    "bundle": "lerna run bundle",
     "clean": "lerna run --parallel clean"
   },
   "devDependencies": {

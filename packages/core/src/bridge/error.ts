@@ -5,8 +5,9 @@ import { Bridge } from './bridge';
 
 import { SourceMapConsumer, MappedPosition, Position } from 'source-map'
 import { Runtime } from '../runtime';
+import { v8DistroMapPath } from "../v8env"
 
-const v8EnvSourceMapConsumer = new SourceMapConsumer(require("../../dist/v8env.map.json"))
+const v8EnvSourceMapConsumer = new SourceMapConsumer(require(v8DistroMapPath)) // new SourceMapConsumer(require("../../dist/v8env.map.json"))
 
 const smConsumers: { [source: string]: SourceMapConsumer } = {}
 

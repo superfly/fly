@@ -8,10 +8,11 @@ import { Bridge } from '../bridge/bridge'
 import { LocalRuntime } from '../local_runtime';
 import { App } from '../app';
 import { SQLiteDataStore } from '../sqlite_data_store';
+import { v8envModulePath } from "../v8env"
 
 const scripts = [
   require.resolve("mocha/mocha"),
-  require.resolve('../../v8env/testing/setup'),
+  require.resolve(path.join(v8envModulePath, 'testing', 'setup')),
 ].map((filename) => {
   return {
     filename: filename,
@@ -19,7 +20,7 @@ const scripts = [
   }
 })
 
-const runPath = require.resolve("../../v8env/testing/run")
+const runPath = require.resolve(path.join(v8envModulePath, 'testing', 'run'))
 
 interface TestArgs {
   paths?: string[]

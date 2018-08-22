@@ -15,9 +15,14 @@ let v8EnvCode = "";
 let v8EnvSourceMap = "";
 let v8EnvSnapshot: ivm.ExternalCopy<ArrayBuffer> | undefined;
 
-const v8dist = path.join(__dirname, '..', 'dist', 'v8env.js')
-const v8distSnapshot = path.join(__dirname, '..', 'dist', 'v8env.bin')
-const v8mapDist = path.join(__dirname, '..', 'dist', 'v8env.map.json')
+export const v8envModulePath = path.resolve(path.dirname(require.resolve("@fly/v8env")), "..")
+
+const v8dist = path.join(v8envModulePath, 'dist', 'v8env.js')
+const v8distSnapshot = path.join(v8envModulePath, 'dist', 'v8env.bin')
+const v8mapDist = path.join(v8envModulePath, 'dist', 'v8env.map.json')
+
+export const v8DistroSourcePath = v8dist
+export const v8DistroMapPath = v8mapDist
 
 if (fs.existsSync(v8dist)) {
   v8EnvCode = fs.readFileSync(v8dist).toString()
