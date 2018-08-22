@@ -14,7 +14,7 @@
         "lib"
     ],
     "scripts": {
-        "clean": "tsc -b --clean .",
+        "clean": "rm -rf ./lib",
         "build": "tsc -b .",
         "rebuild": "yarn clean && yarn build",
         "test": "echo \"Error: run tests from root\" && exit 1"
