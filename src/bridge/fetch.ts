@@ -112,7 +112,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   req.setHeader('fly-app', rt.app.name)
 
   req.once("error", handleError)
-  req.once("timeout", handleError)
+  req.once("timeout", handleTimeout)
   req.once("response", handleResponse)
 
   const start = process.hrtime()
