@@ -100,7 +100,10 @@ export function defaultCacheNotifier(cacheStore: CacheStore) {
   let adapter: CacheNotifierAdapter = new LocalCacheNotifier()
   if (process.env.REDIS_CACHE_NOTIFIER_URL) {
     console.log("Using Redis Cache Notifier")
-    adapter = new RedisCacheNotifier(process.env.REDIS_CACHE_NOTIFIER_URL)
+    adapter = new RedisCacheNotifier({
+      reader: process.env.REDIS_CACHE_NOTIFIER_URL,
+      writer: process.env.REDIS_CACHE_NOTIFIER_WRITER_URL
+    })
   }
   return new CacheNotifier(cacheStore, adapter)
 }
