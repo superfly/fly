@@ -7,6 +7,7 @@
     ]
   },
   "scripts": {
+    "bootstrap": "lerna bootstrap",
     "build": "lerna run --parallel build",
     "rebuild": "lerna run --parallel rebuild",
     "clean": "lerna run --parallel clean"
