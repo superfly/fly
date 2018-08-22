@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.40.0-caching.3"></a>
+# [0.40.0-caching.3](https://github.com/superfly/fly/compare/v0.39.0...v0.40.0-caching.3) (2018-08-22)
+
+
+### Bug Fixes
+
+* send x-forwarded-proto with proxy call ([21cb949](https://github.com/superfly/fly/commit/21cb949))
+
+
+### Features
+
+* adds cache.set onlyIfEmpty option ([43e9601](https://github.com/superfly/fly/commit/43e9601))
+* cache tagging, expire related cache entries ([#114](https://github.com/superfly/fly/issues/114)) ([2242a5a](https://github.com/superfly/fly/commit/2242a5a))
+* global cache del/purgeTags ([703cfe6](https://github.com/superfly/fly/commit/703cfe6))
+
+
+
 <a name="0.40.0-caching.2"></a>
 # [0.40.0-caching.2](https://github.com/superfly/fly/compare/v0.40.0-caching.1...v0.40.0-caching.2) (2018-08-18)
 
