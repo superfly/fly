@@ -167,10 +167,12 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     log.error("error requesting http resource", err)
     cb.applyIgnored(null, [err && err.toString() || "unknown error"])
     req.removeAllListeners()
-    try { req.end(); req.socket.destroy() } catch (e) { }
+    if (!req.aborted)
+      try { req.end(); req.socket.destroy() } catch (e) { }
   }
 
   function handleTimeout() {
+    req.abort()
     handleError(new Error("http request timeout"))
   }
 })
