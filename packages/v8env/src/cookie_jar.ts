@@ -11,7 +11,7 @@ const cookieAttributeNames = ['Max-Age', 'Expires', 'HttpOnly', 'Secure', 'Path'
  * @class
  * @param {Response|Request} [parent] Underlying resource that contains cookies in headers
  */
-export default class CookieJar {
+class CookieJar {
 	private cookies: any
 	private parent: any
 
@@ -68,3 +68,6 @@ function parseCookie(cookieStr) {
 	}
 	return cookies.map((c) => Object.assign(c, options))
 }
+
+export { CookieJar }
+export default CookieJar

@@ -11,10 +11,14 @@
     "build": "lerna run --parallel build",
     "rebuild": "lerna run --parallel rebuild",
     "bundle": "lerna run bundle",
-    "clean": "lerna run --parallel clean"
+    "clean": "lerna run --parallel clean",
+    "test": "jest"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.1",
+    "jest": "^23.5.0",
     "lerna": "^3.1.1",
+    "ts-jest": "^23.1.4",
     "typescript": "3.0.1"
   }
 }
