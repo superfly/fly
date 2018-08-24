@@ -49,6 +49,7 @@ export interface ServerOptions {
 	appStore?: FileAppStore
 	bridge?: Bridge
 	inspect?: boolean
+	monitorFrequency?: number
 }
 
 export interface RequestTask {
@@ -71,7 +72,7 @@ export class Server extends http.Server {
 			fileStore: new LocalFileStore(process.cwd(), this.appStore.release),
 			dataStore: new SQLiteDataStore(this.appStore.app.name, options.env || 'development')
 		})
-		this.runtime = new LocalRuntime(this.appStore.app, this.bridge, { inspect: !!options.inspect })
+		this.runtime = new LocalRuntime(this.appStore.app, this.bridge, { inspect: !!options.inspect, monitorFrequency: options.monitorFrequency })
 		this.on("request", this.handleRequest.bind(this))
 		this.on("listening", () => {
 			const addr = this.address()
