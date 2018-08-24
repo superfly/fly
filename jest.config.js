@@ -2,7 +2,8 @@ module.exports = {
   "moduleFileExtensions": [
     "ts",
     "tsx",
-    "js"
+    "js",
+    "node"
   ],
   "moduleNameMapper": {
     "@fly/static": "<rootDir>/packages/v8env/src/fly/static.ts",
@@ -17,6 +18,7 @@ module.exports = {
     "\\.tsx?$": "ts-jest"
   },
   "testMatch": [
-    "**/*\\.zest.(ts|tsx)"
-  ]
+    "**/*\\.zest\\.(ts|tsx)"
+  ],
+  "testEnvironment": "node"
 }

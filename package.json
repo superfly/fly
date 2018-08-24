@@ -12,7 +12,10 @@
     "rebuild": "lerna run --parallel rebuild",
     "bundle": "lerna run bundle",
     "clean": "lerna run --parallel clean",
-    "test": "jest"
+    "dev": "lerna run --parallel dev",
+    "test": "yarn test:unit && yarn test:integration",
+    "test:unit": "jest",
+    "test:integration": "yarn jest --config=./tests/jest.config.js"
   },
   "devDependencies": {
     "@types/jest": "^23.3.1",
