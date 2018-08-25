@@ -39,18 +39,25 @@ cache:
   yarn: true
   directories:
     - node_modules
-      
+
 services:
   - redis-server
 before_install:
-- set -e
-- eval "${MATRIX_EVAL}"
+  - set -e
+  - eval "${MATRIX_EVAL}"
+  - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
+  - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  - sudo apt-get update -qq
+  - sudo apt-get install -y -qq yarn
 install:
-- yarn install
-- yarn build
+  - yarn install
+  - yarn bootstrap
 script:
-- .hooks/pre-build
-- yarn test
+  - .hooks/pre-build
+  - yarn build
+  - yarn bundle
+  - yarn test:unit
+  - yarn test:functional
 notifications:
   slack:
     on:
