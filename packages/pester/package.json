@@ -13,11 +13,7 @@
     "files": [
         "lib/"
     ],
-    "scripts": {
-        "clean": "rm -rf ./lib ./dist",
-        "build": "tsc -b .",
-        "rebuild": "yarn clean && yarn build"
-    },
+    "scripts": {},
     "dependencies": {
         "node-fetch": "2.2.0"
     },

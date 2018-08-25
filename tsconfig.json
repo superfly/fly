@@ -6,6 +6,9 @@
     },
     {
       "path": "./packages/v8env"
+    },
+    {
+      "path": "./packages/pester"
     }
   ]
 }
