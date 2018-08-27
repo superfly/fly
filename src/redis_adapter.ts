@@ -1,14 +1,16 @@
-import { RedisClient, ClientOpts as RedisClientOpts } from "redis";
+import * as redis from "redis";
 
-export type RedisConnectionOptions = RedisClientOpts | string
+export type RedisConnectionOptions = redis.ClientOpts | string
 
 /**
  * Utility method for taking common redis configs and creating a RedisClient
  */
 export function initRedisClient(opts: RedisConnectionOptions) {
-  if (opts instanceof RedisClient) return opts
+  if (opts instanceof redis.RedisClient) return opts
   if (typeof opts === "string") {
     opts = { url: opts }
   }
-  return new RedisClient(opts)
+  const r = redis.createClient(opts)
+  console.debug("Connected to redis:", (<any>r).address)
+  return r
 }

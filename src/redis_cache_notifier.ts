@@ -20,7 +20,9 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
     if (!isRedisCacheNotifierConfig(opts)) {
       opts = { reader: opts }
     }
+    console.log("notifier writer:", opts.writer)
     if (!opts.writer) {
+      console.log("Using reader / writer")
       opts.writer = opts.reader
     }
     this.subscriber = initRedisClient(opts.reader)
@@ -30,7 +32,7 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
 
   send(msg: CacheNotifyMessage) {
     return new Promise<boolean>((resolve, reject) => {
-      log.debug("sending redis cache notification:", notifierKey, msg.ts, msg.value)
+      log.debug("sending redis cache notification:", msg.ts, msg.value, (<any>this.writer).address)
       this.writer.zadd(notifierKey, msg.ts, JSON.stringify(msg), (err, _) => {
         if (err) {
           return reject(err)
