@@ -2,6 +2,7 @@ import { CacheNotifierAdapter, CacheOperation, ReceiveHandler, CacheNotifyMessag
 import { RedisClient } from "redis";
 import { RedisConnectionOptions, initRedisClient } from "./redis_adapter";
 import { promisify } from "util";
+import log from "./log";
 
 export interface RedisCacheNotifierConfig {
   reader: RedisConnectionOptions,
@@ -29,6 +30,7 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
 
   send(msg: CacheNotifyMessage) {
     return new Promise<boolean>((resolve, reject) => {
+      log.debug("sending redis cache notification:", notifierKey, msg.ts, msg.value)
       this.writer.zadd(notifierKey, msg.ts, JSON.stringify(msg), (err, _) => {
         if (err) {
           return reject(err)
@@ -45,17 +47,19 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
     const zrangebyscore = promisify(this.reader.zrangebyscore).bind(this.reader);
 
     let [, conf] = await configAsync("get", "notify-keyspace-events")
-    if (!conf.includes("E") || !conf.includes('z')) {
+    if (!conf.includes("E") || !conf.includes('z') || !conf.includes('A')) {
       conf = conf + "KEz"
-      console.log("Enabling zset notifications in redis:", conf)
+      log.info("Enabling zset notifications in redis:", conf)
       await configAsync("set", "notify-keyspace-events", conf)
     }
     this._lastEventTime = Date.now()
     const dbIndex = parseInt((<any>this.subscriber).selected_db || 0)
+    log.info("Subscribing to Redis Cache notifications:", (<any>this.subscriber).address)
     this.subscriber.subscribe(`__keyspace@${dbIndex}__:notifier:cache`)
     this.subscriber.on('message', async (channel, message) => {
       const start = this._lastEventTime
       this._lastEventTime = Date.now()
+      log.debug("redis cache notification:", channel)
 
       if (message === "zadd") {
         const changes = await zrangebyscore(notifierKey, start, '+inf')
