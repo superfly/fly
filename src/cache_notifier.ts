@@ -1,6 +1,7 @@
 import { CacheStore } from "./cache_store"
 import { RedisCacheNotifier } from "./redis_cache_notifier"
 import { hostname } from "os";
+import log from "./log";
 
 export enum CacheOperation {
   del = "del",
@@ -29,15 +30,17 @@ export class CacheNotifier {
     public adapter: CacheNotifierAdapter
   ) {
     this.pid = `${hostname()}-${process.pid}`
-    adapter.start(this.handle.bind(this))
+    this.adapter.start(this.handle.bind(this))
   }
 
   async send(type: CacheOperation, ns: string, value: string) {
+    log.debug("cache notifier sending:", this.adapter.constructor.name, type, ns, value)
     return this.adapter.send({ type, ns, value, ts: Date.now() })
   }
 
   async handle({ type, ns, value, ts }: CacheNotifyMessage): Promise<boolean> {
     const lockKey = "lock:" + [type, value, ts].join(":")
+    log.debug("cache notifier received msg:", type, ns, value, this.adapter.constructor.name)
     const hasLock = await this.cacheStore.set(ns, lockKey, this.pid, { ttl: 10, onlyIfEmpty: true })
     if (!hasLock) return false
     try {
