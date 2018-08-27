@@ -59,12 +59,13 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
     log.info("Subscribing to Redis Cache notifications:", (<any>this.subscriber).address)
     this.subscriber.subscribe(`__keyspace@${dbIndex}__:notifier:cache`)
     this.subscriber.on('message', async (channel, message) => {
-      const start = this._lastEventTime
-      this._lastEventTime = Date.now()
-      log.debug("redis cache notification:", channel)
+      log.debug("redis cache notification:", channel, message)
 
       if (message === "zadd") {
+        const start = this._lastEventTime
+        this._lastEventTime = Date.now()
         const changes = await zrangebyscore(notifierKey, start, '+inf')
+        log.debug("redis cache notification changes:", start, changes.length)
         for (const raw of changes) {
           try {
             const msg = JSON.parse(raw)
