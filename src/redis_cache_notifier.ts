@@ -71,6 +71,8 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
             const msg = JSON.parse(raw)
             if (this._handler && isNotifierMessage(msg)) {
               this._handler(msg)
+            } else {
+              log.error("error handling notification:", !!this._handler, isNotifierMessage(msg), msg)
             }
           } catch (err) {
             console.error("Error handling cache notifier:", err)
