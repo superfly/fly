@@ -11,6 +11,8 @@
  * 
  * See {@link fly/cache/response} for caching HTTP Response objects.
  * 
+ * See {@link fly/cache/global} for global cache del/purge
+ * 
  * @preferred
  * @module fly/cache
  */
@@ -161,11 +163,15 @@ export function del(key: string) {
 
 /**
  * A library for caching/retrieving Response objects
+ * 
+ * See {@link fly/cache/response}
  */
 export { default as responseCache } from "./response"
 
 /**
- * Global cache operations
+ * API for sending global cache notifications
+ * 
+ * See {@link fly/cache/global} 
  */
 import { default as global } from "./global"
 
