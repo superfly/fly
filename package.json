@@ -1,6 +1,6 @@
 {
   "name": "@fly/fly",
-  "version": "0.40.0-caching.11",
+  "version": "0.40.0-caching.12",
   "description": "",
   "main": "lib/index.js",
   "files": [

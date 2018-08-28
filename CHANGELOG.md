@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.40.0-caching.12"></a>
+# [0.40.0-caching.12](https://github.com/superfly/fly/compare/v0.40.0-caching.11...v0.40.0-caching.12) (2018-08-28)
+
+
+
 <a name="0.40.0-caching.11"></a>
 # [0.40.0-caching.11](https://github.com/superfly/fly/compare/v0.40.0-caching.10...v0.40.0-caching.11) (2018-08-27)
 
