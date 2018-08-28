@@ -13,7 +13,7 @@ describe('Cache API', function () {
 
     expect(res.status).to.equal(200)
 
-    let cached = await cacheStore.get(this.server.runtime, `${url}`)
+    let cached = await cacheStore.get(this.server.runtime.app.id, `${url}`)
     expect((<Buffer>cached).toString()).to.equal(url)
   })
 
@@ -24,7 +24,7 @@ describe('Cache API', function () {
 
     expect(res.status).to.equal(200)
 
-    let ttl = await cacheStore.ttl(this.server.runtime, url)
+    let ttl = await cacheStore.ttl(this.server.runtime.app.id, url)
     expect(ttl).to.equal(3600)
   })
 
@@ -36,7 +36,7 @@ describe('Cache API', function () {
 
   it('gets a value', async function () {
     let data = "cached:" + Math.random().toString()
-    await cacheStore.set(this.server.runtime, "http://test/cache-api/get", data)
+    await cacheStore.set(this.server.runtime.app.id, "http://test/cache-api/get", data)
 
     let res = await axios.get("http://127.0.0.1:3333/cache-api/get", { headers: { 'Host': 'test' } })
     expect(res.status).to.equal(200)
@@ -45,7 +45,7 @@ describe('Cache API', function () {
 
   it('getString with garbage cache data', async function () {
     let data = new Buffer([-1, -1, -1, -1])
-    await cacheStore.set(this.server.runtime, "http://test/cache-api/get", data)
+    await cacheStore.set(this.server.runtime.app.id, "http://test/cache-api/get", data)
 
     let res = await axios.get("http://127.0.0.1:3333/cache-api/get", { headers: { 'Host': 'test' } })
     expect(res.status).to.equal(200)
