@@ -35,7 +35,7 @@ export class CacheNotifier {
 
   async send(type: CacheOperation, ns: string, value: string) {
     log.debug("cache notifier sending:", this.adapter.constructor.name, type, ns, value)
-    return this.adapter.send({ type, ns, value, ts: Date.now() })
+    return this.adapter.send({ type, value, ns: ns.toString(), ts: Date.now() })
   }
 
   async handle({ type, ns, value, ts }: CacheNotifyMessage): Promise<boolean> {
