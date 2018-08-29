@@ -1,5 +1,5 @@
 
-import { Server, FileAppStore } from "@fly/core"
+import { Server, FileAppStore, Runtime, Bridge } from "@fly/core"
 import { HostMap } from "./HostMap";
 
 export interface EnvironmentOptions {
@@ -14,7 +14,6 @@ export interface ServerOptions {
   path: string
   port?: number
 }
-
 
 export class Environment {
   public readonly testName: string
@@ -83,9 +82,8 @@ class TestServer {
           noWatch: true
         })
         this.server = new Server({ appStore, inspect: false, monitorFrequency: 0 })
-        this.server.bridge.urlParser = (url: string) => {
-          return hostMap.transformUrl(url)
-        }
+        configureBridge(this.server.bridge, hostMap)
+
         this.server.listen({ port: this.port }, () => {
           resolve()
         })
@@ -118,4 +116,16 @@ class TestServer {
 
 function randomPort() {
   return Math.floor((Math.random() * 1000) + 4000)
+}
+
+function configureBridge(bridge: Bridge, hostMap: HostMap) {
+  const oldFetch = bridge.get("fetch")
+  if (!oldFetch) {
+    throw new Error("Fetch not registered")
+  }
+  const newFetch = function fetchBridge(rt: Runtime, bridge: Bridge, url: string, ...args: any[]) {
+    const mappedUrl = hostMap.transformUrl(url)
+    return oldFetch.apply(bridge, [rt, bridge, ...[mappedUrl].concat(args)])
+  }
+  bridge.set("fetch", newFetch)
 }

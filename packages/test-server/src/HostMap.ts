@@ -1,4 +1,4 @@
-import { UrlWithStringQuery, parse } from "url"
+import { parse, format } from "url"
 
 export interface HostOptions {
   protocol?: string
@@ -14,19 +14,19 @@ export class HostMap {
     this.map.set(host, options)
   }
 
-  public transformUrl(url: string): UrlWithStringQuery {
+  public transformUrl(url: string): string {
     const parsedUrl = parse(url)
     if (!parsedUrl.hostname) {
       throw new Error("Url must have a host")
     }
     const hostOptions = this.map.get(parsedUrl.hostname)
     if (!hostOptions) {
-      return parsedUrl
+      return url
     }
     parsedUrl.host = hostOptions.hostname + ":" + hostOptions.port
     parsedUrl.hostname = hostOptions.hostname
     parsedUrl.port = hostOptions.port
-    return parsedUrl
+    return format(parsedUrl)
   }
 
   public copy() {

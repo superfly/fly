@@ -1,6 +1,6 @@
 import fetch, { RequestInit, Response } from "node-fetch"
 import { Environment } from "./Environment"
-import * as URL from "url"
+import { URL } from "url"
 
 export class TestContext {
   private readonly env: Environment
@@ -11,16 +11,12 @@ export class TestContext {
 
   public async fetch(url: string, init?: RequestInit): Promise<Response> {
     const transformedUrl = this.env.hostMap.transformUrl(url)
-    if (!transformedUrl.href) {
-      throw new Error("error parsing url: " + url)
-    }
-    url = URL.format(transformedUrl)
-    const init2 = Object.assign({}, init, {
+    const parsedUrl = new URL(transformedUrl)
+    return await fetch(transformedUrl, Object.assign({}, init, {
       headers: {
         "user-agent": "test-server/fetch",
-        'Host': transformedUrl.host
+        'Host': parsedUrl.hostname
       }
-    })
-    return await fetch(url, init2)
+    }))
   }
 }

@@ -74,4 +74,7 @@ export class Bridge {
     this.functions.set(name, fn)
   }
 
+  get(name: string) {
+    return this.functions.get(name)
+  }
 }
