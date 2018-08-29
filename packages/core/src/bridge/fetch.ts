@@ -10,6 +10,7 @@ import { Bridge } from './bridge';
 import { Runtime } from '../runtime';
 import { streamManager } from '../stream_manager';
 import { isNumber } from 'util';
+import { setTimeout } from "timers"
 
 const fetchAgent = new http.Agent({
   keepAlive: true,
@@ -102,7 +103,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     headers: headers,
     timeout: 60 * 1000
   }
-  //console.log(reqOptions)
+
   if (httpFn == https.request) {
     reqOptions.servername = reqOptions.hostname
   }

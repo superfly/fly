@@ -3,6 +3,7 @@ import { Readable, Writable } from "stream";
 import { ivm } from ".";
 import { transferInto } from "./utils/buffer";
 import log from "./log";
+import { setTimeout } from "timers"
 
 export interface StreamInfo {
   stream: Readable
