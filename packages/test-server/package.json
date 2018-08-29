@@ -1,5 +1,5 @@
 {
-    "name": "@fly/pester",
+    "name": "@fly/test-server",
     "version": "0.0.0",
     "description": "> TODO: description",
     "author": "Michael Dwan <m@dwan.io>",
@@ -13,12 +13,18 @@
     "files": [
         "lib/"
     ],
-    "scripts": {},
+    "scripts": {
+        "build": "tsc -b .",
+        "clean": "rm -rf ./lib ./dist"
+    },
     "dependencies": {
-        "node-fetch": "2.2.0"
+        "@types/jest": "^23.3.1",
+        "@types/node-fetch": "2.1.2",
+        "jest": "^23.5.0",
+        "node-fetch": "2.2.0",
+        "ts-jest": "^23.1.4"
     },
     "devDependencies": {
-        "@types/node-fetch": "2.1.2",
         "typescript": "3.0.1"
     }
 }

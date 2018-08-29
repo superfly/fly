@@ -1,8 +1,6 @@
 
 import { Server, FileAppStore } from "@fly/core"
-import axios, { AxiosResponse } from 'axios'
-import { URL } from 'url'
-import fetch, { Request, Response, RequestInit } from "node-fetch"
+import { HostMap } from "./HostMap";
 
 export interface EnvironmentOptions {
   testName: string
@@ -11,9 +9,12 @@ export interface EnvironmentOptions {
   hostname?: string
 }
 
-export interface RequestInit {
-  method?: string
+export interface ServerOptions {
+  host: string
+  path: string
+  port?: number
 }
+
 
 export class Environment {
   public readonly testName: string
@@ -22,14 +23,23 @@ export class Environment {
   private readonly servers: TestServer[]
   private readonly hostname: string
 
+  public readonly hostMap: HostMap
+
   constructor(options: EnvironmentOptions) {
     this.testName = options.testName
     this.testDir = options.testDir
     this.servers = new Array<TestServer>()
     this.hostname = options.hostname || "127.0.0.1"
 
+    this.hostMap = new HostMap()
+
     for (const serverOptions of options.servers) {
-      this.servers.push(new TestServer(serverOptions))
+      const server = new TestServer(serverOptions)
+      this.servers.push(server)
+      this.hostMap.add(server.host, {
+        hostname: this.hostname,
+        port: server.port.toString()
+      })
     }
 
     if (this.servers.length == 0) {
@@ -37,14 +47,8 @@ export class Environment {
     }
   }
 
-  public fetch(url: string, init?: RequestInit): Promise<Response> {
-    const transformedUrl = this.transformRequestUrl(url)
-    console.debug("[fetch]", transformedUrl)
-    return fetch(transformedUrl, init)
-  }
-
   public start(): Promise<any> {
-    return Promise.all(this.servers.map(s => s.start()))
+    return Promise.all(this.servers.map(s => s.start(this.hostMap.copy())))
   }
 
   public stop(): Promise<any> {
@@ -54,45 +58,21 @@ export class Environment {
   public get isRunning() {
     return this.servers.every(s => s.isRunning)
   }
-
-  private transformRequestUrl(inputUrl: string) {
-    const url = new URL(inputUrl)
-    if (url.protocol !== "http:") {
-      throw new Error("Protocol must be http")
-    }
-    for (const server of this.servers) {
-      if (url.host === server.name) {
-        url.hostname = this.hostname
-        url.port = server.port.toString()
-        return url.toString()
-      }
-    }
-    throw new Error(`no test server found for host '${url.host}'`)
-  }
-}
-
-export interface ServerOptions {
-  name: string
-  path: string
-  port?: number
-  host?: string
 }
 
 class TestServer {
   private server?: Server
-  public readonly name: string
+  public readonly host: string
   public readonly path: string
   public readonly port: number
-  public readonly host: string
 
   public constructor(options: ServerOptions) {
-    this.name = options.name
+    this.host = options.host
     this.path = options.path
     this.port = options.port || randomPort()
-    this.host = options.host || `${options.name.toLowerCase()}.test`
   }
 
-  public start(): Promise<void> {
+  public start(hostMap: HostMap): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         const appStore = new FileAppStore(this.path, {
@@ -103,6 +83,9 @@ class TestServer {
           noWatch: true
         })
         this.server = new Server({ appStore, inspect: false, monitorFrequency: 0 })
+        this.server.bridge.urlParser = (url: string) => {
+          return hostMap.transformUrl(url)
+        }
         this.server.listen({ port: this.port }, () => {
           resolve()
         })
@@ -114,7 +97,7 @@ class TestServer {
 
   public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.server) {
+      if (this.server && this.isRunning) {
         try {
           this.server.close(() => {
             resolve()
