@@ -20,12 +20,9 @@ export async function runApps(apps: AppConfig, testCallback: TestCallback): Prom
     "testName": "test name",
     servers
   })
-  console.log("Test starting...")
 
   try {
-    console.log("Starting...")
     await env.start()
-    console.log("Started.")
   } catch (error) {
     console.error("Error starting: ", error)
     fail(error)
@@ -33,21 +30,16 @@ export async function runApps(apps: AppConfig, testCallback: TestCallback): Prom
   }
 
   try {
-    console.log("Testing...")
     await testCallback(new TestContext(env))
-    console.log("Testing done...")
   } catch (error) {
     console.error("Error testing: ", error)
     fail(error)
   } finally {
     try {
-      console.log("Stopping...")
       await env.stop()
-      console.log("Stopped")
     } catch (error) {
       console.error("Error stopping: ", error)
+      fail(error)
     }
   }
-
-  console.log("Test done...")
 }
