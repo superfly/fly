@@ -1,12 +1,14 @@
 [![npm version](https://img.shields.io/npm/v/@fly/fly.svg)](https://www.npmjs.com/package/@fly/fly) [![isc license](https://img.shields.io/npm/l/@fly/fly.svg)](https://github.com/superfly/fly/blob/master/LICENSE) [![Build Status](https://travis-ci.org/superfly/fly.svg?branch=master)](https://travis-ci.org/superfly/fly) [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsuperfly%2Ffly.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsuperfly%2Ffly?ref=badge_shield)
 
+![superfly octokitty](https://user-images.githubusercontent.com/7375749/44759033-57b92780-aafd-11e8-880c-818b01c65ff3.png)
+
 # Fly
 
-The fly.io Edge Application runtime is an open core Javascript environment built for proxy servers. It gives developers powerful caching, content modification, and routing tools.
+The fly.io Edge Application runtime is an open source Javascript environment built for proxy servers. It gives developers powerful caching, content modification, and routing tools.
 
 The runtime is based on v8, with a proxy-appropriate set of Javascript libraries. There are built in APIs for manipulating HTML and Image content, low level caching, and HTTP requests/responses. When possible, we use WhatWG standards (like `fetch`, `Request`, `Response`, `Cache`, `ReadableStream`).
 
-You can [use it locally](#hello-world) for development and testing, and [deploy it to Fly's fleet](#deployment) of edge servers for production use. 
+You can [use it locally](#hello-world) for development and testing, and [deploy it to Fly's fleet](#deployment) of edge servers for production use.
 
 ## Usage
 
@@ -204,8 +206,8 @@ Using `fly deploy`, here's what happens:
 - Your code is distributed instantly(-ish) across our global fleet of servers
 
 
-## Open core
+## Open source <3
 
-We develop fly in the open, the core of our service is [Apache licensed](https://github.com/superfly/fly/blob/master/LICENSE) and designed to run easily in local dev. You _can_ deploy our core software to production, but it takes a little elbow grease and a fair amount of infrastructure. If you want to give this a try, let us know and we can help (and we would love related pull requests).
+We develop fly in the open. We're [Apache licensed](https://github.com/superfly/fly/blob/master/LICENSE) and designed to run easily in local dev. You _can_ deploy our core software to production, but it takes a little elbow grease and a fair amount of infrastructure. If you want to give this a try, let us know and we can help (and we would love related pull requests!).
 
 Our commercial offering is built on top of this library, with additional code for managing certificates, distributed caching, and multi-tenant isolation. Over time we expect to extract many of these features, document them, and include them in our open source releases.
