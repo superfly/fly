@@ -19,8 +19,8 @@
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "build": "yarn run concurrently -n \"core,v8env\" \"yarn build:core\" \"yarn build:v8env\"",
     "build:live": "yarn run concurrently -n \"core,v8env.ts,v8env\" \"tsc -w --pretty\" \"tsc -w --pretty -p v8env/ts\" \"webpack --config webpack.v8.config.js -w\"",
-    "build:core": "rm -rf lib && ./node_modules/.bin/tsc",
-    "build:v8env": "rm -rf dist v8env/lib && ./node_modules/.bin/tsc -p v8env && ./node_modules/.bin/webpack --config webpack.v8.config.js",
+    "build:core": "./node_modules/.bin/shx rm -rf lib && ./node_modules/.bin/tsc",
+    "build:v8env": "./node_modules/.bin/shx rm -rf dist v8env/lib && ./node_modules/.bin/tsc -p v8env && ./node_modules/.bin/webpack --config webpack.v8.config.js",
     "prepublishOnly": "yarn build",
     "release": "standard-version",
     "doc:v8env": "./node_modules/typedoc/bin/typedoc --tsconfig ./v8env/tsconfig.json"
@@ -73,6 +73,7 @@
     "image-webpack-loader": "^4.3.1",
     "nock": "^9.2.6",
     "nyc": "^13.0.0",
+    "shx": "^0.3.2",
     "standard-version": "^4.4.0",
     "ts-loader": "^3.2.0",
     "ts-node": "^3.3.0",
