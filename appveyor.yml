@@ -4,12 +4,10 @@ environment:
     - nodejs_version: "8"
     - nodejs_version: "10"
 install:
- - git submodule update --init --recursive
+ - git submodule update --init --recursive --quiet
  - ps: Install-Product node $env:nodejs_version x64
  - yarn install
 test_script:
  - yarn build
  - yarn test
 build: off
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
