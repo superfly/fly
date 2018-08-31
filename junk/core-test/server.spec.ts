@@ -9,26 +9,6 @@ import { createReadStream } from 'fs';
 
 describe('Server', function () {
 
-  describe('basic fetch app', function () {
-    before(startServer('basic-fetch.js'))
-    after(stopServer)
-
-    before(() => {
-      nock('https://example.com')
-        .get('/')
-        .replyWithFile(200, __dirname + "/fixtures/http/basic-fetch", {
-          'Content-Type': 'text/html'
-        });
-    })
-
-    it('may fetch responses externally', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(200);
-      expect(res.data).to.include(`<title>Example Domain</title>`)
-      expect(res.headers['content-type']).to.equal('text/html')
-    })
-  })
-
   // same test as above, but reads fetch response into context
   describe('basic fetch and read app', function () {
     before(startServer('basic-fetch-and-read.js'))

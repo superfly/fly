@@ -3,13 +3,16 @@ import * as path from "path"
 
 declare function setupApps(appConfig: AppConfig): void
 
-setupApps({ "edge.test": path.resolve(__dirname, "body.js") })
+setupApps({
+  "edge.test": path.resolve(__dirname, "proxy.js"),
+  "origin.test": path.resolve(__dirname, "body.js")
+})
 
 const methods = ["POST", "PUT", "PATCH", "DELETE"]
 
-describe("Request body", () => {
+describe.each(["edge.test", "origin.test"])("Request body to %s", (host) => {
   test.each(methods)(`from %s request`, async (method) => {
-    const response = await fetch(`http://edge.test`, {
+    const response = await fetch(`http://${host}`, {
       method: method,
       body: "this is a body"
     })
@@ -18,7 +21,7 @@ describe("Request body", () => {
   })
 
   test("cloning", async () => {
-    const response = await fetch(`http://edge.test/clone`, { method: "POST", body: "hello" })
+    const response = await fetch(`http://${host}/clone`, { method: "POST", body: "hello" })
     expect(response.status).toEqual(200)
     expect(await response.text()).toEqual(`res1: hellohello\nres2: hellohello`)
   })

@@ -4,19 +4,22 @@ import * as zlib from "zlib"
 
 declare function setupApps(appConfig: AppConfig): void
 
-setupApps({ "edge.test": path.resolve(__dirname, "gzip.js") })
+setupApps({
+  "edge.test": path.resolve(__dirname, "proxy.js"),
+  "origin.test": path.resolve(__dirname, "gzip.js")
+})
 
 async function inflateBody(response: Response): Promise<string> {
   const buffer = await response.arrayBuffer()
   return zlib.gunzipSync(new DataView(buffer)).toString()
 }
 
-describe("gzip", () => {
+describe.each(["edge.test", "origin.test"])("gzip to %s", (host) => {
   const contentTypes = ["text/plain", "application/json", "application/javascript", "application/x-javascript"]
   for (const contentType of contentTypes) {
     describe(`with ${contentType} Content-Type`, () => {
       test('return gzip if accepted', async () => {
-        const response = await fetch(`http://edge.test/${contentType}`, { headers: { "accept-encoding": 'gzip,deflate' } })
+        const response = await fetch(`http://${host}/${contentType}`, { headers: { "accept-encoding": 'gzip,deflate' } })
         expect(response.status).toEqual(200)
         expect(response.headers.get("content-type")).toEqual(contentType)
         expect(response.headers.get("content-encoding")).toEqual("gzip")
@@ -24,7 +27,7 @@ describe("gzip", () => {
       })
 
       test('return original if not accepted', async () => {
-        const response = await fetch(`http://edge.test/${contentType}`, { headers: { "accept-Encoding": "identity" } })
+        const response = await fetch(`http://${host}/${contentType}`, { headers: { "accept-Encoding": "identity" } })
         expect(response.status).toEqual(200)
         expect(response.headers.get("content-type")).toEqual(contentType)
         expect(response.headers.get("content-encoding")).not.toEqual("gzip")
@@ -32,7 +35,7 @@ describe("gzip", () => {
       })
 
       test('do not recompress', async () => {
-        const response = await fetch(`http://edge.test/${contentType}?gz`, { headers: { "accept-Encoding": "gzip,deflate" } })
+        const response = await fetch(`http://${host}/${contentType}?gz`, { headers: { "accept-Encoding": "gzip,deflate" } })
         expect(response.status).toEqual(200)
         expect(response.headers.get("content-type")).toEqual(contentType)
         expect(response.headers.get("content-encoding")).toEqual("gzip")
@@ -43,7 +46,7 @@ describe("gzip", () => {
 
   describe(`with binary Content-Type`, () => {
     test('do not compress image/*', async () => {
-      const response = await fetch("http://edge.test/image/jpeg", { headers: { "accept-Encoding": "gzip,deflate" } })
+      const response = await fetch(`http://${host}/image/jpeg`, { headers: { "accept-Encoding": "gzip,deflate" } })
       expect(response.status).toEqual(200)
       expect(response.headers.get("content-type")).toEqual("image/jpeg")
       expect(response.headers.get("content-encoding")).toBeNull()
