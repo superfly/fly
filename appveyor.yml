@@ -6,7 +6,7 @@ environment:
 install:
  - ps: Install-Product node $env:nodejs_version x64
  - yarn install
- - git submodule init --init --recursive
+ - git submodule update --init --recursive
 test_script:
   - node --version
   - yarn test
