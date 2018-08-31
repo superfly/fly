@@ -3,6 +3,7 @@ import { mkdirpSync } from "fs-extra";
 import { DataStore, CollectionStore } from "./data_store";
 import log from "./log";
 import { Runtime } from "./runtime";
+import * as Path from "path"
 
 export class Collection implements CollectionStore {
   name: string
@@ -45,9 +46,9 @@ export class SQLiteDataStore implements DataStore {
   db: Database
   constructor(appName: string, env: string) {
     // FIXME: use correct cwd, for now: using default.
-    mkdirpSync(".fly/data")
-    appName = appName.split("/").join("-") // useful in our own testing environment
-    this.db = new Database(`.fly/data/${appName}-${env}.db`)
+    mkdirpSync(Path.join(".fly", "data"))
+    appName = appName.split(Path.sep).join("-") // useful in our own testing environment
+    this.db = new Database(Path.join(".fly", "data", `${appName}-${env}.db`))
   }
 
   collection(rt: Runtime, name: string) {
