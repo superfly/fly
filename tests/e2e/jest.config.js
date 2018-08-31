@@ -20,8 +20,7 @@ module.exports = {
   },
   "testMatch": [
     "**/__tests__/**/*.ts?(x)",
-    "**/*.(t|z)ests?.ts",
-    "**/(t|z)ests?.ts"
+    "**/*.(t|z)ests?.ts"
   ],
   // "testEnvironment": "jest-environment-fly",
   "snapshotSerializers": [
