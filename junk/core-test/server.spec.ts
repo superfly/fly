@@ -9,18 +9,6 @@ import { createReadStream } from 'fs';
 
 describe('Server', function () {
 
-  describe('basic app', function () {
-    before(startServer('basic.js'))
-    after(stopServer)
-
-    it('returns the correct response', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { 'Host': "test" } })
-      expect(res.status).to.equal(200)
-      expect(res.headers['custom-header']).to.equal("woot")
-      expect(res.data).to.equal("hello test world /")
-    })
-  })
-
   describe('basic fetch app', function () {
     before(startServer('basic-fetch.js'))
     after(stopServer)
@@ -164,18 +152,6 @@ describe('Server', function () {
   //   })
   // })
 
-  describe('cookies', function () {
-    before(startServer("basic-cookies.js"))
-    after(stopServer)
-
-    it('returns the cookie value', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test", cookie: 'foo=bar;hello=world;' } })
-      expect(res.status).to.equal(200);
-      expect(res.data).to.equal(`bar world`);
-      expect(res.headers['set-cookie'][0]).to.equal(`hola=que%20tal; Max-Age=1000`)
-    })
-  })
-
   describe('fetch absolute path', function () {
     before(startServer("fetch-absolute-path.js"))
     after(stopServer)
@@ -286,17 +262,6 @@ describe('Server', function () {
     })
   })
 
-  describe('cloning bodies', function () {
-    before(startServer("clone.js"))
-    after(stopServer)
-
-    it('can clone both requests and responses', async () => {
-      let res = await axios.post("http://127.0.0.1:3333/", "hello", { headers: { host: "test" } })
-      expect(res.status).to.equal(200);
-      expect(res.data).to.equal(`res1: hellohello\nres2: hellohello`)
-    })
-  })
-
   describe("fetch file://", function () {
     before(startServer("files"))
     after(stopServer)
@@ -305,84 +270,6 @@ describe('Server', function () {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
       expect(res.status).to.equal(200)
       expect(res.data).to.equal("foo bar")
-    })
-  })
-
-  describe("gzip", function () {
-    describe("when not gzipped", () => {
-      before(startServer("gzip.js"))
-      after(stopServer)
-
-      it('gzips if accepts encoding is right', function (done) {
-        http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/"), {
-          method: "GET",
-          headers: {
-            "accept-encoding": "gzip"
-          }
-        }), function (res) {
-          res.on("error", (err) => {
-            console.log("ERROR GZIPIING", err)
-            done(err)
-          })
-          expect(res.statusCode).to.equal(200)
-          expect(res.headers['content-encoding']).to.equal('gzip')
-          const body: Buffer[] = []
-          res.on('data', (chunk: Buffer) => {
-            body.push(chunk)
-          })
-          res.on('end', () => {
-            expect(Buffer.concat(body).toString()).to.not.equal('notgzipped')
-            done()
-          })
-        })
-      })
-
-      it('does not gzipped if image', function (done) {
-        http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/image.jpg"), {
-          method: "GET",
-        }), function (res) {
-          res.on("error", done)
-          expect(res.statusCode).to.equal(200)
-          expect(res.headers['content-type']).to.equal("image/jpg")
-          expect(res.headers['content-encoding']).to.be.undefined
-          res.on('data', (chunk: Buffer) => {
-            expect(chunk.toString()).to.equal('pretend-image')
-            done()
-          })
-        })
-      })
-      it('does not gzip if not accepted', function (done) {
-        http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/"), {
-          method: "GET",
-        }), function (res) {
-          res.on("error", done)
-          expect(res.statusCode).to.equal(200)
-          expect(res.headers['content-encoding']).to.be.undefined
-          res.on('data', (chunk: Buffer) => {
-            expect(chunk.toString()).to.equal('notgzipped')
-            done()
-          })
-        })
-      })
-    })
-
-    describe('pre-gzipped', function () {
-      before(startServer("pregzip.js"))
-      after(stopServer)
-
-      it('does not re-gzip', function (done) {
-        http.get(Object.assign({}, url.parse("http://127.0.0.1:3333/"), {
-          method: "GET",
-        }), function (res) {
-          res.on("error", done)
-          expect(res.statusCode).to.equal(200)
-          expect(res.headers['content-encoding']).to.equal('gzip')
-          res.on('data', (chunk: Buffer) => {
-            expect(chunk.toString()).to.equal('gzipped')
-            done()
-          })
-        })
-      })
     })
   })
 
