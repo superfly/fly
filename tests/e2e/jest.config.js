@@ -20,10 +20,14 @@ module.exports = {
   },
   "testMatch": [
     "**/__tests__/**/*.ts?(x)",
-    "tests?.ts"
+    "**/*.(t|z)ests?.ts"
   ],
   // "testEnvironment": "jest-environment-fly",
   "snapshotSerializers": [
     // "<rootDir>/packages/test-server/src/serializer.ts"
-  ]
+  ],
+  "setupTestFrameworkScriptFile": "<rootDir>/tests/e2e/setup.ts",
+  // "setupTestFrameworkScriptFile": "jest-environment-fly/install",
+  // "globalSetup": "jest-environment-fly/setup",
+  // "globalTeardown": "jest-environment-fly/teardown",
 }

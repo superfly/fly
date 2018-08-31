@@ -10,7 +10,7 @@ export class HostMap {
   private readonly map = new Map<string, HostOptions>()
 
   public add(host: string, options: HostOptions) {
-    console.debug(`Mapping host [${host}] => ${JSON.stringify(options)}`)
+    // console.debug(`Mapping host [${host}] => ${JSON.stringify(options)}`)
     this.map.set(host, options)
   }
 
