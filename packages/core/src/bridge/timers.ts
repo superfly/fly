@@ -2,6 +2,7 @@ import { registerBridge } from './'
 
 import { ivm, Bridge } from '../'
 import { Runtime } from '../runtime';
+import { setTimeout, clearTimeout } from "timers"
 
 registerBridge('setTimeout', function (rt: Runtime, bridge: Bridge, fn: ivm.Reference<Function>, timeout: number) {
   const t = setTimeout(function () {
