@@ -1,0 +1,31 @@
+import { AppConfig } from "@fly/test-server"
+import * as path from "path"
+
+declare function setupApps(appConfig: AppConfig): void
+
+setupApps({
+  "set-timeout.test": path.resolve(__dirname, "setTimeout.js"),
+  "clear-timeout.test": path.resolve(__dirname, "clearTimeout.js"),
+  "set-immediate.test": path.resolve(__dirname, "setImmediate.js"),
+})
+
+describe("setTimeout", () => {
+  test.each([250, 50, 0])("with %dms delay", async (timeout) => {
+    const response = await fetch(`http://set-timeout.test?t=${timeout}`)
+    expect(response.status).toEqual(200)
+    const duration = parseInt(await response.text())
+    expect(Math.abs((duration - timeout))).toBeLessThanOrEqual(16) // 16ms tolerance
+  })
+})
+
+test("clearTimeout", async () => {
+  const response = await fetch(`http://clear-timeout.test`)
+  expect(response.status).toEqual(200)
+  expect(await response.text()).toMatch("right callback")
+})
+test("setImmediate", async () => {
+  const response = await fetch(`http://set-immediate.test`)
+  expect(response.status).toEqual(200)
+  expect(parseInt(await response.text())).toBeLessThanOrEqual(16) // 16ms tolerance
+})
+
