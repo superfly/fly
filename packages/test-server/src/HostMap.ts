@@ -17,7 +17,7 @@ export class HostMap {
   public transformUrl(url: string): string {
     const parsedUrl = parse(url)
     if (!parsedUrl.hostname) {
-      throw new Error("Url must have a host")
+      return url
     }
     const hostOptions = this.map.get(parsedUrl.hostname)
     if (!hostOptions) {

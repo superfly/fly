@@ -3,6 +3,14 @@ import { RequestInit } from "node-fetch"
 
 const jestGlobal: any = global;
 
+process.on("uncaughtException", function (err) {
+  console.error(err.stack)
+})
+
+process.on("unhandledRejection", function (err) {
+  console.error(err.stack)
+})
+
 jestGlobal.setupApps = (appConfig: AppConfig) => {
   let testServer: Environment | undefined
   let testContext: TestContext | undefined

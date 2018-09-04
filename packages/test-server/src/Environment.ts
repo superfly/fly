@@ -82,6 +82,7 @@ class TestServer {
           noWatch: true
         })
         this.server = new Server({ appStore, inspect: false, monitorFrequency: 0 })
+        this.server.on('error', (e: Error) => { throw e })
         configureBridge(this.server.bridge, hostMap)
 
         this.server.listen({ port: this.port }, () => {
