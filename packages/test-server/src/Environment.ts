@@ -1,5 +1,5 @@
 
-import { Server, FileAppStore, Runtime, Bridge } from "@fly/core"
+import { Server, FileAppStore, LocalFileStore, Runtime, Bridge, SQLiteDataStore } from "@fly/core"
 import { HostMap } from "./HostMap";
 
 export interface EnvironmentOptions {
@@ -81,7 +81,11 @@ class TestServer {
           noReleaseReuse: true,
           noWatch: true
         })
-        this.server = new Server({ appStore, inspect: false, monitorFrequency: 0 })
+        const bridge = new Bridge({
+          fileStore: new LocalFileStore(this.path, appStore.release),
+          dataStore: new SQLiteDataStore(appStore.app.name, "test")
+        })
+        this.server = new Server({ appStore, bridge, inspect: false, monitorFrequency: 0 })
         this.server.on('error', (e: Error) => { throw e })
         configureBridge(this.server.bridge, hostMap)
 
