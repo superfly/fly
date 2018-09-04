@@ -9,95 +9,6 @@ import { createReadStream } from 'fs';
 
 describe('Server', function () {
 
-  // same test as above, but reads fetch response into context
-  describe('basic fetch and read app', function () {
-    before(startServer('basic-fetch-and-read.js'))
-    after(stopServer)
-
-    before(() => {
-      nock('https://example.com')
-        .get('/')
-        .replyWithFile(200, __dirname + "/fixtures/http/basic-fetch", {
-          'Content-Type': 'text/html'
-        });
-    })
-
-    it('may fetch responses externally', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(200);
-      expect(res.data).to.include(`<title>Example Domain</title>`)
-      expect(res.headers['content-type']).to.equal('text/html')
-    })
-  })
-
-  describe('basic fetch and read (slow)', function () {
-    before(startServer('basic-fetch-and-read.js'))
-    after(stopServer)
-
-    before(() => {
-      // this.timeout(5000)
-      nock('https://example.com')
-        .get('/')
-        .delay({
-          head: 500,
-          body: 2000
-        })
-        .socketDelay(1000)
-        .replyWithFile(200, __dirname + "/fixtures/http/fake.js", {
-          'Content-Type': 'application/javascript'
-        })
-    })
-
-    it('may fetch responses externally', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(200);
-      // expect(res.data).to.include(`<title>Example Domain</title>`)
-      // expect(res.headers['content-type']).to.equal('text/html')
-    })
-  })
-  describe("fetch with timeout", function () {
-    before(startServer('basic-fetch-and-read.js'))
-    after(stopServer)
-
-    before(() => {
-      // this.timeout(5000)
-      nock('https://example.com')
-        .get('/')
-        .delay({
-          head: 500,
-          body: 2000
-        })
-        .socketDelay(1000)
-        .replyWithFile(200, __dirname + "/fixtures/http/fake.js", {
-          'Content-Type': 'application/javascript'
-        })
-        .on("error", (e) => { })
-    })
-    it('errors on timeout', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test", timeout: "100" } })
-      expect(res.status).to.equal(502)
-      expect(res.data).to.equal("timeout")
-    })
-  })
-
-  describe('fetch read body after readTimeout', function () {
-    before(startServer('fetch-read-timeout.js'))
-    after(stopServer)
-
-    before(() => {
-      // this.timeout(5000)
-      nock('https://example.com')
-        .get('/')
-        .reply(200, "hello")
-    })
-
-    it('may fetch responses externally', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(200);
-      expect(res.data).to.equal("got an error")
-    })
-  })
-
   // describe('basic chain with google-analytics', function () {
   //   before(startServer("basic-google-analytics.js"))
   //   after(stopServer)
@@ -132,48 +43,6 @@ describe('Server', function () {
   //   })
   // })
 
-  describe('fetch absolute path', function () {
-    before(startServer("fetch-absolute-path.js"))
-    after(stopServer)
-
-    before(() => {
-      nock('http://myserver.example:5000')
-        .get('/foo1')
-        .reply(200, "bar1");
-    })
-
-    it('resolves absolute paths with explicit port number', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(200);
-      expect(res.data).to.equal("bar1")
-    })
-  })
-
-  describe('fetch recursive', function () {
-    before(startServer("fetch-recursive.js"))
-    after(stopServer)
-
-    it('returns an error w/o the header', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(400)
-      expect(res.data).to.equal("Too much recursion")
-    })
-
-    it('returns fine with the header', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/wheader", { headers: { host: "test" } })
-      expect(res.status).to.equal(200)
-    })
-  })
-
-  describe('fetch relative path', function () {
-    before(startServer("fetch-relative-path.js"))
-    after(stopServer)
-
-    it('bombs', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(500);
-    })
-  })
 
   describe.skip('cache', function () {
     before(startServer("cache.js"))
@@ -190,23 +59,6 @@ describe('Server', function () {
     })
 
     it('adds and matches cache', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(200);
-      expect(res.data).to.equal("bar")
-    })
-  })
-
-  describe('can POST', function () {
-    before(startServer("basic-post.js"))
-    after(stopServer)
-
-    before(() => {
-      nock('https://example.com')
-        .post('/')
-        .reply(200, "bar");
-    })
-
-    it('posts body and all', async () => {
       let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
       expect(res.status).to.equal(200);
       expect(res.data).to.equal("bar")
@@ -239,34 +91,6 @@ describe('Server', function () {
         "foo=bar",
         "_some_session=2342353454edge56rtyghf"
       ])
-    })
-  })
-
-  describe("fetch file://", function () {
-    before(startServer("files"))
-    after(stopServer)
-
-    it('works', async function () {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(200)
-      expect(res.data).to.equal("foo bar")
-    })
-  })
-
-  describe("big fetch responses", function () {
-    before(startServer("twenty-mb.js"))
-    after(stopServer)
-
-    before(() => {
-      nock('http://ipv4.download.thinkbroadband.com')
-        .get('/20MB.zip')
-        .reply(200, createReadStream(__dirname + "/fixtures/http/20mb"));
-    })
-
-    it('works', async function () {
-      this.timeout(30000) // give it some leeway
-      let res = await axios.post("http://127.0.0.1:3333/", "hello", { headers: { host: "test" } })
-      expect(res.status).to.equal(200)
     })
   })
 })
