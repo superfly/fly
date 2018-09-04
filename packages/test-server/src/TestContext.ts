@@ -1,5 +1,5 @@
 import fetch, { RequestInit, Response } from "node-fetch"
-import { Environment } from "./Environment"
+import { Environment, TestServer } from "./Environment"
 import { URL, parse, format } from "url"
 import * as http from "http"
 
@@ -40,6 +40,14 @@ export class TestContext {
     // } catch (error) {
     //   throw new Error("Fetch error: " + error)
     // }
+  }
+
+  public getServer(host: string): TestServer {
+    const server = this.env.getServer(host)
+    if (!server) {
+      throw new Error(`Host ${host} not found`)
+    }
+    return server
   }
 
   public translateUrl(url: string): string {

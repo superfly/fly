@@ -57,9 +57,13 @@ export class Environment {
   public get isRunning() {
     return this.servers.every(s => s.isRunning)
   }
+
+  public getServer(host: string): TestServer | undefined {
+    return this.servers.find(s => s.host === host)
+  }
 }
 
-class TestServer {
+export class TestServer {
   private server?: Server
   public readonly host: string
   public readonly path: string
@@ -112,6 +116,29 @@ class TestServer {
         resolve()
       }
     })
+  }
+
+  // this is a hack for accessing the cache directly, not sure we should do this
+  // for long, especially if runtime moves to rust
+  public get cacheStore() {
+    if (!this.server) {
+      throw new Error("Start server before accessing cacheStore")
+    }
+
+    const cacheStore = this.server.bridge.cacheStore
+    const runtime = this.server.runtime
+
+    return {
+      get: (key: string): Promise<Buffer | null> => {
+        return cacheStore.get(runtime, key)
+      },
+      set: (key: string, value: any): Promise<boolean> => {
+        return cacheStore.set(runtime, key, value)
+      },
+      ttl: (key: string): Promise<number> => {
+        return cacheStore.ttl(runtime, key)
+      }
+    }
   }
 
   public get isRunning(): boolean {

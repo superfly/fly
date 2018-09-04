@@ -1,4 +1,5 @@
 import { AppConfig, Environment, TestContext } from "@fly/test-server";
+import { Server } from "@fly/core";
 import { RequestInit } from "node-fetch"
 
 const jestGlobal: any = global;
@@ -22,6 +23,15 @@ jestGlobal.setupApps = (appConfig: AppConfig) => {
     }
 
     return testContext.fetch(url, init)
+  }
+
+  jestGlobal.getServer = (host: string): Server => {
+    if (!testContext) {
+      fail("No servers configured, run setupApps first")
+      return
+    }
+
+    return testContext.getServer(host)
   }
 
   beforeAll(async () => {

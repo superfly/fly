@@ -44,27 +44,6 @@ describe('Server', function () {
   // })
 
 
-  describe.skip('cache', function () {
-    before(startServer("cache.js"))
-    after(stopServer)
-
-    before(() => {
-      nock('http://cacheable/')
-        .get('/foo')
-        .reply(200, "bar", {
-          date: 'Wed, 13 Dec 2017 21:32:50 GMT',
-          'content-type': 'text/plain; charset=utf-8',
-          'cache-control': 'public, max-age=7234'
-        });
-    })
-
-    it('adds and matches cache', async () => {
-      let res = await axios.get("http://127.0.0.1:3333/", { headers: { host: "test" } })
-      expect(res.status).to.equal(200);
-      expect(res.data).to.equal("bar")
-    })
-  })
-
   describe('set-cookie', function () {
     before(startServer("set-cookie.js"))
     after(stopServer)
