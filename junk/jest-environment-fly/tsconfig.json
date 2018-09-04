@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.common.json",
   "include": [
     "./src/**/*",
-    "../test-server/src/FlyJestEnvironment.ts"
   ],
   "compilerOptions": {
     "composite": true,
