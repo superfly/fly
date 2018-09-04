@@ -3,7 +3,7 @@
  * @private
  */
 import { logger } from './logger'
-import CachePolicy from 'http-cache-semantics'
+import * as CachePolicy from 'http-cache-semantics'
 
 declare var fly: any
 declare var cache: any
