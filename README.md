@@ -4,11 +4,41 @@
 
 # Fly
 
-The fly.io Edge Application runtime is an open source Javascript environment built for proxy servers. It gives developers powerful caching, content modification, and routing tools.
+The Fly runtime is an open source Javascript environment built to run Edge Applications. It gives developers powerful caching, content modification, and routing tools.
 
 The runtime is based on v8, with a proxy-appropriate set of Javascript libraries. There are built in APIs for manipulating HTML and Image content, low level caching, and HTTP requests/responses. When possible, we use WhatWG standards (like `fetch`, `Request`, `Response`, `Cache`, `ReadableStream`).
 
 You can [use it locally](#hello-world) for development and testing, and [deploy it to Fly's fleet](#deployment) of edge servers for production use.
+
+## Edge Applications: the in between
+
+You can use Fly to build HTTP load balancers, caching services, etc, etc. It's a good runtime for customizing what happens between typical web applications and client devices:
+
+```text
+┌──────────────┐  ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   ┌──────────────┐
+│              │                           Edge                        │  │              │
+│              │  │ ┌─────────┐                           ┌─────────┐     │              │
+│              │    │         │ ┌─────────┐  ┌─────────┐  │         │  │  │              │
+│              │  │ │         │ │         │  │         │  │         │     │              │
+│              │    │         │ │         │  │         │  │         │  │  │              │
+│              │  │ │         │ │         │  │         │  │         │     │              │
+│              │    │         │ │         │  │         │  │         │  │  │              │
+│              │  │ │         │ │         │  │         │  │         │     │              │
+│              │    │         │ │         │  │         │  │         │  │  │              │
+│              │  │ │         │ │         │  │         │  │         │     │              │
+│     App      │    │  Load   │ │         │  │         │  │ Network │  │  │     User     │
+│              │  │ │ Balancer│ │  Cache  │  │   TLS   │  │         │     │              │
+│              │    │         │ │         │  │         │  │         │  │  │              │
+│              │  │ │         │ │         │  │         │  │         │     │              │
+│              │    │         │ │         │  │         │  │         │  │  │              │
+│              │  │ │         │ │         │  │         │  │         │     │              │
+│              │    │         │ │         │  │         │  │         │  │  │              │
+│              │  │ │         │ │         │  │         │  │         │     │              │
+│              │    │         │ │         │  │         │  │         │  │  │              │
+│              │  │ │         │ │         │  │         │  │         │     │              │
+│              │    └─────────┘ └─────────┘  └─────────┘  └─────────┘  │  │              │
+└──────────────┘  └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   └──────────────┘
+```
 
 ## Usage
 
