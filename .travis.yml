@@ -55,7 +55,7 @@ script:
   - yarn build
   - yarn bundle
   - yarn test:unit
-  - yarn test:functional
+  - yarn test:e2e
 notifications:
   slack:
     on:
