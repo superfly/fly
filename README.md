@@ -12,7 +12,7 @@ You can [use it locally](#hello-world) for development and testing, and [deploy 
 
 ## Edge Applications: the in between
 
-You can use Fly to build HTTP load balancers, caching services, etc, etc. It's a good runtime for customizing what happens between typical web applications and client devices:
+You can use Fly to build HTTP load balancers, caching services, etc, etc. Edge Applications are typically built to replace or augment infrastructure that runs between web apps and users.
 
 ```text
 ┌──────────────┐  ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   ┌──────────────┐
@@ -39,6 +39,16 @@ You can use Fly to build HTTP load balancers, caching services, etc, etc. It's a
 │              │    └─────────┘ └─────────┘  └─────────┘  └─────────┘  │  │              │
 └──────────────┘  └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   └──────────────┘
 ```
+
+This in-between is a great place to solve certain categories of problems. If you need to solve one of these, you might want to build an Edge Application:
+
+* A/B testing at the load balancer layer
+* Route traffic to different cloud providers
+* Cache personalization data geographically close to individual users
+* Route authenticated users to specific apps
+* Enforce backend SLAs, serve fallback content when backends are degraded
+* Load balancers across cloud storage providers
+* Per user rate limiting (for APIs or apps)
 
 ## Usage
 
