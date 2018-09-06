@@ -1,27 +1,29 @@
 import { CacheStore, CacheSetOptions } from './cache_store';
 
 import { RedisClient } from 'redis';
-import { Runtime } from "./runtime";
 import { promisify } from 'util';
+import { RedisConnectionOptions, initRedisClient } from './redis_adapter';
 
 export class RedisCacheStore implements CacheStore {
   redis: FlyRedis
 
-  constructor(redis: string | RedisClient) {
+  constructor(redis: RedisConnectionOptions | RedisClient) {
     if (typeof redis === "string") {
-      redis = new RedisClient({ url: redis, detect_buffers: true })
+      redis = { url: redis, detect_buffers: true }
+    }
+    if (!(redis instanceof RedisClient)) {
+      redis = initRedisClient(redis)
     }
     this.redis = new FlyRedis(redis)
   }
 
-  async get(rt: Runtime, key: string): Promise<Buffer> {
-    const ret = await this.redis.getBufferAsync(Buffer.from(keyFor(rt, key)))
+  async get(ns: string, key: string): Promise<Buffer> {
+    const ret = await this.redis.getBufferAsync(Buffer.from(keyFor(ns, key)))
     return ret
   }
 
-  async set(rt: Runtime, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean> {
-    const start = Date.now()
-    const k = keyFor(rt, key)
+  async set(ns: string, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean> {
+    const k = keyFor(ns, key)
     let ttl: number | undefined
     if (typeof options === "number") {
       ttl = options
@@ -29,15 +31,27 @@ export class RedisCacheStore implements CacheStore {
       ttl = options.ttl
     }
     const commands = new Array<any>()
-    if (ttl) {
-      commands.push(this.redis.setAsync(k, value, 'EX', ttl))
-    } else {
+    if (typeof options === "object" && options.onlyIfEmpty === true) {
+      // can't pipeline set NX
+      const p = ttl ?
+        this.redis.setAsync(k, value, "EX", ttl, "NX") :
+        this.redis.setAsync(k, value, "NX")
+      const result = await p
+      // this happens if the key already exists
+      if (result !== "OK") return false
 
-      commands.push(this.redis.setAsync(k, value))
+      // otherwise we carry on
+    } else {
+      if (ttl) {
+        this.redis.setAsync(k, value, "EX", ttl, "NX")
+        commands.push(this.redis.setAsync(k, value, 'EX', ttl))
+      } else {
+        commands.push(this.redis.setAsync(k, value))
+      }
     }
     if (typeof options === "object" && options && options.tags instanceof Array) {
       commands.push(this.redis.saddAsync(k + ":tags", options.tags))
-      commands.push(this.setTags(rt, key, options.tags))
+      commands.push(this.setTags(ns, key, options.tags))
       if (ttl) {
         commands.push(this.redis.expireAsync(k + ":tags", ttl))
       }
@@ -48,8 +62,8 @@ export class RedisCacheStore implements CacheStore {
     return redisGroupOK(result)
   }
 
-  async expire(rt: Runtime, key: string, ttl: number): Promise<boolean> {
-    const k = keyFor(rt, key)
+  async expire(ns: string, key: string, ttl: number): Promise<boolean> {
+    const k = keyFor(ns, key)
     const cmds = await Promise.all([
       this.redis.expireAsync(k, ttl),
       this.redis.expireAsync(k + ":tags", ttl)
@@ -57,27 +71,27 @@ export class RedisCacheStore implements CacheStore {
     return redisGroupOK(cmds)
   }
 
-  async ttl(rt: Runtime, key: string): Promise<number> {
-    return this.redis.ttlAsync(keyFor(rt, key))
+  async ttl(ns: string, key: string): Promise<number> {
+    return this.redis.ttlAsync(keyFor(ns, key))
   }
 
-  async del(rt: Runtime, key: string): Promise<boolean> {
-    const k = keyFor(rt, key)
+  async del(ns: string, key: string): Promise<boolean> {
+    const k = keyFor(ns, key)
     const cmds = await Promise.all([
       this.redis.delAsync(k),
       this.redis.delAsync(k + ":tags")
     ])
     return redisGroupOK(cmds)
   }
-  async setTags(rt: Runtime, key: string, tags: string[]): Promise<boolean> {
-    const k = keyFor(rt, key)
-    const p = tags.map((t) => this.redis.saddAsync(tagKeyFor(rt, t), k))
+  async setTags(ns: string, key: string, tags: string[]): Promise<boolean> {
+    const k = keyFor(ns, key)
+    const p = tags.map((t) => this.redis.saddAsync(tagKeyFor(ns, t), k))
     const result = await Promise.all(p)
     return result.filter((r) => !r).length > 0
   }
 
-  async purgeTags(rt: Runtime, tags: string): Promise<string[]> {
-    const s = tagKeyFor(rt, tags)
+  async purgeTag(ns: string, tags: string): Promise<string[]> {
+    const s = tagKeyFor(ns, tags)
     const keysToDelete = new Array<string>()
     const keysToCheck = new Array<string>()
     const checks = new Array<Promise<boolean>>()
@@ -106,11 +120,11 @@ export class RedisCacheStore implements CacheStore {
   }
 }
 
-function tagKeyFor(rt: Runtime, tag: string) {
-  return `tag:${rt.app.id}:${tag}`
+function tagKeyFor(ns: string, tag: string) {
+  return `tag:${ns}:${tag}`
 }
-function keyFor(rt: Runtime, key: string) {
-  return `cache:${rt.app.id}:${key}`
+function keyFor(ns: string, key: string) {
+  return `cache:${ns}:${key}`
 }
 
 function redisGroupOK(result: any) {
@@ -140,7 +154,7 @@ async function* setScanner(redis: FlyRedis, key: string) {
 
 class FlyRedis {
   getBufferAsync: (key: Buffer | string) => Promise<Buffer>
-  setAsync: (key: string, value: Buffer, mode?: number | string, duration?: number) => Promise<"OK" | undefined>
+  setAsync: (key: string, value: Buffer, mode?: number | string, duration?: number, exists?: string) => Promise<"OK" | undefined>
   expireAsync: (key: string, ttl: number) => Promise<boolean>
   ttlAsync: (key: string) => Promise<number>
   delAsync: (...keys: string[]) => Promise<boolean>
@@ -168,7 +182,6 @@ class FlyRedis {
   async sscanShim(key: string, cursor: number, count?: number) {
     if (!count) count = 10
     const members = await this.smembersAsync(key)
-    console.log("got members:", members)
     if (members && cursor < members.length) {
       let newCursor = cursor + count
       if (newCursor > members.length) {

@@ -13,22 +13,12 @@ export function install(this: any) {
     fail(error)
   })
 
-  beforeEach(async () => {
-    try {
-      await env.startContext()
-    } catch (error) {
-      console.error("Error starting context", error)
-      fail(error)
-    }
+  beforeEach(() => {
+    return env.startContext().catch(fail)
   })
 
-  afterEach(async () => {
-    try {
-      await env.stopContext()
-    } catch (error) {
-      console.error("Error stopping context", error)
-      fail(error)
-    }
+  afterEach(() => {
+    return env.stopContext().catch(fail)
   })
 
   Object.assign(global, {
@@ -39,6 +29,6 @@ export function install(this: any) {
       afterAll(() => {
         env.popApps(apps)
       })
-    },
+    }
   })
 }

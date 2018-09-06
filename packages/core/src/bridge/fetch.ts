@@ -90,7 +90,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   }
   let timeout: NodeJS.Timer | undefined
   if (init.timeout && isNumber(init.timeout) && init.timeout > 0) {
-    timeout = setTimeout(handleTimeout, init.timeout)
+    timeout = setTimeout(handleUserTimeout, init.timeout)
   }
   const reqOptions: https.RequestOptions = {
     agent: httpAgent,
@@ -113,7 +113,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   req.setHeader('fly-app', rt.app.name)
 
   req.once("error", handleError)
-  req.once("timeout", handleError)
+  req.once("timeout", handleTimeout)
   req.once("response", handleResponse)
 
   const start = process.hrtime()
@@ -166,12 +166,26 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   function handleError(err: Error) {
     clearFetchTimeout()
     log.error("error requesting http resource", err)
-    cb.applyIgnored(null, [err.toString()])
+    cb.applyIgnored(null, [err && err.toString() || "unknown error"])
     req.removeAllListeners()
-    try { req.end(); req.socket.destroy() } catch (e) { }
+    if (!req.aborted)
+      try { req.abort() } catch (e) { }
   }
 
+  function handleUserTimeout() {
+    clearFetchTimeout()
+    log.error("fetch timeout")
+    cb.applyIgnored(null, ["http request timeout"])
+    req.removeAllListeners()
+    req.once("error", (err) => log.debug("error after fetch timeout:", err)) // swallow next errors
+    req.once("timeout", () => log.debug("timeout after fetch timeout")) // swallow next errors
+    req.abort()
+  }
   function handleTimeout() {
-    handleError(new Error("http request timeout"))
+    clearFetchTimeout()
+    cb.applyIgnored(null, ["http request timeout"])
+    req.removeAllListeners()
+    req.once("error", (err) => log.debug("error after timeout:", err)) // swallow possible error before abort
+    req.abort()
   }
 })

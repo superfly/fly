@@ -143,16 +143,17 @@ export class TestServer {
 
     const cacheStore = this.server.bridge.cacheStore
     const runtime = this.server.runtime
+    const ns = runtime.app.id.toString()
 
     return {
       get: (key: string): Promise<Buffer | null> => {
-        return cacheStore.get(runtime, key)
+        return cacheStore.get(ns, key)
       },
       set: (key: string, value: any): Promise<boolean> => {
-        return cacheStore.set(runtime, key, value)
+        return cacheStore.set(ns, key, value)
       },
       ttl: (key: string): Promise<number> => {
-        return cacheStore.ttl(runtime, key)
+        return cacheStore.ttl(ns, key)
       }
     }
   }

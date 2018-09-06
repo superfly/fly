@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>fly/cache | @fly/fly</title>
+	<title>fly/cache/response | @fly/fly</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -31,10 +31,10 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="fly_cache.html">fly/cache</a>
+					<a href="fly_cache_response.html">fly/cache/response</a>
 				</li>
 			</ul>
-			<h1>External module fly/cache</h1>
+			<h1>External module fly/cache/response</h1>
 		</div>
 	</div>
 </header>
@@ -44,16 +44,19 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>An API for accessing a regional, volatile cache. Data stored in <code>@fly/cache</code> can have an associated per-key time to live (TTL), and we will evict key data automatically after the elapsed TTL. We will also evict unused data when we need to reclaim space.</p>
+						<p>An API for efficiently caching Response objects in the regional Fly cache.</p>
 					</div>
-					<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> cache <span class="hljs-keyword">from</span> <span class="hljs-string">"@fly/cache"</span>
+					<p>Usage:</p>
+					<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> { responseCache } <span class="hljs-keyword">from</span> <span class="hljs-string">"@fly/cache"</span>
 
-<span class="hljs-keyword">await</span> cache.set(<span class="hljs-string">"test-key"</span>, <span class="hljs-string">"test-value"</span>)
+<span class="hljs-keyword">const</span> resp = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">"http://example.com"</span>)
 
-<span class="hljs-keyword">const</span> s = <span class="hljs-keyword">await</span> cache.getString(<span class="hljs-string">"test-key"</span>)
+<span class="hljs-comment">// cache for an hour</span>
+<span class="hljs-keyword">await</span> responseCache.set(<span class="hljs-string">"example-com"</span>, resp, <span class="hljs-number">3600</span>)
+
+<span class="hljs-keyword">const</span> cachedResponse = <span class="hljs-keyword">await</span> responseCache.get(<span class="hljs-string">"example-com"</span>)
 </code></pre>
-					<p>See <a href="fly_cache_response.html">fly/cache/response</a> for caching HTTP Response objects.</p>
-					<p>See <a href="fly_cache_global.html">fly/cache/global</a> for global cache del/purge</p>
+					<p>See <a href="fly_cache.html">fly/cache</a> for caching lower level types.</p>
 				</div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -63,21 +66,46 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/fly_cache.cachesetoptions.html" class="tsd-kind-icon">Cache<wbr>Set<wbr>Options</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/fly_cache_response.metadata.html" class="tsd-kind-icon">Metadata</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="fly_cache_response.html#cachedresponse" class="tsd-kind-icon">Cached<wbr>Response</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache.html#del" class="tsd-kind-icon">del</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache.html#expire" class="tsd-kind-icon">expire</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache.html#get" class="tsd-kind-icon">get</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache.html#getstring" class="tsd-kind-icon">get<wbr>String</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache.html#purgetag" class="tsd-kind-icon">purge<wbr>Tag</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache.html#set" class="tsd-kind-icon">set</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache.html#settags" class="tsd-kind-icon">set<wbr>Tags</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache_response.html#del" class="tsd-kind-icon">del</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache_response.html#expire" class="tsd-kind-icon">expire</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache_response.html#get" class="tsd-kind-icon">get</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache_response.html#getmeta" class="tsd-kind-icon">get<wbr>Meta</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache_response.html#set" class="tsd-kind-icon">set</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache_response.html#setmeta" class="tsd-kind-icon">set<wbr>Meta</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache_response.html#settags" class="tsd-kind-icon">set<wbr>Tags</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="fly_cache_response.html#touch" class="tsd-kind-icon">touch</a></li>
 							</ul>
 						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
+					<a name="cachedresponse" class="tsd-anchor"></a>
+					<h3>Cached<wbr>Response</h3>
+					<div class="tsd-signature tsd-kind-icon">Cached<wbr>Response<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/response.ts#L39">fly/cache/response.ts:39</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A response with cache info attached</p>
+						</div>
 					</div>
 				</section>
 			</section>
@@ -93,12 +121,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/index.ts#L152">fly/cache/index.ts:152</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/response.ts#L181">fly/cache/response.ts:181</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Deletes the value (if any) at the specified key</p>
+									<p>Deletes a Response object from the cache</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -111,7 +139,6 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>true if delete was successful</p>
 						</li>
 					</ul>
 				</section>
@@ -125,12 +152,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/index.ts#L94">fly/cache/index.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/response.ts#L157">fly/cache/response.ts:157</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Add or overwrite a key&#39;s  time to live</p>
+									<p>Sets a new expiration time for a Response object</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -138,18 +165,17 @@
 								<li>
 									<h5>key: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The key to modify</p>
+										<p>Key to set an expiration for</p>
 									</div>
 								</li>
 								<li>
 									<h5>ttl: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Expiration time remaining in seconds</p>
+										<p>Time to live</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>true if ttl was successfully updated</p>
 						</li>
 					</ul>
 				</section>
@@ -157,18 +183,18 @@
 					<a name="get" class="tsd-anchor"></a>
 					<h3>get</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/index.ts#L34">fly/cache/index.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/response.ts#L48">fly/cache/response.ts:48</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get an ArrayBuffer value (or null) from the cache</p>
+									<p>Get a Response object from cache.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -176,31 +202,31 @@
 								<li>
 									<h5>key: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The key to get</p>
+										<p>cache key to get</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Raw bytes stored for provided key or null if empty.</p>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>The response associated with the key, or null if empty</p>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="getstring" class="tsd-anchor"></a>
-					<h3>get<wbr>String</h3>
+					<a name="getmeta" class="tsd-anchor"></a>
+					<h3>get<wbr>Meta</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>String<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Meta<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/fly_cache_response.metadata.html" class="tsd-signature-type">Metadata</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/index.ts#L56">fly/cache/index.ts:56</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/response.ts#L72">fly/cache/response.ts:72</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a string value (or null) from the cache</p>
+									<p>Gets Request metatadata from the cache</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -208,43 +234,11 @@
 								<li>
 									<h5>key: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The key to get</p>
+										<p>cache key to get metadata for</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Data stored at the key, or null if none exists</p>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="purgetag" class="tsd-anchor"></a>
-					<h3>purge<wbr>Tag</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">purge<wbr>Tag<span class="tsd-signature-symbol">(</span>tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/index.ts#L128">fly/cache/index.ts:128</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Purges all cache entries with the given tag</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>tag: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Tag to purge</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/fly_cache_response.metadata.html" class="tsd-signature-type">Metadata</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -252,18 +246,18 @@
 					<a name="set" class="tsd-anchor"></a>
 					<h3>set</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">set<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/fly_cache.cachesetoptions.html" class="tsd-signature-type">CacheSetOptions</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, resp<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/fly_cache.cachesetoptions.html" class="tsd-signature-type">CacheSetOptions</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/index.ts#L73">fly/cache/index.ts:73</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/response.ts#L110">fly/cache/response.ts:110</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sets a value at the specified key, with an optional ttl</p>
+									<p>Stores a Response object in the Fly cache.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -271,13 +265,53 @@
 								<li>
 									<h5>key: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The key to add or overwrite</p>
+										<p>Cache key to set</p>
 									</div>
 								</li>
 								<li>
-									<h5>value: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayBuffer</span></h5>
+									<h5>resp: <span class="tsd-signature-type">Response</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Data to store at the specified key, up to 2MB</p>
+										<p>The response to cache</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="../interfaces/fly_cache.cachesetoptions.html" class="tsd-signature-type">CacheSetOptions</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Time to live</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="setmeta" class="tsd-anchor"></a>
+					<h3>set<wbr>Meta</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Meta<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, meta<span class="tsd-signature-symbol">: </span><a href="../interfaces/fly_cache_response.metadata.html" class="tsd-signature-type">Metadata</a>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/fly_cache.cachesetoptions.html" class="tsd-signature-type">CacheSetOptions</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/response.ts#L89">fly/cache/response.ts:89</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Cache key to set</p>
+									</div>
+								</li>
+								<li>
+									<h5>meta: <a href="../interfaces/fly_cache_response.metadata.html" class="tsd-signature-type">Metadata</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Metadata for the Response</p>
 									</div>
 								</li>
 								<li>
@@ -285,7 +319,6 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>true if the set was successful</p>
 						</li>
 					</ul>
 				</section>
@@ -299,12 +332,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/index.ts#L112">fly/cache/index.ts:112</a></li>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/response.ts#L170">fly/cache/response.ts:170</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Replace tags for a given cache key</p>
+									<p>Replace tags for a cached Response</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -327,6 +360,37 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="touch" class="tsd-anchor"></a>
+					<h3>touch</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">touch<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/superfly/fly/blob/24508cd/v8env/src/fly/cache/response.ts#L145">fly/cache/response.ts:145</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Resets the &quot;age&quot; of the cached Response object</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Response to &quot;touch&quot;</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -341,13 +405,13 @@
 					<li class=" tsd-kind-external-module tsd-is-private">
 						<a href="fly.html">fly</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="fly_cache.html">fly/cache</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="fly_cache_global.html">fly/cache/global</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="fly_cache_response.html">fly/cache/response</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -379,28 +443,34 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/fly_cache.cachesetoptions.html" class="tsd-kind-icon">Cache<wbr>Set<wbr>Options</a>
+						<a href="../interfaces/fly_cache_response.metadata.html" class="tsd-kind-icon">Metadata</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="fly_cache_response.html#cachedresponse" class="tsd-kind-icon">Cached<wbr>Response</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly_cache.html#del" class="tsd-kind-icon">del</a>
+						<a href="fly_cache_response.html#del" class="tsd-kind-icon">del</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly_cache.html#expire" class="tsd-kind-icon">expire</a>
+						<a href="fly_cache_response.html#expire" class="tsd-kind-icon">expire</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly_cache.html#get" class="tsd-kind-icon">get</a>
+						<a href="fly_cache_response.html#get" class="tsd-kind-icon">get</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly_cache.html#getstring" class="tsd-kind-icon">get<wbr>String</a>
+						<a href="fly_cache_response.html#getmeta" class="tsd-kind-icon">get<wbr>Meta</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly_cache.html#purgetag" class="tsd-kind-icon">purge<wbr>Tag</a>
+						<a href="fly_cache_response.html#set" class="tsd-kind-icon">set</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly_cache.html#set" class="tsd-kind-icon">set</a>
+						<a href="fly_cache_response.html#setmeta" class="tsd-kind-icon">set<wbr>Meta</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="fly_cache.html#settags" class="tsd-kind-icon">set<wbr>Tags</a>
+						<a href="fly_cache_response.html#settags" class="tsd-kind-icon">set<wbr>Tags</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="fly_cache_response.html#touch" class="tsd-kind-icon">touch</a>
 					</li>
 				</ul>
 			</nav>

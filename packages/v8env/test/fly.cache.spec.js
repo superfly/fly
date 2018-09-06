@@ -47,4 +47,15 @@ describe("@fly/cache", () => {
     const result = await cache.getString(k)
     expect(result).to.eq('')
   })
+
+  it("handles set.onlyIfEmpty", async () => {
+    const k = `cache-test${Math.random()}`
+    await cache.set(k, 'asdf')
+
+    const setResult = await cache.set(k, 'jklm', { onlyIfEmpty: true })
+    const v = await cache.getString(k)
+
+    expect(setResult).to.eq(false)
+    expect(v).to.eq("asdf")
+  })
 })

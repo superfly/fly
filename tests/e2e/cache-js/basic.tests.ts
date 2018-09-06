@@ -65,7 +65,7 @@ describe("Cache API", () => {
 
   test("delete with missing key", async () => {
     const deleteResp = await fetch("http://edge.test/del/not-a-key")
-    expect(deleteResp.status).toEqual(400)
+    expect(deleteResp.status).toEqual(202)
   })
   test("get handles corrupt data", async () => {
     const data = new Buffer([-1, -1, -1, -1])

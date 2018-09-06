@@ -11,7 +11,7 @@ export function install(env: JestEnvironment, global: {}) {
   })
 }
 
-async function testFetch(this: JestEnvironment, url: string, init?: RequestInit): Promise<Response> {
+function testFetch(this: JestEnvironment, url: string, init?: RequestInit): Promise<Response> {
   const transformedUrl = this.currentContext.rewriteUrl(url)
   const parsedUrl = new URL(transformedUrl)
 
@@ -34,12 +34,7 @@ async function testFetch(this: JestEnvironment, url: string, init?: RequestInit)
   }
   init.headers = headers
 
-  try {
-    return await fetch(transformedUrl, init)
-  } catch (error) {
-    console.log("Error in fetch wrapper", error)
-    throw error
-  }
+  return fetch(transformedUrl, init)
 }
 
 function getServer(this: JestEnvironment, host: string): TestServer {

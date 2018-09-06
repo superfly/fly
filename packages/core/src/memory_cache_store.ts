@@ -1,6 +1,5 @@
 import { CacheStore, CacheSetOptions } from './cache_store'
 import * as IORedis from 'ioredis'
-import { Runtime } from './runtime';
 
 const Redis = require('ioredis-mock')
 const OK = 'OK'
@@ -13,23 +12,33 @@ export class MemoryCacheStore implements CacheStore {
     this.rand = Math.random()
   }
 
-  async get(rt: Runtime, key: string): Promise<Buffer | null> {
-    const buf = await this.redis.getBuffer(keyFor(rt, key))
+  async get(ns: string, key: string): Promise<Buffer | null> {
+    const buf = await this.redis.getBuffer(keyFor(ns, key))
     if (!buf)
       return null
     return Buffer.from(buf)
   }
 
-  async set(rt: Runtime, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean> {
-    const k = keyFor(rt, key)
+  async set(ns: string, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean> {
+    const k = keyFor(ns, key)
     const pipeline = this.redis.pipeline()
     let ttl: number | undefined
+    let mode: string | undefined
     if (typeof options === "number") {
       ttl = options
     } else if (options) {
       ttl = options.ttl
+      mode = options.onlyIfEmpty && "NX" || undefined
     }
 
+    if (mode) {
+      const p = ttl ?
+        this.redis.set(k, value, "EX", ttl, "NX") :
+        this.redis.set(k, value, "NX")
+      const result = await p
+      // this happens if the key already exists
+      if (result !== "OK") return false
+    }
     if (ttl && !isNaN(ttl)) {
       pipeline.set(k, value, 'EX', ttl)
     } else {
@@ -38,7 +47,7 @@ export class MemoryCacheStore implements CacheStore {
 
     if (typeof options !== "number" && options && options.tags instanceof Array) {
       pipeline.sadd(k + ":tags", ...options.tags)
-      this.setTags(rt, key, options.tags, pipeline)
+      this.setTags(ns, key, options.tags, pipeline)
       if (ttl) {
         pipeline.expire(k + ":tags", ttl)
       }
@@ -49,27 +58,36 @@ export class MemoryCacheStore implements CacheStore {
     return pipelineResultOK(result)
   }
 
-  async del(rt: Runtime, key: string): Promise<boolean> {
-    const result = await this.redis.del(keyFor(rt, key))
-    return result === OK
+  async del(ns: string, key: string): Promise<boolean> {
+    key = keyFor(ns, key)
+    await Promise.all([
+      this.redis.del(key),
+      this.redis.del(key + ":tags")
+    ])
+    return true
   }
 
-  async expire(rt: Runtime, key: string, ttl: number): Promise<boolean> {
-    return (await this.redis.expire(keyFor(rt, key), ttl)) === 1
+  async expire(ns: string, key: string, ttl: number): Promise<boolean> {
+    key = keyFor(ns, key)
+    await Promise.all([
+      this.redis.expire(key, ttl),
+      this.redis.expire(key + ":tags", ttl)
+    ])
+    return true
   }
 
-  async ttl(rt: Runtime, key: string): Promise<number> {
-    return this.redis.ttl(keyFor(rt, key))
+  async ttl(ns: string, key: string): Promise<number> {
+    return this.redis.ttl(keyFor(ns, key))
   }
 
-  async setTags(rt: Runtime, key: string, tags: string[], pipeline?: IORedis.Pipeline): Promise<boolean> {
+  async setTags(ns: string, key: string, tags: string[], pipeline?: IORedis.Pipeline): Promise<boolean> {
     const doSave = !pipeline
     if (!pipeline) {
       pipeline = this.redis.pipeline()
     }
-    const k = keyFor(rt, key)
+    const k = keyFor(ns, key)
     for (let s of tags) {
-      s = tagKeyFor(rt, s)
+      s = tagKeyFor(ns, s)
       pipeline.sadd(s, k)
     }
     if (doSave) {
@@ -80,8 +98,8 @@ export class MemoryCacheStore implements CacheStore {
     }
   }
 
-  async purgeTags(rt: Runtime, tags: string): Promise<string[]> {
-    const s = tagKeyFor(rt, tags)
+  async purgeTag(ns: string, tags: string): Promise<string[]> {
+    const s = tagKeyFor(ns, tags)
     const checks = this.redis.pipeline()
     const keysToDelete = new Array<string>()
     const keysToCheck = []
@@ -120,11 +138,11 @@ async function* setScanner(redis: IORedis.Redis, key: string) {
   } while (cursor > 0)
 }
 
-function tagKeyFor(rt: Runtime, tag: string) {
-  return `tag:${rt.app.name}:${tag}`
+function tagKeyFor(ns: string, tag: string) {
+  return `tag:${ns}:${tag}`
 }
-function keyFor(rt: Runtime, key: string) {
-  return `cache:${rt.app.name}:${key}`
+function keyFor(ns: string, key: string) {
+  return `cache:${ns}:${key}`
 }
 
 function pipelineResultOK(result: any) {

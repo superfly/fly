@@ -11,6 +11,8 @@
  * 
  * See {@link fly/cache/response} for caching HTTP Response objects.
  * 
+ * See {@link fly/cache/global} for global cache del/purge
+ * 
  * @preferred
  * @module fly/cache
  */
@@ -19,7 +21,8 @@
 declare var bridge: any
 export interface CacheSetOptions {
   ttl?: number,
-  tags?: string[]
+  tags?: string[],
+  onlyIfEmpty?: boolean
 }
 
 
@@ -147,8 +150,30 @@ export function purgeTag(tag: string) {
  * @returns true if delete was successful
  */
 export function del(key: string) {
-  return expire(key, 0)
+  return new Promise<boolean>(function cacheDelPromise(resolve, reject) {
+    bridge.dispatch("flyCacheDel", key, function cacheDelCallback(err: string | null, ok?: boolean) {
+      if (err != null) {
+        reject(err)
+        return
+      }
+      resolve(ok)
+    })
+  })
 }
+
+/**
+ * A library for caching/retrieving Response objects
+ * 
+ * See {@link fly/cache/response}
+ */
+export { default as responseCache } from "./response"
+
+/**
+ * API for sending global cache notifications
+ * 
+ * See {@link fly/cache/global} 
+ */
+import { default as global } from "./global"
 
 const cache = {
   get,
@@ -157,11 +182,7 @@ const cache = {
   expire,
   del,
   setTags,
-  purgeTag
+  purgeTag,
+  global
 }
 export default cache
-
-/**
- * A library for caching/retrieving Response objects
- */
-export { default as responseCache } from "./response"

@@ -2,6 +2,78 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.40.0"></a>
+# [0.40.0](https://github.com/superfly/fly/compare/v0.40.0-caching.7...v0.40.0) (2018-08-28)
+
+
+### Features
+
+* adds cache.set onlyIfEmpty option ([986cefc](https://github.com/superfly/fly/commit/986cefc))
+* global cache del/purgeTag ([33a3e63](https://github.com/superfly/fly/commit/33a3e63))
+
+
+
+<a name="0.40.0-caching.13"></a>
+# [0.40.0-caching.13](https://github.com/superfly/fly/compare/v0.40.0-caching.12...v0.40.0-caching.13) (2018-08-28)
+
+
+
+<a name="0.40.0-caching.12"></a>
+# [0.40.0-caching.12](https://github.com/superfly/fly/compare/v0.40.0-caching.11...v0.40.0-caching.12) (2018-08-28)
+
+
+
+<a name="0.40.0-caching.11"></a>
+# [0.40.0-caching.11](https://github.com/superfly/fly/compare/v0.40.0-caching.10...v0.40.0-caching.11) (2018-08-27)
+
+
+
+<a name="0.40.0-caching.10"></a>
+# [0.40.0-caching.10](https://github.com/superfly/fly/compare/v0.40.0-caching.9...v0.40.0-caching.10) (2018-08-27)
+
+
+
+<a name="0.40.0-caching.9"></a>
+# [0.40.0-caching.9](https://github.com/superfly/fly/compare/v0.40.0-caching.8...v0.40.0-caching.9) (2018-08-27)
+
+
+
+<a name="0.40.0-caching.8"></a>
+# [0.40.0-caching.8](https://github.com/superfly/fly/compare/v0.40.0-caching.7...v0.40.0-caching.8) (2018-08-22)
+
+
+### Features
+
+* adds cache.set onlyIfEmpty option ([986cefc](https://github.com/superfly/fly/commit/986cefc))
+* global cache del/purgeTag ([33a3e63](https://github.com/superfly/fly/commit/33a3e63))
+
+
+
+<a name="0.40.0-caching.7"></a>
+# [0.40.0-caching.7](https://github.com/superfly/fly/compare/v0.40.0-caching.6...v0.40.0-caching.7) (2018-08-22)
+
+
+
+<a name="0.40.0-caching.6"></a>
+# [0.40.0-caching.6](https://github.com/superfly/fly/compare/v0.39.0...v0.40.0-caching.6) (2018-08-22)
+<a name="0.40.0-caching.3"></a>
+# [0.40.0-caching.3](https://github.com/superfly/fly/compare/v0.39.0...v0.40.0-caching.3) (2018-08-22)
+
+
+### Bug Fixes
+
+* send x-forwarded-proto with proxy call ([21cb949](https://github.com/superfly/fly/commit/21cb949))
+* use handleTimeout for timeouts ([7bea600](https://github.com/superfly/fly/commit/7bea600))
+
+
+### Features
+
+* adds cache.set onlyIfEmpty option ([43e9601](https://github.com/superfly/fly/commit/43e9601))
+* cache tagging, expire related cache entries ([#114](https://github.com/superfly/fly/issues/114)) ([2242a5a](https://github.com/superfly/fly/commit/2242a5a))
+* global cache del/purgeTags ([703cfe6](https://github.com/superfly/fly/commit/703cfe6))
+
+
+
 <a name="0.40.0-caching.2"></a>
 # [0.40.0-caching.2](https://github.com/superfly/fly/compare/v0.40.0-caching.1...v0.40.0-caching.2) (2018-08-18)
 
