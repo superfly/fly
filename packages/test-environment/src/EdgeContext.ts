@@ -1,44 +1,28 @@
 
 import { Server, FileAppStore, LocalFileStore, Runtime, Bridge, SQLiteDataStore } from "@fly/core"
-import { HostMap } from "./HostMap";
+import { parse, format } from "url";
 
-export interface EnvironmentOptions {
-  testName: string
-  testDir: string
-  servers: ServerOptions[]
+export interface Options {
+  servers: { [hostname: string]: string }
   hostname?: string
 }
 
-export interface ServerOptions {
+interface ServerOptions {
   host: string
   path: string
-  port?: number
 }
 
-export class Environment {
-  public readonly testName: string
-  public readonly testDir: string
-
+export class EdgeContext {
   private readonly servers: TestServer[]
   private readonly hostname: string
 
-  public readonly hostMap: HostMap
-
-  constructor(options: EnvironmentOptions) {
-    this.testName = options.testName
-    this.testDir = options.testDir
+  constructor(options: Options) {
     this.servers = new Array<TestServer>()
     this.hostname = options.hostname || "127.0.0.1"
 
-    this.hostMap = new HostMap()
-
-    for (const serverOptions of options.servers) {
-      const server = new TestServer(serverOptions)
+    for (const [hostname, path] of Object.entries(options.servers)) {
+      const server = new TestServer(this, { host: hostname, path: path })
       this.servers.push(server)
-      this.hostMap.add(server.host, {
-        hostname: this.hostname,
-        port: server.port.toString()
-      })
     }
 
     if (this.servers.length == 0) {
@@ -47,7 +31,7 @@ export class Environment {
   }
 
   public start(): Promise<any> {
-    return Promise.all(this.servers.map(s => s.start(this.hostMap.copy())))
+    return Promise.all(this.servers.map(s => s.start()))
   }
 
   public stop(): Promise<any> {
@@ -61,21 +45,39 @@ export class Environment {
   public getServer(host: string): TestServer | undefined {
     return this.servers.find(s => s.host === host)
   }
+
+  public rewriteUrl(url: string): string {
+    const parsedUrl = parse(url)
+    if (!parsedUrl.hostname) {
+      return url
+    }
+    const server = this.servers.find(s => s.host === parsedUrl.hostname)
+    if (!server) {
+      return url
+    }
+    parsedUrl.host = this.hostname + ":" + server.port
+    parsedUrl.hostname = this.hostname
+    parsedUrl.port = server.port.toString()
+    return format(parsedUrl)
+  }
 }
 
 export class TestServer {
   private server?: Server
+  private context: EdgeContext
   public readonly host: string
   public readonly path: string
-  public readonly port: number
+  public port: number
 
-  public constructor(options: ServerOptions) {
+
+  public constructor(context: EdgeContext, options: ServerOptions) {
+    this.context = context
     this.host = options.host
     this.path = options.path
-    this.port = options.port || randomPort()
+    this.port = nextPort()
   }
 
-  public start(hostMap: HostMap): Promise<void> {
+  public start(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         const appStore = new FileAppStore(this.path, {
@@ -90,13 +92,27 @@ export class TestServer {
           dataStore: new SQLiteDataStore(appStore.app.name, "test")
         })
         this.server = new Server({ appStore, bridge, inspect: false, monitorFrequency: 0 })
-        this.server.on('error', (e: Error) => { throw e })
-        configureBridge(this.server.bridge, hostMap)
+        this.server.on('error', (e: Error | any) => {
+          if (e.code === 'EADDRINUSE') {
+            this.port = this.port + 1
+            console.log('Port in use, trying:', this.port);
+            setTimeout(() => {
+              if (this.server) {
+                this.server.close();
+                this.server.listen(this.port);
+              }
+            }, 1000);
+          } else {
+            throw e
+          }
+        })
+        configureBridge(this.server.bridge, this.context)
 
         this.server.listen({ port: this.port }, () => {
           resolve()
         })
       } catch (error) {
+        console.error("Error starting server", error)
         reject(error)
       }
     })
@@ -146,17 +162,21 @@ export class TestServer {
   }
 }
 
-function randomPort() {
+export function isContext(value: any): value is EdgeContext {
+  return value instanceof EdgeContext
+}
+
+function nextPort() {
   return Math.floor((Math.random() * 1000) + 4000)
 }
 
-function configureBridge(bridge: Bridge, hostMap: HostMap) {
+function configureBridge(bridge: Bridge, context: EdgeContext) {
   const oldFetch = bridge.get("fetch")
   if (!oldFetch) {
     throw new Error("Fetch not registered")
   }
   const newFetch = function fetchBridge(rt: Runtime, bridge: Bridge, url: string, ...args: any[]) {
-    const mappedUrl = hostMap.transformUrl(url)
+    const mappedUrl = context.rewriteUrl(url)
     return oldFetch.apply(bridge, [rt, bridge, ...[mappedUrl].concat(args)])
   }
   bridge.set("fetch", newFetch)

@@ -1,8 +1,5 @@
-import { AppConfig } from "@fly/test-server"
 import * as path from "path"
 import * as fs from "fs"
-
-declare function setupApps(appConfig: AppConfig): void
 
 describe("Invalid Apps", () => {
   const invalidApps = fs.readdirSync(path.resolve(__dirname, "invalid"))

@@ -1,8 +1,5 @@
-import { AppConfig } from "@fly/test-server"
 import * as path from "path"
 import * as fs from "fs"
-
-declare function setupApps(appConfig: AppConfig): void
 
 setupApps({
   "edge.test": path.resolve(__dirname, "files"),

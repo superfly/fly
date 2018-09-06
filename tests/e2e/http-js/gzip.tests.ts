@@ -1,8 +1,5 @@
-import { AppConfig } from "@fly/test-server"
 import * as path from "path"
 import * as zlib from "zlib"
-
-declare function setupApps(appConfig: AppConfig): void
 
 setupApps({
   "edge.test": path.resolve(__dirname, "proxy.js"),

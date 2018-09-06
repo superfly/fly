@@ -1,7 +1,4 @@
-import { AppConfig } from "@fly/test-server"
 import * as path from "path"
-
-declare function setupApps(appConfig: AppConfig): void
 
 setupApps({
   "set-timeout.test": path.resolve(__dirname, "setTimeout.js"),

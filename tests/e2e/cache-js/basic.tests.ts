@@ -1,8 +1,4 @@
-import { AppConfig } from "@fly/test-server"
 import * as path from "path"
-import { StringDecoder } from "string_decoder"
-
-declare function setupApps(appConfig: AppConfig): void
 
 setupApps({
   "edge.test": path.resolve(__dirname, "basic.js"),
