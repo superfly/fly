@@ -39,6 +39,7 @@
         "ioredis-mock": "^3.10.2",
         "isolated-vm": "1.6.1",
         "js-yaml": "^3.10.0",
+        "mocha": "^4.0.1",
         "pako": "1.0.6",
         "promptly": "^3.0.3",
         "redis": "^2.8.0",
