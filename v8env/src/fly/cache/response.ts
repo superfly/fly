@@ -90,15 +90,9 @@ export function setMeta(key: string, meta: Metadata, options?: CacheSetOptions |
   return cache.set(key + ":meta", JSON.stringify(meta), options)
 }
 
-const goodHeaders = [
-  'content-type',
-  'content-length',
-  'content-encoding',
-  'cache-control',
-  'expires',
-  'link',
-  'set-cookie',
-  'etag'
+const defaultSkipHeaders = [
+  'authorization',
+  'set-cookie'
 ];
 
 /**
@@ -108,8 +102,14 @@ const goodHeaders = [
  * @param options Time to live
  */
 export async function set(key: string, resp: Response, options?: CacheSetOptions | number) {
-  const ttl = typeof options === "number" ? options : (options && options.ttl)
-  const tags = typeof options === "object" ? options.tags : undefined
+  const ttl = typeof options === "number" ? options : (options && options.ttl);
+  let tags: string[] | undefined = undefined;
+  let skipHeaderOption: string[] = defaultSkipHeaders;
+  if (typeof options === "object") {
+    tags = options.tags;
+    skipHeaderOption = [...skipHeaderOption, ...(options.skipCacheHeaders || []).map((headerKey) => headerKey.toLowerCase())];
+  }
+
   const meta = {
     status: resp.status,
     headers: {},
@@ -126,12 +126,18 @@ export async function set(key: string, resp: Response, options?: CacheSetOptions
     resp.headers.set("etag", etag)
   }
 
-  for (const h of goodHeaders) {
-    const v = resp.headers.getAll(h);
-    if (v && v.length > 0) {
-      meta.headers[h] = v.join(', ');
+  const skipHeaderSet = new Set(skipHeaderOption);
+  resp.headers.forEach((value, key) => {
+    if (skipHeaderSet.has(key.toLowerCase())) {
+      return;
     }
-  }
+    const existingVal = meta.headers[key];
+    if (existingVal) {
+      meta.headers[key] = `${existingVal}, ${value}`;
+    } else {
+      meta.headers[key] = value;
+    }
+  });
   return cacheResult([
     setMeta(key, meta, options),
     cache.set(key + ':body', body, options)

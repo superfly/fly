@@ -20,9 +20,10 @@
 /** */
 declare var bridge: any
 export interface CacheSetOptions {
-  ttl?: number,
-  tags?: string[],
-  onlyIfEmpty?: boolean
+  ttl?: number;
+  tags?: string[];
+  onlyIfEmpty?: boolean;
+  skipCacheHeaders?: string[];
 }
 
 
