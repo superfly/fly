@@ -227,3 +227,5 @@ Using `fly deploy`, here's what happens:
 We develop fly in the open. We're [Apache licensed](https://github.com/superfly/fly/blob/master/LICENSE) and designed to run easily in local dev. You _can_ deploy our core software to production, but it takes a little elbow grease and a fair amount of infrastructure. If you want to give this a try, let us know and we can help (and we would love related pull requests!).
 
 Our commercial offering is built on top of this library, with additional code for managing certificates, distributed caching, and multi-tenant isolation. Over time we expect to extract many of these features, document them, and include them in our open source releases.
+
+We support [Let's Encrypt](https://github.com/letsencrypt): We donate half our certificate management fees to Let's Encrypt every year.
