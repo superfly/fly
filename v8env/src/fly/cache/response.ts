@@ -27,7 +27,7 @@ import cache, { CacheSetOptions } from "."
  */
 export interface Metadata {
   status: number,
-  headers: any,
+  headers: { [key: string]: string | null},
   at?: number,
   ttl: number,
   tags?: string[]
@@ -57,7 +57,7 @@ export async function get(key: string) {
   let age = 0;
   if (meta.at) {
     age = Math.round(Date.now() / 1000) - meta.at;
-    meta.headers.Age = age
+    meta.headers.Age = age.toString();
     meta.headers['Fly-Age'] = meta.headers.Age;
     delete meta.at;
   }
