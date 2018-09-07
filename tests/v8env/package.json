@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "fly test ./tests/**/*.spec.js"
+    "test": "yarn run fly test ./tests/**/*.spec.js"
   },
   "dependencies": {
     "@fly/core": "^0.0.0",
