@@ -15,8 +15,8 @@
     "node": ">=8 <10.9.0"
   },
   "dependencies": {
-    "@fly/core": "file:../core",
-    "@fly/v8env": "file:../v8env"
+    "@fly/core": "0.40.1-alpha.0",
+    "@fly/v8env": "0.40.1-alpha.0"
   },
   "publishConfig": {
     "access": "public"
