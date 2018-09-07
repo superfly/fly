@@ -9,6 +9,7 @@
   "dependencies": {
     "@fly/core": "^0.0.0",
     "arraybuffer-loader": "^1.0.3",
+    "chai": "^4.1.2",
     "image-webpack-loader": "^4.3.1"
   }
 }
