@@ -6,7 +6,7 @@
   "scripts": {
     "test": "yarn fly test ./tests/**/*.spec.js"
   },
-  "dependencies": {
+  "devDependencies": {
     "@fly/core": "^0.0.0",
     "arraybuffer-loader": "^1.0.3",
     "chai": "^4.1.2",
