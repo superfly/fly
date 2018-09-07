@@ -1,9 +1,12 @@
 {
     "name": "@fly/v8env",
-    "version": "0.0.0",
+    "version": "0.40.0",
     "description": "Open source Edge Application runtime",
-    "homepage": "",
     "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/superfly/fly"
+    },
     "main": "lib/index.js",
     "directories": {
         "lib": "lib",

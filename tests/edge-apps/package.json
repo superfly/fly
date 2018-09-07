@@ -6,7 +6,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@fly/test-environment": "^0.0.0",
+    "@fly/test-environment": "^0.40.0",
     "@types/jest": "^23.3.1",
     "jest": "^23.5.0",
     "ts-jest": "^23.1.4"
