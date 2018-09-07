@@ -76,8 +76,7 @@ script:
   - .hooks/pre-build
   - yarn build
   - yarn bundle
-  - yarn test:unit
-  - yarn test:e2e
+  - yarn test
 notifications:
   slack:
     on:

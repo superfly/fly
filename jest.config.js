@@ -20,5 +20,8 @@ module.exports = {
   "testMatch": [
     "**/*\\.zest\\.(ts|tsx)"
   ],
-  "testEnvironment": "node"
+  "testEnvironment": "node",
+  "roots": [
+    "packages/"
+  ]
 }
