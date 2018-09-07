@@ -1,0 +1,14 @@
+{
+  "name": "v8env-e2e",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "fly test ./tests/**/*.spec.js"
+  },
+  "dependencies": {
+    "@fly/core": "^0.0.0",
+    "arraybuffer-loader": "^1.0.3",
+    "image-webpack-loader": "^4.3.1"
+  }
+}
