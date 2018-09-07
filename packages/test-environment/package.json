@@ -1,10 +1,11 @@
 {
     "name": "@fly/test-environment",
-    "version": "0.0.0",
-    "description": "> TODO: description",
-    "author": "Michael Dwan <m@dwan.io>",
-    "homepage": "",
-    "license": "ISC",
+    "version": "0.40.0",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/superfly/fly"
+    },
     "main": "index.js",
     "directories": {
         "lib": "lib",

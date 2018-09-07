@@ -1,10 +1,9 @@
 {
     "name": "@fly/v8env",
     "version": "0.0.0",
-    "description": "> TODO: description",
-    "author": "Michael Dwan <m@dwan.io>",
+    "description": "Open source Edge Application runtime",
     "homepage": "",
-    "license": "ISC",
+    "license": "Apache-2.0",
     "main": "lib/index.js",
     "directories": {
         "lib": "lib",

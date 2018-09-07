@@ -1,0 +1,24 @@
+{
+  "name": "@fly/fly",
+  "version": "0.40.0",
+  "description": "Open source Edge Application runtime",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superfly/fly"
+  },
+  "homepage": "https://fly.io",
+  "files": [
+    "examples/"
+  ],
+  "engines": {
+    "node": ">=8 <10.9.0"
+  },
+  "dependencies": {
+    "@fly/core": "file:../core",
+    "@fly/v8env": "file:../v8env"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

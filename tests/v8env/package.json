@@ -1,8 +1,7 @@
 {
   "name": "v8env",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "test": "../../fly test ./tests/**/*.spec.js"
   },
