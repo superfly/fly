@@ -5,7 +5,7 @@ describe("Invalid Apps", () => {
   const invalidApps = fs.readdirSync(path.resolve(__dirname, "invalid"))
 
   for (const appPath of invalidApps) {
-    describe(appPath, () => {
+    describe.skip(appPath, () => {
       console.log("setup", appPath)
       setupApps({ "edge.test": path.resolve(__dirname, "invalid", appPath) })
 
@@ -16,4 +16,3 @@ describe("Invalid Apps", () => {
     })
   }
 })
-

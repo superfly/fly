@@ -23,7 +23,5 @@ module.exports = {
     "**/*.(t|z)ests?.ts"
   ],
   "testEnvironment": "@fly/test-environment",
-  "setupTestFrameworkScriptFile": "@fly/test-environment/install",
-  "setupFiles": [
-  ]
+  "setupTestFrameworkScriptFile": "@fly/test-environment/install"
 }
