@@ -1,5 +1,6 @@
 {
     "name": "@fly/test-environment",
+    "private": true,
     "version": "0.40.0",
     "license": "Apache-2.0",
     "repository": {
