@@ -131,17 +131,19 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
   }
 
   const skipHeaderSet = new Set(skipHeaderOption);
-  resp.headers.forEach((value, key) => {
-    if (skipHeaderSet.has(key.toLowerCase())) {
-      return;
+  for(const headerSet of resp.headers as any) {
+    const [name, value] = headerSet;
+    if (skipHeaderSet.has(name.toLowerCase())) {
+      continue;
     }
-    const existingVal = meta.headers[key];
+
+    const existingVal = meta.headers[name];
     if (existingVal) {
-      meta.headers[key] = `${existingVal}, ${value}`;
+      meta.headers[name] = `${existingVal}, ${value}`;
     } else {
-      meta.headers[key] = value;
+      meta.headers[name] = value;
     }
-  });
+  }
   return cacheResult([
     setMeta(key, meta, options),
     cache.set(key + ':body', body, options)
