@@ -33,6 +33,10 @@ export interface Metadata {
   tags?: string[]
 }
 
+export interface ResponseCacheSetOptions extends CacheSetOptions {
+  skipCacheHeaders?: string[]
+}
+
 /**
  * A response with cache info attached
  */
@@ -101,7 +105,7 @@ const defaultSkipHeaders = [
  * @param resp The response to cache
  * @param options Time to live
  */
-export async function set(key: string, resp: Response, options?: CacheSetOptions | number) {
+export async function set(key: string, resp: Response, options?: ResponseCacheSetOptions | number) {
   const ttl = typeof options === "number" ? options : (options && options.ttl);
   let tags: string[] | undefined = undefined;
   let skipHeaderOption: string[] = defaultSkipHeaders;

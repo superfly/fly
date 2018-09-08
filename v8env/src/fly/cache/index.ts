@@ -23,7 +23,6 @@ export interface CacheSetOptions {
   ttl?: number;
   tags?: string[];
   onlyIfEmpty?: boolean;
-  skipCacheHeaders?: string[];
 }
 
 
