@@ -68,6 +68,22 @@ registerBridge('flyCacheGet',
     })
   })
 
+/*registerBridge('flyCacheGetMulti',
+  function cacheGetMulti(rt: Runtime, bridge: Bridge, keys: string[], callback: ivm.Reference<Function>) {
+    if (!bridge.cacheStore) {
+      callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
+      return
+    }
+
+    bridge.cacheStore.get(rt.app.id, key).then((buf) => {
+      rt.reportUsage("cache:get", { size: buf ? buf.byteLength : 0 })
+      callback.applyIgnored(null, [null, transferInto(buf)])
+    }).catch((err) => {
+      log.error("got err in cache.get", err)
+      callback.applyIgnored(null, [null, null]) // swallow errors on get for now
+    })
+  })*/
+
 registerBridge('flyCacheDel',
   function cacheDel(rt: Runtime, bridge: Bridge, key: string, callback: ivm.Reference<Function>) {
     if (!bridge.cacheStore) {

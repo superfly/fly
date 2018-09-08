@@ -63,6 +63,23 @@ export async function getString(key: string) {
   }
 }
 
+export type CacheGetKey = string | [string, "string"]
+export type CacheGetResult = ArrayBuffer | string
+
+//export async function getMulti(keys: CacheGetKey[])
+export async function getMulti(...keys: CacheGetKey[]) {
+  const result = keys.map((k) => {
+    if (typeof k === "string") {
+      return get(k)
+    }
+    if (k instanceof Array && k[0] === "string" && k[1] === "string") {
+      return get(k[0])
+    }
+    throw new Error(`Key must either be a string or a [name, "string"]`)
+  })
+  const raw = await Promise.all(result)
+}
+
 /**
  * Sets a value at the specified key, with an optional ttl
  * @param key The key to add or overwrite
