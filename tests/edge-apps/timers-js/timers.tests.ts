@@ -22,6 +22,7 @@ test("clearTimeout", async () => {
   expect(response.status).toEqual(200)
   expect(await response.text()).toMatch("right callback")
 })
+
 test("setImmediate", async () => {
   const response = await fetch(`http://set-immediate.test`)
   expect(response.status).toEqual(200)
