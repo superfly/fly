@@ -63,21 +63,34 @@ export async function getString(key: string) {
   }
 }
 
-export type CacheGetKey = string | [string, "string"]
-export type CacheGetResult = ArrayBuffer | string
-
-//export async function getMulti(keys: CacheGetKey[])
-export async function getMulti(...keys: CacheGetKey[]) {
-  const result = keys.map((k) => {
-    if (typeof k === "string") {
-      return get(k)
-    }
-    if (k instanceof Array && k[0] === "string" && k[1] === "string") {
-      return get(k[0])
-    }
-    throw new Error(`Key must either be a string or a [name, "string"]`)
+/**
+ * Get multiple values from the cache.
+ * @param keys list of keys to retrieve
+ * @returns List of results in the same order as the provided keys
+ */
+export function getMulti(keys: string[]): Promise<(ArrayBuffer | null)[]> {
+  return new Promise<(ArrayBuffer | null)[]>(function cacheGetMultiPromise(resolve, reject) {
+    bridge.dispatch(
+      "flyCacheGetMulti",
+      JSON.stringify(keys),
+      function cacheGetMultiCallback(err: string | null | undefined, ...values: (ArrayBuffer | null)[]) {
+        if (err != null) {
+          reject(err)
+          return
+        }
+        resolve(values)
+      })
   })
-  const raw = await Promise.all(result)
+}
+
+/**
+ * Get multiple string values from the cache
+ * @param keys list of keys to retrieve
+ * @returns list of results in the same order as the provided keys
+ */
+export async function getMultiString(keys: string[]) {
+  const raw = await getMulti(keys)
+  return raw.map((b) => b ? new TextDecoder("utf-8").decode(b) : null)
 }
 
 /**
@@ -195,6 +208,8 @@ import { default as global } from "./global"
 const cache = {
   get,
   getString,
+  getMulti,
+  getMultiString,
   set,
   expire,
   del,
