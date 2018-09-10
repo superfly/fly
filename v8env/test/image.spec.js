@@ -108,5 +108,5 @@ describe("Image", () => {
     const svg = img.posterize()
 
     expect(svg).to.eq(svgPosterize, "SVG data didn't match")
-  })
+  }).timeout(5000)
 })
