@@ -291,12 +291,26 @@ export class Image {
     return i
   }
 
-  traceSVG(mode?: string): string {
-    return bridge.dispatchSync("fly.Image.traceSVG", this._ref, mode)
+  /**
+   * Traces an image as an SVG.
+   * @returns SVG data as a string
+   */
+  trace(): string {
+    return bridge.dispatchSync("fly.Image.traceSVG", this._ref)
+  }
+
+  /**
+   * Trace an image multiple times and return the combined SVG data as a string.
+   *  This function is useful for turning photographs into monochrome SVGs.
+   * @returns SVG data as a string
+   */
+  posterize() {
+    return bridge.dispatchSync("fly.Image.traceSVG", this._ref, "posterize")
   }
 }
 
 export namespace Image {
+
   export interface Color {
     /** red channel, 0-255 */
     r: number,

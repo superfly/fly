@@ -65,7 +65,7 @@ root
       try {
         const app = appStore.app
         const rt = new LocalRuntime(
-          new App({ app: app.name, version: app.version, source: "", source_hash: "", config: {}, secrets: {}, env: "test" }),
+          new App({ app: app.name, version: app.version, source: "", source_hash: "", config: { files: ["./fixtures/"] }, secrets: {}, env: "test" }),
           new Bridge({
             dataStore: new SQLiteDataStore(app.name, 'test')
           })

@@ -3,6 +3,8 @@ import { expect } from 'chai'
 const logo = require("./fixtures/logo.png")
 const picture = require("./fixtures/picture.jpg")
 const overlay = require("./fixtures/overlay.png")
+const svgTrace = require("./fixtures/picture.trace")
+const svgPosterize = require("./fixtures/picture.posterize")
 const { Image } = require("@fly/image")
 describe("Image", () => {
   it("Image(create)", () => {
@@ -94,4 +96,17 @@ describe("Image", () => {
     expect(err).to.not.be.null
     expect(err.toString()).to.include("unsupported image format")
   })//*/
+
+  it("trace()", async () => {
+    const img = new Image(picture)
+    const svg = img.trace()
+
+    expect(svg).to.eq(svgTrace, "SVG data didn't match")
+  })
+  it("posterize", async () => {
+    const img = new Image(picture)
+    const svg = img.posterize()
+
+    expect(svg).to.eq(svgPosterize, "SVG data didn't match")
+  })
 })
