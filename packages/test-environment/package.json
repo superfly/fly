@@ -9,10 +9,6 @@
     },
     "main": "index.js",
     "types": "lib/index.d.ts",
-    "directories": {
-        "lib": "lib",
-        "test": "__tests__"
-    },
     "files": [
         "lib/"
     ],

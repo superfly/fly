@@ -8,10 +8,6 @@
     },
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
-    "directories": {
-        "lib": "lib",
-        "test": "tests"
-    },
     "files": [
         "lib"
     ],
