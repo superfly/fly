@@ -11,5 +11,5 @@
       "path": "./packages/v8env"
     }
   ],
-  "files": []
+  "include": []
 }
