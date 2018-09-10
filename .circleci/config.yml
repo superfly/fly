@@ -20,3 +20,9 @@ jobs:
       - run: yarn build
       - run: yarn bundle
       - run: yarn test
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test-node-10
