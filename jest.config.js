@@ -18,7 +18,7 @@ module.exports = {
     "\\.tsx?$": "ts-jest"
   },
   "testMatch": [
-    "**/*\\.zest\\.(ts|tsx)"
+    "**/*\\.[tz]est\\.(ts|tsx)"
   ],
   "testEnvironment": "node",
   "roots": [

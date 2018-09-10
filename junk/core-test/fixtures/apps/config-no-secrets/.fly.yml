@@ -1,3 +1,0 @@
-app: config-no-secrets
-config:
-  option_a: val_a
