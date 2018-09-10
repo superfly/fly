@@ -89,15 +89,9 @@ git push --set-upstream origin <your-branch>
 
 Finally, go to GitHub and [make a Pull Request](https://github.com/superfly/fly/compare) :D
 
-[mailing list]: http://groups.google.com/group/activeadmin
-[Stack Overflow]: http://stackoverflow.com/questions/tagged/activeadmin
-[search the issue tracker]: https://github.com/activeadmin/activeadmin/issues?q=something
-[new issue]: https://github.com/activeadmin/activeadmin/issues/new
-[fork Active Admin]: https://help.github.com/articles/fork-a-repo
-[searching all issues]: https://github.com/activeadmin/activeadmin/issues?q=
-[master template]: https://github.com/activeadmin/activeadmin/blob/master/lib/bug_report_templates/active_admin_master.rb
-[codeclimate]: https://codeclimate.com
-[codeclimate cli]: https://github.com/codeclimate/codeclimate
+[search the issue tracker]: https://github.com/superfly/fly/issues?q=something
+[new issue]: https://github.com/superfly/fly/issues/new
+[fork Fly]: https://help.github.com/articles/fork-a-repo
 [make a pull request]: https://help.github.com/articles/creating-a-pull-request
 [git rebasing]: http://git-scm.com/book/en/Git-Branching-Rebasing
 [interactive rebase]: https://help.github.com/articles/interactive-rebase
