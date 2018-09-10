@@ -20,7 +20,7 @@
     "scripts": {
         "clean": "rm -rf ./lib ./dist",
         "build": "tsc -b .",
-        "rebuild": "yarn clean && yarn build",
+        "build:watch": "tsc -b -w -v .",
         "bundle": "webpack"
     },
     "dependencies": {

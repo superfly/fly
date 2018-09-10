@@ -2,16 +2,14 @@
   "extends": "./tsconfig.common.json",
   "references": [
     {
-      "path": "./packages/jest-environment-fly"
+      "path": "./packages/test-environment"
     },
     {
       "path": "./packages/core"
     },
     {
       "path": "./packages/v8env"
-    },
-    {
-      "path": "./packages/test-server"
     }
-  ]
+  ],
+  "files": []
 }

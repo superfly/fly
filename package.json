@@ -9,12 +9,11 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build": "lerna run --parallel build",
-    "rebuild": "lerna run --parallel rebuild",
+    "build": "tsc -b .",
+    "build:watch": "tsc -b -w -v .",
     "bundle": "lerna run bundle",
     "clean": "lerna run --parallel clean",
-    "clean:dependencies": "rm -rf node_modules packages/*/node_modules tests/*/node_modules",
-    "dev": "lerna run --parallel dev",
+    "clean:dependencies": "lerna clean && rm -rf node_modules",
     "test": "yarn test:packages && yarn test:e2e",
     "test:packages": "jest packages/*",
     "test:e2e": "lerna run test"

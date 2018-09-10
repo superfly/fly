@@ -17,6 +17,7 @@
     ],
     "scripts": {
         "build": "tsc -b .",
+        "build:watch": "tsc -b -w -v .",
         "clean": "rm -rf ./lib ./dist"
     },
     "dependencies": {
