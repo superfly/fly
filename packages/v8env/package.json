@@ -18,7 +18,8 @@
         "clean": "rm -rf ./lib ./dist",
         "build": "tsc -b .",
         "build:watch": "tsc -b -w -v .",
-        "bundle": "webpack"
+        "bundle": "webpack",
+        "doc": "./publish-docs.sh"
     },
     "dependencies": {
         "better-assert": "^1.0.2",

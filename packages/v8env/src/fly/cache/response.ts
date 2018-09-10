@@ -27,10 +27,14 @@ import cache, { CacheSetOptions } from "."
  */
 export interface Metadata {
   status: number,
-  headers: any,
+  headers: { [key: string]: string | null},
   at?: number,
   ttl: number,
   tags?: string[]
+}
+
+export interface ResponseCacheSetOptions extends CacheSetOptions {
+  skipCacheHeaders?: string[]
 }
 
 /**
@@ -57,7 +61,7 @@ export async function get(key: string) {
   let age = 0;
   if (meta.at) {
     age = Math.round(Date.now() / 1000) - meta.at;
-    meta.headers.Age = age
+    meta.headers.Age = age.toString();
     meta.headers['Fly-Age'] = meta.headers.Age;
     delete meta.at;
   }
@@ -90,15 +94,9 @@ export function setMeta(key: string, meta: Metadata, options?: CacheSetOptions |
   return cache.set(key + ":meta", JSON.stringify(meta), options)
 }
 
-const goodHeaders = [
-  'content-type',
-  'content-length',
-  'content-encoding',
-  'cache-control',
-  'expires',
-  'link',
-  'set-cookie',
-  'etag'
+const defaultSkipHeaders = [
+  'authorization',
+  'set-cookie'
 ];
 
 /**
@@ -107,9 +105,15 @@ const goodHeaders = [
  * @param resp The response to cache
  * @param options Time to live
  */
-export async function set(key: string, resp: Response, options?: CacheSetOptions | number) {
-  const ttl = typeof options === "number" ? options : (options && options.ttl)
-  const tags = typeof options === "object" ? options.tags : undefined
+export async function set(key: string, resp: Response, options?: ResponseCacheSetOptions | number) {
+  const ttl = typeof options === "number" ? options : (options && options.ttl);
+  let tags: string[] | undefined = undefined;
+  let skipHeaderOption: string[] = defaultSkipHeaders;
+  if (typeof options === "object") {
+    tags = options.tags;
+    skipHeaderOption = [...skipHeaderOption, ...(options.skipCacheHeaders || []).map((headerKey) => headerKey.toLowerCase())];
+  }
+
   const meta = {
     status: resp.status,
     headers: {},
@@ -126,10 +130,18 @@ export async function set(key: string, resp: Response, options?: CacheSetOptions
     resp.headers.set("etag", etag)
   }
 
-  for (const h of goodHeaders) {
-    const v = resp.headers.getAll(h);
-    if (v && v.length > 0) {
-      meta.headers[h] = v.join(', ');
+  const skipHeaderSet = new Set(skipHeaderOption);
+  for(const headerSet of resp.headers as any) {
+    const [name, value] = headerSet;
+    if (skipHeaderSet.has(name.toLowerCase())) {
+      continue;
+    }
+
+    const existingVal = meta.headers[name];
+    if (existingVal) {
+      meta.headers[name] = `${existingVal}, ${value}`;
+    } else {
+      meta.headers[name] = value;
     }
   }
   return cacheResult([

@@ -17,7 +17,7 @@
     "skipLibCheck": true,
   },
   "typedocOptions": {
-    "out": "./docs/build/",
+    "out": "./docs/api/",
     "includeDeclarations": true,
     "excludeExternals": true,
     "excludeNotExported": true,
