@@ -11,6 +11,9 @@
   "files": [
     "examples/"
   ],
+  "scripts": {
+    "prepublish": "rm -rf examples/* && cp -r ../../examples/ examples/"
+  },
   "engines": {
     "node": ">=8 <10.9.0"
   },
