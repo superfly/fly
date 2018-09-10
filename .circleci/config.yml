@@ -2,7 +2,7 @@ version: 2
 jobs:
   test-node-10:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:10.8
     working_directory: ~/fly
     steps:
       - checkout
