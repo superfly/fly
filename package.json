@@ -23,7 +23,7 @@
     "build:v8env": "rm -rf dist v8env/lib && ./node_modules/.bin/tsc -p v8env && ./node_modules/.bin/webpack --config webpack.v8.config.js",
     "prepublishOnly": "yarn build",
     "release": "standard-version",
-    "doc:v8env": "./node_modules/typedoc/bin/typedoc --tsconfig ./v8env/tsconfig.json"
+    "doc:v8env": "./publish-docs.sh"
   },
   "bin": {
     "fly": "lib/cmd/index.js"
