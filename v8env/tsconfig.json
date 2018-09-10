@@ -27,7 +27,7 @@
     }
   },
   "typedocOptions": {
-    "out": "./docs/build/",
+    "out": "./dist/docs/api/",
     "includeDeclarations": true,
     "excludeExternals": true,
     "excludeNotExported": true,
