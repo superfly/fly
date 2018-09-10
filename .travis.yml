@@ -73,7 +73,6 @@ install:
   - yarn install
   - yarn bootstrap
 script:
-  - .hooks/pre-build
   - yarn build
   - yarn bundle
   - yarn test
