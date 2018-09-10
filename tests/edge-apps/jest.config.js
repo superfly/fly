@@ -22,6 +22,9 @@ module.exports = {
     "**/__tests__/**/*.ts?(x)",
     "**/*.(t|z)ests?.ts"
   ],
+  "roots": [
+    "<rootDir>/tests/edge-apps/"
+  ],
   "testEnvironment": "@fly/test-environment",
   "setupTestFrameworkScriptFile": "@fly/test-environment/install"
 }
