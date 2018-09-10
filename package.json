@@ -16,7 +16,7 @@
     "clean:dependencies": "lerna clean && rm -rf node_modules",
     "test": "yarn test:packages && yarn test:e2e",
     "test:packages": "jest packages/*",
-    "test:e2e": "lerna run test"
+    "test:e2e": "lerna exec --concurrency 1 yarn test --scope @fly-test/*"
   },
   "devDependencies": {
     "@types/jest": "^23.3.1",

@@ -1,5 +1,5 @@
 {
-  "name": "v8env",
+  "name": "@fly-test/v8env",
   "version": "0.40.1-alpha.0",
   "private": true,
   "scripts": {
