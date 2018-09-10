@@ -64,6 +64,36 @@ export async function getString(key: string) {
 }
 
 /**
+ * Get multiple values from the cache.
+ * @param keys list of keys to retrieve
+ * @returns List of results in the same order as the provided keys
+ */
+export function getMulti(keys: string[]): Promise<(ArrayBuffer | null)[]> {
+  return new Promise<(ArrayBuffer | null)[]>(function cacheGetMultiPromise(resolve, reject) {
+    bridge.dispatch(
+      "flyCacheGetMulti",
+      JSON.stringify(keys),
+      function cacheGetMultiCallback(err: string | null | undefined, ...values: (ArrayBuffer | null)[]) {
+        if (err != null) {
+          reject(err)
+          return
+        }
+        resolve(values)
+      })
+  })
+}
+
+/**
+ * Get multiple string values from the cache
+ * @param keys list of keys to retrieve
+ * @returns list of results in the same order as the provided keys
+ */
+export async function getMultiString(keys: string[]) {
+  const raw = await getMulti(keys)
+  return raw.map((b) => b ? new TextDecoder("utf-8").decode(b) : null)
+}
+
+/**
  * Sets a value at the specified key, with an optional ttl
  * @param key The key to add or overwrite
  * @param value Data to store at the specified key, up to 2MB
@@ -178,6 +208,8 @@ import { default as global } from "./global"
 const cache = {
   get,
   getString,
+  getMulti,
+  getMultiString,
   set,
   expire,
   del,

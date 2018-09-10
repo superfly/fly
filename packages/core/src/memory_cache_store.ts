@@ -19,6 +19,12 @@ export class MemoryCacheStore implements CacheStore {
     return Buffer.from(buf)
   }
 
+  async getMulti(ns: string, keys: string[]) {
+    keys = keys.map((k) => keyFor(ns, k))
+    const bufs = await this.redis.mget(...keys)
+    return bufs.map((b: any) => !b ? null : Buffer.from(b))
+  }
+
   async set(ns: string, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean> {
     const k = keyFor(ns, key)
     const pipeline = this.redis.pipeline()

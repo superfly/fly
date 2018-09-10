@@ -58,4 +58,19 @@ describe("@fly/cache", () => {
     expect(setResult).to.eq(false)
     expect(v).to.eq("asdf")
   })
+
+  it("gets multiple values", async () => {
+    const k = `cache-test${Math.random()}`
+    const k2 = `cache-test${Math.random()}`
+
+    await cache.set(k, "multi-1")
+    await cache.set(k2, "multi-2")
+
+    const result = await cache.getMultiString([k, k2])
+    expect(result).to.be.an('array')
+
+    const [r1, r2] = result;
+    expect(r1).to.eq("multi-1")
+    expect(r2).to.eq("multi-2")
+  })
 })

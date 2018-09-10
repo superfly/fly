@@ -22,6 +22,12 @@ export class RedisCacheStore implements CacheStore {
     return ret
   }
 
+  async getMulti(ns: string, keys: string[]) {
+    keys = keys.map((k) => keyFor(ns, k))
+    const bufs = await this.redis.getMultiBufferAsync(keys)
+    return bufs.map((b: any) => !b ? null : Buffer.from(b))
+  }
+
   async set(ns: string, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean> {
     const k = keyFor(ns, key)
     let ttl: number | undefined
@@ -154,6 +160,7 @@ async function* setScanner(redis: FlyRedis, key: string) {
 
 class FlyRedis {
   getBufferAsync: (key: Buffer | string) => Promise<Buffer>
+  getMultiBufferAsync: (keys: string[]) => Promise<Buffer[]>
   setAsync: (key: string, value: Buffer, mode?: number | string, duration?: number, exists?: string) => Promise<"OK" | undefined>
   expireAsync: (key: string, ttl: number) => Promise<boolean>
   ttlAsync: (key: string) => Promise<number>
@@ -168,6 +175,7 @@ class FlyRedis {
 
     const p = promisify
     this.getBufferAsync = p(redis.get).bind(redis)
+    this.getMultiBufferAsync = p(redis.mget).bind(redis)
     this.setAsync = p(redis.set).bind(redis)
     this.expireAsync = p(redis.expire).bind(redis)
     this.ttlAsync = p(redis.ttl).bind(redis)

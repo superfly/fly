@@ -9,6 +9,7 @@ export interface CacheSetOptions {
 }
 export interface CacheStore {
   get(ns: string, key: string): Promise<Buffer | null>
+  getMulti(ns: string, keys: string[]): Promise<(Buffer | null)[]>
   set(ns: string, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean>
   del(ns: string, key: string): Promise<boolean>
   expire(ns: string, key: string, ttl: number): Promise<boolean>
