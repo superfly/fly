@@ -16,6 +16,19 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+<a name="0.41.0"></a>
+# [0.41.0](https://github.com/superfly/fly/compare/v0.40.0-caching.7...v0.41.0) (2018-09-11)
+
+
+### Features
+
+* adds cache.set onlyIfEmpty option ([986cefc](https://github.com/superfly/fly/commit/986cefc))
+* batch cache lookups with `cache.getMulti` ([f3efbd2](https://github.com/superfly/fly/commit/f3efbd2))
+* configurable `responseCache` headers ([b84c513](https://github.com/superfly/fly/commit/b84c513))
+* global cache del/purgeTag ([33a3e63](https://github.com/superfly/fly/commit/33a3e63))
+
+
+
 <a name="0.40.0"></a>
 # [0.40.0](https://github.com/superfly/fly/compare/v0.40.0-caching.7...v0.40.0) (2018-08-28)
 
