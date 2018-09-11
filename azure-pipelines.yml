@@ -20,9 +20,15 @@ steps:
     version: $(node_version)
 
 - script: node -v
-- script: npm -g install yarn concurrently
+- script: npm -g install yarn lerna
+  displayName: "install yarn + lerna"
 - script: |
     yarn install
+    yarn bootstrap
+  displayName: "yarn install + bootstrap"
+- script: |
     yarn build
-  displayName: 'yarn install and build'
+    yarn bundle
+  displayName: 'yarn build + bundle'
 - script: yarn test
+  displayName: yarn test
