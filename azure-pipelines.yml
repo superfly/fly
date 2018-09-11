@@ -19,7 +19,8 @@ steps:
   inputs:
     version: $(node_version)
 
-- script: npm -g install yarn
+- script: node -v
+- script: npm -g install yarn concurrently
 - script: |
     yarn install
     yarn build
