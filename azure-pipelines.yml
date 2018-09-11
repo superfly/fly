@@ -19,8 +19,9 @@ steps:
   inputs:
     version: $(node_version)
 
+- script: npm -g install yarn
 - script: |
     yarn install
     yarn build
-    yarn test
   displayName: 'yarn install and build'
+- script: yarn test
