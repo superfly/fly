@@ -12,6 +12,7 @@ jobs:
     inputs: 
       versionSpec: 10.8
   - script: npm install -g yarn
+  - script: git submodule update --init
   - script: yarn install
   - script: yarn bootstrap
   - script: yarn build
@@ -25,6 +26,7 @@ jobs:
     inputs: 
       versionSpec: 10.8
   - script: npm install -g yarn
+  - script: git submodule update --init
   - script: yarn install
   - script: yarn bootstrap
   - script: yarn build
