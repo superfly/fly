@@ -12,8 +12,8 @@
     "examples/"
   ],
   "scripts": {
-    "clean": "rm -rf examples/*",
-    "build": "cp -r ../../examples/ examples/"
+    "clean": "rm -rf examples/* README.md",
+    "build": "cp -r ../../examples/ examples/ && cp ../../README.md ."
   },
   "engines": {
     "node": ">=8 <10.9.0"
