@@ -11,7 +11,9 @@
       "conventionalCommits": true,
       "exact": true,
       "message": "chore(release): %s",
-      "preid": "pre"
+      "preid": "pre",
+      "npmClient": "npm",
+      "registry": "https://registry.npmjs.org/"
     }
   }
 }
