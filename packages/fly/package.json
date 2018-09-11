@@ -13,7 +13,8 @@
   ],
   "scripts": {
     "clean": "rm -rf examples/* README.md",
-    "build": "cp -r ../../examples/ examples/ && cp ../../README.md ."
+    "build": "cp -r ../../examples/ examples/ && cp ../../README.md .",
+    "prepublishOnly": "yarn build"
   },
   "engines": {
     "node": ">=8 <10.9.0"
