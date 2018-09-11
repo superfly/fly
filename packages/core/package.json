@@ -1,6 +1,6 @@
 {
     "name": "@fly/core",
-    "version": "0.40.1-alpha.0",
+    "version": "0.40.0",
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
@@ -20,7 +20,7 @@
         "build:watch": "tsc -b -w -v ."
     },
     "dependencies": {
-        "@fly/v8env": "0.40.1-alpha.0",
+        "@fly/v8env": "0.40.0",
         "ansi-colors": "^1.1.0",
         "axios": "^0.18.0",
         "better-sqlite3": "^4.1.4",
@@ -74,6 +74,7 @@
         "typescript": "3.0.1"
     },
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "registry": "http://localhost:4873"
     }
 }

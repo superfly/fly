@@ -1,9 +1,14 @@
 {
-    "packages": [
-        "packages/*",
-        "tests/*"
-    ],
-    "version": "0.40.1-alpha.0",
-    "npmClient": "yarn",
-    "useWorkspaces": true
+  "packages": [
+    "packages/*",
+    "tests/*"
+  ],
+  "version": "0.40.0",
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "command": {
+    "publish": {
+      "conventionalCommits": true
+    }
+  }
 }
