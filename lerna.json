@@ -9,7 +9,8 @@
   "command": {
     "publish": {
       "conventionalCommits": true,
-      "verifyAccess": false
+      "verifyAccess": false,
+      "npmClient": "npm"
     }
   }
 }
