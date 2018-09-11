@@ -9,8 +9,6 @@
   "command": {
     "publish": {
       "conventionalCommits": true,
-      "verifyAccess": false,
-      "npmClient": "npm",
       "exact": true,
       "message": "chore(release): %s"
     }

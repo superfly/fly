@@ -23,7 +23,6 @@
     "@fly/v8env": "0.41.0"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "http://localhost:4873"
+    "access": "public"
   }
 }
