@@ -10,7 +10,8 @@
     "publish": {
       "conventionalCommits": true,
       "verifyAccess": false,
-      "npmClient": "npm"
+      "npmClient": "npm",
+      "exact": true
     }
   }
 }
