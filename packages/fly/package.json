@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "clean": "rm -rf examples/*",
-    "prepublish": "yarn clean && cp -r ../../examples/ examples/"
+    "build": "cp -r ../../examples/ examples/"
   },
   "engines": {
     "node": ">=8 <10.9.0"
