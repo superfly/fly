@@ -10,7 +10,8 @@
     "publish": {
       "conventionalCommits": true,
       "exact": true,
-      "message": "chore(release): %s"
+      "message": "chore(release): %s",
+      "preid": "pre"
     }
   }
 }
