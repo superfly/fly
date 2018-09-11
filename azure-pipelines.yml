@@ -41,7 +41,7 @@ jobs:
       versionSpec: 10.8
   - script: git submodule update --init
   # for node-gyp
-  - scipt: npm install --global --production windows-build-tools
+  - script: npm install --global --production windows-build-tools
   - script: npm install -g yarn
   - script: yarn install
   - script: yarn bootstrap
