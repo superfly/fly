@@ -8,9 +8,17 @@ jobs:
   pool: 
     vmImage: xcode9-macos10.13
   steps:
+  - task: NodeTool@0
+    inputs: 10.8
+  - script: npm install -g yarn
   - script: yarn install
+  - script: yarn bootstrap
 - job: Linux
   pool: 
     vmImage: ubuntu-16.04
   steps:
+  - task: NodeTool@0
+    inputs: 10.8
+  - script: npm install -g yarn
   - script: yarn install
+  - script: yarn bootstrap
