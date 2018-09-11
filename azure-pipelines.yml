@@ -1,0 +1,26 @@
+# Node.js
+# Build a general Node.js application with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/vsts/pipelines/languages/javascript
+
+pool:
+  vmImage: 'Ubuntu 16.04'
+strategy:
+  matrix:
+    node_8_x:
+      node_version: 8.x
+    node_10_3:
+      node_version: "10.3"
+    node_10_x:
+      node_version: 10.x
+
+steps:
+- task: NodeTool@0
+  inputs:
+    version: $(node_version)
+
+- script: |
+    yarn install
+    yarn build
+    yarn test
+  displayName: 'yarn install and build'
