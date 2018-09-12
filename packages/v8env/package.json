@@ -12,6 +12,7 @@
     "files": [
         "lib/",
         "dist/",
+        "testing/",
         "vendor/whatwg-streams/reference-implementation/lib/"
     ],
     "scripts": {
