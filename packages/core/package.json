@@ -11,9 +11,6 @@
     "files": [
         "lib"
     ],
-    "bin": {
-        "fly": "lib/cmd/index.js"
-    },
     "scripts": {
         "clean": "rm -rf ./lib ./dist",
         "build": "tsc -b .",

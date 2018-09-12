@@ -9,8 +9,12 @@
   },
   "homepage": "https://fly.io",
   "files": [
-    "examples/"
+    "examples/",
+    "bin/"
   ],
+  "bin": {
+    "fly": "./bin/fly.js"
+  },
   "scripts": {
     "clean": "rm -rf examples/* README.md",
     "build": "cp -r ../../examples/ examples/ && cp ../../README.md .",
