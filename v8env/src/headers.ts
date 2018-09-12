@@ -8,7 +8,7 @@ import { logger } from './logger'
  * @class
  * @param {Object} [init]
  */
-export class Headers implements Headers {
+export default class Headers {
   private headerMap: { [key: string]: string } = {};
 
   constructor(init: HeadersInit) {

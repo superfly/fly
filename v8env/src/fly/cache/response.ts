@@ -27,7 +27,7 @@ import cache, { CacheSetOptions } from "."
  */
 export interface Metadata {
   status: number,
-  headers: { [key: string]: string | null},
+  headers: { [key: string]: string | null },
   at?: number,
   ttl: number,
   tags?: string[]
@@ -131,10 +131,9 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
   }
 
   const skipHeaderSet = new Set(skipHeaderOption);
-  for(const headerSet of resp.headers as any) {
-    const [name, value] = headerSet;
+  resp.headers.forEach((value, name) => {
     if (skipHeaderSet.has(name.toLowerCase())) {
-      continue;
+      return;
     }
 
     const existingVal = meta.headers[name];
@@ -143,7 +142,7 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
     } else {
       meta.headers[name] = value;
     }
-  }
+  })
   return cacheResult([
     setMeta(key, meta, options),
     cache.set(key + ':body', body, options)
