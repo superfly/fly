@@ -14,7 +14,7 @@ jobs:
       versionSpec: 10.8
   - script: npm install -g yarn
   - script: yarn install --no-progress --verbose
-  - script: yarn bootstrap --no-progress --verbose
+  - script: yarn bootstrap --no-progress
   - script: yarn build --verbose
   - script: yarn bundle --verbose
   - script: yarn test --verbose
@@ -32,7 +32,7 @@ jobs:
       architecture: 'x64'
   - script: npm install -g yarn
   - script: yarn install --no-progress --verbose
-  - script: yarn bootstrap --no-progress --verbose
+  - script: yarn bootstrap --no-progress
   - script: yarn build
   - script: yarn bundle
   - script: yarn test
@@ -52,7 +52,7 @@ jobs:
   - script: npm install --global --production windows-build-tools
   - script: npm install -g yarn
   - script: yarn install --no-progress --verbose
-  - script: yarn bootstrap --no-progress --verbose
+  - script: yarn bootstrap --no-progress
   - script: yarn build
   - script: yarn bundle
   - script: yarn test
