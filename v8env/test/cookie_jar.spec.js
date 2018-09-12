@@ -18,6 +18,6 @@ describe("cookies", () => {
     resp.cookies.append("test2", "val2")
 
     const setCookie = resp.headers.get("set-cookie")
-    expect(setCookie).to.eq("test1=val1,test2=val2")
+    expect(setCookie).to.eq("test1=val1; Max-Age=1000,test2=val2")
   })
 })
