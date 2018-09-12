@@ -19,6 +19,7 @@ jobs:
   - script: yarn bundle
   - script: yarn test
   - task: PublishTestResults@2
+    condition: always()
     inputs:
       testResultsFiles: 'junit.xml' 
       searchFolder: $(Build.SourcesDirectory)/artifacts
@@ -43,6 +44,7 @@ jobs:
   - script: yarn bundle
   - script: yarn test
   - task: PublishTestResults@2
+    condition: always()
     inputs:
       testResultsFiles: 'junit.xml' 
       searchFolder: $(Build.SourcesDirectory)/artifacts

@@ -27,5 +27,10 @@ module.exports = {
   ],
   "testEnvironment": "@fly/test-environment",
   "setupTestFrameworkScriptFile": "@fly/test-environment/install",
-  "reporters": ["default", "jest-junit"]
+  "reporters": [
+    "default",
+    ["jest-junit", {
+      "output": "artifacts/edge-apps/junit.xml"
+    }]
+  ]
 }
