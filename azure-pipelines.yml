@@ -36,7 +36,7 @@ jobs:
   - script: yarn bootstrap --no-progress
   - script: yarn build
   - script: yarn bundle
-  - script: yarn jest
+  - script: yarn test
 # - job: Windows
 #   pool: 
 #     vmImage: vs2017-win2016
