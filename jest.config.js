@@ -27,7 +27,7 @@ module.exports = {
   "reporters": [
     "default",
     ["jest-junit", {
-      "output": "./artifacts/junit.xml"
+      "output": "<rootDir>/artifacts/junit.xml"
     }]
   ]
 }
