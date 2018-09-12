@@ -26,5 +26,6 @@ module.exports = {
     "<rootDir>/tests/edge-apps/"
   ],
   "testEnvironment": "@fly/test-environment",
-  "setupTestFrameworkScriptFile": "@fly/test-environment/install"
+  "setupTestFrameworkScriptFile": "@fly/test-environment/install",
+  "reporters": ["default", "jest-junit"]
 }

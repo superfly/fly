@@ -23,5 +23,11 @@ module.exports = {
   "testEnvironment": "node",
   "roots": [
     "packages/"
+  ],
+  "reporters": [
+    "default",
+    ["jest-junit", {
+      "output": "./artifacts/junit.xml"
+    }]
   ]
 }

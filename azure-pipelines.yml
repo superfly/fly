@@ -18,6 +18,10 @@ jobs:
   - script: yarn build
   - script: yarn bundle
   - script: yarn test
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'junit.xml' 
+      searchFolder: 'artifacts'
 
 - job: Linux
   pool: 
@@ -38,7 +42,11 @@ jobs:
   - script: yarn build
   - script: yarn bundle
   - script: yarn test
-  
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'junit.xml' 
+      searchFolder: 'artifacts'
+      
 # - job: Windows
 #   pool: 
 #     vmImage: vs2017-win2016
