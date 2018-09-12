@@ -15,9 +15,9 @@ jobs:
   - script: npm install -g yarn
   - script: yarn install --no-progress --verbose
   - script: yarn bootstrap --no-progress
-  - script: yarn build --verbose
-  - script: yarn bundle --verbose
-  - script: yarn test --verbose
+  - script: yarn build
+  - script: yarn bundle
+  - script: yarn test
 - job: Linux
   pool: 
     vmImage: ubuntu-16.04
