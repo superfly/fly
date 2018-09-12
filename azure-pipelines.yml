@@ -21,7 +21,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: 'junit.xml' 
-      searchFolder: 'artifacts'
+      searchFolder: $(Build.SourcesDirectory)/artifacts
 
 - job: Linux
   pool: 
@@ -45,8 +45,8 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: 'junit.xml' 
-      searchFolder: 'artifacts'
-      
+      searchFolder: $(Build.SourcesDirectory)/artifacts
+
 # - job: Windows
 #   pool: 
 #     vmImage: vs2017-win2016
