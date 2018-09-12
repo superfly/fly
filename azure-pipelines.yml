@@ -7,11 +7,21 @@ jobs:
 - job: macOS
   pool: 
     vmImage: xcode9-macos10.13
+  strategy:
+    matrix:
+      node-8:
+        node_version: 8
+      node-10-3:
+        node_version: 10.3
+      node-latest:
+        node_version: ">=10"
+        node_check_latest: true
   timeoutInMinutes: 10
   steps:
   - task: NodeTool@0
     inputs: 
-      versionSpec: 10.8
+      versionSpec: $(node_version)
+      checkLatest: $(node_check_latest)
   - script: npm install -g yarn
   - script: yarn install --no-progress
   - script: yarn bootstrap --no-progress
@@ -27,11 +37,21 @@ jobs:
 - job: Linux
   pool: 
     vmImage: ubuntu-16.04
+  strategy:
+    matrix:
+      node-8:
+        node_version: 8
+      node-10-3:
+        node_version: 10.3
+      node-latest:
+        node_version: ">=10"
+        node_check_latest: true
   timeoutInMinutes: 10
   steps:
   - task: NodeTool@0
     inputs: 
-      versionSpec: 10.8
+      versionSpec: $(node_version)
+      checkLatest: $(node_check_latest)
   - task: UsePythonVersion@0
     inputs:
       versionSpec: '2.7'
