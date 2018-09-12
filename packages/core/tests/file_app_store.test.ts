@@ -1,6 +1,6 @@
 import { App, FileAppStore } from "../src";
 
-describe("FileAppStore initialization", () => {
+describe.skip("FileAppStore initialization", () => {
   test("invalid path", () => {
     expect(() => new FileAppStore("badpath")).toThrowError(/Could not find path/)
   })
