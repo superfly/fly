@@ -4,20 +4,20 @@
 # https://docs.microsoft.com/vsts/pipelines/languages/javascript
 
 jobs:
-- job: macOS
-  pool: 
-    vmImage: xcode9-macos10.13
-  timeoutInMinutes: 10
-  steps:
-  - task: NodeTool@0
-    inputs: 
-      versionSpec: 10.8
-  - script: npm install -g yarn
-  - script: yarn install --no-progress --verbose
-  - script: yarn bootstrap --no-progress
-  - script: yarn build
-  - script: yarn bundle
-  - script: yarn test
+# - job: macOS
+#   pool: 
+#     vmImage: xcode9-macos10.13
+#   timeoutInMinutes: 10
+#   steps:
+#   - task: NodeTool@0
+#     inputs: 
+#       versionSpec: 10.8
+#   - script: npm install -g yarn
+#   - script: yarn install --no-progress --verbose
+#   - script: yarn bootstrap --no-progress
+#   - script: yarn build
+#   - script: yarn bundle
+#   - script: yarn test
 - job: Linux
   pool: 
     vmImage: ubuntu-16.04
@@ -35,24 +35,24 @@ jobs:
   - script: yarn bootstrap --no-progress
   - script: yarn build
   - script: yarn bundle
-  - script: yarn test
-- job: Windows
-  pool: 
-    vmImage: vs2017-win2016
-  timeoutInMinutes: 10
-  steps:
-  - task: NodeTool@0
-    inputs: 
-      versionSpec: 10.8
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '2.7'
-      architecture: 'x64'
-  # for node-gyp
-  - script: npm install --global --production windows-build-tools
-  - script: npm install -g yarn
-  - script: yarn install --no-progress --verbose
-  - script: yarn bootstrap --no-progress
-  - script: yarn build
-  - script: yarn bundle
-  - script: yarn test
+  - script: jest
+# - job: Windows
+#   pool: 
+#     vmImage: vs2017-win2016
+#   timeoutInMinutes: 10
+#   steps:
+#   - task: NodeTool@0
+#     inputs: 
+#       versionSpec: 10.8
+#   - task: UsePythonVersion@0
+#     inputs:
+#       versionSpec: '2.7'
+#       architecture: 'x64'
+#   # for node-gyp
+#   - script: npm install --global --production windows-build-tools
+#   - script: npm install -g yarn
+#   - script: yarn install --no-progress --verbose
+#   - script: yarn bootstrap --no-progress
+#   - script: yarn build
+#   - script: yarn bundle
+#   - script: yarn test
