@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.42.0-pre.4"></a>
+# [0.42.0-pre.4](https://github.com/superfly/fly/compare/v0.42.0-pre.3...v0.42.0-pre.4) (2018-09-12)
+
+**Note:** Version bump only for package @fly-test/v8env
+
+
+
+
+
 <a name="0.42.0-pre.3"></a>
 # [0.42.0-pre.3](https://github.com/superfly/fly/compare/v0.42.0-pre.2...v0.42.0-pre.3) (2018-09-11)
 
