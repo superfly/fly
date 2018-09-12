@@ -13,11 +13,11 @@ jobs:
     inputs: 
       versionSpec: 10.8
   - script: npm install -g yarn
-  - script: yarn install --no-progress
-  - script: yarn bootstrap --no-progress
-  - script: yarn build
-  - script: yarn bundle
-  - script: yarn test
+  - script: yarn install --no-progress --verbose
+  - script: yarn bootstrap --no-progress --verbose
+  - script: yarn build --verbose
+  - script: yarn bundle --verbose
+  - script: yarn test --verbose
 - job: Linux
   pool: 
     vmImage: ubuntu-16.04
@@ -31,8 +31,8 @@ jobs:
       versionSpec: '2.7'
       architecture: 'x64'
   - script: npm install -g yarn
-  - script: yarn install --no-progress  
-  - script: yarn bootstrap --no-progress
+  - script: yarn install --no-progress --verbose
+  - script: yarn bootstrap --no-progress --verbose
   - script: yarn build
   - script: yarn bundle
   - script: yarn test
@@ -51,8 +51,8 @@ jobs:
   # for node-gyp
   - script: npm install --global --production windows-build-tools
   - script: npm install -g yarn
-  - script: yarn install --no-progress
-  - script: yarn bootstrap --no-progress
+  - script: yarn install --no-progress --verbose
+  - script: yarn bootstrap --no-progress --verbose
   - script: yarn build
   - script: yarn bundle
   - script: yarn test
