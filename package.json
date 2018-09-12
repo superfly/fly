@@ -18,7 +18,8 @@
     "test:packages": "jest packages/*",
     "test:e2e": "lerna exec --concurrency 1 yarn test --scope @fly-test/*",
     "doc": "lerna run doc",
-    "publish": "lerna publish"
+    "publish": "lerna publish",
+    "publish:pre": "lerna publish prerelease --npm-tag pre --force-publish='*'"
   },
   "devDependencies": {
     "@types/jest": "^23.3.1",
