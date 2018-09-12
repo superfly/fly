@@ -21,7 +21,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testResultsFiles: 'junit.xml' 
+      testResultsFiles: '**/*junit.xml' 
       searchFolder: $(Build.SourcesDirectory)/artifacts
 
 - job: Linux
@@ -46,7 +46,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testResultsFiles: 'junit.xml' 
+      testResultsFiles: '**/*junit.xml' 
       searchFolder: $(Build.SourcesDirectory)/artifacts
 
 # - job: Windows
