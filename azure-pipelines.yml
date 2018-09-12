@@ -13,7 +13,7 @@ jobs:
     inputs: 
       versionSpec: 10.8
   - script: npm install -g yarn
-  - script: yarn install --no-progress --verbose
+  - script: yarn install --no-progress
   - script: yarn bootstrap --no-progress
   - script: yarn build
   - script: yarn bundle
