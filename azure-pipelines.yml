@@ -30,7 +30,7 @@ jobs:
     inputs:
       versionSpec: '2.7'
       architecture: 'x64'
-  - task: sudo apt-get install -y nasm
+  - script: sudo apt-get install -y nasm
   - script: npm install -g yarn
   - script: yarn install --no-progress
   - script: yarn bootstrap --no-progress
