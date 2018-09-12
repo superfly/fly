@@ -279,9 +279,7 @@ describe('Server', function () {
       expect(res.data).to.equal("ok")
 
       expect(res.headers['set-cookie']).to.deep.equal([
-        "fly_cid=f93f9d40-41b7-4d57-a245-6f639d402585; Expires=Wed, 16 Dec 2037 18:16:57 GMT; HttpOnly",
-        "foo=bar",
-        "_some_session=2342353454edge56rtyghf"
+        "fly_cid=f93f9d40-41b7-4d57-a245-6f639d402585; Expires=Wed, 16 Dec 2037 18:16:57 GMT; HttpOnly, foo=bar, _some_session=2342353454edge56rtyghf"
       ])
     })
   })
