@@ -52,6 +52,7 @@ Build the code and bundle for execution:
 
 ```sh
 yarn build
+yarn bundle
 ```
 
 You can now run the test suite:
