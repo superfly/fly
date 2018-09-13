@@ -64,7 +64,7 @@ jobs:
       sudo apt-get update && sudo apt-get install -y nasm
       npm install -g yarn
       yarn install --no-progress && yarn bootstrap
-    name: Install Dependencies
+    name: Install
   - script: yarn build && yarn bundle
     name: Build
   - script: yarn test
