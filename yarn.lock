@@ -5256,6 +5256,13 @@ jest-serializer@^23.0.1:
   version "23.0.1"
   resolved "https://registry.yarnpkg.com/jest-serializer/-/jest-serializer-23.0.1.tgz#a3776aeb311e90fe83fab9e533e85102bd164165"
 
+jest-silent-reporter@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/jest-silent-reporter/-/jest-silent-reporter-0.1.1.tgz#2580704abf6245009f486fbea68f697dd7db2f48"
+  dependencies:
+    chalk "^2.3.1"
+    jest-util "^23.0.0"
+
 jest-snapshot@^23.5.0:
   version "23.5.0"
   resolved "https://registry.yarnpkg.com/jest-snapshot/-/jest-snapshot-23.5.0.tgz#cc368ebd8513e1175e2a7277f37a801b7358ae79"
@@ -5271,7 +5278,7 @@ jest-snapshot@^23.5.0:
     pretty-format "^23.5.0"
     semver "^5.5.0"
 
-jest-util@^23.4.0:
+jest-util@^23.0.0, jest-util@^23.4.0:
   version "23.4.0"
   resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-23.4.0.tgz#4d063cb927baf0a23831ff61bec2cbbf49793561"
   dependencies:
