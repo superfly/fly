@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "baseUrl": "packages/",
+    "paths": {
+      "@fly/*": [
+        "./*/src"
+      ]
+    },
+    // not sure we need these yet...
+    // "esModuleInterop": true,
+    // "allowSyntheticDefaultImports": true,
+  }
+}
