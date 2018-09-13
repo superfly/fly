@@ -60,9 +60,11 @@ jobs:
     inputs:
       versionSpec: '2.7'
       architecture: 'x64'
-  - script: sudo apt-get update && sudo apt-get install -y nasm
-  - script: yarn install --no-progress && yarn bootstrap
-    name: Install
+  - script: |
+      sudo apt-get update && sudo apt-get install -y nasm
+      npm install -g yarn
+      yarn install --no-progress && yarn bootstrap
+    name: Install Dependencies
   - script: yarn build && yarn bundle
     name: Build
   - script: yarn test
