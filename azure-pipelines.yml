@@ -16,6 +16,8 @@ jobs:
       node-latest:
         node_version: ">=10"
         node_check_latest: true
+  variables:
+    CI: true
   timeoutInMinutes: 10
   steps:
   - task: NodeTool@0
@@ -46,6 +48,8 @@ jobs:
       node-latest:
         node_version: ">=10"
         node_check_latest: true
+  variables:
+    CI: true
   timeoutInMinutes: 10
   steps:
   - task: NodeTool@0
