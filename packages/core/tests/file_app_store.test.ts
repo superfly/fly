@@ -6,7 +6,7 @@ describe("FileAppStore initialization", () => {
   })
 
   test("no code at path", () => {
-    expect(() => new FileAppStore(__dirname)).toThrowError(/no code/)
+    expect(() => new FileAppStore(__dirname, { noWatch: true })).toThrowError(/no code/)
   })
 
   test("app with no config", () => {

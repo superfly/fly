@@ -6,7 +6,7 @@ setupApps({
   "set-immediate.test": path.resolve(__dirname, "setImmediate.js"),
 })
 
-const timerTolerance = 100 // ms
+const timerTolerance = 125 // ms
 
 describe("setTimeout", () => {
   test.each([250, 50, 0])("with %dms delay", async (timeout) => {
