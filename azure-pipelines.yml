@@ -13,9 +13,8 @@ jobs:
         node_version: 8
       node-10-3:
         node_version: 10.3
-      node-latest:
-        node_version: ">=10"
-        node_check_latest: true
+      node-10.9:
+        node_version: 10.9
   variables:
     CI: true
   timeoutInMinutes: 10
@@ -45,9 +44,8 @@ jobs:
         node_version: 8
       node-10-3:
         node_version: 10.3
-      node-latest:
-        node_version: ">=10"
-        node_check_latest: true
+      node-10.9:
+        node_version: 10.9
   variables:
     CI: true
   timeoutInMinutes: 10
