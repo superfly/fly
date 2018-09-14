@@ -3,8 +3,8 @@
  */
 /**
  * Tools for manipulating HTML + DOM content.
- * 
- * 
+ *
+ *
  * ```javascript
  * const html = '<html><head></head><body><h1>Hello</h1></body</html>'
  * let doc = fly.html.Document.parse(html)
@@ -34,7 +34,7 @@ declare abstract class Node {
 }
 /**
  * A Document represents an HTML in its parsed DOM format.
- * 
+ *
  * ```javascript
  * const html = '<html><head></head><body><h1>Hello</h1></body</html>'
  * let doc = Document.parse(html)
@@ -53,7 +53,6 @@ export class Document extends Node {
    * @param id The id=<id> attribute to query for
    */
   public getElementById(id: string): Element
-
 }
 export class Element extends Node {
   /**

@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { expect } from "chai"
 
 import cache, { responseCache } from "@fly/cache"
 
@@ -26,7 +26,9 @@ describe("@fly/cache/response", () => {
   })
 
   it("sets a Response with headers", async () => {
-    const [key, resp] = await makeResponse({ headers: { "authorization": "foo", "content-type": "text/plain; charset=utf-8" } })
+    const [key, resp] = await makeResponse({
+      headers: { authorization: "foo", "content-type": "text/plain; charset=utf-8" }
+    })
     const cachedResponse = await responseCache.get(key)
 
     expect(cachedResponse).instanceOf(Response)
@@ -42,14 +44,17 @@ describe("@fly/cache/response", () => {
   })
 
   it("sets a Response with headers, and custom skip-headers", async () => {
-    const [key, resp] = await makeResponse({
-      headers: {
-        "authorization": "foo",
-        "content-type": "text/plain; charset=utf-8",
-        "content-length": "538",
-        "content-encoding": "gzip"
-      }
-    }, { skipCacheHeaders: ["content-length"] })
+    const [key, resp] = await makeResponse(
+      {
+        headers: {
+          authorization: "foo",
+          "content-type": "text/plain; charset=utf-8",
+          "content-length": "538",
+          "content-encoding": "gzip"
+        }
+      },
+      { skipCacheHeaders: ["content-length"] }
+    )
     const cachedResponse = await responseCache.get(key)
 
     expect(cachedResponse).instanceOf(Response)
@@ -77,5 +82,4 @@ describe("@fly/cache/response", () => {
     const body = await cache.get(key + ":body")
     expect(body).to.eq(null)
   })
-
 })

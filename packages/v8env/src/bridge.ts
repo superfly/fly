@@ -2,7 +2,7 @@
  * @module fly
  * @private
  */
-import { logger } from './logger'
+import { logger } from "./logger"
 
 const DEFAULT_BRIDGE_TRANSFER_OPTIONS = {
   release: true,
@@ -17,17 +17,17 @@ export interface BridgeTransferOptions {
   transfer?: boolean
 }
 
-
 /**
  * @hidden
  */
 export default function initBridge(ivm, dispatch) {
-  const bridge = global.bridge = {
+  const bridge = (global.bridge = {
     prepareValue(arg, opts: { release?: any } = {}) {
-      if (!arg) // false, undefined, null, 0, "" (all transferable)
+      if (!arg)
+        // false, undefined, null, 0, "" (all transferable)
         return arg
 
-      let ctor;
+      let ctor
       // this can bomb with certain values
       try {
         ctor = arg.constructor
@@ -77,25 +77,30 @@ export default function initBridge(ivm, dispatch) {
           return arg.stack || arg.message || arg.toString()
 
         default:
-          throw new Error(`Can't prepare a non-transferable value (constructor: '${ctor && ctor.name || 'unknown'}')`);
+          throw new Error(
+            `Can't prepare a non-transferable value (constructor: '${(ctor && ctor.name) ||
+              "unknown"}')`
+          )
       }
     },
     dispatch(name, ...args) {
       logger.debug("dispatch", name)
-      return dispatch.apply(null, [name, ...args.map((a) => bridge.prepareValue(a))])
+      return dispatch.apply(null, [name, ...args.map(a => bridge.prepareValue(a))])
     },
     dispatchSync(name, ...args) {
       logger.debug("dispatchSync", name)
-      return dispatch.applySyncPromise(null, [name, ...args.map((a) => bridge.prepareValue(a))])
+      return dispatch.applySyncPromise(null, [name, ...args.map(a => bridge.prepareValue(a))])
     },
 
     wrapFunction(fn, options: BridgeTransferOptions = { release: true }) {
       const opts = Object.assign({}, DEFAULT_BRIDGE_TRANSFER_OPTIONS, options || {})
-      if (!opts.release)
-        return new ivm.Reference(fn);
+      if (!opts.release) return new ivm.Reference(fn)
 
       const cb = new ivm.Reference(function bridgeAutoReleaseFn(...args) {
-        try { cb.release() } catch (err) { } finally {
+        try {
+          cb.release()
+        } catch (err) {
+        } finally {
           fn(...args)
         }
       })
@@ -105,14 +110,16 @@ export default function initBridge(ivm, dispatch) {
     wrapValue(value, options: BridgeTransferOptions = { release: true }) {
       const opts = Object.assign({}, DEFAULT_BRIDGE_TRANSFER_OPTIONS, options || {})
       if (!!opts.transfer)
-        return new ivm.ExternalCopy(value, { transferOut: true }).copyInto({ release: !!opts.release, transferIn: true });
-      return new ivm.ExternalCopy(value).copyInto({ release: !!opts.release });
+        return new ivm.ExternalCopy(value, { transferOut: true }).copyInto({
+          release: !!opts.release,
+          transferIn: true
+        })
+      return new ivm.ExternalCopy(value).copyInto({ release: !!opts.release })
     },
 
     isReference(v) {
-      return (v instanceof ivm.Reference)
+      return v instanceof ivm.Reference
     }
-
-  }
+  })
   return bridge
 }

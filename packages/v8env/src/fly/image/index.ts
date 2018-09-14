@@ -1,6 +1,6 @@
 /**
  * Image manipulation APIs. Resize, convert, crop, etc. You can use this library to optimize images on-the-fly. Or, do clever things like adding watermarks.
- * 
+ *
  * Example:
  * ```javascript
  *   import { Image } from "@fly/image"
@@ -9,7 +9,7 @@
  *     throw new Error("Couldn't load image: " + url)
  *   }
  *   const body = await resp.arrayBuffer()
- * 
+ *
  *   return new Image(body)
  * ```
  * @module fly/image
@@ -43,11 +43,11 @@ export class Image {
   }
 
   /**
-   * Resize image to `width` x `height`. By default, the resized image is center 
-   * cropped to the exact size specified. 
+   * Resize image to `width` x `height`. By default, the resized image is center
+   * cropped to the exact size specified.
    * @param width Width in pixels of the resulting image.
    * Pass `undefined` or `null` to auto-scale the width to match the height.
-   * @param height Height in pixels of the resulting image. 
+   * @param height Height in pixels of the resulting image.
    * Pass `undefind` or `null` to auto-scale the height to match the width.
    * @param options Resize options}
    */
@@ -58,7 +58,7 @@ export class Image {
 
   /**
    * Overlay (composite) an image over the processed (resized, extracted etc.) image.
-   * 
+   *
    * The overlay image must be the same size or smaller than the processed image. If both top and left options are provided, they take precedence over gravity.
    *
    * If the overlay image contains an alpha channel then composition with premultiplication will occur.
@@ -169,7 +169,7 @@ export class Image {
 
   /**
    * Output image to JPEG
-   * 
+   *
    * ```
    *  * // Convert any input to very high quality JPEG output
    * const data = await new Image(input)
@@ -179,7 +179,7 @@ export class Image {
    *   })
    *   .toBuffer();
    * ```
-   * 
+   *
    * @param options JPEG output options
    */
   jpeg(options?: Image.JpegOptions) {
@@ -198,7 +198,7 @@ export class Image {
    *   .png()
    *   .toBuffer();
    * ```
-   * 
+   *
    * @param options Compression and encoding options
    */
   png(options?: Image.PngOptions) {
@@ -227,7 +227,7 @@ export class Image {
    * The default behaviour, when `withMetadata` is not used, is to strip all metadata
    * and convert to the device-independent sRGB colour space. This will also convert
    * to and add a web-friendly sRGB ICC profile.
-   * @param options 
+   * @param options
    *  `options.orientation:` value between 1 and 8, used to update the EXIF
    * `Orientation` tag.
    */
@@ -248,7 +248,7 @@ export class Image {
   /**
    * Pads image by number of pixels. If image is 200px wide, `extend(20)` makes it 220px wide
    * @param extend If numeric, pads all sides of an image.
-   * 
+   *
    * Otherwise, pad each side by the specified amount.
    */
   extend(extend: number | Image.ExtendOptions) {
@@ -295,34 +295,34 @@ export class Image {
 export namespace Image {
   export interface Color {
     /** red channel, 0-255 */
-    r: number,
+    r: number
     /** green channel, 0-255 */
-    g: number,
+    g: number
     /** blue channel, 0-255 */
-    b: number,
+    b: number
     /** alpha channel, 0.0-1.0 */
     alpha: number
   }
 
   export interface Metadata {
     /** Number of pixels wide */
-    width?: number;
+    width?: number
     /** Number of pixels high */
-    height?: number;
+    height?: number
     /** Name of colour space interpretation e.g. srgb, rgb, cmyk, lab, b-w ... */
-    space?: string;
+    space?: string
     /** Number of bands e.g. 3 for sRGB, 4 for CMYK */
-    channels?: number;
+    channels?: number
     /** Number of pixels per inch (DPI), if present */
-    density?: number;
+    density?: number
     /** Boolean indicating the presence of an embedded ICC profile */
-    hasProfile?: boolean;
+    hasProfile?: boolean
     /** Boolean indicating the presence of an alpha transparency channel */
-    hasAlpha?: boolean;
+    hasAlpha?: boolean
     /** Number value of the EXIF Orientation header, if present */
-    orientation?: number;
+    orientation?: number
 
-    format?: string;
+    format?: string
   }
   export interface OperationResult {
     info: Image.Metadata
@@ -334,13 +334,13 @@ export namespace Image {
    */
   export interface WebpOptions {
     /** quality, integer 1-100, defaults to 80 */
-    quality?: number,
+    quality?: number
     /** quality of alpha layer, integer 0-100, default to 100 */
-    alphaQuality?: number,
+    alphaQuality?: number
     /** use lossless compression mode */
-    lossless?: boolean,
+    lossless?: boolean
     /** use near_lossless compression mode */
-    nearLossless?: boolean,
+    nearLossless?: boolean
     /** force WebP output, otherwise attempt to use input format, defaults to true */
     force?: boolean
   }
@@ -350,11 +350,11 @@ export namespace Image {
    */
   export interface JpegOptions {
     /** quality, integer 1-100, defaults to 80 */
-    quality?: number,
+    quality?: number
     /** use progressive (interlace) scan (defaults to false) */
-    progressive?: boolean,
+    progressive?: boolean
     /** set to '4:4:4' to prevent chroma subsampling when quality <= 90 */
-    chromaSubsampling?: boolean,
+    chromaSubsampling?: boolean
     /** force output to jpeg (default true) */
     force?: boolean
   }
@@ -364,11 +364,11 @@ export namespace Image {
    */
   export interface PngOptions {
     /** use progressive (interlace) scan (defaults to false) */
-    progressive?: boolean,
+    progressive?: boolean
     /** zlib compression level, 0-9 (default to 9) */
-    compressionLevel?: number,
+    compressionLevel?: number
     /** use adaptive row filtering (defaults to false) */
-    adaptiveFiltering?: boolean,
+    adaptiveFiltering?: boolean
     /** force PNG output (defaults to true) */
     force?: boolean
   }
@@ -378,10 +378,10 @@ export namespace Image {
      * the kernel to use for image reduction.
      *  (optional, default `'lanczos3'`)
      */
-    kernel?: kernel,
+    kernel?: kernel
     /**
-     * take greater advantage of the JPEG 
-     * and WebP shrink-on-load feature, which can lead to a slight moiré pattern on 
+     * take greater advantage of the JPEG
+     * and WebP shrink-on-load feature, which can lead to a slight moiré pattern on
      * some images. (optional, default `true`)
      */
     fastShrinkOnLoad?: boolean
@@ -389,25 +389,25 @@ export namespace Image {
 
   export interface OverlayOptions {
     /**  gravity at which to place the overlay. (optional, default `center`) */
-    gravity?: gravity,
-    top?: number,
-    left?: number,
-    tile?: Boolean,
-    cutout?: Boolean,
+    gravity?: gravity
+    top?: number
+    left?: number
+    tile?: Boolean
+    cutout?: Boolean
     density?: number
   }
 
   export interface ExtendOptions {
-    top?: number,
-    left?: number,
-    bottom?: number,
+    top?: number
+    left?: number
+    bottom?: number
     right?: number
   }
 
   export interface CreateOptions {
-    width: number,
-    height: number,
-    channels: number,
+    width: number
+    height: number
+    channels: number
     background: Color | string
   }
 }
@@ -441,16 +441,13 @@ function imageOperation(ref: any, name: string, ...args: any[]) {
 }
 async function imageToBuffer(ref: any) {
   return new Promise<Image.OperationResult>((resolve, reject) => {
-    bridge.dispatch("fly.Image.toBuffer",
-      ref,
-      (err: string, data: ArrayBuffer, info: any) => {
-        if (err) {
-          reject(err)
-          return
-        }
-        resolve({ data: data, info: info })
+    bridge.dispatch("fly.Image.toBuffer", ref, (err: string, data: ArrayBuffer, info: any) => {
+      if (err) {
+        reject(err)
+        return
       }
-    )
+      resolve({ data: data, info: info })
+    })
   })
 }
 function imageMetadata(ref: any): Image.Metadata {
@@ -469,7 +466,7 @@ export namespace Image {
     southeast = 6,
     southwest = 7,
     northwest = 8
-  };
+  }
 
   export enum strategy {
     entropy = 16,
@@ -477,9 +474,9 @@ export namespace Image {
   }
 
   export enum kernel {
-    nearest = 'nearest',
-    cubic = 'cubic',
-    lanczos2 = 'lanczos2',
-    lanczos3 = 'lanczos3'
+    nearest = "nearest",
+    cubic = "cubic",
+    lanczos2 = "lanczos2",
+    lanczos3 = "lanczos3"
   }
 }

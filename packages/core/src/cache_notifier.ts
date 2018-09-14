@@ -1,7 +1,7 @@
 import { CacheStore } from "./cache_store"
 import { RedisCacheNotifier } from "./redis_cache_notifier"
-import { hostname } from "os";
-import log from "./log";
+import { hostname } from "os"
+import log from "./log"
 
 export enum CacheOperation {
   del = "del",
@@ -9,9 +9,9 @@ export enum CacheOperation {
 }
 
 export interface CacheNotifyMessage {
-  type: CacheOperation,
-  ns: string,
-  value: string,
+  type: CacheOperation
+  ns: string
+  value: string
   ts: number
 }
 
@@ -25,10 +25,7 @@ export interface CacheNotifierAdapter {
 
 export class CacheNotifier {
   pid: string
-  constructor(
-    public cacheStore: CacheStore,
-    public adapter: CacheNotifierAdapter
-  ) {
+  constructor(public cacheStore: CacheStore, public adapter: CacheNotifierAdapter) {
     this.pid = `${hostname()}-${process.pid}`
     this.adapter.start(this.handle.bind(this))
   }
@@ -77,7 +74,7 @@ export class LocalCacheNotifier implements CacheNotifierAdapter {
   private _handler: ReceiveHandler | undefined
   async send(msg: CacheNotifyMessage) {
     // using setImmediate here to fake an async adapter
-    return new Promise<boolean>((resolve, ) => {
+    return new Promise<boolean>(resolve => {
       setImmediate(() => {
         this._handler && this._handler(msg)
         resolve(true)
@@ -97,7 +94,7 @@ export class LocalCacheNotifier implements CacheNotifierAdapter {
     throw new Error(`Unknown CacheNotifierOperation: ${type}`)
     }
   }*/
-}//*/e
+} //*/e
 
 export function defaultCacheNotifier(cacheStore: CacheStore) {
   let adapter: CacheNotifierAdapter = new LocalCacheNotifier()

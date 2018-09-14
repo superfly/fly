@@ -1,6 +1,6 @@
 /**
  * Persistent, global key/value data store. Open collections, write data with `put`. Then retrieve data with `get`.
- * 
+ *
  * Keys and values are stored in range chunks. Chunks migrate to the region they're most frequently accessed from.
  * @module fly/data
  */
@@ -28,13 +28,19 @@ export class Collection {
   put(key: string, obj: string) {
     return new Promise((resolve, reject) => {
       try {
-        bridge.dispatch("fly.Data.put", this.name, key, JSON.stringify(obj), (err: string | null, ok: boolean) => {
-          if (err) {
-            reject(new Error(err))
-            return
+        bridge.dispatch(
+          "fly.Data.put",
+          this.name,
+          key,
+          JSON.stringify(obj),
+          (err: string | null, ok: boolean) => {
+            if (err) {
+              reject(new Error(err))
+              return
+            }
+            resolve(ok)
           }
-          resolve(ok)
-        })
+        )
       } catch (err) {
         reject(err)
       }
@@ -95,4 +101,4 @@ const data = {
   }
 }
 
-export default data;
+export default data

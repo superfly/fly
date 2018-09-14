@@ -1,7 +1,6 @@
 /** @module fly
  */
-import { parse as queryParse } from 'querystring'
-
+import { parse as queryParse } from "querystring"
 
 interface ReadableStreamController {
   enqueue(chunk: string | ArrayBuffer): void
@@ -9,15 +8,11 @@ interface ReadableStreamController {
 }
 /** @hidden */
 declare var ReadableStream: {
-  prototype: ReadableStream;
-  new(source: any | undefined): ReadableStream;
-};
+  prototype: ReadableStream
+  new (source: any | undefined): ReadableStream
+}
 
-
-export type BodySource = Blob | BufferSource |
-  FormData | URLSearchParams |
-  ReadableStream | String
-
+export type BodySource = Blob | BufferSource | FormData | URLSearchParams | ReadableStream | String
 
 export default class BodyMixin implements Body {
   protected bodySource: BodySource
@@ -85,7 +80,7 @@ export default class BodyMixin implements Body {
     }
 
     const arr = await this.arrayBuffer()
-    return new TextDecoder('utf-8').decode(arr)
+    return new TextDecoder("utf-8").decode(arr)
   }
 
   async json(): Promise<any> {
@@ -94,7 +89,8 @@ export default class BodyMixin implements Body {
   }
 
   async arrayBuffer(): Promise<ArrayBuffer> {
-    if (this.bodySource instanceof Int8Array ||
+    if (
+      this.bodySource instanceof Int8Array ||
       this.bodySource instanceof Int16Array ||
       this.bodySource instanceof Int32Array ||
       this.bodySource instanceof Uint8Array ||
@@ -107,7 +103,7 @@ export default class BodyMixin implements Body {
       return <ArrayBuffer>this.bodySource.buffer
     } else if (this.bodySource instanceof ArrayBuffer) {
       return this.bodySource
-    } else if (typeof this.bodySource === 'string') {
+    } else if (typeof this.bodySource === "string") {
       const enc = new TextEncoder()
       return <ArrayBuffer>enc.encode(this.bodySource).buffer
     } else if (this.bodySource instanceof ReadableStream) {
@@ -124,7 +120,8 @@ export default class BodyMixin implements Body {
 
 /** @hidden */
 function validateBodyType(owner: any, bodySource: any) {
-  if (bodySource instanceof Int8Array ||
+  if (
+    bodySource instanceof Int8Array ||
     bodySource instanceof Int16Array ||
     bodySource instanceof Int32Array ||
     bodySource instanceof Uint8Array ||
@@ -137,7 +134,7 @@ function validateBodyType(owner: any, bodySource: any) {
     return true
   } else if (bodySource instanceof ArrayBuffer) {
     return true
-  } else if (typeof bodySource === 'string') {
+  } else if (typeof bodySource === "string") {
     return true
   } else if (bodySource instanceof ReadableStream) {
     return true
@@ -151,11 +148,12 @@ function validateBodyType(owner: any, bodySource: any) {
 
 function bufferFromStream(stream: ReadableStreamReader): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
-    let parts: Array<Uint8Array> = [];
-    let encoder = new TextEncoder();
+    let parts: Array<Uint8Array> = []
+    let encoder = new TextEncoder()
     // recurse
-    (function pump() {
-      stream.read()
+    ;(function pump() {
+      stream
+        .read()
         .then(({ done, value }) => {
           if (done) {
             return resolve(concatenate(...parts))
@@ -172,26 +170,26 @@ function bufferFromStream(stream: ReadableStreamReader): Promise<ArrayBuffer> {
             reject("unhandled type on stream read")
           }
 
-          return pump();
+          return pump()
         })
-        .catch((err) => {
+        .catch(err => {
           reject(err)
-        });
+        })
     })()
   })
 }
 
 /** @hidden */
 function concatenate(...arrays: Uint8Array[]): ArrayBuffer {
-  let totalLength = 0;
+  let totalLength = 0
   for (let arr of arrays) {
-    totalLength += arr.length;
+    totalLength += arr.length
   }
-  let result = new Uint8Array(totalLength);
-  let offset = 0;
+  let result = new Uint8Array(totalLength)
+  let offset = 0
   for (let arr of arrays) {
-    result.set(arr, offset);
-    offset += arr.length;
+    result.set(arr, offset)
+    offset += arr.length
   }
-  return <ArrayBuffer>result.buffer;
+  return <ArrayBuffer>result.buffer
 }

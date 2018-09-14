@@ -1,8 +1,8 @@
-import { expect } from 'chai'
-import cache from '@fly/cache'
+import { expect } from "chai"
+import cache from "@fly/cache"
 
 describe("@fly/cache", () => {
-  it('allows fly.cache global access', () => {
+  it("allows fly.cache global access", () => {
     const c = fly.cache
     expect(typeof c.get).to.eq("function")
   })
@@ -37,22 +37,22 @@ describe("@fly/cache", () => {
     await cache.set(k, new ArrayBuffer(0))
 
     const result = await cache.get(k)
-    expect(result).to.be.a('ArrayBuffer')
+    expect(result).to.be.a("ArrayBuffer")
     expect(result.byteLength).to.eq(0)
   })
 
   it("handles blank strings", async () => {
     const k = `cache-test${Math.random()}`
-    await cache.set(k, '')
+    await cache.set(k, "")
     const result = await cache.getString(k)
-    expect(result).to.eq('')
+    expect(result).to.eq("")
   })
 
   it("handles set.onlyIfEmpty", async () => {
     const k = `cache-test${Math.random()}`
-    await cache.set(k, 'asdf')
+    await cache.set(k, "asdf")
 
-    const setResult = await cache.set(k, 'jklm', { onlyIfEmpty: true })
+    const setResult = await cache.set(k, "jklm", { onlyIfEmpty: true })
     const v = await cache.getString(k)
 
     expect(setResult).to.eq(false)
@@ -67,9 +67,9 @@ describe("@fly/cache", () => {
     await cache.set(k2, "multi-2")
 
     const result = await cache.getMultiString([k, k2])
-    expect(result).to.be.an('array')
+    expect(result).to.be.an("array")
 
-    const [r1, r2] = result;
+    const [r1, r2] = result
     expect(r1).to.eq("multi-1")
     expect(r2).to.eq("multi-2")
   })

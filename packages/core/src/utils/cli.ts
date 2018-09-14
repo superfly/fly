@@ -1,4 +1,4 @@
-import colors = require('ansi-colors')
+import colors = require("ansi-colors")
 
 function getErrorMessages(res: any): string[] {
   if (res.data.errors) {
@@ -8,7 +8,7 @@ function getErrorMessages(res: any): string[] {
 }
 
 function errorMessage(err: any): string {
-  if (typeof err === 'string') {
+  if (typeof err === "string") {
     return err
   } else if (err.title && err.detail) {
     return `${err.title}: ${err.detail}`
@@ -20,15 +20,15 @@ function errorMessage(err: any): string {
         return `${err.source.pointer.replace("/data/attributes/", "")} ${err.detail}`
     return err.detail
   }
-  return ''
+  return ""
 }
 
 export function processResponse(res: any, successFn?: Function | undefined): void {
   if (res.status >= 200 && res.status < 299) {
-    if (successFn)
-      successFn(res)
+    if (successFn) successFn(res)
   } else {
-    if (res.status == 401) // TODO: Store and use `refresh_token` to automatically fix this predicament
+    if (res.status == 401)
+      // TODO: Store and use `refresh_token` to automatically fix this predicament
       return console.log("Please login again with `fly login`, your token is probably expired.")
     for (let errMsg of getErrorMessages(res)) {
       console.error(colors.red("Error:"), errMsg)

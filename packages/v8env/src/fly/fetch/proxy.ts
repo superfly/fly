@@ -1,24 +1,24 @@
 /**
  * Library for proxying requests to origins. Use this to create `fetch` like functions
  *  for making requests to other services. For example:
- * 
+ *
  * ```javascript
  * // sends all traffic to an Amazon ELB,
  * // `Host` header passes through from visitor request
  * const origin = proxy("https://elb1298.amazonaws.com")
  * ```
- * 
+ *
  * By default, this function sends the `Host` header inferred from the origin URL. To forward
  * host headers sent by visitors, set `forwardHostHeader` to true.
- * 
+ *
  * ```javascript
  * // sends all traffic to an Amazon ELB, include host header from original request.
  * const origin = proxy("https://elb1298.amazonaws.com", {
  *  forwardHostHeader: true
  * })
  * ```
- * 
- * And then way more rare, no host header at all. Usually you'd strip out `x-forwarded-host`, 
+ *
+ * And then way more rare, no host header at all. Usually you'd strip out `x-forwarded-host`,
  * since some origins don't like that:
  * ```javascript
  * // sends all traffic to an Amazon ELB, never sends a host header
@@ -26,15 +26,15 @@
  *  headers: { host: false}
  * })
  * ```
- * 
+ *
  * @preferred
  * @module fly/fetch/proxy
  */
-import { normalizeRequest, FetchFunction } from ".";
+import { normalizeRequest, FetchFunction } from "."
 
 /**
  * This generates a `fetch` like function for proxying requests to a given origin.
- * When this function makes origin requests, it adds standard proxy headers like 
+ * When this function makes origin requests, it adds standard proxy headers like
  * `X-Forwarded-Host` and `X-Forwarded-For`. It also passes headers from the original
  * request to the origin.
  * @param origin A URL to an origin, can include a path to rebase requests.
@@ -55,12 +55,17 @@ export default proxy
 /**
  * @protected
  * @hidden
- * @param origin 
- * @param options 
- * @param req 
- * @param init 
+ * @param origin
+ * @param options
+ * @param req
+ * @param init
  */
-export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r: RequestInfo, init?: RequestInit) {
+export function buildProxyRequest(
+  origin: string | URL,
+  options: ProxyOptions,
+  r: RequestInfo,
+  init?: RequestInit
+) {
   let req = normalizeRequest(r)
 
   const url = new URL(req.url)
@@ -77,12 +82,12 @@ export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r
   url.protocol = origin.protocol
   url.port = origin.port
 
-  if (options.stripPath && typeof options.stripPath === 'string') {
+  if (options.stripPath && typeof options.stripPath === "string") {
     // remove basePath so we can serve `onehosthame.com/dir/` from `origin.com/`
     url.pathname = url.pathname.substring(options.stripPath.length)
   }
   if (origin.pathname && origin.pathname.length > 0) {
-    url.pathname = [origin.pathname.replace(/\/$/, ''), url.pathname.replace(/^\//, "")].join("/")
+    url.pathname = [origin.pathname.replace(/\/$/, ""), url.pathname.replace(/^\//, "")].join("/")
   }
   if (url.pathname.startsWith("//")) {
     url.pathname = url.pathname.substring(1)
@@ -120,7 +125,7 @@ export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r
 export interface ProxyOptions {
   /**
    * Replace this portion of URL path before making request to origin.
-   * 
+   *
    * For example, this makes a request to `https://fly.io/path1/to/document.html`:
    * ```javascript
    * const opts = { stripPath: "/path2/"}
@@ -128,14 +133,14 @@ export interface ProxyOptions {
    * origin("https://somehostname.com/path2/to/document.html")
    * ```
    */
-  stripPath?: string,
+  stripPath?: string
 
   /**
    * Forward `Host` header from original request. Without this options,
    * proxy requests infers a host header from the origin URL.
    * Defaults to `false`.
    */
-  forwardHostHeader?: boolean,
+  forwardHostHeader?: boolean
 
   /**
    * Headers to set on backend request. Each header accepts either a `boolean` or `string`.
@@ -144,7 +149,7 @@ export interface ProxyOptions {
    * * `string` header values are sent as is
    */
   headers?: {
-    [key: string]: string | boolean | undefined,
+    [key: string]: string | boolean | undefined
     /**
      * Host header to set before sending origin request. Some sites only respond to specific
      * host headers.

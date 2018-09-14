@@ -1,4 +1,4 @@
-import * as redis from "redis";
+import * as redis from "redis"
 
 export type RedisConnectionOptions = redis.ClientOpts | string
 

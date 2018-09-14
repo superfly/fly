@@ -3,7 +3,7 @@ import { expect } from "chai"
 import cache from "@fly/cache"
 
 function sleep(timeout) {
-  return new Promise((resolve, ) => {
+  return new Promise(resolve => {
     setTimeout(resolve, timeout)
   })
 }
@@ -17,7 +17,6 @@ describe("@fly/cache/global", () => {
     await sleep(20)
     const res = await cache.getString(key)
     expect(res).to.eq(null)
-
   })
 
   it("sends purgeTag notifications", async () => {

@@ -1,12 +1,12 @@
 /**
  * Utilities and types for working with `fetch` functions.
- * 
+ *
  * @preferred
  * @module fly/fetch
  */
 
 /**
- * Fly augmented Request, adds extra relevant fields for proxy level 
+ * Fly augmented Request, adds extra relevant fields for proxy level
  * Requests.
  */
 export interface FlyRequest extends Request {

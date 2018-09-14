@@ -1,4 +1,4 @@
-/** 
+/**
  * @module fly
  * @private
  */
@@ -8,17 +8,16 @@ export type BlobPart = BufferSource | USVString | Blob
 
 /** @hidden */
 export default class Blob {
-  readonly size: number;
-  readonly type: string;
+  readonly size: number
+  readonly type: string
 
-  protected bytes: Uint8Array;
+  protected bytes: Uint8Array
 
   constructor(blobParts?: BlobPart[], options?: BlobPropertyBag) {
-    if (!blobParts || blobParts.length === 0)
-      this.bytes = new Uint8Array()
+    if (!blobParts || blobParts.length === 0) this.bytes = new Uint8Array()
     else {
       let parts: Uint8Array[] = []
-      let encoder = new TextEncoder();
+      let encoder = new TextEncoder()
       for (const part of blobParts) {
         switch (part.constructor) {
           case Int8Array:
@@ -46,16 +45,12 @@ export default class Blob {
             break
         }
       }
-      if (parts.length === 1)
-        this.bytes = parts[0]
-      else
-        this.bytes = concatenate(...parts)
+      if (parts.length === 1) this.bytes = parts[0]
+      else this.bytes = concatenate(...parts)
     }
 
-    if (options && options.type)
-      this.type = options.type.toLowerCase()
-    else
-      this.type = ''
+    if (options && options.type) this.type = options.type.toLowerCase()
+    else this.type = ""
 
     this.size = this.bytes.byteLength
   }
@@ -67,15 +62,15 @@ export default class Blob {
 
 /** @hidden */
 function concatenate(...arrays: Uint8Array[]): Uint8Array {
-  let totalLength = 0;
+  let totalLength = 0
   for (let arr of arrays) {
-    totalLength += arr.length;
+    totalLength += arr.length
   }
-  let result = new Uint8Array(totalLength);
-  let offset = 0;
+  let result = new Uint8Array(totalLength)
+  let offset = 0
   for (let arr of arrays) {
-    result.set(arr, offset);
-    offset += arr.length;
+    result.set(arr, offset)
+    offset += arr.length
   }
-  return result;
+  return result
 }

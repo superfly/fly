@@ -1,4 +1,4 @@
-import log from './log'
+import log from "./log"
 const nsPerSecond = 1e9
 
 export class Trace {
@@ -79,8 +79,7 @@ export class Trace {
   }
 
   nanoseconds() {
-    if (!this.diff)
-      return 0
+    if (!this.diff) return 0
     return this.diff[0] * nsPerSecond + this.diff[1]
   }
 
@@ -88,13 +87,13 @@ export class Trace {
     return this.nanoseconds() / (1000 * 1000.0)
   }
 
-  static start = function (name: string, parent?: Trace) {
+  static start = function(name: string, parent?: Trace) {
     let t: Trace = new Trace(name, parent)
     t.start()
     return t
   }
 
-  static tryStart = function (name: string, trace?: Trace) {
+  static tryStart = function(name: string, trace?: Trace) {
     if (trace) {
       return trace.start(name)
     } else {

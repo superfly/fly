@@ -15,12 +15,14 @@ export interface NewArgs {
 const newCommand = root
   .subCommand<NewOptions, NewArgs>("new [name]")
   .description("Create a new Fly app.")
-  .option("-t, --template [template]", "Name of the template to use. default: getting-started", "getting-started")
+  .option(
+    "-t, --template [template]",
+    "Name of the template to use. default: getting-started",
+    "getting-started"
+  )
   .option("-l, --list", "List available templates.")
   .action(async (options, args) => {
-    const templateIndex = new TemplateIndex([
-      path.resolve(__dirname, "..", "..", "examples")
-    ])
+    const templateIndex = new TemplateIndex([path.resolve(__dirname, "..", "..", "examples")])
 
     if (args.name === undefined || options.list) {
       listTemplates(templateIndex)
@@ -38,7 +40,7 @@ const newCommand = root
 
     const generator = new Generator({
       appName: args.name,
-      template: template,
+      template: template
     })
 
     console.log(`Using template ${generator.template.name}`)
@@ -74,15 +76,14 @@ const newCommand = root
     console.log(`  $ fly server`)
   })
 
-
 interface GeneratorOptions {
   appName: string
-  path?: string,
-  template: TemplateInfo,
+  path?: string
+  template: TemplateInfo
 }
 
 interface TemplateInfo {
-  name: string,
+  name: string
   path: string
 }
 
@@ -124,7 +125,7 @@ function listTemplates(index: TemplateIndex) {
   console.log("Browse template source at https://github.com/superfly/fly/tree/master/examples")
 }
 
-export class GeneratorError extends Error { }
+export class GeneratorError extends Error {}
 
 class Generator {
   readonly cwd: string
@@ -165,9 +166,9 @@ class Generator {
     fs.writeFileSync(packageFile, JSON.stringify(packageData), "utf8")
 
     console.log("Installing packages...")
-    var exec = execa("npm", ['install'], { cwd: this.rootDir })
-    exec.stdout.pipe(process.stdout);
-    exec.stderr.pipe(process.stderr);
+    var exec = execa("npm", ["install"], { cwd: this.rootDir })
+    exec.stdout.pipe(process.stdout)
+    exec.stderr.pipe(process.stderr)
 
     await exec
   }
@@ -177,4 +178,3 @@ class Generator {
     return path.join(this.rootDir, templateRelativePath)
   }
 }
-

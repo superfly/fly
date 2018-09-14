@@ -2,7 +2,7 @@
  * @module fly
  * @private
  */
-import { stringify } from 'querystring'
+import { stringify } from "querystring"
 
 /**
  * Class representing a fetch response.
@@ -23,7 +23,7 @@ export default class FormData {
     } else {
       vals = currentVals.concat([value])
     }
-    this._data.set(name, vals);
+    this._data.set(name, vals)
   }
 
   delete(name: string) {
@@ -65,7 +65,7 @@ export default class FormData {
   values(): IterableIterator<string> {
     // this._data.values() doesn't flatten arrays of arrays
     let that = this
-    return function* () {
+    return (function*() {
       for (let vals of that._data.values()) {
         if (Array.isArray(vals)) {
           for (let val of vals) {
@@ -75,7 +75,7 @@ export default class FormData {
           yield vals
         }
       }
-    }()
+    })()
   }
 
   toString(): string {
@@ -83,6 +83,6 @@ export default class FormData {
     this._data.forEach((value, key) => {
       output.push(stringify({ [`${key}`]: value }))
     })
-    return output.join('&');
+    return output.join("&")
   }
 }

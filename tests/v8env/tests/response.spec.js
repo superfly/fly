@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { expect } from "chai"
 
 describe("Response", () => {
   it("errors on unknown body types", () => {
@@ -15,7 +15,7 @@ describe("Response.redirect", () => {
     expect(r.headers.get("location")).to.eq("http://test.com")
   })
 
-  it('allows a custom status', () => {
+  it("allows a custom status", () => {
     const r = Response.redirect("http://test.com", 307)
     expect(r.status).to.eq(307)
   })

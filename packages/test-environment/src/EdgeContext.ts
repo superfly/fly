@@ -1,6 +1,5 @@
-
 import { Server, FileAppStore, LocalFileStore, Runtime, Bridge, SQLiteDataStore } from "@fly/core"
-import { parse, format } from "url";
+import { parse, format } from "url"
 
 export interface Options {
   servers: { [hostname: string]: string }
@@ -69,7 +68,6 @@ export class TestServer {
   public readonly path: string
   public port: number
 
-
   public constructor(context: EdgeContext, options: ServerOptions) {
     this.context = context
     this.host = options.host
@@ -92,16 +90,16 @@ export class TestServer {
           dataStore: new SQLiteDataStore(appStore.app.name, "test")
         })
         this.server = new Server({ appStore, bridge, inspect: false, monitorFrequency: 0 })
-        this.server.on('error', (e: Error | any) => {
-          if (e.code === 'EADDRINUSE') {
+        this.server.on("error", (e: Error | any) => {
+          if (e.code === "EADDRINUSE") {
             this.port = this.port + 1
-            console.log('Port in use, trying:', this.port);
+            console.log("Port in use, trying:", this.port)
             setTimeout(() => {
               if (this.server) {
-                this.server.close();
-                this.server.listen(this.port);
+                this.server.close()
+                this.server.listen(this.port)
               }
-            }, 1000);
+            }, 1000)
           } else {
             throw e
           }
@@ -159,7 +157,7 @@ export class TestServer {
   }
 
   public get isRunning(): boolean {
-    return this.server && this.server.listening || false
+    return (this.server && this.server.listening) || false
   }
 }
 
@@ -168,7 +166,7 @@ export function isContext(value: any): value is EdgeContext {
 }
 
 function nextPort() {
-  return Math.floor((Math.random() * 1000) + 4000)
+  return Math.floor(Math.random() * 1000 + 4000)
 }
 
 function configureBridge(bridge: Bridge, context: EdgeContext) {

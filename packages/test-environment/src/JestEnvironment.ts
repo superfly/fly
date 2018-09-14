@@ -1,6 +1,6 @@
 const NodeEnvironment = require("jest-environment-node")
-import { EdgeContext } from "./EdgeContext";
-import { install } from "./helpers";
+import { EdgeContext } from "./EdgeContext"
+import { install } from "./helpers"
 
 class JestEnvironment extends NodeEnvironment {
   private readonly appIndex: Map<string, Array<string>>
@@ -68,7 +68,11 @@ class JestEnvironment extends NodeEnvironment {
     Object.entries(apps).forEach(([host, path]) => {
       let hostApps = this.appIndex.get(host)
       if (!hostApps || hostApps[0] !== path) {
-        console.warn("Attempting to pop an app that isn't configured!", { host: path }, this.appIndex)
+        console.warn(
+          "Attempting to pop an app that isn't configured!",
+          { host: path },
+          this.appIndex
+        )
         return
       }
       hostApps.shift()

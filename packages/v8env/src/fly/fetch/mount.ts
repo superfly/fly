@@ -1,23 +1,23 @@
 /**
- * A library for mounting different `fetch` handlers on 
+ * A library for mounting different `fetch` handlers on
  * URL pathnames.
- * 
+ *
  * @preferred
  * @module fly/fetch/mount
  */
 
-import { FetchFunction, normalizeRequest } from ".";
+import { FetchFunction, normalizeRequest } from "."
 
 /**
  * Mount different handlers on URL paths. Example:
- * 
+ *
  * ```javascript
  * import { mount } from "@fly/fetch/mount"
  * const mounts = mount({
  *  "/hello/": (req, init) => new Response("hello")
  *  "/": (req, init) => new Response("index")
  * })
- * 
+ *
  * fly.http.respondWith(mounts)
  * ```
  */
@@ -42,4 +42,4 @@ export interface MountInfo {
   [prefix: string]: FetchFunction
 }
 
-export default mount;
+export default mount
