@@ -1,0 +1,30 @@
+{
+  "defaultSeverity": "warning",
+  "extends": [
+    "tslint:recommended",
+    "tslint-plugin-prettier",
+    "tslint-config-prettier"
+  ],
+  "jsRules": {},
+  "rules": {
+    "semicolon": false,
+    "no-console": false,
+    "interface-name": false,
+    // revisit later, too much change at once
+    "ordered-imports": false,
+    "member-ordering": false,
+    "object-literal-sort-keys": false,
+    "prettier": false // enable on CI
+  },
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": [
+      // remove once tslint supports typescript 3 project refs since tsconfig will
+      // then inform tslint which files to lint
+      "node_modules/**",
+      "**/node_modules/**",
+      "packages/*/lib/**",
+      "packages/*/dist/**"
+    ]
+  }
+}
