@@ -1,0 +1,32 @@
+{
+    "name": "@fly/test-environment",
+    "private": true,
+    "version": "0.42.0-pre.8",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/superfly/fly"
+    },
+    "main": "index.js",
+    "types": "lib/index.d.ts",
+    "files": [
+        "lib/"
+    ],
+    "scripts": {
+        "build": "tsc -b .",
+        "build:watch": "tsc -b -w -v .",
+        "clean": "rm -rf ./lib ./dist"
+    },
+    "dependencies": {
+        "@fly/core": "0.42.0-pre.8",
+        "@types/jest": "^23.3.1",
+        "@types/node-fetch": "2.1.2",
+        "jest": "^23.5.0",
+        "jest-environment-node": "^23.4.0",
+        "node-fetch": "2.2.0",
+        "ts-jest": "^23.1.4"
+    },
+    "devDependencies": {
+        "typescript": "3.0.1"
+    }
+}

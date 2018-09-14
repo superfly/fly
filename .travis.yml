@@ -23,10 +23,10 @@ matrix:
       env: *linux_env
       node_js: 10.3
     - os: linux
-      name: "Linux + node 10.8"
+      name: "Linux + node latest"
       addons: *linux_addons
       env: *linux_env
-      node_js: 10.8.0
+      node_js: node
 
     - os: linux
       name: "Linux + Redis + node 8"
@@ -40,10 +40,10 @@ matrix:
       env: *linux_env_redis
       node_js: 10.3
     - os: linux
-      name: "Linux + Redis + node 10.8"
+      name: "Linux + Redis + node latest"
       addons: *linux_addons
       env: *linux_env_redis
-      node_js: 10.8.0
+      node_js: node
     - os: osx
       name: "OSX + Node 8"
       osx_image: xcode9.4
@@ -53,26 +53,29 @@ matrix:
       osx_image: xcode9.4
       node_js: 10.3
     - os: osx
-      name: "OSX + Node 10.8"
+      name: "OSX + Node latest"
       osx_image: xcode9.4
-      node_js: 10.8.0
+      node_js: node
 
 cache:
   yarn: true
   directories:
     - node_modules
-      
+
 services:
   - redis-server
 before_install:
-- set -e
-- eval "${MATRIX_EVAL}"
+  - set -e
+  - eval "${MATRIX_EVAL}"
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.9.4
+  - export PATH=$HOME/.yarn/bin:$PATH
 install:
-- yarn install
-- yarn build
+  - yarn install
+  - yarn bootstrap
 script:
-- .hooks/pre-build
-- yarn test
+  - yarn build
+  - yarn bundle
+  - yarn test
 notifications:
   slack:
     on:

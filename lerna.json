@@ -1,0 +1,19 @@
+{
+  "packages": [
+    "packages/*",
+    "tests/*"
+  ],
+  "version": "0.42.0-pre.8",
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "command": {
+    "publish": {
+      "conventionalCommits": true,
+      "exact": true,
+      "message": "chore(release): %s",
+      "preid": "pre",
+      "npmClient": "npm",
+      "registry": "https://registry.npmjs.org/"
+    }
+  }
+}

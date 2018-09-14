@@ -1,0 +1,33 @@
+{
+  "name": "@fly/fly",
+  "version": "0.42.0-pre.8",
+  "description": "Open source Edge Application runtime",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superfly/fly"
+  },
+  "homepage": "https://fly.io",
+  "files": [
+    "examples/",
+    "bin/"
+  ],
+  "bin": {
+    "fly": "./bin/fly.js"
+  },
+  "scripts": {
+    "clean": "rm -rf examples/* README.md",
+    "build": "cp -r ../../examples/ examples/ && cp ../../README.md .",
+    "prepublishOnly": "yarn build"
+  },
+  "engines": {
+    "node": ">=8 <11"
+  },
+  "dependencies": {
+    "@fly/core": "0.42.0-pre.8",
+    "@fly/v8env": "0.42.0-pre.8"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
