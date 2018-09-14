@@ -28,10 +28,10 @@ const fetchHttpsAgent = new https.Agent({
 
 function makeResponse(status: number, statusText: string, url: string, headers?: any) {
   return {
-    status: status,
-    statusText: statusText,
+    status,
+    statusText,
     ok: status >= 200 && status < 300,
-    url: url,
+    url,
     headers: headers || {}
   }
 }
@@ -92,8 +92,8 @@ registerBridge("fetch", function fetchBridge(
   const httpFn = u.protocol == "http:" ? http.request : https.request
   const httpAgent = u.protocol == "http:" ? fetchAgent : fetchHttpsAgent
 
-  let method = init.method || "GET"
-  let headers = init.headers || {}
+  const method = init.method || "GET"
+  const headers = init.headers || {}
 
   let req: http.ClientRequest
 
@@ -108,12 +108,12 @@ registerBridge("fetch", function fetchBridge(
   const reqOptions: https.RequestOptions = {
     agent: httpAgent,
     protocol: u.protocol,
-    path: path,
+    path,
     hostname: u.hostname,
     host: u.host,
     port: u.port,
-    method: method,
-    headers: headers,
+    method,
+    headers,
     timeout: 60 * 1000
   }
 
@@ -151,7 +151,7 @@ registerBridge("fetch", function fetchBridge(
     clearFetchTimeout()
     rt.reportUsage("fetch", {
       data_out: dataOut,
-      method: method,
+      method,
       host: u.host,
       path: u.path,
       remote_addr: res.socket.remoteAddress,
@@ -185,10 +185,11 @@ registerBridge("fetch", function fetchBridge(
     log.error("error requesting http resource", err)
     cb.applyIgnored(null, [(err && err.toString()) || "unknown error"])
     req.removeAllListeners()
-    if (!req.aborted)
+    if (!req.aborted) {
       try {
         req.abort()
       } catch (e) {}
+    }
   }
 
   function handleUserTimeout() {

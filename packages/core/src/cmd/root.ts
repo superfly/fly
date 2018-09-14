@@ -27,11 +27,11 @@ export function addCommonOptions(cmd: Command<CommonOptions, any>) {
 }
 
 export function getToken(cmd: Command<any, CommonOptions>) {
-  let token = recursivelyGetOption(cmd, "token") || process.env.FLY_ACCESS_TOKEN
+  const token = recursivelyGetOption(cmd, "token") || process.env.FLY_ACCESS_TOKEN
   if (!token) {
     try {
       const creds = getCredentials()
-      if (creds) return creds.access_token
+      if (creds) { return creds.access_token }
     } catch (e) {
       // do nothing
     }
@@ -59,16 +59,18 @@ export function getAppName(cmd: Command<CommonOptions, any>, cwd: string = proce
     throw new Error("--app option or app (in your .fly.yml) needs to be set.")
   }
 
-  if (!appName.match(fullAppMatch))
+  if (!appName.match(fullAppMatch)) {
     throw new Error("app parameter needs to match an app name (ie: app-name)")
+  }
 
   return appName
 }
 
 export function homeConfigPath() {
   const home = getUserHome()
-  if (!home)
+  if (!home) {
     throw new Error("Where is your HOME? Please set the HOME environment variable and try again.")
+  }
   const homepath = path.join(home, ".fly")
   fs.mkdirpSync(homepath)
   return homepath
@@ -80,7 +82,7 @@ function getUserHome() {
 
 function getCredentials() {
   const credspath = path.join(homeConfigPath(), "credentials.yml")
-  if (!fs.existsSync(credspath)) return
+  if (!fs.existsSync(credspath)) { return }
   return YAML.load(fs.readFileSync(credspath).toString())
 }
 
@@ -88,7 +90,7 @@ function recursivelyGetOption(cmd: Command<CommonOptions, any>, optName: string)
   let currentCmd = cmd
 
   while (currentCmd) {
-    const opts = <any>currentCmd.parsedOpts
+    const opts = currentCmd.parsedOpts as any
     if (opts[optName] && !!opts[optName][0]) {
       return opts[optName][0]
     }

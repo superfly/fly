@@ -26,17 +26,17 @@ export class Node {
     this._dom = dom
   }
 
-  querySelector(selector) {
-    let found = css.selectOne(selector, this._dom)
-    if (!found) return null
+  public querySelector(selector) {
+    const found = css.selectOne(selector, this._dom)
+    if (!found) { return null }
     return new Element(this._withParent(found))
   }
 
-  querySelectorAll(selector) {
+  public querySelectorAll(selector) {
     return css.selectAll(selector, this._dom).map(d => new Element(this._withParent(d)))
   }
 
-  _withParent(node) {
+  public _withParent(node) {
     node.parent || (node.parent = this)
     return node
   }
@@ -49,11 +49,11 @@ export class Node {
     return this._dom
   }
 
-  appendChild(html) {
+  public appendChild(html) {
     if (typeof html._dom !== "undefined") {
       // Document
-      if (Array.isArray(this._dom)) appendChild(this._dom[1], html._dom)
-      else appendChild(this._dom, html._dom)
+      if (Array.isArray(this._dom)) { appendChild(this._dom[1], html._dom) }
+      else { appendChild(this._dom, html._dom) }
       return html
     }
     html = new Element(parseDOMSync(html)[0])
@@ -68,7 +68,7 @@ export class Document extends Node {
     super(dom)
   }
 
-  getElementById(id) {
+  public getElementById(id) {
     return this.querySelector(`#${id}`)
   }
 
@@ -76,11 +76,11 @@ export class Document extends Node {
     return new Element(this._dom)
   }
 
-  createElement(tagName) {
+  public createElement(tagName) {
     return new Element(parseDOMSync(`<${tagName}></${tagName}>`)[0])
   }
 
-  static parse(html) {
+  public static parse(html) {
     return new Document(parseDOMSync(html))
   }
 }
@@ -105,7 +105,7 @@ export class Element extends Node {
     return getOuterHTML(this._dom)
   }
 
-  replaceWith(html) {
+  public replaceWith(html) {
     if (html instanceof Element) {
       replaceElement(this._dom, html._dom)
       return
@@ -113,38 +113,38 @@ export class Element extends Node {
     replaceElement(this._dom, parseDOMSync(html)[0])
   }
 
-  getAttribute(name) {
+  public getAttribute(name) {
     return getAttributeValue(this._dom, name)
   }
 
-  setAttribute(name, value) {
+  public setAttribute(name, value) {
     this._dom.attribs[name] = value
   }
 }
 
 class DocumentParser {
-  parser: any
-  selectors: any
+  public parser: any
+  public selectors: any
 
   constructor() {
     this.parser = parseDOMStreaming(this.onElement.bind(this))
     this.selectors = []
   }
-  querySelector(selector, callback) {
+  public querySelector(selector, callback) {
     this.selectors.push({
       fn: css.compile(selector),
       callback
     })
   }
-  onElement(elem) {
-    let found = this.selectors.find(s => s.fn(elem))
-    if (found) found.callback(new Element(elem))
+  public onElement(elem) {
+    const found = this.selectors.find(s => s.fn(elem))
+    if (found) { found.callback(new Element(elem)) }
   }
-  async parse(stream) {
+  public async parse(stream) {
     let fullyRead = false
 
-    if (stream instanceof ReadableStream) stream = stream.getReader()
-    else return this.parseSync(stream)
+    if (stream instanceof ReadableStream) { stream = stream.getReader() }
+    else { return this.parseSync(stream) }
 
     while (!fullyRead) {
       const { done, value } = await stream.read()
@@ -157,7 +157,7 @@ class DocumentParser {
     this.parser.end()
   }
 
-  parseSync(arg: any) {
+  public parseSync(arg: any) {
     // TODO: this method wasn't declared prior to the move to TS but referred from the parse
     // method if stream is a string. This might be an overlooked bug, will fix once we know
     // the desired behavior
@@ -168,13 +168,13 @@ class DocumentParser {
 Document.Parser = DocumentParser
 
 function parseDOMSync(html) {
-  let handler = new htmlparser.DomHandler()
+  const handler = new htmlparser.DomHandler()
   new htmlparser.Parser(handler).end(html)
   return handler.dom
 }
 
 function parseDOMStreaming(elemCb) {
-  let handler = new htmlparser.DomHandler(
+  const handler = new htmlparser.DomHandler(
     () => {
       logger.debug("done parsing dom")
     },

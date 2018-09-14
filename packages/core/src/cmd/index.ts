@@ -15,7 +15,7 @@ require("./login")
 require("./fetch")
 require("./logs")
 
-var SegfaultHandler = require("segfault-handler")
+let SegfaultHandler = require("segfault-handler")
 SegfaultHandler.registerHandler("crash.log")
 
 import { exec } from "commandpost"

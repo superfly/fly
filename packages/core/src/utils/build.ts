@@ -26,11 +26,11 @@ export function buildAppWithConfig(
   callback: Function
 ) {
   console.log("Compiling app w/ options:", opts)
-  let compiler = webpack(config)
+  const compiler = webpack(config)
 
   const cb = compileCallback(cwd, compiler, callback)
 
-  if (opts.watch) return compiler.watch({}, cb)
+  if (opts.watch) { return compiler.watch({}, cb) }
 
   compiler.run(cb)
 }
@@ -102,7 +102,7 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     sourceMapFilename: "bundle.map.json"
   }
 
-  let v8EnvPath = path.resolve(v8envModulePath, "lib")
+  const v8EnvPath = path.resolve(v8envModulePath, "lib")
 
   conf.resolve = Object.assign(
     {

@@ -12,9 +12,7 @@ interface sharpImage extends sharp.SharpInstance {
   options: any
 }
 
-interface imageOperation {
-  (...args: any[]): sharp.SharpInstance
-}
+type imageOperation = (...args: any[]) => sharp.SharpInstance
 
 const allowedOperations: Map<string, imageOperation> = new Map([
   ["resize", sharp.prototype.resize],
@@ -73,9 +71,9 @@ registerBridge("fly.Image()", function imageConstructor(
     const opts: any = {}
     if (create) {
       if (typeof create.background === "string") {
-        //create.background = color.parse(create.background)
+        // create.background = color.parse(create.background)
       }
-      opts["create"] = create
+      opts.create = create
     }
     const image = sharp(data && Buffer.from(data), opts)
     const ref = new ivm.Reference(image)
@@ -114,7 +112,7 @@ registerBridge("fly.Image.operation", function imageOperation(
         .then(args => {
           for (let i = 0; i < args.length; i++) {
             const v = args[i]
-            //and convert ArrayBuffers
+            // and convert ArrayBuffers
             if (v instanceof ArrayBuffer) {
               args[i] = Buffer.from(v)
             }

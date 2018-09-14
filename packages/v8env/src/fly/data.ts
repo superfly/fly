@@ -10,7 +10,7 @@ declare var bridge: any
  * A collection of keys and values.
  */
 export class Collection {
-  name: string
+  public name: string
 
   /**
    * Opens a collection
@@ -25,7 +25,7 @@ export class Collection {
    * @param key key for data
    * @param obj value to store
    */
-  put(key: string, obj: string) {
+  public put(key: string, obj: string) {
     return new Promise((resolve, reject) => {
       try {
         bridge.dispatch(
@@ -51,7 +51,7 @@ export class Collection {
    * Retrieves data from the collection store
    * @param key key to retrieve
    */
-  get(key: string) {
+  public get(key: string) {
     return new Promise((resolve, reject) => {
       bridge.dispatch("fly.Data.get", this.name, key, (err: string | null, res: any) => {
         if (err) {
@@ -71,7 +71,7 @@ export class Collection {
    * Deletes data from the collection store.
    * @param key key to delete
    */
-  del(key: string) {
+  public del(key: string) {
     return new Promise((resolve, reject) => {
       bridge.dispatch("fly.Data.del", this.name, key, (err: string | null, ok: boolean) => {
         if (err) {

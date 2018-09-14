@@ -36,21 +36,21 @@ export default function staticServer(opts?: StaticServerOptions) {
     }
 
     let ext: string | undefined
-    let match = path.match(/\.([a-zA-Z0-9]+)$/)
+    const match = path.match(/\.([a-zA-Z0-9]+)$/)
     if (match) {
       ext = match[1]
     }
 
     try {
       const resp = await fetch(`file:/${path}`)
-      if (resp.status != 200) return resp
+      if (resp.status != 200) { return resp }
       let type: string | undefined
       if (ext && options.mimeTypes && options.mimeTypes[ext]) {
         type = options.mimeTypes[ext]
       } else if (ext && mimeTypes[ext]) {
         type = mimeTypes[ext]
       }
-      if (type) resp.headers.set("content-type", type)
+      if (type) { resp.headers.set("content-type", type) }
       return resp
     } catch (err) {
       // fetch throws if file:// doesn't exist

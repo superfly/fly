@@ -47,7 +47,7 @@ export const streamManager = {
     const key = streamKey(rt, id)
     log.debug("stream subscribe id:", id)
     const info = streams[key]
-    if (!info) return cb.applyIgnored(null, ["stream not found or destroyed after timeout"])
+    if (!info) { return cb.applyIgnored(null, ["stream not found or destroyed after timeout"]) }
 
     info.stream.once("close", function streamClose() {
       log.debug("stream closed, id:", id)
@@ -76,7 +76,7 @@ export const streamManager = {
     const key = streamKey(rt, id)
     log.debug("stream:read id:", id)
     const info = streams[key]
-    if (!info) return cb.applyIgnored(null, ["stream closed, not found or destroyed after timeout"])
+    if (!info) { return cb.applyIgnored(null, ["stream closed, not found or destroyed after timeout"]) }
 
     clearTimeout(info.readTimeout)
     let attempts = 0
@@ -88,7 +88,7 @@ export const streamManager = {
         const chunk = info.stream.read(1024 * 1024)
         log.debug("chunk is null? arraybuffer?", !chunk, chunk instanceof Buffer)
 
-        if (chunk) info.readLength += Buffer.byteLength(chunk)
+        if (chunk) { info.readLength += Buffer.byteLength(chunk) }
 
         if (!chunk && !info.endedAt && attempts < 10) {
           // no chunk, not ended, attemptable
@@ -96,12 +96,13 @@ export const streamManager = {
           return
         }
 
-        if (!chunk && attempts >= 10) cb.applyIgnored(null, [null, null])
-        else if (chunk instanceof Buffer)
+        if (!chunk && attempts >= 10) { cb.applyIgnored(null, [null, null]) }
+        else if (chunk instanceof Buffer) {
           // got a buffer
           cb.applyIgnored(null, [null, transferInto(chunk)])
+             }
         // got something else
-        else cb.applyIgnored(null, [null, chunk])
+        else { cb.applyIgnored(null, [null, chunk]) }
         try {
           cb.release()
         } catch (e) {}
@@ -118,7 +119,7 @@ export const streamManager = {
     const key = streamKey(rt, id)
     log.debug("stream:pipe id:", id)
     const info = streams[key]
-    if (!info) throw new Error("stream closed, not found or destroyed")
+    if (!info) { throw new Error("stream closed, not found or destroyed") }
     info.stream.pipe(dst)
   }
 }
@@ -133,7 +134,7 @@ function generateStreamId(): number {
 
 function cleanupStream(key: string) {
   const info = streams[key]
-  if (!info) return
+  if (!info) { return }
 
   removeStream(key)
   try {
@@ -143,20 +144,21 @@ function cleanupStream(key: string) {
 
 function endStream(key: string, cb?: ivm.Reference<Function>) {
   const info = streams[key]
-  if (!info) return
+  if (!info) { return }
 
   clearTimeout(info.readTimeout)
   info.endedAt = Date.now()
-  if (cb)
+  if (cb) {
     try {
       cb.release()
     } catch (e) {}
+  }
   removeStream(key)
 }
 
 function removeStream(key: string) {
   const info = streams[key]
-  if (!info) return
+  if (!info) { return }
 
   info.stream.removeAllListeners()
   delete streams[key]

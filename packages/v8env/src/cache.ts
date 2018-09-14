@@ -18,7 +18,7 @@ declare var cache: any
 export default {
   async match(req) {
     const hashed = hashData(req)
-    let key = "httpcache:policy:" + hashed // first try with no vary variant
+    const key = "httpcache:policy:" + hashed // first try with no vary variant
     for (let i = 0; i < 5; i++) {
       const policyRaw = await fly.cache.getString(key)
       logger.debug("Got policy:", key, policyRaw)
@@ -34,12 +34,12 @@ export default {
 
         const body = await fly.cache.get(bodyKey)
         logger.debug("Got body", body.constructor.name, body.byteLength)
-        return new Response(body, { status: policy._status, headers: headers })
-        //}else if(policy._headers){
+        return new Response(body, { status: policy._status, headers })
+        // }else if(policy._headers){
         // TODO: try a new vary based key
         // policy._headers has the varies / vary values
         // key = hashData(req, policy._headers)
-        //return undefined
+        // return undefined
       } else {
         return undefined
       }
@@ -57,10 +57,10 @@ export default {
     const key = hashData(req)
 
     for (const h of res.headers) {
-      if (h[0] === "set-cookie") resHeaders[h[0]] = h[1]
-      else resHeaders[h[0]] = (h[1].join && h[1].join(",")) || h[1]
+      if (h[0] === "set-cookie") { resHeaders[h[0]] = h[1] }
+      else { resHeaders[h[0]] = (h[1].join && h[1].join(",")) || h[1] }
     }
-    let cacheableRes = {
+    const cacheableRes = {
       status: res.status,
       headers: resHeaders
     }
@@ -99,7 +99,7 @@ function hashData(req, vary?) {
 }
 
 function normalizeURL(u) {
-  let url = new URL(u)
+  const url = new URL(u)
   url.hash = ""
   const sp = url.searchParams
   sp.sort()

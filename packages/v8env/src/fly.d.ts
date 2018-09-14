@@ -64,9 +64,9 @@ export declare namespace fly {
      */
     export function expire(key: string, ttl: number): Promise<boolean>
   }
-  //export const streams: any
+  // export const streams: any
   /**
    * An image manipulation library. Useful for resizing and optimizing images.
    */
-  //export const Image: img.Image
+  // export const Image: img.Image
 }

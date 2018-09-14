@@ -8,11 +8,11 @@ import { logger } from "./logger"
 declare var middleware: any
 
 class MiddlewareSettings {
-  settings: {}
+  public settings: {}
   constructor(settings) {
     this.settings = settings || {}
   }
-  get(name) {
+  public get(name) {
     return this.settings[name]
   }
 }
@@ -39,9 +39,9 @@ const errMiddlewareNotPromise = new Error("Middleware did not return a promise")
  * @hidden
  */
 export class Middleware {
-  type: any
-  settings: MiddlewareSettings
-  fn: any
+  public type: any
+  public settings: MiddlewareSettings
+  public fn: any
 
   constructor(props) {
     this.type = props.type
@@ -55,7 +55,7 @@ export class Middleware {
    * @param {Object.<string,Object>} settings Settings for this middleware run
    * @param {Request} req The HTTP request to operate on
    */
-  static run(mw, settings, req) {
+  public static run(mw, settings, req) {
     const chain = new MiddlewareChain()
     chain.use(mw, settings)
     return chain.run(req)
@@ -67,8 +67,8 @@ export class Middleware {
  * @hidden
  */
 export class MiddlewareChain {
-  currentPos: number
-  chain: any[]
+  public currentPos: number
+  public chain: any[]
 
   constructor() {
     this.currentPos = 0
@@ -80,23 +80,24 @@ export class MiddlewareChain {
    * @param {Middleware} mw Middleware to add to the chain
    * @param {Object.<string,Object>} settings Settings for this middleware
    */
-  use(mw, settings) {
+  public use(mw, settings) {
     // logger.debug("use called", mw.type, mw.settings.toString())
 
-    if (mw instanceof Middleware) this.chain.push(mw)
-    else if (typeof mw === "object") this.chain.push(new Middleware(mw))
+    if (mw instanceof Middleware) { this.chain.push(mw) }
+    else if (typeof mw === "object") { this.chain.push(new Middleware(mw)) }
     else if (typeof mw === "string") {
-      let fn = middleware[mw]
-      if (fn)
+      const fn = middleware[mw]
+      if (fn) {
         this.chain.push(
           new Middleware({
             type: mw,
-            settings: settings,
-            fn: fn
+            settings,
+            fn
           })
         )
-      else throw new Error("middleware " + mw + " not found")
-    } else if (typeof mw === "function")
+      }
+      else { throw new Error("middleware " + mw + " not found") }
+    } else if (typeof mw === "function") {
       this.chain.push(
         new Middleware({
           type: "custom",
@@ -104,7 +105,8 @@ export class MiddlewareChain {
           fn: mw
         })
       )
-    else this.chain.push(new Middleware(mw))
+           }
+    else { this.chain.push(new Middleware(mw)) }
   }
 
   /**
@@ -112,10 +114,10 @@ export class MiddlewareChain {
    * @param {Request} req The HTTP request to thread through the chain
    * @returns {Response} The resulting response
    */
-  async run(req) {
+  public async run(req) {
     try {
-      let res = await this.buildNext(this.chain[0], this.currentPos)(req)
-      if (res instanceof Response) return res
+      const res = await this.buildNext(this.chain[0], this.currentPos)(req)
+      if (res instanceof Response) { return res }
       throw errMiddlewareNotPromise
     } catch (err) {
       logger.debug("error running middleware chain:", err.toString())
@@ -125,9 +127,9 @@ export class MiddlewareChain {
     }
   }
 
-  buildNext(mw, pos) {
+  public buildNext(mw, pos) {
     logger.debug("buildNext pos:", pos)
-    if (!mw) return this.lastNextFunc
+    if (!mw) { return this.lastNextFunc }
 
     logger.debug("mw.type", mw.type)
     const newPos = ++pos
@@ -139,11 +141,11 @@ export class MiddlewareChain {
     }
   }
 
-  runMiddleware(mw, req, next) {
+  public runMiddleware(mw, req, next) {
     logger.debug("run mw:", mw.type)
     try {
       const res = mw.fn.call(mw, req, next)
-      if (res instanceof Promise) return res
+      if (res instanceof Promise) { return res }
       throw errMiddlewareNotPromise
     } catch (err) {
       logger.debug("error running middleware")
@@ -152,7 +154,7 @@ export class MiddlewareChain {
     }
   }
 
-  lastNextFunc() {
+  public lastNextFunc() {
     logger.debug("last next func with req")
     return new Response("OK", {
       headers: {

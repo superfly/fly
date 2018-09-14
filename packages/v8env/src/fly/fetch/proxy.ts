@@ -66,7 +66,7 @@ export function buildProxyRequest(
   r: RequestInfo,
   init?: RequestInit
 ) {
-  let req = normalizeRequest(r)
+  const req = normalizeRequest(r)
 
   const url = new URL(req.url)
   let breq: Request | null = null

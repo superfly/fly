@@ -15,9 +15,11 @@ function errorMessage(err: any): string {
   } else if (err.title) {
     return err.title
   } else if (err.detail) {
-    if (err.source && err.source.pointer)
-      if (err.source.pointer.startsWith("/data/attributes/"))
+    if (err.source && err.source.pointer) {
+      if (err.source.pointer.startsWith("/data/attributes/")) {
         return `${err.source.pointer.replace("/data/attributes/", "")} ${err.detail}`
+      }
+    }
     return err.detail
   }
   return ""
@@ -25,12 +27,13 @@ function errorMessage(err: any): string {
 
 export function processResponse(res: any, successFn?: Function | undefined): void {
   if (res.status >= 200 && res.status < 299) {
-    if (successFn) successFn(res)
+    if (successFn) { successFn(res) }
   } else {
-    if (res.status == 401)
+    if (res.status == 401) {
       // TODO: Store and use `refresh_token` to automatically fix this predicament
       return console.log("Please login again with `fly login`, your token is probably expired.")
-    for (let errMsg of getErrorMessages(res)) {
+    }
+    for (const errMsg of getErrorMessages(res)) {
       console.error(colors.red("Error:"), errMsg)
     }
   }

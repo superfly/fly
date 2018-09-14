@@ -29,10 +29,10 @@ registerBridge("SourceMapConsumer.originalPositionFor", function(
           (smConsumers[sourceKey] = new SourceMapConsumer(JSON.parse(rt.app.sourceMap)))
         mp = sm.originalPositionFor(position)
       } catch (e) {
-        mp = Object.assign({}, position, { source: source })
+        mp = Object.assign({}, position, { source })
       }
     } else {
-      mp = Object.assign({}, position, { source: source })
+      mp = Object.assign({}, position, { source })
     }
   }
   return Promise.resolve(new ivm.ExternalCopy(mp).copyInto({ release: true }))

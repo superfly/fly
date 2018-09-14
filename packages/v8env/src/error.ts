@@ -31,15 +31,15 @@ function wrapCallSite(frame) {
   // Most call sites will return the source file from getFileName(), but code
   // passed to eval() ending in "//# sourceURL=..." will return the source file
   // from getScriptNameOrSourceURL() instead
-  var source = frame.getFileName() || frame.getScriptNameOrSourceURL()
+  let source = frame.getFileName() || frame.getScriptNameOrSourceURL()
   if (source) {
-    var line = frame.getLineNumber()
-    var column = frame.getColumnNumber() - 1
+    let line = frame.getLineNumber()
+    let column = frame.getColumnNumber() - 1
 
-    var position = mapSourcePosition({
-      source: source,
-      line: line,
-      column: column
+    let position = mapSourcePosition({
+      source,
+      line,
+      column
     })
     frame = cloneCallSite(frame)
     frame.getFileName = function getFileName() {
@@ -58,7 +58,7 @@ function wrapCallSite(frame) {
   }
 
   // Code called using eval() needs special handling
-  var origin = frame.isEval() && frame.getEvalOrigin()
+  let origin = frame.isEval() && frame.getEvalOrigin()
   if (origin) {
     origin = mapEvalOrigin(origin)
     frame = cloneCallSite(frame)
@@ -88,8 +88,8 @@ function mapSourcePosition(position) {
 // did something to the prototype chain and broke the shim. The only fix I
 // could find was copy/paste.
 function CallSiteToString() {
-  var fileName
-  var fileLocation = ""
+  let fileName
+  let fileLocation = ""
   if (this.isNative()) {
     fileLocation = "native"
   } else {
@@ -107,28 +107,28 @@ function CallSiteToString() {
       // an eval string.
       fileLocation += "<anonymous>"
     }
-    var lineNumber = this.getLineNumber()
+    let lineNumber = this.getLineNumber()
     if (lineNumber != null) {
       fileLocation += ":" + lineNumber
-      var columnNumber = this.getColumnNumber()
+      let columnNumber = this.getColumnNumber()
       if (columnNumber) {
         fileLocation += ":" + columnNumber
       }
     }
   }
 
-  var line = ""
-  var functionName = this.getFunctionName()
-  var addSuffix = true
-  var isConstructor = this.isConstructor()
-  var isMethodCall = !(this.isToplevel() || isConstructor)
+  let line = ""
+  let functionName = this.getFunctionName()
+  let addSuffix = true
+  let isConstructor = this.isConstructor()
+  let isMethodCall = !(this.isToplevel() || isConstructor)
   if (isMethodCall) {
-    var typeName = this.getTypeName()
+    let typeName = this.getTypeName()
     // Fixes shim to be backward compatable with Node v0 to v4
     if (typeName === "[object Object]") {
       typeName = "null"
     }
-    var methodName = this.getMethodName()
+    let methodName = this.getMethodName()
     if (functionName) {
       if (typeName && functionName.indexOf(typeName) != 0) {
         line += typeName + "."
@@ -158,7 +158,7 @@ function CallSiteToString() {
 }
 
 function cloneCallSite(frame) {
-  var object = {}
+  let object = {}
   Object.getOwnPropertyNames(Object.getPrototypeOf(frame)).forEach(function cloneCallSiteForEach(
     name
   ) {
@@ -176,9 +176,9 @@ function cloneCallSite(frame) {
 // https://code.google.com/p/v8/source/browse/trunk/src/messages.js
 function mapEvalOrigin(origin) {
   // Most eval() calls are in this format
-  var match = /^eval at ([^(]+) \((.+):(\d+):(\d+)\)$/.exec(origin)
+  let match = /^eval at ([^(]+) \((.+):(\d+):(\d+)\)$/.exec(origin)
   if (match) {
-    var position = mapSourcePosition({
+    let position = mapSourcePosition({
       source: match[2],
       line: +match[3],
       column: parseInt(match[4]) - 1

@@ -5,7 +5,7 @@ import { promisify } from "util"
 import { RedisConnectionOptions, initRedisClient } from "./redis_adapter"
 
 export class RedisCacheStore implements CacheStore {
-  redis: FlyRedis
+  public redis: FlyRedis
 
   constructor(redis: RedisConnectionOptions | RedisClient) {
     if (typeof redis === "string") {
@@ -17,18 +17,18 @@ export class RedisCacheStore implements CacheStore {
     this.redis = new FlyRedis(redis)
   }
 
-  async get(ns: string, key: string): Promise<Buffer> {
+  public async get(ns: string, key: string): Promise<Buffer> {
     const ret = await this.redis.getBufferAsync(Buffer.from(keyFor(ns, key)))
     return ret
   }
 
-  async getMulti(ns: string, keys: string[]) {
+  public async getMulti(ns: string, keys: string[]) {
     keys = keys.map(k => keyFor(ns, k))
     const bufs = await this.redis.getMultiBufferAsync(keys)
     return bufs.map((b: any) => (!b ? null : Buffer.from(b)))
   }
 
-  async set(
+  public async set(
     ns: string,
     key: string,
     value: any,
@@ -49,7 +49,7 @@ export class RedisCacheStore implements CacheStore {
         : this.redis.setAsync(k, value, "NX")
       const result = await p
       // this happens if the key already exists
-      if (result !== "OK") return false
+      if (result !== "OK") { return false }
 
       // otherwise we carry on
     } else {
@@ -73,7 +73,7 @@ export class RedisCacheStore implements CacheStore {
     return redisGroupOK(result)
   }
 
-  async expire(ns: string, key: string, ttl: number): Promise<boolean> {
+  public async expire(ns: string, key: string, ttl: number): Promise<boolean> {
     const k = keyFor(ns, key)
     const cmds = await Promise.all([
       this.redis.expireAsync(k, ttl),
@@ -82,23 +82,23 @@ export class RedisCacheStore implements CacheStore {
     return redisGroupOK(cmds)
   }
 
-  async ttl(ns: string, key: string): Promise<number> {
+  public async ttl(ns: string, key: string): Promise<number> {
     return this.redis.ttlAsync(keyFor(ns, key))
   }
 
-  async del(ns: string, key: string): Promise<boolean> {
+  public async del(ns: string, key: string): Promise<boolean> {
     const k = keyFor(ns, key)
     const cmds = await Promise.all([this.redis.delAsync(k), this.redis.delAsync(k + ":tags")])
     return redisGroupOK(cmds)
   }
-  async setTags(ns: string, key: string, tags: string[]): Promise<boolean> {
+  public async setTags(ns: string, key: string, tags: string[]): Promise<boolean> {
     const k = keyFor(ns, key)
     const p = tags.map(t => this.redis.saddAsync(tagKeyFor(ns, t), k))
     const result = await Promise.all(p)
     return result.filter(r => !r).length > 0
   }
 
-  async purgeTag(ns: string, tags: string): Promise<string[]> {
+  public async purgeTag(ns: string, tags: string): Promise<string[]> {
     const s = tagKeyFor(ns, tags)
     const keysToDelete = new Array<string>()
     const keysToCheck = new Array<string>()
@@ -143,41 +143,43 @@ function redisGroupOK(result: any) {
       (typeof r === "string" && r !== "OK") ||
       (typeof r === "number" && r < 0) ||
       (typeof r === "boolean" && r === false)
-    )
+    ) {
       return true
+    }
   })
   return errors.length === 0
 }
 
-if (Symbol && !Symbol.asyncIterator)
-  (<any>Symbol).asyncIterator = Symbol.for("Symbol.asyncIterator")
+if (Symbol && !Symbol.asyncIterator) {
+  (Symbol as any).asyncIterator = Symbol.for("Symbol.asyncIterator")
+}
 async function* setScanner(redis: FlyRedis, key: string) {
   let cursor = 0
   do {
     const result = await redis.sscanAsync(key, cursor)
     cursor = parseInt(result[0])
-    yield* <string[]>result[1]
+    yield* result[1] as string[]
   } while (cursor > 0)
 }
 
 class FlyRedis {
-  getBufferAsync: (key: Buffer | string) => Promise<Buffer>
-  getMultiBufferAsync: (keys: string[]) => Promise<Buffer[]>
-  setAsync: (
+  public getBufferAsync: (key: Buffer | string) => Promise<Buffer>
+  public getMultiBufferAsync: (keys: string[]) => Promise<Buffer[]>
+  public setAsync: (
     key: string,
     value: Buffer,
     mode?: number | string,
     duration?: number,
     exists?: string
   ) => Promise<"OK" | undefined>
-  expireAsync: (key: string, ttl: number) => Promise<boolean>
-  ttlAsync: (key: string) => Promise<number>
-  delAsync: (...keys: string[]) => Promise<boolean>
-  saddAsync: (key: string, values: string | string[]) => Promise<boolean>
-  sscanAsync: (key: string, cursor: number) => Promise<[string, string[]]>
-  smembersAsync: (key: string) => Promise<string[] | undefined>
-  sismemberAsync: (key: string, member: string) => Promise<boolean>
-  redis: RedisClient
+  public expireAsync: (key: string, ttl: number) => Promise<boolean>
+  public ttlAsync: (key: string) => Promise<number>
+  public delAsync: (...keys: string[]) => Promise<boolean>
+  public saddAsync: (key: string, values: string | string[]) => Promise<boolean>
+  public sscanAsync: (key: string, cursor: number) => Promise<[string, string[]]>
+  public smembersAsync: (key: string) => Promise<string[] | undefined>
+  public sismemberAsync: (key: string, member: string) => Promise<boolean>
+  public redis: RedisClient
   constructor(redis: RedisClient) {
     this.redis = redis
 
@@ -195,8 +197,8 @@ class FlyRedis {
   }
 
   // fake sscan function for mock redis
-  async sscanShim(key: string, cursor: number, count?: number) {
-    if (!count) count = 10
+  public async sscanShim(key: string, cursor: number, count?: number) {
+    if (!count) { count = 10 }
     const members = await this.smembersAsync(key)
     if (members && cursor < members.length) {
       let newCursor = cursor + count

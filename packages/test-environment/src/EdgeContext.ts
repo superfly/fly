@@ -20,7 +20,7 @@ export class EdgeContext {
     this.hostname = options.hostname || "127.0.0.1"
 
     for (const [hostname, path] of Object.entries(options.servers)) {
-      const server = new TestServer(this, { host: hostname, path: path })
+      const server = new TestServer(this, { host: hostname, path })
       this.servers.push(server)
     }
 

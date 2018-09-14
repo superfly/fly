@@ -11,9 +11,9 @@ registerBridge("TextDecoder.decode", async function(
   buf: ArrayBuffer,
   encoding?: string
 ) {
-  //const txt = await new TextDecoderProxy(encoding).decode(buf)
+  // const txt = await new TextDecoderProxy(encoding).decode(buf)
   const txt2 = Buffer.from(buf).toString(encoding)
-  //console.log("Got string:", txt.length, txt2.length, txt == txt2, txt[txt.length - 1], txt2[txt2.length - 1])
+  // console.log("Got string:", txt.length, txt2.length, txt == txt2, txt[txt.length - 1], txt2[txt2.length - 1])
   return txt2
 })
 
@@ -22,22 +22,22 @@ registerBridge("TextEncoder.encode", async function(rt: Runtime, bridge: Bridge,
 })
 
 class TextDecoderProxy {
-  td: TextDecoder
+  public td: TextDecoder
   constructor(encoding?: string) {
     this.td = new TextDecoder(encoding)
   }
 
-  async decode(input: ArrayBuffer | DataView | TypedArray) {
+  public async decode(input: ArrayBuffer | DataView | TypedArray) {
     return this.td.decode(input)
   }
 }
 
 class TextEncoderProxy {
-  te: TextEncoder
+  public te: TextEncoder
   constructor() {
     this.te = new TextEncoder()
   }
-  async encode(input: string) {
+  public async encode(input: string) {
     return transferInto(this.te.encode(input))
   }
 }

@@ -27,7 +27,7 @@ export const console: Console = {
     fly.log("info", ...args)
   },
   assert(assertion, ...args) {
-    if (!assertion) fly.log("info", ...args)
+    if (!assertion) { fly.log("info", ...args) }
   },
   error(...args) {
     fly.log("error", ...args)
@@ -39,7 +39,7 @@ export const console: Console = {
     fly.log("warn", ...args)
   },
   trace() {
-    let stack = new Error().stack.match(/[^\r\n]+/g)
+    const stack = new Error().stack.match(/[^\r\n]+/g)
     fly.log("info", "Trace:\n" + stack.slice(2).join("\n"))
   },
 

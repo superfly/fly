@@ -46,14 +46,14 @@ const deploy = root
         try {
           const entries = [
             configPath, // processed .fly.yml
-            ...glob.sync(".fly/*/**.{js,json}", { cwd: cwd }),
+            ...glob.sync(".fly/*/**.{js,json}", { cwd }),
             ...release.files
           ].filter(f => existsSync(pathResolve(cwd, f)))
 
           const res = await new Promise<AxiosResponse<any>>((resolve, reject) => {
             tar
               .pack(cwd, {
-                entries: entries,
+                entries,
                 map: header => {
                   if (header.name === ".fly/.fly.yml") {
                     // use generated .fly.yml as config (for globbing)
@@ -62,7 +62,7 @@ const deploy = root
                   return header
                 },
                 dereference: true,
-                finish: function() {
+                finish() {
                   log.debug("Finished packing.")
                   const buf = readFileSync(pathResolve(cwd, ".fly/bundle.tar"))
                   console.log(`Bundle size: ${buf.byteLength / (1024 * 1024)}MB`)
@@ -74,7 +74,7 @@ const deploy = root
                   const res = API.post(`/api/v1/apps/${appName}/releases`, gz, {
                     params: {
                       sha1: hash.digest("hex"),
-                      env: env
+                      env
                     },
                     headers: {
                       "Content-Type": "application/x-tar",
@@ -100,7 +100,7 @@ const deploy = root
             console.log(`App should be updated in a few seconds.`)
           })
         } catch (e) {
-          if (e.response) console.log(e.response.data)
+          if (e.response) { console.log(e.response.data) }
           else {
             throw e
           }

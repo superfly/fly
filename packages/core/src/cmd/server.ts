@@ -24,8 +24,8 @@ root
   .option("--inspect", "use the v8 inspector on your fly app")
   .option("--uglify", "uglify your code like we'll use in production (warning: slow!)")
   .action(async function(this: Command<ServerOptions, ServerArguments>, opts, args, rest) {
-    //const { FileAppStore } = require('../file_app_store')
-    //const { Server } = require('../server')
+    // const { FileAppStore } = require('../file_app_store')
+    // const { Server } = require('../server')
 
     let cwd = args.path || process.cwd()
     if (!fs.existsSync(cwd)) {
@@ -35,7 +35,7 @@ root
     process.chdir(cwd)
 
     let port = parseInt(
-      (opts.port && opts.port[0]) || (process.env["PORT"] && process.env["PORT"]) || "3000"
+      (opts.port && opts.port[0]) || (process.env.PORT && process.env.PORT) || "3000"
     )
 
     // TODO: use env option for environment.

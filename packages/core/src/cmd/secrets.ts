@@ -28,7 +28,7 @@ const secretsSet = secrets
         ? fs.readFileSync(opts.filename[0]).toString()
         : args.value && args.value
 
-      if (!value) throw new Error("Either a value or --from-file needs to be provided.")
+      if (!value) { throw new Error("Either a value or --from-file needs to be provided.") }
 
       const res = await API.patch(`/api/v1/apps/${appName}/secrets`, {
         data: {
@@ -46,8 +46,8 @@ const secretsSet = secrets
         )
       })
     } catch (e) {
-      if (e.response) console.log(e.response.data)
-      else throw e
+      if (e.response) { console.log(e.response.data) }
+      else { throw e }
     }
   })
 

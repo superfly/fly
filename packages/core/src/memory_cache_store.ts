@@ -5,26 +5,26 @@ const Redis = require("ioredis-mock")
 const OK = "OK"
 
 export class MemoryCacheStore implements CacheStore {
-  redis: IORedis.Redis
-  rand: number
+  public redis: IORedis.Redis
+  public rand: number
   constructor(label?: string) {
     this.redis = new Redis()
     this.rand = Math.random()
   }
 
-  async get(ns: string, key: string): Promise<Buffer | null> {
+  public async get(ns: string, key: string): Promise<Buffer | null> {
     const buf = await this.redis.getBuffer(keyFor(ns, key))
-    if (!buf) return null
+    if (!buf) { return null }
     return Buffer.from(buf)
   }
 
-  async getMulti(ns: string, keys: string[]) {
+  public async getMulti(ns: string, keys: string[]) {
     keys = keys.map(k => keyFor(ns, k))
     const bufs = await this.redis.mget(...keys)
     return bufs.map((b: any) => (!b ? null : Buffer.from(b)))
   }
 
-  async set(
+  public async set(
     ns: string,
     key: string,
     value: any,
@@ -45,7 +45,7 @@ export class MemoryCacheStore implements CacheStore {
       const p = ttl ? this.redis.set(k, value, "EX", ttl, "NX") : this.redis.set(k, value, "NX")
       const result = await p
       // this happens if the key already exists
-      if (result !== "OK") return false
+      if (result !== "OK") { return false }
     }
     if (ttl && !isNaN(ttl)) {
       pipeline.set(k, value, "EX", ttl)
@@ -66,23 +66,23 @@ export class MemoryCacheStore implements CacheStore {
     return pipelineResultOK(result)
   }
 
-  async del(ns: string, key: string): Promise<boolean> {
+  public async del(ns: string, key: string): Promise<boolean> {
     key = keyFor(ns, key)
     await Promise.all([this.redis.del(key), this.redis.del(key + ":tags")])
     return true
   }
 
-  async expire(ns: string, key: string, ttl: number): Promise<boolean> {
+  public async expire(ns: string, key: string, ttl: number): Promise<boolean> {
     key = keyFor(ns, key)
     await Promise.all([this.redis.expire(key, ttl), this.redis.expire(key + ":tags", ttl)])
     return true
   }
 
-  async ttl(ns: string, key: string): Promise<number> {
+  public async ttl(ns: string, key: string): Promise<number> {
     return this.redis.ttl(keyFor(ns, key))
   }
 
-  async setTags(
+  public async setTags(
     ns: string,
     key: string,
     tags: string[],
@@ -105,7 +105,7 @@ export class MemoryCacheStore implements CacheStore {
     }
   }
 
-  async purgeTag(ns: string, tags: string): Promise<string[]> {
+  public async purgeTag(ns: string, tags: string): Promise<string[]> {
     const s = tagKeyFor(ns, tags)
     const checks = this.redis.pipeline()
     const keysToDelete = new Array<string>()
@@ -134,14 +134,15 @@ export class MemoryCacheStore implements CacheStore {
   }
 }
 
-if (Symbol && !Symbol.asyncIterator)
-  (<any>Symbol).asyncIterator = Symbol.for("Symbol.asyncIterator")
+if (Symbol && !Symbol.asyncIterator) {
+  (Symbol as any).asyncIterator = Symbol.for("Symbol.asyncIterator")
+}
 async function* setScanner(redis: IORedis.Redis, key: string) {
   let cursor = 0
   do {
     const result = await redis.sscan(key, cursor)
     cursor = result[0]
-    yield* <string[]>result[1]
+    yield* result[1] as string[]
   } while (cursor > 0)
 }
 
@@ -157,7 +158,7 @@ function pipelineResultOK(result: any) {
     if (r[0]) {
       return true
     }
-    if (r[1] !== "OK" || (typeof r[1] === "number" && r[1] < 0)) return false
+    if (r[1] !== "OK" || (typeof r[1] === "number" && r[1] < 0)) { return false }
   })
   return errors.length === 0
 }

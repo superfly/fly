@@ -15,31 +15,29 @@ export interface CacheNotifyMessage {
   ts: number
 }
 
-export interface ReceiveHandler {
-  (msg: CacheNotifyMessage): void
-}
+export type ReceiveHandler = (msg: CacheNotifyMessage) => void
 export interface CacheNotifierAdapter {
   send(op: CacheNotifyMessage): Promise<boolean>
   start(handler: ReceiveHandler): void
 }
 
 export class CacheNotifier {
-  pid: string
+  public pid: string
   constructor(public cacheStore: CacheStore, public adapter: CacheNotifierAdapter) {
     this.pid = `${hostname()}-${process.pid}`
     this.adapter.start(this.handle.bind(this))
   }
 
-  async send(type: CacheOperation, ns: string, value: string) {
+  public async send(type: CacheOperation, ns: string, value: string) {
     log.debug("cache notifier sending:", this.adapter.constructor.name, type, ns, value)
     return this.adapter.send({ type, value, ns: ns.toString(), ts: Date.now() })
   }
 
-  async handle({ type, ns, value, ts }: CacheNotifyMessage): Promise<boolean> {
+  public async handle({ type, ns, value, ts }: CacheNotifyMessage): Promise<boolean> {
     const lockKey = "lock:" + [type, value, ts].join(":")
     log.debug("cache notifier received msg:", type, ns, value, this.adapter.constructor.name)
     const hasLock = await this.cacheStore.set(ns, lockKey, this.pid, { ttl: 10, onlyIfEmpty: true })
-    if (!hasLock) return false
+    if (!hasLock) { return false }
     try {
       switch (type) {
         case CacheOperation.del: {
@@ -60,7 +58,7 @@ export class CacheNotifier {
 }
 
 export function isCacheOperation(op: any): op is CacheOperation {
-  if (typeof op !== "string") return false
+  if (typeof op !== "string") { return false }
 
   const v = Object.getOwnPropertyNames(CacheOperation)
 
@@ -72,7 +70,7 @@ export function isCacheOperation(op: any): op is CacheOperation {
 
 export class LocalCacheNotifier implements CacheNotifierAdapter {
   private _handler: ReceiveHandler | undefined
-  async send(msg: CacheNotifyMessage) {
+  public async send(msg: CacheNotifyMessage) {
     // using setImmediate here to fake an async adapter
     return new Promise<boolean>(resolve => {
       setImmediate(() => {
@@ -82,7 +80,7 @@ export class LocalCacheNotifier implements CacheNotifierAdapter {
     })
   }
 
-  start(handler: ReceiveHandler) {
+  public start(handler: ReceiveHandler) {
     this._handler = handler
   }
   /*switch(type) {
@@ -94,7 +92,7 @@ export class LocalCacheNotifier implements CacheNotifierAdapter {
     throw new Error(`Unknown CacheNotifierOperation: ${type}`)
     }
   }*/
-} //*/e
+} // */e
 
 export function defaultCacheNotifier(cacheStore: CacheStore) {
   let adapter: CacheNotifierAdapter = new LocalCacheNotifier()

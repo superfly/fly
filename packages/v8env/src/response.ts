@@ -12,15 +12,15 @@ function ushort(x) {
  * Class representing a fetch response.
  */
 export class Response extends Body {
-  headers: Headers
-  status: number
-  url: string
-  ok: boolean
-  statusText: string
-  type: string
+  public headers: Headers
+  public status: number
+  public url: string
+  public ok: boolean
+  public statusText: string
+  public type: string
   private cookieJar: CookieJar
 
-  static redirect(url, status = 302) {
+  public static redirect(url, status = 302) {
     return new Response("", {
       status,
       headers: {
@@ -30,7 +30,7 @@ export class Response extends Body {
   }
 
   constructor(body, init) {
-    if (arguments.length < 1) body = ""
+    if (arguments.length < 1) { body = "" }
 
     super(body)
 
@@ -51,8 +51,8 @@ export class Response extends Body {
     this.url = init.url || ""
 
     // readonly attribute unsigned short status;
-    var status = "status" in init ? ushort(init.status) : 200
-    if (status < 200 || status > 599) throw RangeError()
+    let status = "status" in init ? ushort(init.status) : 200
+    if (status < 200 || status > 599) { throw RangeError() }
 
     /**
      * @public
@@ -70,8 +70,8 @@ export class Response extends Body {
     this.ok = 200 <= this.status && this.status <= 299
 
     // readonly attribute ByteString statusText;
-    var statusText = "statusText" in init ? String(init.statusText) : "OK"
-    if (/[^\x00-\xFF]/.test(statusText)) throw TypeError()
+    let statusText = "statusText" in init ? String(init.statusText) : "OK"
+    if (/[^\x00-\xFF]/.test(statusText)) { throw TypeError() }
 
     /**
      * @public
@@ -99,13 +99,13 @@ export class Response extends Body {
    * @type CookieJar
    */
   get cookies() {
-    if (this.cookieJar) return this.cookieJar
+    if (this.cookieJar) { return this.cookieJar }
     this.cookieJar = new CookieJar(this)
     return this.cookieJar
   }
 
-  clone() {
-    if (this.bodyUsed) throw new Error("Body has already been used")
+  public clone() {
+    if (this.bodyUsed) { throw new Error("Body has already been used") }
     let body2 = this.bodySource
     if (this.bodySource instanceof ReadableStream) {
       const tees = this.body.tee()

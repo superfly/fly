@@ -47,10 +47,10 @@ export function pipeline(...stages: PipelineStage[]) {
       const opts = s instanceof Array ? s[1] : []
       fetch = fn(fetch, opts)
     }
-    return Object.assign(fetch, { stages: stages })
+    return Object.assign(fetch, { stages })
   }
 
-  return Object.assign(pipelineFetch, { stages: stages })
+  return Object.assign(pipelineFetch, { stages })
 }
 
 export default pipeline

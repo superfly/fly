@@ -2,7 +2,7 @@ import { Duplex } from "stream"
 import { ivm } from ".."
 
 export function bufferToStream(buffer: Buffer) {
-  let stream = new Duplex()
+  const stream = new Duplex()
   stream.push(buffer)
   stream.push(null)
   return stream
@@ -15,10 +15,11 @@ export function bufferToArrayBuffer(buffer: Buffer): ArrayBuffer | SharedArrayBu
 export function transferInto(
   buffer: Buffer | ArrayBuffer | TypedArray | null
 ): ivm.Copy<ArrayBuffer> | null {
-  if (!buffer) return null
-  if (buffer instanceof Buffer) return transferArrayBufferInto(bufferToArrayBuffer(buffer))
-  else if (buffer instanceof ArrayBuffer || typeof buffer.buffer !== "undefined")
+  if (!buffer) { return null }
+  if (buffer instanceof Buffer) { return transferArrayBufferInto(bufferToArrayBuffer(buffer)) }
+  else if (buffer instanceof ArrayBuffer || typeof buffer.buffer !== "undefined") {
     return transferArrayBufferInto(buffer)
+       }
   return new ivm.ExternalCopy(buffer).copyInto({ release: true })
 }
 

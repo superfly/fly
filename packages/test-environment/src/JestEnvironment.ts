@@ -3,7 +3,7 @@ import { EdgeContext } from "./EdgeContext"
 import { install } from "./helpers"
 
 class JestEnvironment extends NodeEnvironment {
-  private readonly appIndex: Map<string, Array<string>>
+  private readonly appIndex: Map<string, string[]>
   private testContext: EdgeContext | undefined
 
   constructor(config: any) {
@@ -12,7 +12,7 @@ class JestEnvironment extends NodeEnvironment {
     this.appIndex = new Map()
   }
 
-  setup() {
+  public setup() {
     this.global.env = this
 
     install(this, this.global)
@@ -20,7 +20,7 @@ class JestEnvironment extends NodeEnvironment {
     return Promise.resolve()
   }
 
-  createContext() {
+  public createContext() {
     const servers: { [hostname: string]: string } = {}
     for (const [hostname, paths] of this.appIndex) {
       if (paths.length > 0) {
@@ -66,7 +66,7 @@ class JestEnvironment extends NodeEnvironment {
 
   public popApps(apps: { [host: string]: string }) {
     Object.entries(apps).forEach(([host, path]) => {
-      let hostApps = this.appIndex.get(host)
+      const hostApps = this.appIndex.get(host)
       if (!hostApps || hostApps[0] !== path) {
         console.warn(
           "Attempting to pop an app that isn't configured!",
@@ -79,7 +79,7 @@ class JestEnvironment extends NodeEnvironment {
     })
   }
 
-  teardown() {
+  public teardown() {
     return Promise.resolve()
   }
 }

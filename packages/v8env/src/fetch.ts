@@ -34,24 +34,27 @@ export function fetch(req: RequestInfo, init?: FlyRequestInit): Promise<Response
         timeout: init && init.timeout,
         readTimeout: (init && init.readTimeout) || 30 * 1000
       }
-      if (!req.bodySource) bridge.dispatch("fetch", url, init, null, fetchCb)
-      else if (typeof req.bodySource === "string")
+      if (!req.bodySource) { bridge.dispatch("fetch", url, init, null, fetchCb) }
+      else if (typeof req.bodySource === "string") {
         bridge.dispatch("fetch", url, init, req.bodySource, fetchCb)
-      else
+           }
+      else {
         req
           .arrayBuffer()
           .then(function fetchArrayBufferPromise(body) {
             bridge.dispatch("fetch", url, init, body, fetchCb)
           })
           .catch(reject)
+           }
     } catch (err) {
       logger.debug("err applying nativeFetch", err.toString())
       reject(err)
     }
     function fetchCb(err, nodeRes, nodeBody) {
-      if (err && typeof err === "string" && err.includes("timeout"))
+      if (err && typeof err === "string" && err.includes("timeout")) {
         return reject(new TimeoutError(err))
-      if (err) return reject(new Error(err))
+      }
+      if (err) { return reject(new Error(err)) }
       resolve(new Response(isFlyStream(nodeBody) ? refToStream(nodeBody) : nodeBody, nodeRes))
     }
   })

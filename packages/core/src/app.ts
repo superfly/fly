@@ -36,7 +36,7 @@ export class App {
   }
 
   get config() {
-    if (this._config) return this._config
+    if (this._config) { return this._config }
     this._config = this.release.config
     applySecrets(this._config, this.release.secrets)
     return this._config
@@ -62,7 +62,7 @@ export class App {
     return this.release.source_map
   }
 
-  asJSON() {
+  public asJSON() {
     return {
       name: this.name,
       config: this.config,
@@ -71,7 +71,7 @@ export class App {
     }
   }
 
-  forV8() {
+  public forV8() {
     return new ivm.ExternalCopy(this.asJSON()).copyInto({ release: true })
   }
 }

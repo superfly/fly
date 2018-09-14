@@ -33,11 +33,11 @@ const v8SnapshotsEnabled = semver.lt(process.version, "10.4.0")
 let v8SnapshotChecked = false
 
 export class V8Environment extends EventEmitter {
-  bootstrapped: boolean
+  public bootstrapped: boolean
   constructor() {
     super()
     this.bootstrapped = false
-    if (!v8EnvCode) throw new Error("v8env not found, please run npm build to generate it")
+    if (!v8EnvCode) { throw new Error("v8env not found, please run npm build to generate it") }
   }
 
   get isReady() {
@@ -61,7 +61,7 @@ export class V8Environment extends EventEmitter {
       console.log("v8 snapshots enabled")
 
       if (fs.existsSync(v8distSnapshot)) {
-        v8EnvSnapshot = new ivm.ExternalCopy(<ArrayBuffer>fs.readFileSync(v8distSnapshot).buffer)
+        v8EnvSnapshot = new ivm.ExternalCopy(fs.readFileSync(v8distSnapshot).buffer as ArrayBuffer)
       } else if (v8EnvCode) {
         v8EnvSnapshot = ivm.Isolate.createSnapshot([
           {
@@ -83,10 +83,10 @@ export class V8Environment extends EventEmitter {
     return v8EnvSourceMap
   }
 
-  startUpdater() {
+  public startUpdater() {
     try {
       console.log("Watching for changes:", v8dist)
-      let fsTimeout = false
+      const fsTimeout = false
       fs.watch(v8dist, (eventType, fileName) => {
         fs.readFile(v8dist, (err, data) => {
           const s = data.toString()
@@ -100,7 +100,7 @@ export class V8Environment extends EventEmitter {
     }
   }
 
-  updateV8Env(code?: string) {
+  public updateV8Env(code?: string) {
     if (!code) {
       code = fs.readFileSync(v8dist).toString()
     }
@@ -121,7 +121,7 @@ export class V8Environment extends EventEmitter {
         }
       ])
       this.emit("snapshot", v8EnvSnapshot)
-      if (!wasReady) this.emit("ready")
+      if (!wasReady) { this.emit("ready") }
     }
   }
 }

@@ -14,15 +14,16 @@ const hostnames = root
     try {
       const res = await API.get(`/api/v1/apps/${getAppName(this)}/hostnames`)
       processResponse(res, (res: any) => {
-        if (!res.data.data || res.data.data.length === 0)
+        if (!res.data.data || res.data.data.length === 0) {
           return console.log("No hostnames configured, use `fly hostnames add` to add one.")
-        for (let h of res.data.data) {
+        }
+        for (const h of res.data.data) {
           console.log(h.attributes.hostname)
         }
       })
     } catch (e) {
-      if (e.response) console.log(e.response.data)
-      else throw e
+      if (e.response) { console.log(e.response.data) }
+      else { throw e }
     }
   })
 
@@ -44,8 +45,8 @@ const hostnamesAdd = hostnames
         console.log(`Successfully added hostname ${args.hostname}`)
       })
     } catch (e) {
-      if (e.response) console.log(e.response.data)
-      else throw e
+      if (e.response) { console.log(e.response.data) }
+      else { throw e }
     }
   })
 

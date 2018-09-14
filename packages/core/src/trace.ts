@@ -2,10 +2,10 @@ import log from "./log"
 const nsPerSecond = 1e9
 
 export class Trace {
-  name: string
-  tags: any
-  children: Trace[] | undefined
-  parent: Trace | undefined
+  public name: string
+  public tags: any
+  public children: Trace[] | undefined
+  public parent: Trace | undefined
 
   private startTime?: [number, number]
   private diff?: [number, number]
@@ -15,24 +15,24 @@ export class Trace {
     this.parent = parent
   }
 
-  start(name?: string, tags?: any): Trace {
+  public start(name?: string, tags?: any): Trace {
     if (!name) {
       this.startTime = process.hrtime()
       return this
     } else {
       if (!this.name) {
-        throw 'Trace spans need a name, call `t.trace("wat")`'
+        throw new Error('Trace spans need a name, call `t.trace("wat")`')
       }
       if (!this.children) {
         this.children = []
       }
-      let t = Trace.start(<string>name, this)
+      const t = Trace.start(name as string, this)
       this.children.push(t)
       return t
     }
   }
 
-  end(tags?: any) {
+  public end(tags?: any) {
     if (!this.diff) {
       this.diff = process.hrtime(this.startTime)
     }
@@ -40,27 +40,27 @@ export class Trace {
       this.addTags(tags)
     }
     if (this.children) {
-      for (let c of this.children) {
+      for (const c of this.children) {
         if (!c.diff) {
           c.end()
         }
       }
     }
     if (!this.parent) {
-      //log.debug(`${this.name} took: ${this.milliseconds()}ms`)
-      //log.debug(this.report())
+      // log.debug(`${this.name} took: ${this.milliseconds()}ms`)
+      // log.debug(this.report())
     }
     log.debug(`${this.name} took: ${this.milliseconds()}ms`)
   }
 
-  addTags(tags: any) {
+  public addTags(tags: any) {
     if (!this.tags) {
       this.tags = {}
     }
     Object.assign(this.tags, tags)
   }
 
-  report(depth: number = 0) {
+  public report(depth: number = 0) {
     let r = ""
     let prefix = "\n--"
     for (let i = 0; i < depth; i++) {
@@ -71,29 +71,29 @@ export class Trace {
       r += prefix + "  -> " + JSON.stringify(this.tags)
     }
     if (this.children) {
-      for (let c of this.children) {
+      for (const c of this.children) {
         r += c.report(depth + 1)
       }
     }
     return r
   }
 
-  nanoseconds() {
-    if (!this.diff) return 0
+  public nanoseconds() {
+    if (!this.diff) { return 0 }
     return this.diff[0] * nsPerSecond + this.diff[1]
   }
 
-  milliseconds() {
+  public milliseconds() {
     return this.nanoseconds() / (1000 * 1000.0)
   }
 
-  static start = function(name: string, parent?: Trace) {
-    let t: Trace = new Trace(name, parent)
+  public static start = function(name: string, parent?: Trace) {
+    const t: Trace = new Trace(name, parent)
     t.start()
     return t
   }
 
-  static tryStart = function(name: string, trace?: Trace) {
+  public static tryStart = function(name: string, trace?: Trace) {
     if (trace) {
       return trace.start(name)
     } else {

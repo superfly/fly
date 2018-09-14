@@ -32,7 +32,7 @@ const hopHeaders = [
 
 export interface RequestMeta {
   app?: App
-  startedAt?: [number, number] //process.hrtime() ya know
+  startedAt?: [number, number] // process.hrtime() ya know
   endedAt?: [number, number]
   id?: string
   originalURL?: string
@@ -58,11 +58,11 @@ export interface RequestTask {
 }
 
 export class Server extends http.Server {
-  options: ServerOptions
+  public options: ServerOptions
 
-  bridge: Bridge
-  runtime: LocalRuntime
-  appStore: FileAppStore
+  public bridge: Bridge
+  public runtime: LocalRuntime
+  public appStore: FileAppStore
 
   constructor(options: ServerOptions = {}) {
     super()
@@ -89,11 +89,12 @@ export class Server extends http.Server {
     // request.pause()
     const start = process.hrtime()
     const reqId = randomBytes(12).toString("hex")
-    if (request.url === undefined)
+    if (request.url === undefined) {
       // typescript check fix
       return
+    }
 
-    if (request.headers.host === undefined) return
+    if (request.headers.host === undefined) { return }
 
     if (request.url == undefined) {
       // typescript check fix
@@ -161,13 +162,13 @@ export function handleRequest(
   let cbCalled = false
   return new Promise((resolve, reject) => {
     // mainly to make try...finally work
-    let reqForV8 = {
+    const reqForV8 = {
       method: req.method,
       headers: req.headers,
       remoteAddr: req.connection.remoteAddress
     }
 
-    let fetchCallback = (err: any, v8res: any, resBody: V8ResponseBody) => {
+    const fetchCallback = (err: any, v8res: any, resBody: V8ResponseBody) => {
       if (cbCalled) {
         return // this can't happen twice
       }
@@ -184,7 +185,7 @@ export function handleRequest(
       for (let n in v8res.headers) {
         try {
           n = n.trim()
-          if (/^server$/i.test(n)) continue
+          if (/^server$/i.test(n)) { continue }
 
           const val = v8res.headers[n]
 
@@ -194,10 +195,10 @@ export function handleRequest(
         }
       }
 
-      for (let n of hopHeaders) res.removeHeader(n)
+      for (const n of hopHeaders) { res.removeHeader(n) }
 
       let dst: Writable = res
-      let contentEncoding = res.getHeader("content-encoding")
+      const contentEncoding = res.getHeader("content-encoding")
       let contentType = res.getHeader("content-type")
       let acceptEncoding = req.headers["accept-encoding"]
       if (acceptEncoding && acceptEncoding instanceof Array) {
@@ -230,7 +231,7 @@ export function handleRequest(
       handleResponse(rt, resBody, res, dst)
         .then(len => {
           rt.reportUsage("http", { data_out: len })
-          if (!res.finished) res.end() // we are done. triggers 'finish' event
+          if (!res.finished) { res.end() } // we are done. triggers 'finish' event
           resolve(len)
         })
         .catch(reject)
@@ -255,7 +256,7 @@ function handleResponse(
   res: http.ServerResponse,
   dst: Writable
 ): Promise<number> {
-  if (!src) return Promise.resolve(0)
+  if (!src) { return Promise.resolve(0) }
 
   if (typeof src == "number") {
     return handleResponseStream(rt, src, res, dst)
@@ -263,12 +264,12 @@ function handleResponse(
 
   let totalLength = 0
 
-  if (src instanceof ArrayBuffer) src = Buffer.from(src)
+  if (src instanceof ArrayBuffer) { src = Buffer.from(src) }
 
   return new Promise<number>((resolve, reject) => {
     res.on("finish", () => {
-      if (src instanceof Buffer) totalLength = src.byteLength
-      else if (typeof src === "string") totalLength = Buffer.byteLength(src, "utf8")
+      if (src instanceof Buffer) { totalLength = src.byteLength }
+      else if (typeof src === "string") { totalLength = Buffer.byteLength(src, "utf8") }
       resolve(totalLength)
     })
     res.on("error", err => {
@@ -311,7 +312,7 @@ function handleResponseStream(
 
 function handleCriticalError(err: Error, req: http.IncomingMessage, res: http.ServerResponse) {
   log.error("critical error:", err)
-  if (res.finished) return
+  if (res.finished) { return }
   res.writeHead(500)
   res.end("Critical error.")
   req.destroy() // stop everything I guess.

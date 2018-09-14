@@ -35,10 +35,10 @@ Headers.prototype = {
    * @param {String} name */
   delete: function delete_(name) {
     name = name.toLowerCase()
-    var index = 0
+    let index = 0
     while (index < this._headerList.length) {
-      if (this._headerList[index][0] === name) this._headerList.splice(index, 1)
-      else ++index
+      if (this._headerList[index][0] === name) { this._headerList.splice(index, 1) }
+      else { ++index }
     }
   },
 
@@ -50,10 +50,10 @@ Headers.prototype = {
   get: function get(name) {
     name = name.toLowerCase()
     const raw = []
-    for (var index = 0; index < this._headerList.length; ++index) {
-      if (this._headerList[index][0] === name) raw.push(this._headerList[index][1])
+    for (let index = 0; index < this._headerList.length; ++index) {
+      if (this._headerList[index][0] === name) { raw.push(this._headerList[index][1]) }
     }
-    if (raw.length > 0) return raw.join(", ")
+    if (raw.length > 0) { return raw.join(", ") }
     return null
   },
 
@@ -64,9 +64,9 @@ Headers.prototype = {
    */
   getAll: function getAll(name) {
     name = name.toLowerCase()
-    var sequence = []
-    for (var index = 0; index < this._headerList.length; ++index) {
-      if (this._headerList[index][0] === name) sequence.push(this._headerList[index][1])
+    const sequence = []
+    for (let index = 0; index < this._headerList.length; ++index) {
+      if (this._headerList[index][0] === name) { sequence.push(this._headerList[index][1]) }
     }
     return sequence
   },
@@ -78,8 +78,8 @@ Headers.prototype = {
    */
   has: function has(name) {
     name = name.toLowerCase()
-    for (var index = 0; index < this._headerList.length; ++index) {
-      if (this._headerList[index][0] === name) return true
+    for (let index = 0; index < this._headerList.length; ++index) {
+      if (this._headerList[index][0] === name) { return true }
     }
     return false
   },
@@ -91,12 +91,12 @@ Headers.prototype = {
    */
   set: function set(name, value) {
     name = name.toLowerCase()
-    for (var index = 0; index < this._headerList.length; ++index) {
+    for (let index = 0; index < this._headerList.length; ++index) {
       if (this._headerList[index][0] === name) {
         this._headerList[index++][1] = value
         while (index < this._headerList.length) {
-          if (this._headerList[index][0] === name) this._headerList.splice(index, 1)
-          else ++index
+          if (this._headerList[index][0] === name) { this._headerList.splice(index, 1) }
+          else { ++index }
         }
         return
       }
@@ -109,7 +109,7 @@ Headers.prototype = {
    */
   toJSON: function toJSON() {
     const jsonHeaders = {}
-    for (let h of this._headerList) {
+    for (const h of this._headerList) {
       if (h[0] === "host") {
         jsonHeaders[h[0]] = this.get(h[0])
         continue
@@ -131,7 +131,7 @@ function HeadersIterator(headers) {
 }
 HeadersIterator.prototype = {}
 HeadersIterator.prototype.next = function() {
-  if (this._index >= this._headers._headerList.length) return { value: undefined, done: true }
+  if (this._index >= this._headers._headerList.length) { return { value: undefined, done: true } }
   return { value: this._headers._headerList[this._index++], done: false }
 }
 HeadersIterator.prototype[Symbol.iterator] = function() {
@@ -145,7 +145,7 @@ function fill(headers, init) {
     })
   } else if (Array.isArray(init)) {
     init.forEach(function(header) {
-      if (!Array.isArray(header) || header.length !== 2) throw TypeError()
+      if (!Array.isArray(header) || header.length !== 2) { throw TypeError() }
       headers.append(header[0], header[1])
     })
   } else {

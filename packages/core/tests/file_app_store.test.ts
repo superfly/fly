@@ -25,7 +25,7 @@ describe("FileAppStore initialization", () => {
   })
 
   test("picks config environment", () => {
-    let store = new FileAppStore(__dirname + "/fixtures/apps/config-multi-env", {
+    const store = new FileAppStore(__dirname + "/fixtures/apps/config-multi-env", {
       noWatch: true,
       env: "stage"
     })

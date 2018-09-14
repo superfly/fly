@@ -15,7 +15,7 @@ const scripts = [
   require.resolve(path.join(v8envModulePath, "testing", "setup"))
 ].map(filename => {
   return {
-    filename: filename,
+    filename,
     code: fs.readFileSync(filename).toString()
   }
 })
@@ -37,7 +37,7 @@ root
 
     const cwd = process.cwd()
 
-    let paths =
+    const paths =
       args.paths && args.paths.length
         ? [].concat.apply([], args.paths.map(f => glob.sync(f).map(gf => path.resolve(cwd, gf))))
         : glob.sync("./test/**/*.+(spec|test).[jt]s")
@@ -47,7 +47,7 @@ root
       return
     }
 
-    let conf = getWebpackConfig(cwd)
+    const conf = getWebpackConfig(cwd)
     conf.entry = paths
 
     const appStore = new FileAppStore(cwd, { noWatch: true, noSource: true, env: "test" })
@@ -57,7 +57,7 @@ root
       conf,
       { watch: false },
       async (err: Error, code: string, hash: string, sourceMap: string) => {
-        if (err) throw err
+        if (err) { throw err }
 
         const app = appStore.app
 
@@ -81,12 +81,12 @@ root
           await rt.set(
             "_mocha_done",
             new ivm.Reference(function(failures: number) {
-              if (failures) return process.exit(1)
+              if (failures) { return process.exit(1) }
               process.exit()
             })
           )
 
-          for (let script of scripts) {
+          for (const script of scripts) {
             const compiled = await rt.isolate.compileScript(script.code, script)
             await compiled.run(rt.context)
           }

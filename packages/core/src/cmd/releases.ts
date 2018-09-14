@@ -15,8 +15,8 @@ export const releases = root
       const appName = getAppName(this)
       const res = await API.get(`/api/v1/apps/${appName}/releases`)
       processResponse(res, (res: any) => {
-        if (res.data.data.length == 0) return console.log(`No releases for ${appName} yet.`)
-        for (let r of res.data.data) {
+        if (res.data.data.length == 0) { return console.log(`No releases for ${appName} yet.`) }
+        for (const r of res.data.data) {
           console.log(
             `v${r.attributes.version} ${r.attributes.reason} by ${r.attributes.author} on ${
               r.attributes.created_at
@@ -25,8 +25,8 @@ export const releases = root
         }
       })
     } catch (e) {
-      if (e.response) console.log(e.response.data)
-      else throw e
+      if (e.response) { console.log(e.response.data) }
+      else { throw e }
     }
   })
 

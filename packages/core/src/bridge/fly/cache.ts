@@ -113,7 +113,7 @@ registerBridge("flyCacheGetMulti", function cacheGet(
     .getMulti(rt.app.id, keys)
     .then(result => {
       let byteLength = 0
-      const toTransfer: (null | ivm.Copy<ArrayBuffer>)[] = result.map(b => {
+      const toTransfer: Array<null | ivm.Copy<ArrayBuffer>> = result.map(b => {
         byteLength += b ? b.byteLength : 0
         return transferInto(b)
       })

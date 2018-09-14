@@ -25,7 +25,7 @@ registerBridge("digestHashAsync", function(
   encoding?: HexBase64Latin1Encoding
 ) {
   try {
-    let h = digestHash(algo, data, encoding)
+    const h = digestHash(algo, data, encoding)
     return Promise.resolve(h)
   } catch (e) {
     return Promise.reject(e)
@@ -53,6 +53,6 @@ function digestHash(algo: string, data: ArrayBuffer | string, encoding?: HexBase
   let h: Hash
   h = createHash(algo.replace("-", ""))
   h.update(typeof data === "string" ? data : Buffer.from(data))
-  if (!encoding) return transferInto(h.digest())
+  if (!encoding) { return transferInto(h.digest()) }
   return h.digest(encoding)
 }

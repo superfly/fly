@@ -8,7 +8,7 @@ export function apiClient(cmd: Command<CommonOptions, any>) {
   const baseURL = process.env.FLY_BASE_URL || "https://fly.io"
 
   return axios.create({
-    baseURL: baseURL,
+    baseURL,
     timeout: 30000,
     headers: {
       Authorization: `Bearer ${getToken(cmd)}`,

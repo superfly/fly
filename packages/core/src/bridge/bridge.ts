@@ -47,12 +47,12 @@ export interface BridgeOptions {
  * @private
  */
 export class Bridge {
-  cacheStore: CacheStore
-  fileStore?: FileStore
-  dataStore?: DataStore
-  cacheNotifier?: CacheNotifier
+  public cacheStore: CacheStore
+  public fileStore?: FileStore
+  public dataStore?: DataStore
+  public cacheNotifier?: CacheNotifier
 
-  functions: Map<string, BridgeFunction>
+  public functions: Map<string, BridgeFunction>
 
   constructor(opts: BridgeOptions = {}) {
     this.cacheStore = opts.cacheStore || defaultCacheStore()
@@ -60,21 +60,21 @@ export class Bridge {
     this.fileStore = opts.fileStore
     this.dataStore = opts.dataStore
     this.functions = new Map<string, BridgeFunction>(
-      Array.from(catalog.entries(), ([n, fn]) => <[string, BridgeFunction]>[n, fn])
+      Array.from(catalog.entries(), ([n, fn]) => [n, fn] as [string, BridgeFunction])
     )
   }
 
-  dispatch(rt: Runtime, name: string, ...args: any[]) {
+  public dispatch(rt: Runtime, name: string, ...args: any[]) {
     const fn = this.functions.get(name)
-    if (!fn) throw new Error(errNoSuchBridgeFn + ` ${name}`)
+    if (!fn) { throw new Error(errNoSuchBridgeFn + ` ${name}`) }
     return fn(rt, this, ...args)
   }
 
-  set(name: string, fn: BridgeFunction) {
+  public set(name: string, fn: BridgeFunction) {
     this.functions.set(name, fn)
   }
 
-  get(name: string) {
+  public get(name: string) {
     return this.functions.get(name)
   }
 }

@@ -68,11 +68,11 @@ export async function getString(key: string) {
  * @param keys list of keys to retrieve
  * @returns List of results in the same order as the provided keys
  */
-export function getMulti(keys: string[]): Promise<(ArrayBuffer | null)[]> {
-  return new Promise<(ArrayBuffer | null)[]>(function cacheGetMultiPromise(resolve, reject) {
+export function getMulti(keys: string[]): Promise<Array<ArrayBuffer | null>> {
+  return new Promise<Array<ArrayBuffer | null>>(function cacheGetMultiPromise(resolve, reject) {
     bridge.dispatch("flyCacheGetMulti", JSON.stringify(keys), function cacheGetMultiCallback(
       err: string | null | undefined,
-      ...values: (ArrayBuffer | null)[]
+      ...values: Array<ArrayBuffer | null>
     ) {
       if (err != null) {
         reject(err)
@@ -179,7 +179,7 @@ export function purgeTag(tag: string) {
       }
       const result = JSON.parse(keys)
       if (result instanceof Array) {
-        resolve(<string[]>result)
+        resolve(result as string[])
         return
       } else {
         reject("got back gibberish")

@@ -24,15 +24,15 @@ const invalidResponseType = new Error(
  * @hidden
  */
 export class FetchEvent {
-  type: any
-  request: any
-  callback: any
-  respondWithEntered: boolean
+  public type: any
+  public request: any
+  public callback: any
+  public respondWithEntered: boolean
 
   constructor(type, init, callback) {
     this.type = type
     this.request = init.request
-    if (!this.request) throw new Error("init.request is required.")
+    if (!this.request) { throw new Error("init.request is required.") }
     this.callback = callback
     this.respondWithEntered = false
   }
@@ -46,7 +46,7 @@ export class FetchEvent {
    * Registers a function to generate a response for this event
    * @param {respondWithCallback} fn
    */
-  respondWith(fn) {
+  public respondWith(fn) {
     this.respondWithEntered = true
     try {
       let ret = fn
@@ -56,7 +56,7 @@ export class FetchEvent {
       if (ret instanceof Promise) {
         ret
           .then(res => {
-            if (res instanceof Response) return this.callback(null, res)
+            if (res instanceof Response) { return this.callback(null, res) }
             logger.debug("weird response:", res ? res.constructor : undefined)
             this.callback(invalidResponseType)
           })
@@ -91,18 +91,19 @@ export function addEventListener(name, fn) {
  */
 export function fireFetchEvent(url, req, body, callback) {
   logger.debug("handling request event")
-  let selfCleaningCallback = function selfCleaningCallback(...args) {
+  const selfCleaningCallback = function selfCleaningCallback(...args) {
     callback.apply(null, args)
     try {
       callback.release()
     } catch (e) {}
-    if (body)
+    if (body) {
       try {
         body.release()
       } catch (e) {}
+    }
   }
 
-  let fetchEvent = new FetchEvent(
+  const fetchEvent = new FetchEvent(
     "fetch",
     {
       request: new Request(
@@ -131,8 +132,8 @@ export function fireFetchEvent(url, req, body, callback) {
         b = res.body.flyStreamId
       } else {
         logger.debug("body source type:", res.bodySource.constructor.name)
-        if (typeof res.bodySource === "string") b = res.bodySource
-        else b = bridge.wrapValue(await res.arrayBuffer())
+        if (typeof res.bodySource === "string") { b = res.bodySource }
+        else { b = bridge.wrapValue(await res.arrayBuffer()) }
       }
 
       logger.debug("got ourselves a body")
@@ -147,19 +148,22 @@ export function fireFetchEvent(url, req, body, callback) {
       ])
     }
   )
-  let fn = emitter.listeners("fetch").slice(-1)[0]
-  if (typeof fn !== "function")
+  const fn = emitter.listeners("fetch").slice(-1)[0]
+  if (typeof fn !== "function") {
     return selfCleaningCallback.apply(null, [
       "No HTTP handler attached: make sure your app calls `fly.http.respondWith(...)."
     ])
+  }
 
-  if ((fn(fetchEvent) as any) instanceof Promise)
+  if ((fn(fetchEvent) as any) instanceof Promise) {
     return selfCleaningCallback.apply(null, [
       "'fetch' event handler function cannot return a promise."
     ])
+  }
 
-  if (!fetchEvent.respondWithEntered)
+  if (!fetchEvent.respondWithEntered) {
     return selfCleaningCallback.apply(null, ["respondWith was not called for FetchEvent"])
+  }
 }
 
 /**

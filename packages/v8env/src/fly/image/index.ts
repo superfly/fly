@@ -21,9 +21,9 @@ declare var bridge: any
  */
 export class Image {
   /** @hidden */
-  data: ArrayBuffer | null
+  public data: ArrayBuffer | null
   /** @hidden */
-  info: Image.Metadata | null
+  public info: Image.Metadata | null
 
   /** @hidden */
   private _ref: any
@@ -51,7 +51,7 @@ export class Image {
    * Pass `undefind` or `null` to auto-scale the height to match the width.
    * @param options Resize options}
    */
-  resize(width?: number, height?: number, options?: Image.ResizeOptions) {
+  public resize(width?: number, height?: number, options?: Image.ResizeOptions) {
     this._imageOperation("resize", width, height, options)
     return this
   }
@@ -65,7 +65,7 @@ export class Image {
    * @param overlay image to overlay
    * @param options control how the overlay is composited
    */
-  overlayWith(overlay: ArrayBuffer | Image, options?: Image.OverlayOptions) {
+  public overlayWith(overlay: ArrayBuffer | Image, options?: Image.OverlayOptions) {
     let p: any = overlay
     if (p instanceof Image) {
       p = p._ref
@@ -86,7 +86,7 @@ export class Image {
    *   .toBuffer()
    * ```
    */
-  max() {
+  public max() {
     this._imageOperation("max")
     return this
   }
@@ -94,7 +94,7 @@ export class Image {
   /**
    * Produce the "negative" of the image.
    */
-  negate() {
+  public negate() {
     this._imageOperation("negate")
     return this
   }
@@ -117,7 +117,7 @@ export class Image {
    *   .toBuffer()
    * ```
    */
-  crop(crop?: Image.gravity | Image.strategy) {
+  public crop(crop?: Image.gravity | Image.strategy) {
     this._imageOperation("crop", crop)
     return this
   }
@@ -137,7 +137,7 @@ export class Image {
    * ```
    * @param gravity embed to an edge/corner, defaults to `center`.
    */
-  embed(gravity?: Image.gravity) {
+  public embed(gravity?: Image.gravity) {
     this._imageOperation("embed", gravity)
     return this
   }
@@ -151,7 +151,7 @@ export class Image {
    *
    * @param rgba - parsed by the [color](https://www.npmjs.org/package/color) module to extract values for red, green, blue and alpha.
    */
-  background(rgba: string | Image.Color) {
+  public background(rgba: string | Image.Color) {
     this._imageOperation("background", rgba)
     return this
   }
@@ -162,7 +162,7 @@ export class Image {
    * The default behaviour before function call is false, meaning the image will be enlarged.
    * @param flag Toggle option
    */
-  withoutEnlargement(flag?: boolean) {
+  public withoutEnlargement(flag?: boolean) {
     this._imageOperation("withoutEnlargement", flag)
     return this
   }
@@ -182,7 +182,7 @@ export class Image {
    *
    * @param options JPEG output options
    */
-  jpeg(options?: Image.JpegOptions) {
+  public jpeg(options?: Image.JpegOptions) {
     this._imageOperation("jpeg", options)
     return this
   }
@@ -201,7 +201,7 @@ export class Image {
    *
    * @param options Compression and encoding options
    */
-  png(options?: Image.PngOptions) {
+  public png(options?: Image.PngOptions) {
     this._imageOperation("png", options)
     return this
   }
@@ -217,7 +217,7 @@ export class Image {
    * ```
    * @param options webp encoding options, quality, etc
    */
-  webp(options?: Image.WebpOptions) {
+  public webp(options?: Image.WebpOptions) {
     this._imageOperation("webp", options)
     return this
   }
@@ -231,7 +231,7 @@ export class Image {
    *  `options.orientation:` value between 1 and 8, used to update the EXIF
    * `Orientation` tag.
    */
-  withMetadata(options?: { orientation: number }) {
+  public withMetadata(options?: { orientation: number }) {
     this._imageOperation("withMedata", options)
     return this
   }
@@ -240,7 +240,7 @@ export class Image {
    *  Merge alpha transparency channel, if any, with `background`.
    * @param flatten Defaults to true
    */
-  flatten(flatten: boolean) {
+  public flatten(flatten: boolean) {
     this._imageOperation("flatten", flatten)
     return this
   }
@@ -251,7 +251,7 @@ export class Image {
    *
    * Otherwise, pad each side by the specified amount.
    */
-  extend(extend: number | Image.ExtendOptions) {
+  public extend(extend: number | Image.ExtendOptions) {
     this._imageOperation("extend", extend)
     return this
   }
@@ -259,7 +259,7 @@ export class Image {
   /**
    * Get metadata from image
    */
-  metadata(): Image.Metadata {
+  public metadata(): Image.Metadata {
     const m = imageMetadata(this._ref)
     this.info = m
     return m
@@ -273,7 +273,7 @@ export class Image {
     return imageOperation(this._ref, name, ...args)
   }
 
-  async toBuffer(): Promise<Image.OperationResult> {
+  public async toBuffer(): Promise<Image.OperationResult> {
     if (!imageToBuffer) {
       throw new Error("Image operations not enabled")
     }
@@ -281,7 +281,7 @@ export class Image {
     return result
   }
 
-  async toImage(): Promise<Image> {
+  public async toImage(): Promise<Image> {
     if (!imageToBuffer) {
       throw new Error("Image operations not enabled")
     }
@@ -413,13 +413,9 @@ export namespace Image {
 }
 
 /** @hidden */
-interface OperationFunction {
-  (image: Image): Promise<Image.OperationResult>
-}
+type OperationFunction = (image: Image) => Promise<Image.OperationResult>
 /** @hidden */
-interface MetadataFunction {
-  (image: Image): Promise<Image.Metadata>
-}
+type MetadataFunction = (image: Image) => Promise<Image.Metadata>
 
 /** @hidden */
 function constructImage(data: ArrayBuffer | Image.CreateOptions, options?: any) {
@@ -434,8 +430,8 @@ function constructImage(data: ArrayBuffer | Image.CreateOptions, options?: any) 
 function imageOperation(ref: any, name: string, ...args: any[]) {
   const result = bridge.dispatchSync("fly.Image.operation", ref, name, ...args)
   if (result != ref) {
-    //console.error("Image ref mismatch:", name, ref.typeof, result.typeof)
-    //throw new Error(["image operation failed, result not expected:", ref.typeof, result.typeof].join(" "))
+    // console.error("Image ref mismatch:", name, ref.typeof, result.typeof)
+    // throw new Error(["image operation failed, result not expected:", ref.typeof, result.typeof].join(" "))
   }
   return result
 }
@@ -446,7 +442,7 @@ async function imageToBuffer(ref: any) {
         reject(err)
         return
       }
-      resolve({ data: data, info: info })
+      resolve({ data, info })
     })
   })
 }

@@ -23,9 +23,10 @@ export interface BridgeTransferOptions {
 export default function initBridge(ivm, dispatch) {
   const bridge = (global.bridge = {
     prepareValue(arg, opts: { release?: any } = {}) {
-      if (!arg)
+      if (!arg) {
         // false, undefined, null, 0, "" (all transferable)
         return arg
+      }
 
       let ctor
       // this can bomb with certain values
@@ -94,7 +95,7 @@ export default function initBridge(ivm, dispatch) {
 
     wrapFunction(fn, options: BridgeTransferOptions = { release: true }) {
       const opts = Object.assign({}, DEFAULT_BRIDGE_TRANSFER_OPTIONS, options || {})
-      if (!opts.release) return new ivm.Reference(fn)
+      if (!opts.release) { return new ivm.Reference(fn) }
 
       const cb = new ivm.Reference(function bridgeAutoReleaseFn(...args) {
         try {
@@ -109,11 +110,12 @@ export default function initBridge(ivm, dispatch) {
 
     wrapValue(value, options: BridgeTransferOptions = { release: true }) {
       const opts = Object.assign({}, DEFAULT_BRIDGE_TRANSFER_OPTIONS, options || {})
-      if (!!opts.transfer)
+      if (!!opts.transfer) {
         return new ivm.ExternalCopy(value, { transferOut: true }).copyInto({
           release: !!opts.release,
           transferIn: true
         })
+      }
       return new ivm.ExternalCopy(value).copyInto({ release: !!opts.release })
     },
 

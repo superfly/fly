@@ -50,9 +50,9 @@ export type CachedResponse = Response & {
  * @return The response associated with the key, or null if empty
  */
 export async function get(key: string) {
-  let [meta, body] = await Promise.all([getMeta(key), cache.get(key + ":body")])
+  const [meta, body] = await Promise.all([getMeta(key), cache.get(key + ":body")])
 
-  if (!meta || !body) return null // miss
+  if (!meta || !body) { return null } // miss
   let age = 0
   if (meta.at) {
     age = Math.round(Date.now() / 1000) - meta.at
@@ -61,7 +61,7 @@ export async function get(key: string) {
     delete meta.at
   }
   const resp = new Response(body, meta)
-  return <CachedResponse>Object.assign(resp, { key: key })
+  return Object.assign(resp, { key }) as CachedResponse
 }
 
 /**
@@ -70,9 +70,9 @@ export async function get(key: string) {
  */
 export async function getMeta(key: string) {
   let meta: string | undefined | Metadata = await cache.getString(key + ":meta")
-  if (!meta) return // cache miss
+  if (!meta) { return } // cache miss
   try {
-    meta = <Metadata>JSON.parse(meta)
+    meta = JSON.parse(meta) as Metadata
   } catch (err) {
     return null // also a miss
   }
@@ -99,7 +99,7 @@ const defaultSkipHeaders = ["authorization", "set-cookie"]
  */
 export async function set(key: string, resp: Response, options?: ResponseCacheSetOptions | number) {
   const ttl = typeof options === "number" ? options : options && options.ttl
-  let tags: string[] | undefined = undefined
+  let tags: string[] | undefined
   let skipHeaderOption: string[] = defaultSkipHeaders
   if (typeof options === "object") {
     tags = options.tags
@@ -113,8 +113,8 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
     status: resp.status,
     headers: {},
     at: Math.round(Date.now() / 1000),
-    ttl: ttl,
-    tags: tags
+    ttl,
+    tags
   }
 
   const body = await resp.clone().arrayBuffer()
@@ -147,8 +147,8 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
  * @param key Response to "touch"
  */
 export async function touch(key: string) {
-  let meta = await getMeta(key)
-  if (!meta) return false
+  const meta = await getMeta(key)
+  if (!meta) { return false }
   meta.at = Math.round(Date.now() / 1000)
   return await setMeta(key, meta, { ttl: meta.ttl, tags: meta.tags })
 }
@@ -190,7 +190,7 @@ export default {
   del
 }
 
-async function cacheResult(ops: Promise<boolean>[]) {
+async function cacheResult(ops: Array<Promise<boolean>>) {
   const results = await Promise.all(ops)
 
   for (const r of results) {
@@ -203,16 +203,16 @@ async function cacheResult(ops: Promise<boolean>[]) {
 
 // converts a buffer to hex, mainly for hashes
 function hex(buffer: ArrayBuffer) {
-  let hexCodes = []
-  let view = new DataView(buffer)
+  const hexCodes = []
+  const view = new DataView(buffer)
   for (let i = 0; i < view.byteLength; i += 4) {
     // Using getUint32 reduces the number of iterations needed (we process 4 bytes each time)
-    let value = view.getUint32(i)
+    const value = view.getUint32(i)
     // toString(16) will give the hex representation of the number without padding
-    let stringValue = value.toString(16)
+    const stringValue = value.toString(16)
     // We use concatenation and slice for padding
-    let padding = "00000000"
-    let paddedValue = (padding + stringValue).slice(-padding.length)
+    const padding = "00000000"
+    const paddedValue = (padding + stringValue).slice(-padding.length)
     hexCodes.push(paddedValue)
   }
 

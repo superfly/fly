@@ -9,7 +9,7 @@ export interface CacheSetOptions {
 }
 export interface CacheStore {
   get(ns: string, key: string): Promise<Buffer | null>
-  getMulti(ns: string, keys: string[]): Promise<(Buffer | null)[]>
+  getMulti(ns: string, keys: string[]): Promise<Array<Buffer | null>>
   set(ns: string, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean>
   del(ns: string, key: string): Promise<boolean>
   expire(ns: string, key: string, ttl: number): Promise<boolean>
@@ -21,8 +21,8 @@ export interface CacheStore {
 
 let _defaultCacheStore: CacheStore | undefined
 export function defaultCacheStore(): CacheStore {
-  if (_defaultCacheStore) return _defaultCacheStore
-  const url = process.env["REDIS_CACHE_URL"]
+  if (_defaultCacheStore) { return _defaultCacheStore }
+  const url = process.env.REDIS_CACHE_URL
   if (url) {
     _defaultCacheStore = new RedisCacheStore(url)
   } else {

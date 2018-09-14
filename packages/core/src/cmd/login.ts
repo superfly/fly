@@ -31,7 +31,7 @@ root
         console.log("Wrote credentials at:", credspath)
       })
     } catch (e) {
-      if (e.response) console.log(e.response.data)
-      else throw e
+      if (e.response) { console.log(e.response.data) }
+      else { throw e }
     }
   })
