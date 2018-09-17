@@ -1,8 +1,0 @@
-src
-tsconfig.json
-.eslintrc.json
-vendor
-test
-.nyc_output
-bin/fly
-v8env/test
