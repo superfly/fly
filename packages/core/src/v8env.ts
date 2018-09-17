@@ -109,7 +109,7 @@ export class V8Environment extends EventEmitter {
     const hash = createHash("sha")
       .update(code)
       .digest("hex")
-    if (hash != v8EnvHash) {
+    if (hash !== v8EnvHash) {
       const wasReady = this.isReady
       v8EnvCode = code
       v8EnvHash = hash

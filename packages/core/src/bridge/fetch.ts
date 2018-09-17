@@ -53,7 +53,7 @@ registerBridge("fetch", function fetchBridge(
       return
     }
 
-    if (init.method && init.method != "GET") {
+    if (init.method && init.method !== "GET") {
       cb.applyIgnored(null, [null, makeResponse(405, "Method Not Allowed", urlStr)])
       return
     }
@@ -89,8 +89,8 @@ registerBridge("fetch", function fetchBridge(
     return
   }
 
-  const httpFn = u.protocol == "http:" ? http.request : https.request
-  const httpAgent = u.protocol == "http:" ? fetchAgent : fetchHttpsAgent
+  const httpFn = u.protocol === "http:" ? http.request : https.request
+  const httpAgent = u.protocol === "http:" ? fetchAgent : fetchHttpsAgent
 
   const method = init.method || "GET"
   const headers = init.headers || {}
@@ -117,7 +117,7 @@ registerBridge("fetch", function fetchBridge(
     timeout: 60 * 1000
   }
 
-  if (httpFn == https.request) {
+  if (httpFn === https.request) {
     reqOptions.servername = reqOptions.hostname
   }
   req = httpFn(reqOptions)

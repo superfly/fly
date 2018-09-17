@@ -43,7 +43,7 @@ export default function staticServer(opts?: StaticServerOptions) {
 
     try {
       const resp = await fetch(`file:/${path}`)
-      if (resp.status != 200) {
+      if (resp.status !== 200) {
         return resp
       }
       let type: string | undefined

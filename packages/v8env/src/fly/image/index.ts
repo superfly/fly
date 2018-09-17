@@ -429,7 +429,7 @@ function constructImage(data: ArrayBuffer | Image.CreateOptions, options?: any) 
 }
 function imageOperation(ref: any, name: string, ...args: any[]) {
   const result = bridge.dispatchSync("fly.Image.operation", ref, name, ...args)
-  if (result != ref) {
+  if (result !== ref) {
     // console.error("Image ref mismatch:", name, ref.typeof, result.typeof)
     // throw new Error(["image operation failed, result not expected:", ref.typeof, result.typeof].join(" "))
   }

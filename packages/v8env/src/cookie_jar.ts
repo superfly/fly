@@ -70,7 +70,7 @@ function parseCookie(cookieStr) {
   const cookies = []
   const parsed = cookie.parse(cookieStr)
   for (const k in parsed) {
-    if (cookieAttributeNames.indexOf(k) != -1) {
+    if (cookieAttributeNames.indexOf(k) !== -1) {
       options[k] = parsed[k]
       continue
     }

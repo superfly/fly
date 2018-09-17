@@ -124,7 +124,7 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
   const body = await resp.clone().arrayBuffer()
 
   let etag = resp.headers.get("etag")
-  if (!etag || etag == "") {
+  if (!etag || etag === "") {
     etag = hex(await crypto.subtle.digest("SHA-1", body))
     resp.headers.set("etag", etag)
   }

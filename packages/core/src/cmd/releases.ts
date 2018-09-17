@@ -15,7 +15,7 @@ export const releases = root
       const appName = getAppName(this)
       const res = await API.get(`/api/v1/apps/${appName}/releases`)
       processResponse(res, (res: any) => {
-        if (res.data.data.length == 0) {
+        if (res.data.data.length === 0) {
           return console.log(`No releases for ${appName} yet.`)
         }
         for (const r of res.data.data) {

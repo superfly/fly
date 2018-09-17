@@ -60,7 +60,7 @@ function compileCallback(
       return
     }
 
-    if (stats.hash != codeHash) {
+    if (stats.hash !== codeHash) {
       console.log(`Compiled app bundle (hash: ${stats.hash})`)
       const source = fs.readFileSync(path.resolve(cwd, ".fly/build/bundle.js"))
       const sourceMap = fs.readFileSync(path.resolve(cwd, ".fly/build/bundle.map.json"))

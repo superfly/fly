@@ -32,7 +32,7 @@ export function processResponse(res: any, successFn?: (res: AxiosResponse) => vo
       successFn(res)
     }
   } else {
-    if (res.status == 401) {
+    if (res.status === 401) {
       // TODO: Store and use `refresh_token` to automatically fix this predicament
       return console.log("Please login again with `fly login`, your token is probably expired.")
     }

@@ -98,7 +98,7 @@ export class Server extends http.Server {
       return
     }
 
-    if (request.url == undefined) {
+    if (request.url === undefined) {
       // typescript check fix
       return
     }
@@ -150,7 +150,7 @@ export function handleRequest(
     const flyAppHeader = req.headers["fly-app"]
     if (flyAppHeader) {
       const flyAppName: string = Array.isArray(flyAppHeader) ? flyAppHeader[0] : flyAppHeader
-      if (flyAppName == rt.app.name) {
+      if (flyAppName === rt.app.name) {
         res.writeHead(400)
         res.end("Too much recursion")
         req.destroy() // stop everything I guess.
@@ -268,7 +268,7 @@ function handleResponse(
     return Promise.resolve(0)
   }
 
-  if (typeof src == "number") {
+  if (typeof src === "number") {
     return handleResponseStream(rt, src, res, dst)
   }
 

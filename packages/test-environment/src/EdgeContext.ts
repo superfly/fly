@@ -24,7 +24,7 @@ export class EdgeContext {
       this.servers.push(server)
     }
 
-    if (this.servers.length == 0) {
+    if (this.servers.length === 0) {
       throw new Error("No servers specified")
     }
   }

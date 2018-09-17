@@ -122,10 +122,10 @@ export class LocalRuntime implements Runtime {
   }
 
   public async setApp(app: App) {
-    if (!app.sourceHash || this.lastSourceHash != app.sourceHash) {
+    if (!app.sourceHash || this.lastSourceHash !== app.sourceHash) {
       console.log("Updating app in local runtime...")
       this.app = app
-      if (this.lastSourceHash != "") {
+      if (this.lastSourceHash !== "") {
         // we had not setup the context
         this.context = this.resetContext(this.context)
       }

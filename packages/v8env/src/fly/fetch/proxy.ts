@@ -93,7 +93,7 @@ export function buildProxyRequest(
     url.pathname = url.pathname.substring(1)
   }
 
-  if (url.toString() != breq.url) {
+  if (url.toString() !== breq.url) {
     breq = new Request(url.toString(), breq)
   }
   // we extend req with remoteAddr
