@@ -113,16 +113,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-<a name="0.40.1-0"></a>
-## [0.40.1-0](https://github.com/superfly/fly/compare/v0.40.0...v0.40.1-0) (2018-08-31)
-
-
-### Bug Fixes
-
-* sqlite data store now uses Windows friendly path functions ([70c0aee](https://github.com/superfly/fly/commit/70c0aee))
-
-
-
 <a name="0.40.0"></a>
 # [0.40.0](https://github.com/superfly/fly/compare/v0.40.0-caching.7...v0.40.0) (2018-08-28)
 
