@@ -31,12 +31,12 @@ function wrapCallSite(frame) {
   // Most call sites will return the source file from getFileName(), but code
   // passed to eval() ending in "//# sourceURL=..." will return the source file
   // from getScriptNameOrSourceURL() instead
-  let source = frame.getFileName() || frame.getScriptNameOrSourceURL()
+  const source = frame.getFileName() || frame.getScriptNameOrSourceURL()
   if (source) {
-    let line = frame.getLineNumber()
-    let column = frame.getColumnNumber() - 1
+    const line = frame.getLineNumber()
+    const column = frame.getColumnNumber() - 1
 
-    let position = mapSourcePosition({
+    const position = mapSourcePosition({
       source,
       line,
       column
@@ -107,10 +107,10 @@ function CallSiteToString() {
       // an eval string.
       fileLocation += "<anonymous>"
     }
-    let lineNumber = this.getLineNumber()
+    const lineNumber = this.getLineNumber()
     if (lineNumber != null) {
       fileLocation += ":" + lineNumber
-      let columnNumber = this.getColumnNumber()
+      const columnNumber = this.getColumnNumber()
       if (columnNumber) {
         fileLocation += ":" + columnNumber
       }
@@ -118,17 +118,17 @@ function CallSiteToString() {
   }
 
   let line = ""
-  let functionName = this.getFunctionName()
+  const functionName = this.getFunctionName()
   let addSuffix = true
-  let isConstructor = this.isConstructor()
-  let isMethodCall = !(this.isToplevel() || isConstructor)
+  const isConstructor = this.isConstructor()
+  const isMethodCall = !(this.isToplevel() || isConstructor)
   if (isMethodCall) {
     let typeName = this.getTypeName()
     // Fixes shim to be backward compatable with Node v0 to v4
     if (typeName === "[object Object]") {
       typeName = "null"
     }
-    let methodName = this.getMethodName()
+    const methodName = this.getMethodName()
     if (functionName) {
       if (typeName && functionName.indexOf(typeName) != 0) {
         line += typeName + "."
@@ -158,7 +158,7 @@ function CallSiteToString() {
 }
 
 function cloneCallSite(frame) {
-  let object = {}
+  const object = {}
   Object.getOwnPropertyNames(Object.getPrototypeOf(frame)).forEach(function cloneCallSiteForEach(
     name
   ) {
@@ -178,7 +178,7 @@ function mapEvalOrigin(origin) {
   // Most eval() calls are in this format
   let match = /^eval at ([^(]+) \((.+):(\d+):(\d+)\)$/.exec(origin)
   if (match) {
-    let position = mapSourcePosition({
+    const position = mapSourcePosition({
       source: match[2],
       line: +match[3],
       column: parseInt(match[4]) - 1

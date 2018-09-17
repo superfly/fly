@@ -161,12 +161,12 @@ class Generator {
       return
     }
 
-    let packageData = JSON.parse(fs.readFileSync(packageFile, "utf8"))
+    const packageData = JSON.parse(fs.readFileSync(packageFile, "utf8"))
     packageData.name = this.appName
     fs.writeFileSync(packageFile, JSON.stringify(packageData), "utf8")
 
     console.log("Installing packages...")
-    let exec = execa("npm", ["install"], { cwd: this.rootDir })
+    const exec = execa("npm", ["install"], { cwd: this.rootDir })
     exec.stdout.pipe(process.stdout)
     exec.stderr.pipe(process.stderr)
 
@@ -174,7 +174,7 @@ class Generator {
   }
 
   private translateTemplateFilePath(inputPath: string): string {
-    let templateRelativePath = path.relative(this.template.path, inputPath)
+    const templateRelativePath = path.relative(this.template.path, inputPath)
     return path.join(this.rootDir, templateRelativePath)
   }
 }

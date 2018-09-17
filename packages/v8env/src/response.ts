@@ -51,7 +51,7 @@ export class Response extends Body {
     this.url = init.url || ""
 
     // readonly attribute unsigned short status;
-    let status = "status" in init ? ushort(init.status) : 200
+    const status = "status" in init ? ushort(init.status) : 200
     if (status < 200 || status > 599) { throw RangeError() }
 
     /**
@@ -70,7 +70,7 @@ export class Response extends Body {
     this.ok = 200 <= this.status && this.status <= 299
 
     // readonly attribute ByteString statusText;
-    let statusText = "statusText" in init ? String(init.statusText) : "OK"
+    const statusText = "statusText" in init ? String(init.statusText) : "OK"
     if (/[^\x00-\xFF]/.test(statusText)) { throw TypeError() }
 
     /**

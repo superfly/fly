@@ -11,7 +11,7 @@ function byteUpperCase(s) {
 }
 
 function normalizeMethod(m) {
-  let u = byteUpperCase(m)
+  const u = byteUpperCase(m)
   if (
     u === "DELETE" ||
     u === "GET" ||
