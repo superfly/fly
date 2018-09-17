@@ -141,7 +141,7 @@ registerBridge("fly.Image.toBuffer", function imageToBuffer(
   rt: Runtime,
   bridge: Bridge,
   ref: ivm.Reference<sharp.SharpInstance>,
-  callback: ivm.Reference<Function>
+  callback: ivm.Reference<() => void>
 ) {
   const img = refToImage(ref)
   if (!img) {

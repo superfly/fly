@@ -12,7 +12,7 @@ registerBridge("fly.Data.put", function(
   collName: string,
   key: string,
   obj: string,
-  cb: ivm.Reference<Function>
+  cb: ivm.Reference<() => void>
 ) {
   if (!bridge.dataStore) {
     log.error("Data store was not present")
@@ -43,7 +43,7 @@ registerBridge("fly.Data.get", function(
   bridge: Bridge,
   collName: string,
   key: string,
-  cb: ivm.Reference<Function>
+  cb: ivm.Reference<() => void>
 ) {
   if (!bridge.dataStore) {
     log.error("Data store was not present")
@@ -74,7 +74,7 @@ registerBridge("fly.Data.dropCollection", function(
   rt: Runtime,
   bridge: Bridge,
   collName: string,
-  cb: ivm.Reference<Function>
+  cb: ivm.Reference<() => void>
 ) {
   if (!bridge.dataStore) {
     log.error("Data store was not present")
@@ -98,7 +98,7 @@ registerBridge("fly.Data.del", function(
   bridge: Bridge,
   collName: string,
   key: string,
-  cb: ivm.Reference<Function>
+  cb: ivm.Reference<() => void>
 ) {
   if (!bridge.dataStore) {
     log.error("Data store was not present")

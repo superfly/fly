@@ -15,7 +15,7 @@ registerBridge("flyCacheSet", function cacheSet(
   key: string,
   value: ArrayBuffer | string,
   options: string | undefined,
-  callback: ivm.Reference<Function>
+  callback: ivm.Reference<() => void>
 ) {
   if (!bridge.cacheStore) {
     callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
@@ -54,7 +54,7 @@ registerBridge("flyCacheExpire", function cacheExpire(
   bridge: Bridge,
   key: string,
   ttl: number,
-  callback: ivm.Reference<Function>
+  callback: ivm.Reference<() => void>
 ) {
   if (!bridge.cacheStore) {
     callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
@@ -75,7 +75,7 @@ registerBridge("flyCacheGet", function cacheGet(
   rt: Runtime,
   bridge: Bridge,
   key: string,
-  callback: ivm.Reference<Function>
+  callback: ivm.Reference<() => void>
 ) {
   if (!bridge.cacheStore) {
     callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
@@ -99,7 +99,7 @@ registerBridge("flyCacheGetMulti", function cacheGet(
   rt: Runtime,
   bridge: Bridge,
   keys: string | string[],
-  callback: ivm.Reference<Function>
+  callback: ivm.Reference<() => void>
 ) {
   if (!bridge.cacheStore) {
     callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
@@ -131,7 +131,7 @@ registerBridge("flyCacheDel", function cacheDel(
   rt: Runtime,
   bridge: Bridge,
   key: string,
-  callback: ivm.Reference<Function>
+  callback: ivm.Reference<() => void>
 ) {
   if (!bridge.cacheStore) {
     callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
@@ -154,7 +154,7 @@ registerBridge("flyCacheSetTags", function flyCaceSettTags(
   bridge: Bridge,
   key: string,
   tags: string[],
-  callback: ivm.Reference<Function>
+  callback: ivm.Reference<() => void>
 ) {
   if (!bridge.cacheStore) {
     callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
@@ -176,7 +176,7 @@ registerBridge("flyCachePurgeTags", function flyCacheSetTags(
   rt: Runtime,
   bridge: Bridge,
   key: string,
-  callback: ivm.Reference<Function>
+  callback: ivm.Reference<() => void>
 ) {
   if (!bridge.cacheStore) {
     callback.applyIgnored(null, [errCacheStoreUndefined.toString()])
@@ -201,7 +201,7 @@ registerBridge("flyCacheNotify", function cacheDel(
   bridge: Bridge,
   type: string | CacheOperation,
   key: string,
-  callback: ivm.Reference<Function>
+  callback: ivm.Reference<() => void>
 ) {
   if (!bridge.cacheStore || !bridge.cacheNotifier) {
     callback.applyIgnored(null, [errCacheNotifierUndefined.toString()])

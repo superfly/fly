@@ -102,9 +102,9 @@ function sleep(i: number) {
 }
 
 class LogResponseError extends Error {
-  public response: Object
+  public response: object
 
-  constructor(response: Object, ...params: any[]) {
+  constructor(response: object, ...params: any[]) {
     super(...params)
     this.response = response
   }

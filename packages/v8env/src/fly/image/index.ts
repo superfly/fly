@@ -392,8 +392,8 @@ export namespace Image {
     gravity?: gravity
     top?: number
     left?: number
-    tile?: Boolean
-    cutout?: Boolean
+    tile?: boolean
+    cutout?: boolean
     density?: number
   }
 

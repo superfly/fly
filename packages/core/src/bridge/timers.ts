@@ -7,7 +7,7 @@ import { setTimeout, clearTimeout } from "timers"
 registerBridge("setTimeout", function(
   rt: Runtime,
   bridge: Bridge,
-  fn: ivm.Reference<Function>,
+  fn: ivm.Reference<() => void>,
   timeout: number
 ) {
   const t = setTimeout(function() {
@@ -35,7 +35,7 @@ registerBridge("clearTimeout", function(
 registerBridge("setInterval", function(
   rt: Runtime,
   bridge: Bridge,
-  fn: ivm.Reference<Function>,
+  fn: ivm.Reference<() => void>,
   every: number
 ) {
   const i = setInterval(function() {

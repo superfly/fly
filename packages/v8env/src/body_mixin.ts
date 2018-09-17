@@ -12,7 +12,7 @@ declare var ReadableStream: {
   new (source: any | undefined): ReadableStream
 }
 
-export type BodySource = Blob | BufferSource | FormData | URLSearchParams | ReadableStream | String
+export type BodySource = Blob | BufferSource | FormData | URLSearchParams | ReadableStream | string
 
 export default class BodyMixin implements Body {
   protected bodySource: BodySource

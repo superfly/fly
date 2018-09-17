@@ -4,7 +4,7 @@ import { ivm } from "../"
 import { Runtime } from "../runtime"
 
 registerBridge("getHeapStatistics", function(rt: Runtime) {
-  return function(cb: ivm.Reference<Function>) {
+  return function(cb: ivm.Reference<() => void>) {
     rt.isolate
       .getHeapStatistics()
       .then(heap => {

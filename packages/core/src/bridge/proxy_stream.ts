@@ -8,7 +8,7 @@ registerBridge("streamSubscribe", function(
   rt: Runtime,
   bridge: Bridge,
   id: string,
-  cb: ivm.Reference<Function>
+  cb: ivm.Reference<() => void>
 ) {
   streamManager.subscribe(rt, id, cb)
 })
@@ -17,7 +17,7 @@ registerBridge("streamRead", function(
   rt: Runtime,
   bridge: Bridge,
   id: string,
-  cb: ivm.Reference<Function>
+  cb: ivm.Reference<() => void>
 ) {
   streamManager.read(rt, id, cb)
 })

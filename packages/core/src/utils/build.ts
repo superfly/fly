@@ -15,7 +15,7 @@ export interface AppBuilderOptions {
   uglify?: boolean
 }
 
-export function buildApp(cwd: string, opts: AppBuilderOptions, callback: Function) {
+export function buildApp(cwd: string, opts: AppBuilderOptions, callback: () => void) {
   buildAppWithConfig(cwd, getWebpackConfig(cwd, opts), opts, callback)
 }
 
@@ -23,7 +23,7 @@ export function buildAppWithConfig(
   cwd: string,
   config: webpack.Configuration,
   opts: AppBuilderOptions,
-  callback: Function
+  callback: () => void
 ) {
   console.log("Compiling app w/ options:", opts)
   const compiler = webpack(config)
@@ -37,7 +37,11 @@ export function buildAppWithConfig(
   compiler.run(cb)
 }
 
-function compileCallback(cwd: string, compiler: webpack.Compiler, callback: Function) {
+function compileCallback(
+  cwd: string,
+  compiler: webpack.Compiler,
+  callback: (...args: any[]) => void
+) {
   let codeHash: string
   return function(err: Error, stats: any) {
     if (err) {

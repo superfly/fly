@@ -33,17 +33,10 @@ export const streamManager = {
       : MIN_READ_TIMEOUT
     const readTimeout = setTimeout(cleanupStream.bind(null, key), readTimeoutMS)
     readTimeout.unref()
-    streams[key] = {
-      stream,
-      readLength: 0,
-      addedAt: Date.now(),
-      endedAt: 0,
-      readTimeout
-    }
+    streams[key] = { stream, readLength: 0, addedAt: Date.now(), endedAt: 0, readTimeout }
     return id
   },
-
-  subscribe(rt: Runtime, id: number | string, cb: ivm.Reference<Function>) {
+  subscribe(rt: Runtime, id: number | string, cb: ivm.Reference<() => void>) {
     const key = streamKey(rt, id)
     log.debug("stream subscribe id:", id)
     const info = streams[key]
@@ -73,8 +66,7 @@ export const streamManager = {
       endStream(key, cb)
     })
   },
-
-  read(rt: Runtime, id: number | string, cb: ivm.Reference<Function>) {
+  read(rt: Runtime, id: number | string, cb: ivm.Reference<() => void>) {
     const key = streamKey(rt, id)
     log.debug("stream:read id:", id)
     const info = streams[key]
@@ -123,7 +115,6 @@ export const streamManager = {
       }
     }
   },
-
   pipe(rt: Runtime, id: number | string, dst: Writable) {
     const key = streamKey(rt, id)
     log.debug("stream:pipe id:", id)
@@ -155,7 +146,7 @@ function cleanupStream(key: string) {
   } catch (e) {}
 }
 
-function endStream(key: string, cb?: ivm.Reference<Function>) {
+function endStream(key: string, cb?: ivm.Reference<() => void>) {
   const info = streams[key]
   if (!info) {
     return

@@ -1,4 +1,5 @@
 import colors = require("ansi-colors")
+import { AxiosResponse } from "axios"
 
 function getErrorMessages(res: any): string[] {
   if (res.data.errors) {
@@ -25,7 +26,7 @@ function errorMessage(err: any): string {
   return ""
 }
 
-export function processResponse(res: any, successFn?: Function | undefined): void {
+export function processResponse(res: any, successFn?: (res: AxiosResponse) => void): void {
   if (res.status >= 200 && res.status < 299) {
     if (successFn) {
       successFn(res)

@@ -41,7 +41,7 @@ registerBridge("fetch", function fetchBridge(
   urlStr: string,
   init: any,
   body: ArrayBuffer | null | string,
-  cb: ivm.Reference<Function>
+  cb: ivm.Reference<() => void>
 ) {
   log.debug("native fetch with url:", urlStr)
   init || (init = {})
