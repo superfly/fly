@@ -13,7 +13,7 @@ describe("setTimeout", () => {
     const response = await fetch(`http://set-timeout.test?t=${timeout}`)
     expect(response.status).toEqual(200)
     const duration = parseInt(await response.text())
-    expect(Math.abs((duration - timeout))).toBeLessThanOrEqual(timerTolerance)
+    expect(duration - timeout).toBeGreaterThan(timeout)
   })
 })
 
