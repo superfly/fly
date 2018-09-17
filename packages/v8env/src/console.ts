@@ -72,4 +72,6 @@ export const console: Console = {
   timeEnd: noop
 }
 
-function noop() {}
+function noop() {
+  // noop
+}

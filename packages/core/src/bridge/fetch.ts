@@ -190,7 +190,9 @@ registerBridge("fetch", function fetchBridge(
     if (!req.aborted) {
       try {
         req.abort()
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
     }
   }
 

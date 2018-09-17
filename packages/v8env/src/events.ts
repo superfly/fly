@@ -99,11 +99,15 @@ export function fireFetchEvent(url, req, body, callback) {
     callback.apply(null, args)
     try {
       callback.release()
-    } catch (e) {}
+    } catch (e) {
+      // ignore
+    }
     if (body) {
       try {
         body.release()
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
     }
   }
 

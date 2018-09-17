@@ -154,7 +154,9 @@ async function startInspector(iso: ivm.Isolate) {
     function dispose() {
       try {
         channel.dispose()
-      } catch (err) {}
+      } catch (err) {
+        // ignore
+      }
     }
     ws.on("error", dispose)
     ws.on("close", dispose)

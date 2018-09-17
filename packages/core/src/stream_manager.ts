@@ -48,21 +48,27 @@ export const streamManager = {
       log.debug("stream closed, id:", id)
       try {
         cb.applyIgnored(null, ["close"])
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
       endStream(key, cb)
     })
     info.stream.once("end", function streamEnd() {
       log.debug("stream ended, id:", id)
       try {
         cb.applyIgnored(null, ["end"])
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
       endStream(key, cb)
     })
     info.stream.on("error", function streamError(err: Error) {
       log.debug("stream error, id:", id, err)
       try {
         cb.applyIgnored(null, ["error", err.toString()])
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
       endStream(key, cb)
     })
   },
@@ -106,12 +112,16 @@ export const streamManager = {
         }
         try {
           cb.release()
-        } catch (e) {}
+        } catch (e) {
+          // ignore
+        }
       } catch (e) {
         cb.applyIgnored(null, [e.message])
         try {
           cb.release()
-        } catch (e) {}
+        } catch (e) {
+          // ignore
+        }
       }
     }
   },
@@ -143,7 +153,9 @@ function cleanupStream(key: string) {
   removeStream(key)
   try {
     info.stream.destroy()
-  } catch (e) {}
+  } catch (e) {
+    // ignore
+  }
 }
 
 function endStream(key: string, cb?: ivm.Reference<() => void>) {
@@ -157,7 +169,9 @@ function endStream(key: string, cb?: ivm.Reference<() => void>) {
   if (cb) {
     try {
       cb.release()
-    } catch (e) {}
+    } catch (e) {
+      // ignore
+    }
   }
   removeStream(key)
 }

@@ -103,6 +103,7 @@ export default function initBridge(ivm, dispatch) {
         try {
           cb.release()
         } catch (err) {
+          // ignore
         } finally {
           fn(...args)
         }

@@ -10,10 +10,14 @@ registerBridge(
     const t = setTimeout(() => {
       try {
         fn.applyIgnored(null, [])
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
       try {
         fn.release()
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
     }, timeout)
     t.unref()
     return Promise.resolve(new ivm.Reference(t))
@@ -23,7 +27,9 @@ registerBridge(
 registerBridge("clearTimeout", (rt: Runtime, bridge: Bridge, id: ivm.Reference<NodeJS.Timer>) => {
   try {
     clearTimeout(id.deref())
-  } catch (e) {}
+  } catch (e) {
+    // ignore
+  }
 })
 
 registerBridge(
@@ -32,10 +38,14 @@ registerBridge(
     const i = setInterval(() => {
       try {
         fn.applyIgnored(null, [])
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
       try {
         fn.release()
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
     }, every)
     i.unref()
     return Promise.resolve(new ivm.Reference(i))
@@ -45,5 +55,7 @@ registerBridge(
 registerBridge("clearInterval", (rt: Runtime, bridge: Bridge, id: ivm.Reference<NodeJS.Timer>) => {
   try {
     clearInterval(id.deref())
-  } catch (e) {}
+  } catch (e) {
+    // ignore
+  }
 })
