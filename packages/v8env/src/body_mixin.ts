@@ -1,7 +1,6 @@
 /** @module fly
  */
-import { parse as queryParse } from 'querystring'
-
+import { parse as queryParse } from "querystring"
 
 interface ReadableStreamController {
   enqueue(chunk: string | ArrayBuffer): void
@@ -9,15 +8,11 @@ interface ReadableStreamController {
 }
 /** @hidden */
 declare var ReadableStream: {
-  prototype: ReadableStream;
-  new(source: any | undefined): ReadableStream;
-};
+  prototype: ReadableStream
+  new (source: any | undefined): ReadableStream
+}
 
-
-export type BodySource = Blob | BufferSource |
-  FormData | URLSearchParams |
-  ReadableStream | String
-
+export type BodySource = Blob | BufferSource | FormData | URLSearchParams | ReadableStream | String
 
 export default class BodyMixin implements Body {
   protected bodySource: BodySource
@@ -54,11 +49,11 @@ export default class BodyMixin implements Body {
     return false
   }
 
-  async blob(): Promise<Blob> {
+  public async blob(): Promise<Blob> {
     return new Blob([await this.arrayBuffer()])
   }
 
-  async formData(): Promise<FormData> {
+  public async formData(): Promise<FormData> {
     if (this.bodySource instanceof FormData) {
       return this.bodySource
     }
@@ -66,10 +61,10 @@ export default class BodyMixin implements Body {
     const raw = await this.text()
     const query = queryParse(raw)
     const formdata = new FormData()
-    for (let key in query) {
+    for (const key in query) {
       const value = query[key]
       if (Array.isArray(value)) {
-        for (let val of value) {
+        for (const val of value) {
           formdata.append(key, val)
         }
       } else {
@@ -79,22 +74,23 @@ export default class BodyMixin implements Body {
     return formdata
   }
 
-  async text(): Promise<string> {
+  public async text(): Promise<string> {
     if (typeof this.bodySource === "string") {
       return this.bodySource
     }
 
     const arr = await this.arrayBuffer()
-    return new TextDecoder('utf-8').decode(arr)
+    return new TextDecoder("utf-8").decode(arr)
   }
 
-  async json(): Promise<any> {
+  public async json(): Promise<any> {
     const raw = await this.text()
     return JSON.parse(raw)
   }
 
-  async arrayBuffer(): Promise<ArrayBuffer> {
-    if (this.bodySource instanceof Int8Array ||
+  public async arrayBuffer(): Promise<ArrayBuffer> {
+    if (
+      this.bodySource instanceof Int8Array ||
       this.bodySource instanceof Int16Array ||
       this.bodySource instanceof Int32Array ||
       this.bodySource instanceof Uint8Array ||
@@ -104,17 +100,17 @@ export default class BodyMixin implements Body {
       this.bodySource instanceof Float32Array ||
       this.bodySource instanceof Float64Array
     ) {
-      return <ArrayBuffer>this.bodySource.buffer
+      return this.bodySource.buffer as ArrayBuffer
     } else if (this.bodySource instanceof ArrayBuffer) {
       return this.bodySource
-    } else if (typeof this.bodySource === 'string') {
+    } else if (typeof this.bodySource === "string") {
       const enc = new TextEncoder()
-      return <ArrayBuffer>enc.encode(this.bodySource).buffer
+      return enc.encode(this.bodySource).buffer as ArrayBuffer
     } else if (this.bodySource instanceof ReadableStream) {
       return bufferFromStream(this.bodySource.getReader())
     } else if (this.bodySource instanceof FormData) {
       const enc = new TextEncoder()
-      return <ArrayBuffer>enc.encode(this.bodySource.toString()).buffer
+      return enc.encode(this.bodySource.toString()).buffer as ArrayBuffer
     } else if (!this.bodySource) {
       return new ArrayBuffer(0)
     }
@@ -124,7 +120,8 @@ export default class BodyMixin implements Body {
 
 /** @hidden */
 function validateBodyType(owner: any, bodySource: any) {
-  if (bodySource instanceof Int8Array ||
+  if (
+    bodySource instanceof Int8Array ||
     bodySource instanceof Int16Array ||
     bodySource instanceof Int32Array ||
     bodySource instanceof Uint8Array ||
@@ -137,7 +134,7 @@ function validateBodyType(owner: any, bodySource: any) {
     return true
   } else if (bodySource instanceof ArrayBuffer) {
     return true
-  } else if (typeof bodySource === 'string') {
+  } else if (typeof bodySource === "string") {
     return true
   } else if (bodySource instanceof ReadableStream) {
     return true
@@ -151,11 +148,12 @@ function validateBodyType(owner: any, bodySource: any) {
 
 function bufferFromStream(stream: ReadableStreamReader): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
-    let parts: Array<Uint8Array> = [];
-    let encoder = new TextEncoder();
+    const parts: Uint8Array[] = []
+    const encoder = new TextEncoder()
     // recurse
-    (function pump() {
-      stream.read()
+    ;(function pump() {
+      stream
+        .read()
         .then(({ done, value }) => {
           if (done) {
             return resolve(concatenate(...parts))
@@ -172,26 +170,26 @@ function bufferFromStream(stream: ReadableStreamReader): Promise<ArrayBuffer> {
             reject("unhandled type on stream read")
           }
 
-          return pump();
+          return pump()
         })
-        .catch((err) => {
+        .catch(err => {
           reject(err)
-        });
+        })
     })()
   })
 }
 
 /** @hidden */
 function concatenate(...arrays: Uint8Array[]): ArrayBuffer {
-  let totalLength = 0;
-  for (let arr of arrays) {
-    totalLength += arr.length;
+  let totalLength = 0
+  for (const arr of arrays) {
+    totalLength += arr.length
   }
-  let result = new Uint8Array(totalLength);
-  let offset = 0;
-  for (let arr of arrays) {
-    result.set(arr, offset);
-    offset += arr.length;
+  const result = new Uint8Array(totalLength)
+  let offset = 0
+  for (const arr of arrays) {
+    result.set(arr, offset)
+    offset += arr.length
   }
-  return <ArrayBuffer>result.buffer;
+  return result.buffer as ArrayBuffer
 }

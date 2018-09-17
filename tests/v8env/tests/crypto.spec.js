@@ -1,9 +1,9 @@
-import { expect } from 'chai'
+import { expect } from "chai"
 
 describe("crypto", () => {
   describe("hashing", () => {
     it("creates a hash", async () => {
-      let hash = await crypto.subtle.digest("SHA-1", (new TextEncoder('utf-8')).encode("hello world"))
+      let hash = await crypto.subtle.digest("SHA-1", new TextEncoder("utf-8").encode("hello world"))
       expect(hash).to.be.instanceof(ArrayBuffer)
     })
 
@@ -13,7 +13,7 @@ describe("crypto", () => {
     })
 
     it("creates a hash synchronously", () => {
-      let hash = crypto.subtle.digestSync("SHA-1", (new TextEncoder('utf-8')).encode("hello world"))
+      let hash = crypto.subtle.digestSync("SHA-1", new TextEncoder("utf-8").encode("hello world"))
       expect(hash).to.be.instanceof(ArrayBuffer)
     })
 
@@ -32,22 +32,27 @@ describe("crypto", () => {
       expect(typeof hash).to.equal("string")
     })
 
-    it("errors on bad algo", (done) => {
-      let ret = crypto.subtle.digest("SHA-123", '')
-        .then(() => { done(new Error("should've thrown!")) })
-        .catch((e) => {
+    it("errors on bad algo", done => {
+      let ret = crypto.subtle
+        .digest("SHA-123", "")
+        .then(() => {
+          done(new Error("should've thrown!"))
+        })
+        .catch(e => {
           expect(e).to.be.instanceof(Error)
           done()
         })
     })
 
     it("errors on bad algo (sync)", () => {
-      expect(function () { crypto.subtle.digestSync("SHA-123", '') }).to.throw("Digest method not supported")
+      expect(function() {
+        crypto.subtle.digestSync("SHA-123", "")
+      }).to.throw("Digest method not supported")
     })
   })
   describe("getRandomValues", () => {
     it("fills the Uint8Array", () => {
-      let array = new Uint8Array(24);
+      let array = new Uint8Array(24)
       crypto.getRandomValues(array)
       let zeroCount = 0
       for (let u8 of array) {

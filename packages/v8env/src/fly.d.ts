@@ -1,24 +1,25 @@
 /**
  * Fly specific APIs and functionality
  * Modules are available via the `fly` Global variable.
- * 
+ *
  * The runtime includes an implementation of the [`fetch`](fetch.html) spec
  * for making HTTP requests.
  * @module fly
  * @preferred
  */
-export declare module fly {
+export declare namespace fly {
   /**
    * The Fly HTTP interface, use this to work with HTTP requests
    */
   export namespace http {
-    export function respondWith(response: Promise<Response> | Response | ((req: Request) => Promise<Response>)): void
+    export function respondWith(
+      response: Promise<Response> | Response | ((req: Request) => Promise<Response>)
+    ): void
   }
   export namespace log {
     export function log(lvl: string, ...args: any[]): void
     export function addTransport(name: string, options: any): void
     export function addMetadata(metadata: any): void
-
   }
   export namespace util {
     namespace md5 {
@@ -32,7 +33,7 @@ export declare module fly {
   }
   export namespace cache {
     /**
-     * Get an ArrayBuffer value (or null) from the cache. See `getString` if you 
+     * Get an ArrayBuffer value (or null) from the cache. See `getString` if you
      * want a string value.
      * @param key The key to get
      * @return  Raw bytes stored for provided key or null if empty.
@@ -55,7 +56,7 @@ export declare module fly {
      */
     export function set(key: string, value: string | ArrayBuffer, ttl?: number): Promise<boolean>
 
-    /** 
+    /**
      * Sets or overwrites a key's time to live (in seconds)
      * @param key The key to modify
      * @param ttl Expiration time remaining in seconds
@@ -63,9 +64,9 @@ export declare module fly {
      */
     export function expire(key: string, ttl: number): Promise<boolean>
   }
-  //export const streams: any
+  // export const streams: any
   /**
    * An image manipulation library. Useful for resizing and optimizing images.
    */
-  //export const Image: img.Image
+  // export const Image: img.Image
 }

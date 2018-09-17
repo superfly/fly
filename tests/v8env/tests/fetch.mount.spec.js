@@ -1,10 +1,12 @@
-import { expect } from 'chai'
+import { expect } from "chai"
 
-import mount from '@fly/fetch/mount'
+import mount from "@fly/fetch/mount"
 
 const mounts = mount({
   "/root/first-path/": (req, init) => new Response("/first-path/"),
-  "/root/first-path/impossible": (req, init) => { throw new Error("no yuo") },
+  "/root/first-path/impossible": (req, init) => {
+    throw new Error("no yuo")
+  },
   "/root/another/": (req, init) => new Response("/another/"),
   "/root/": (req, init) => new Response("root")
 })
@@ -19,7 +21,7 @@ describe("mount", () => {
     const body = await resp.text()
     expect(body).to.eq("/another/")
   })
-  it('falls through to default', async () => {
+  it("falls through to default", async () => {
     const resp = await mounts("http://test/root/")
     const body = await resp.text()
     expect(body).to.eq("root")

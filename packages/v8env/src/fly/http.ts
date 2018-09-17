@@ -4,7 +4,7 @@
  * @private
  */
 
-declare var fly;
+declare var fly
 let fetchEventBound = false
 let flyFetchHandler = null
 
@@ -18,11 +18,10 @@ function handleFetch(event) {
   const req = event.request
   if (flyFetchHandler != null) {
     const resp = flyFetchHandler(req)
-    if (
-      !(resp instanceof Promise) &&
-      !(resp instanceof Response)
-    ) {
-      throw new Error('fly.http.respondWith function returned the wrong type, expected Promise<Response> or Response')
+    if (!(resp instanceof Promise) && !(resp instanceof Response)) {
+      throw new Error(
+        "fly.http.respondWith function returned the wrong type, expected Promise<Response> or Response"
+      )
     }
     event.respondWith(resp)
     return
@@ -47,7 +46,7 @@ module.exports = {
   /**
    * Registers an HTTP handler functions. This handler is matched when no routes are set, or no routes match a given request.
    * @public
-   * @memberof fly.http 
+   * @memberof fly.http
    * @param {httpHandler} fn A function that accepts a request and a set of parameters, and returns a response
    */
   respondWith(fn) {

@@ -1,28 +1,30 @@
 import Database = require("better-sqlite3")
-import { mkdirpSync } from "fs-extra";
-import { DataStore, CollectionStore } from "./data_store";
-import log from "./log";
-import { Runtime } from "./runtime";
+import { mkdirpSync } from "fs-extra"
+import { DataStore, CollectionStore } from "./data_store"
+import log from "./log"
+import { Runtime } from "./runtime"
 
 export class Collection implements CollectionStore {
-  name: string
-  db: Database
+  public name: string
+  public db: Database
 
   constructor(db: Database, name: string) {
     this.db = db
     this.name = name
   }
 
-  put(rt: Runtime, key: string, obj: string) {
+  public put(rt: Runtime, key: string, obj: string) {
     try {
-      const info = this.db.prepare(`INSERT OR REPLACE INTO ${this.name} VALUES (?, ?)`).run(key, obj)
+      const info = this.db
+        .prepare(`INSERT OR REPLACE INTO ${this.name} VALUES (?, ?)`)
+        .run(key, obj)
       return Promise.resolve(info.changes > 0)
     } catch (err) {
       return Promise.reject(err)
     }
   }
 
-  get(rt: Runtime, key: string) {
+  public get(rt: Runtime, key: string) {
     try {
       const data = this.db.prepare(`SELECT obj FROM ${this.name} WHERE key == ?`).get(key)
       return Promise.resolve(data)
@@ -31,7 +33,7 @@ export class Collection implements CollectionStore {
     }
   }
 
-  del(rt: Runtime, key: string) {
+  public del(rt: Runtime, key: string) {
     try {
       const info = this.db.prepare(`DELETE FROM ${this.name} WHERE key == ?`).run(key)
       return Promise.resolve(info.changes > 0)
@@ -42,7 +44,7 @@ export class Collection implements CollectionStore {
 }
 
 export class SQLiteDataStore implements DataStore {
-  db: Database
+  public db: Database
   constructor(appName: string, env: string) {
     // FIXME: use correct cwd, for now: using default.
     mkdirpSync(".fly/data")
@@ -50,10 +52,14 @@ export class SQLiteDataStore implements DataStore {
     this.db = new Database(`.fly/data/${appName}-${env}.db`)
   }
 
-  collection(rt: Runtime, name: string) {
+  public collection(rt: Runtime, name: string) {
     log.debug("creating coll (table) name:", name)
     try {
-      this.db.prepare(`CREATE TABLE IF NOT EXISTS ${name} (key TEXT PRIMARY KEY NOT NULL, obj JSON NOT NULL)`).run()
+      this.db
+        .prepare(
+          `CREATE TABLE IF NOT EXISTS ${name} (key TEXT PRIMARY KEY NOT NULL, obj JSON NOT NULL)`
+        )
+        .run()
       return Promise.resolve(new Collection(this.db, name))
     } catch (err) {
       log.error("error creating coll:", err)
@@ -61,7 +67,7 @@ export class SQLiteDataStore implements DataStore {
     }
   }
 
-  dropCollection(rt: Runtime, name: string) {
+  public dropCollection(rt: Runtime, name: string) {
     log.debug("drop coll", name)
     try {
       this.db.prepare(`DROP TABLE IF EXISTS ${name}`).run()

@@ -2,7 +2,7 @@
  * @module fly
  * @private
  */
-import { stringify } from 'querystring'
+import { stringify } from "querystring"
 
 /**
  * Class representing a fetch response.
@@ -15,7 +15,7 @@ export default class FormData {
     this._data = new Map<string, string[]>()
   }
 
-  append(name: string, value: string) {
+  public append(name: string, value: string) {
     let vals: string[]
     const currentVals = this._data.get(name)
     if (currentVals == undefined) {
@@ -23,18 +23,18 @@ export default class FormData {
     } else {
       vals = currentVals.concat([value])
     }
-    this._data.set(name, vals);
+    this._data.set(name, vals)
   }
 
-  delete(name: string) {
+  public delete(name: string) {
     this._data.delete(name)
   }
 
-  entries(): IterableIterator<[string, string[]]> {
+  public entries(): IterableIterator<[string, string[]]> {
     return this._data.entries()
   }
 
-  get(name: string): string | null {
+  public get(name: string): string | null {
     const vals = this._data.get(name)
     if (vals == undefined) {
       return null
@@ -42,7 +42,7 @@ export default class FormData {
     return vals[0]
   }
 
-  getAll(name: string): string[] {
+  public getAll(name: string): string[] {
     const vals = this._data.get(name)
     if (vals == undefined) {
       return []
@@ -50,39 +50,39 @@ export default class FormData {
     return vals
   }
 
-  has(name: string): boolean {
+  public has(name: string): boolean {
     return this._data.has(name)
   }
 
-  keys(): IterableIterator<string> {
+  public keys(): IterableIterator<string> {
     return this._data.keys()
   }
 
-  set(name: string, value: string) {
+  public set(name: string, value: string) {
     this._data.set(name, [value])
   }
 
-  values(): IterableIterator<string> {
+  public values(): IterableIterator<string> {
     // this._data.values() doesn't flatten arrays of arrays
-    let that = this
-    return function* () {
-      for (let vals of that._data.values()) {
+    const that = this
+    return (function*() {
+      for (const vals of that._data.values()) {
         if (Array.isArray(vals)) {
-          for (let val of vals) {
+          for (const val of vals) {
             yield val
           }
         } else {
           yield vals
         }
       }
-    }()
+    })()
   }
 
-  toString(): string {
+  public toString(): string {
     const output: string[] = []
     this._data.forEach((value, key) => {
       output.push(stringify({ [`${key}`]: value }))
     })
-    return output.join('&');
+    return output.join("&")
   }
 }

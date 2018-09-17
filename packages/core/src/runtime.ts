@@ -1,5 +1,5 @@
-import { ivm } from ".";
-import { App } from "./app";
+import { ivm } from "."
+import { App } from "./app"
 
 export interface Runtime {
   isolate: ivm.Isolate

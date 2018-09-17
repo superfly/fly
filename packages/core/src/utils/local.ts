@@ -1,12 +1,12 @@
-import * as path from 'path'
-import * as YAML from 'js-yaml'
-import * as fs from 'fs-extra'
-import * as glob from 'glob'
-import { EventEmitter } from 'events';
-import * as chokidar from 'chokidar';
+import * as path from "path"
+import * as YAML from "js-yaml"
+import * as fs from "fs-extra"
+import * as glob from "glob"
+import { EventEmitter } from "events"
+import * as chokidar from "chokidar"
 
-import log from '../log'
-import { Release } from '../app';
+import log from "../log"
+import { Release } from "../app"
 
 const secretsFile = ".fly.secrets.yml"
 const configFile = ".fly.yml"
@@ -18,7 +18,11 @@ export interface LocalReleaseOptions {
   noWatch?: boolean
 }
 
-export function getLocalRelease(cwd: string = process.cwd(), env: string = getEnv(), options: LocalReleaseOptions = {}) {
+export function getLocalRelease(
+  cwd: string = process.cwd(),
+  env: string = getEnv(),
+  options: LocalReleaseOptions = {}
+) {
   const key = `${cwd}:${env}:${JSON.stringify(options)}`
   if (releases[key]) {
     return releases[key]
@@ -37,20 +41,24 @@ export interface FlyConfig {
 }
 
 export class LocalRelease extends EventEmitter implements Release {
-  cwd: string
-  env: string
+  public cwd: string
+  public env: string
 
-  app: string
-  version: number
-  source: string
-  source_hash: string
-  source_map?: string
-  hash?: string
-  config: any
-  secrets: any
-  files: string[]
+  public app: string
+  public version: number
+  public source: string
+  public source_hash: string
+  public source_map?: string
+  public hash?: string
+  public config: any
+  public secrets: any
+  public files: string[]
 
-  constructor(cwd: string = process.cwd(), env: string = getEnv(), options: LocalReleaseOptions = {}) {
+  constructor(
+    cwd: string = process.cwd(),
+    env: string = getEnv(),
+    options: LocalReleaseOptions = {}
+  ) {
     super()
     this.cwd = cwd
     this.env = env || getEnv()
@@ -66,16 +74,14 @@ export class LocalRelease extends EventEmitter implements Release {
     this.source_hash = ""
     this.files = conf.files || []
 
-    if (!options.noWatch)
-      this.watchConfig()
+    if (!options.noWatch) { this.watchConfig() }
   }
 
-  getConfig(): FlyConfig {
+  public getConfig(): FlyConfig {
     const localConfigPath = path.join(this.cwd, configFile)
-    const builtConfigPath = path.join(this.cwd, '.fly', configFile)
-    let config: any = {};
+    const builtConfigPath = path.join(this.cwd, ".fly", configFile)
+    let config: any = {}
     if (fs.existsSync(localConfigPath)) {
-
       config = YAML.load(fs.readFileSync(localConfigPath).toString())
       if (this.expandFiles(config)) {
         // write generated config if it was dirty
@@ -93,8 +99,8 @@ export class LocalRelease extends EventEmitter implements Release {
     return config
   }
 
-  expandFiles(config: FlyConfig) {
-    if (!config.files) return
+  public expandFiles(config: FlyConfig) {
+    if (!config.files) { return }
     let dirty = false
     const files = config.files
     config.files = []
@@ -108,32 +114,33 @@ export class LocalRelease extends EventEmitter implements Release {
         }
       }
       for (const f of glob.sync(p, { cwd: this.cwd })) {
-        if (f !== p) dirty = true // at least one glob
+        if (f !== p) { dirty = true } // at least one glob
         config.files.push(f)
       }
     }
     return dirty
   }
 
-  getSecrets() {
+  public getSecrets() {
     const localSecretsPath = path.join(this.cwd, secretsFile)
-    let secrets = {};
+    let secrets = {}
 
-    if (fs.existsSync(localSecretsPath))
+    if (fs.existsSync(localSecretsPath)) {
       secrets = YAML.load(fs.readFileSync(localSecretsPath).toString())
+    }
 
     return secrets
   }
 
-  watchConfig() {
+  public watchConfig() {
     const watcher = chokidar.watch([configFile, secretsFile, webpackFile], {
       cwd: this.cwd
     })
-    watcher.on('add', this.update.bind(this, 'add'))
-    watcher.on('change', this.update.bind(this, 'change'))
+    watcher.on("add", this.update.bind(this, "add"))
+    watcher.on("change", this.update.bind(this, "change"))
   }
 
-  update(event: string, path: string) {
+  public update(event: string, path: string) {
     log.info(`Config watch (${event}: ${path})`)
     if (path.endsWith(configFile)) {
       const conf = this.getConfig()
@@ -143,10 +150,10 @@ export class LocalRelease extends EventEmitter implements Release {
     } else if (path.endsWith(secretsFile)) {
       this.secrets = this.getSecrets()
     }
-    this.emit('update', this)
+    this.emit("update", this)
   }
 }
 
 export function getEnv() {
-  return process.env.FLY_ENV || process.env.NODE_ENV || 'development'
+  return process.env.FLY_ENV || process.env.NODE_ENV || "development"
 }

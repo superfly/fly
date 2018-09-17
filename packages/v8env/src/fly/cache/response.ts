@@ -1,19 +1,19 @@
 /**
  * An API for efficiently caching Response objects in the regional Fly cache.
- * 
+ *
  * Usage:
- * 
+ *
  * ```javascript
  * import { responseCache } from "@fly/cache"
- * 
+ *
  * const resp = await fetch("http://example.com")
- * 
+ *
  * // cache for an hour
  * await responseCache.set("example-com", resp, 3600)
- * 
+ *
  * const cachedResponse = await responseCache.get("example-com")
  * ```
- * 
+ *
  * See {@link fly/cache} for caching lower level types.
  * @preferred
  * @module fly/cache/response
@@ -26,10 +26,10 @@ import cache, { CacheSetOptions } from "."
  * Response metadata suitable for caching
  */
 export interface Metadata {
-  status: number,
-  headers: { [key: string]: string | null},
-  at?: number,
-  ttl: number,
+  status: number
+  headers: { [key: string]: string | null }
+  at?: number
+  ttl: number
   tags?: string[]
 }
 
@@ -50,23 +50,18 @@ export type CachedResponse = Response & {
  * @return The response associated with the key, or null if empty
  */
 export async function get(key: string) {
-  let [meta, body] = await Promise.all(
-    [
-      getMeta(key),
-      cache.get(key + ":body")
-    ]
-  )
+  const [meta, body] = await Promise.all([getMeta(key), cache.get(key + ":body")])
 
-  if (!meta || !body) return null; // miss
-  let age = 0;
+  if (!meta || !body) { return null } // miss
+  let age = 0
   if (meta.at) {
-    age = Math.round(Date.now() / 1000) - meta.at;
-    meta.headers.Age = age.toString();
-    meta.headers['Fly-Age'] = meta.headers.Age;
-    delete meta.at;
+    age = Math.round(Date.now() / 1000) - meta.at
+    meta.headers.Age = age.toString()
+    meta.headers["Fly-Age"] = meta.headers.Age
+    delete meta.at
   }
   const resp = new Response(body, meta)
-  return <CachedResponse>Object.assign(resp, { key: key });
+  return Object.assign(resp, { key }) as CachedResponse
 }
 
 /**
@@ -74,18 +69,18 @@ export async function get(key: string) {
  * @param key cache key to get metadata for
  */
 export async function getMeta(key: string) {
-  let meta: string | undefined | Metadata = await cache.getString(key + ':meta');
-  if (!meta) return; // cache miss
+  let meta: string | undefined | Metadata = await cache.getString(key + ":meta")
+  if (!meta) { return } // cache miss
   try {
-    meta = <Metadata>JSON.parse(meta);
+    meta = JSON.parse(meta) as Metadata
   } catch (err) {
-    return null; // also a miss
+    return null // also a miss
   }
   return meta
 }
 
 /**
- * 
+ *
  * @param key Cache key to set
  * @param meta Metadata for the Response
  * @param opts Time to live
@@ -94,10 +89,7 @@ export function setMeta(key: string, meta: Metadata, options?: CacheSetOptions |
   return cache.set(key + ":meta", JSON.stringify(meta), options)
 }
 
-const defaultSkipHeaders = [
-  'authorization',
-  'set-cookie'
-];
+const defaultSkipHeaders = ["authorization", "set-cookie"]
 
 /**
  * Stores a Response object in the Fly cache.
@@ -106,48 +98,48 @@ const defaultSkipHeaders = [
  * @param options Time to live
  */
 export async function set(key: string, resp: Response, options?: ResponseCacheSetOptions | number) {
-  const ttl = typeof options === "number" ? options : (options && options.ttl);
-  let tags: string[] | undefined = undefined;
-  let skipHeaderOption: string[] = defaultSkipHeaders;
+  const ttl = typeof options === "number" ? options : options && options.ttl
+  let tags: string[] | undefined
+  let skipHeaderOption: string[] = defaultSkipHeaders
   if (typeof options === "object") {
-    tags = options.tags;
-    skipHeaderOption = [...skipHeaderOption, ...(options.skipCacheHeaders || []).map((headerKey) => headerKey.toLowerCase())];
+    tags = options.tags
+    skipHeaderOption = [
+      ...skipHeaderOption,
+      ...(options.skipCacheHeaders || []).map(headerKey => headerKey.toLowerCase())
+    ]
   }
 
   const meta = {
     status: resp.status,
     headers: {},
     at: Math.round(Date.now() / 1000),
-    ttl: ttl,
-    tags: tags
+    ttl,
+    tags
   }
 
-  const body = await resp.clone().arrayBuffer();
+  const body = await resp.clone().arrayBuffer()
 
   let etag = resp.headers.get("etag")
-  if (!etag || etag == '') {
+  if (!etag || etag == "") {
     etag = hex(await crypto.subtle.digest("SHA-1", body))
     resp.headers.set("etag", etag)
   }
 
-  const skipHeaderSet = new Set(skipHeaderOption);
-  for(const headerSet of resp.headers as any) {
-    const [name, value] = headerSet;
+  const skipHeaderSet = new Set(skipHeaderOption)
+  for (const headerSet of resp.headers as any) {
+    const [name, value] = headerSet
     if (skipHeaderSet.has(name.toLowerCase())) {
-      continue;
+      continue
     }
 
-    const existingVal = meta.headers[name];
+    const existingVal = meta.headers[name]
     if (existingVal) {
-      meta.headers[name] = `${existingVal}, ${value}`;
+      meta.headers[name] = `${existingVal}, ${value}`
     } else {
-      meta.headers[name] = value;
+      meta.headers[name] = value
     }
   }
-  return cacheResult([
-    setMeta(key, meta, options),
-    cache.set(key + ':body', body, options)
-  ]);
+  return cacheResult([setMeta(key, meta, options), cache.set(key + ":body", body, options)])
 }
 
 /**
@@ -155,8 +147,8 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
  * @param key Response to "touch"
  */
 export async function touch(key: string) {
-  let meta = await getMeta(key)
-  if (!meta) return false
+  const meta = await getMeta(key)
+  if (!meta) { return false }
   meta.at = Math.round(Date.now() / 1000)
   return await setMeta(key, meta, { ttl: meta.ttl, tags: meta.tags })
 }
@@ -167,10 +159,7 @@ export async function touch(key: string) {
  * @param ttl Time to live
  */
 export async function expire(key: string, ttl: number) {
-  return cacheResult([
-    cache.expire(key + ":meta", ttl),
-    cache.expire(key + ":body", ttl)
-  ])
+  return cacheResult([cache.expire(key + ":meta", ttl), cache.expire(key + ":body", ttl)])
 }
 
 /**
@@ -180,10 +169,7 @@ export async function expire(key: string, ttl: number) {
  * @returns true if tags were successfully updated
  */
 export function setTags(key: string, tags: string[]) {
-  return cacheResult([
-    cache.setTags(key + ":meta", tags),
-    cache.setTags(key + ":body", tags)
-  ])
+  return cacheResult([cache.setTags(key + ":meta", tags), cache.setTags(key + ":body", tags)])
 }
 
 /**
@@ -191,10 +177,7 @@ export function setTags(key: string, tags: string[]) {
  * @param key Key to delete
  */
 export async function del(key: string) {
-  return cacheResult([
-    cache.del(key + ":meta"),
-    cache.del(key + ":body")
-  ])
+  return cacheResult([cache.del(key + ":meta"), cache.del(key + ":body")])
 }
 
 export default {
@@ -207,7 +190,7 @@ export default {
   del
 }
 
-async function cacheResult(ops: Promise<boolean>[]) {
+async function cacheResult(ops: Array<Promise<boolean>>) {
   const results = await Promise.all(ops)
 
   for (const r of results) {
@@ -220,19 +203,19 @@ async function cacheResult(ops: Promise<boolean>[]) {
 
 // converts a buffer to hex, mainly for hashes
 function hex(buffer: ArrayBuffer) {
-  let hexCodes = [];
-  let view = new DataView(buffer);
+  const hexCodes = []
+  const view = new DataView(buffer)
   for (let i = 0; i < view.byteLength; i += 4) {
     // Using getUint32 reduces the number of iterations needed (we process 4 bytes each time)
-    let value = view.getUint32(i)
+    const value = view.getUint32(i)
     // toString(16) will give the hex representation of the number without padding
-    let stringValue = value.toString(16)
+    const stringValue = value.toString(16)
     // We use concatenation and slice for padding
-    let padding = '00000000'
-    let paddedValue = (padding + stringValue).slice(-padding.length)
-    hexCodes.push(paddedValue);
+    const padding = "00000000"
+    const paddedValue = (padding + stringValue).slice(-padding.length)
+    hexCodes.push(paddedValue)
   }
 
   // Join all the hex strings into one
-  return hexCodes.join("");
+  return hexCodes.join("")
 }

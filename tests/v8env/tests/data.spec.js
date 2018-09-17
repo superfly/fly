@@ -1,8 +1,8 @@
-import { expect } from 'chai'
-import db, { Collection } from '@fly/data'
+import { expect } from "chai"
+import db, { Collection } from "@fly/data"
 
-describe('@fly/data', () => {
-  describe('.collection', () => {
+describe("@fly/data", () => {
+  describe(".collection", () => {
     it("returns a Collection", () => {
       expect(db.collection("testing")).to.be.instanceOf(Collection)
     })

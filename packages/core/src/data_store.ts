@@ -1,4 +1,4 @@
-import { Runtime } from "./runtime";
+import { Runtime } from "./runtime"
 
 export interface DataStore {
   collection(rt: Runtime, name: string): Promise<CollectionStore>

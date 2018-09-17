@@ -1,7 +1,7 @@
-import { expect } from 'chai'
+import { expect } from "chai"
 
 describe("Headers", () => {
-  it('gets a single value correctly', () => {
+  it("gets a single value correctly", () => {
     const headers = new Headers()
     headers.set("test", "just-the-one")
     expect(headers.get("test")).to.eq("just-the-one")

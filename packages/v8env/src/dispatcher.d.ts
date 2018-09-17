@@ -4,6 +4,6 @@
  * @module fly
  */
 export class Dispatcher {
-  dispatchSync: (name: string, ...args: any[]) => any
-  dispatch: (name: string, ...args: any[]) => Promise<any>
+  public dispatchSync: (name: string, ...args: any[]) => any
+  public dispatch: (name: string, ...args: any[]) => Promise<any>
 }

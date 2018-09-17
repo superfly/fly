@@ -15,12 +15,14 @@ export interface NewArgs {
 const newCommand = root
   .subCommand<NewOptions, NewArgs>("new [name]")
   .description("Create a new Fly app.")
-  .option("-t, --template [template]", "Name of the template to use. default: getting-started", "getting-started")
+  .option(
+    "-t, --template [template]",
+    "Name of the template to use. default: getting-started",
+    "getting-started"
+  )
   .option("-l, --list", "List available templates.")
   .action(async (options, args) => {
-    const templateIndex = new TemplateIndex([
-      path.resolve(__dirname, "..", "..", "examples")
-    ])
+    const templateIndex = new TemplateIndex([path.resolve(__dirname, "..", "..", "examples")])
 
     if (args.name === undefined || options.list) {
       listTemplates(templateIndex)
@@ -38,7 +40,7 @@ const newCommand = root
 
     const generator = new Generator({
       appName: args.name,
-      template: template,
+      template
     })
 
     console.log(`Using template ${generator.template.name}`)
@@ -74,20 +76,19 @@ const newCommand = root
     console.log(`  $ fly server`)
   })
 
-
 interface GeneratorOptions {
   appName: string
-  path?: string,
-  template: TemplateInfo,
+  path?: string
+  template: TemplateInfo
 }
 
 interface TemplateInfo {
-  name: string,
+  name: string
   path: string
 }
 
 class TemplateIndex {
-  templates: TemplateInfo[] = []
+  public templates: TemplateInfo[] = []
 
   constructor(sources: string[]) {
     for (const source of sources) {
@@ -95,7 +96,7 @@ class TemplateIndex {
     }
   }
 
-  addTemplates(sourcePath: string) {
+  public addTemplates(sourcePath: string) {
     for (const relPath of fs.readdirSync(sourcePath)) {
       const templatePath = path.join(sourcePath, relPath)
       if (!fs.lstatSync(templatePath).isDirectory) {
@@ -109,7 +110,7 @@ class TemplateIndex {
     }
   }
 
-  getTemplate(name: string): TemplateInfo | undefined {
+  public getTemplate(name: string): TemplateInfo | undefined {
     return this.templates.find(ti => ti.name === name)
   }
 }
@@ -124,13 +125,13 @@ function listTemplates(index: TemplateIndex) {
   console.log("Browse template source at https://github.com/superfly/fly/tree/master/examples")
 }
 
-export class GeneratorError extends Error { }
+export class GeneratorError extends Error {}
 
 class Generator {
-  readonly cwd: string
-  readonly appName: string
-  readonly rootDir: string
-  readonly template: TemplateInfo
+  public readonly cwd: string
+  public readonly appName: string
+  public readonly rootDir: string
+  public readonly template: TemplateInfo
 
   constructor(options: GeneratorOptions) {
     this.cwd = process.cwd()
@@ -139,42 +140,41 @@ class Generator {
     this.template = options.template
   }
 
-  relativePath() {
+  public relativePath() {
     return path.relative(this.cwd, this.rootDir)
   }
 
-  create() {
+  public create() {
     fs.mkdirSync(this.rootDir)
   }
 
-  copy() {
+  public copy() {
     glob(path.join(this.template.path, "**", "*"), { dot: true }).forEach(templateFile => {
       const outputPath = this.translateTemplateFilePath(templateFile)
       fs.copyFileSync(templateFile, outputPath)
     })
   }
 
-  async configure() {
+  public async configure() {
     const packageFile = path.join(this.rootDir, "package.json")
     if (!fs.existsSync(packageFile)) {
       return
     }
 
-    var packageData = JSON.parse(fs.readFileSync(packageFile, "utf8"))
-    packageData["name"] = this.appName
+    let packageData = JSON.parse(fs.readFileSync(packageFile, "utf8"))
+    packageData.name = this.appName
     fs.writeFileSync(packageFile, JSON.stringify(packageData), "utf8")
 
     console.log("Installing packages...")
-    var exec = execa("npm", ['install'], { cwd: this.rootDir })
-    exec.stdout.pipe(process.stdout);
-    exec.stderr.pipe(process.stderr);
+    let exec = execa("npm", ["install"], { cwd: this.rootDir })
+    exec.stdout.pipe(process.stdout)
+    exec.stderr.pipe(process.stderr)
 
     await exec
   }
 
   private translateTemplateFilePath(inputPath: string): string {
-    var templateRelativePath = path.relative(this.template.path, inputPath)
+    let templateRelativePath = path.relative(this.template.path, inputPath)
     return path.join(this.rootDir, templateRelativePath)
   }
 }
-

@@ -2,4 +2,4 @@
  * @module fly
  * @private
  */
-export * from "./fetch/proxy";
+export * from "./fetch/proxy"
