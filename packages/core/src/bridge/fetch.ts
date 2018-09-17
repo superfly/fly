@@ -44,7 +44,9 @@ registerBridge("fetch", function fetchBridge(
   cb: ivm.Reference<() => void>
 ) {
   log.debug("native fetch with url:", urlStr)
-  init || (init = {})
+  if (!init) {
+    init = {}
+  }
   const u = parseURL(urlStr)
 
   if (u.protocol === "file:") {

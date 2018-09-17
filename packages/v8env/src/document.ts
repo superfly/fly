@@ -39,7 +39,9 @@ export class Node {
   }
 
   public _withParent(node) {
-    node.parent || (node.parent = this)
+    if (!node.parent) {
+      node.parent = this
+    }
     return node
   }
 

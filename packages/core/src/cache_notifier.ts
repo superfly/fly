@@ -78,7 +78,9 @@ export class LocalCacheNotifier implements CacheNotifierAdapter {
     // using setImmediate here to fake an async adapter
     return new Promise<boolean>(resolve => {
       setImmediate(() => {
-        this._handler && this._handler(msg)
+        if (this._handler) {
+          this._handler(msg)
+        }
         resolve(true)
       })
     })
