@@ -156,11 +156,11 @@ HeadersIterator.prototype[Symbol.iterator] = function() {
 
 function fill(headers, init) {
   if (init instanceof Headers) {
-    init._headerList.forEach(function(header) {
+    init._headerList.forEach(header => {
       headers.append(header[0], header[1])
     })
   } else if (Array.isArray(init)) {
-    init.forEach(function(header) {
+    init.forEach(header => {
       if (!Array.isArray(header) || header.length !== 2) {
         throw TypeError()
       }
@@ -170,7 +170,7 @@ function fill(headers, init) {
     init = Object(init)
     for (const name of Object.keys(init)) {
       if (Array.isArray(init[name])) {
-        init[name].forEach(function(v) {
+        init[name].forEach(v => {
           headers.append(name, v)
         })
       } else {

@@ -82,7 +82,7 @@ root
 
           await rt.set(
             "_mocha_done",
-            new ivm.Reference(function(failures: number) {
+            new ivm.Reference((failures: number) => {
               if (failures) {
                 return process.exit(1)
               }

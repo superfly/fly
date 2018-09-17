@@ -132,7 +132,7 @@ registerBridge("fetch", function fetchBridge(
   const start = process.hrtime()
   const dataOut = body ? Buffer.byteLength(body) : 0
 
-  setImmediate(function() {
+  setImmediate(() => {
     if (body instanceof ArrayBuffer) {
       req.end(Buffer.from(body))
     } else {

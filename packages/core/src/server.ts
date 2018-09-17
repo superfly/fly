@@ -303,11 +303,11 @@ function handleResponseStream(
   return new Promise<number>((resolve, reject) => {
     setImmediate(() => {
       let dataOut = 0
-      dst.on("data", function(d) {
+      dst.on("data", d => {
         dataOut += d.byteLength
       })
       res
-        .on("finish", function() {
+        .on("finish", () => {
           resolve(dataOut)
         })
         .on("error", reject)

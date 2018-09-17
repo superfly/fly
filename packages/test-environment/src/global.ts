@@ -3,12 +3,12 @@ import JestEnvironment from "./JestEnvironment"
 declare var env: JestEnvironment
 
 export function install(this: any) {
-  process.on("uncaughtException", function(error) {
+  process.on("uncaughtException", error => {
     console.error("Uncaught Exception:", error, error.stack)
     fail(error)
   })
 
-  process.on("unhandledRejection", function(error) {
+  process.on("unhandledRejection", error => {
     console.error("Unhandled Rejection:", error, error.stack)
     fail(error)
   })

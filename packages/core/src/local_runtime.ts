@@ -97,7 +97,7 @@ export class LocalRuntime implements Runtime {
     g.setSync("global", g.derefInto())
     g.setSync(
       "_log",
-      new ivm.Reference(function(lvl: string, ...args: any[]) {
+      new ivm.Reference((lvl: string, ...args: any[]) => {
         log[lvl](...args)
       })
     )
@@ -148,7 +148,7 @@ async function startInspector(iso: ivm.Isolate) {
   const channel = iso.createInspectorSession()
   const wss = new WebSocket.Server({ port: 10000 })
 
-  wss.on("connection", function(ws) {
+  wss.on("connection", ws => {
     // Dispose inspector session on websocket disconnect
     const channel = iso.createInspectorSession()
     function dispose() {
@@ -160,7 +160,7 @@ async function startInspector(iso: ivm.Isolate) {
     ws.on("close", dispose)
 
     // Relay messages from frontend to backend
-    ws.on("message", function(message) {
+    ws.on("message", message => {
       try {
         channel.dispatchProtocolMessage(message)
       } catch (err) {
