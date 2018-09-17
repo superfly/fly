@@ -66,7 +66,9 @@ export class Bridge {
 
   public dispatch(rt: Runtime, name: string, ...args: any[]) {
     const fn = this.functions.get(name)
-    if (!fn) { throw new Error(errNoSuchBridgeFn + ` ${name}`) }
+    if (!fn) {
+      throw new Error(errNoSuchBridgeFn + ` ${name}`)
+    }
     return fn(rt, this, ...args)
   }
 

@@ -18,8 +18,11 @@ const fetch = root
         console.log(res.data.data.attributes.source)
       })
     } catch (e) {
-      if (e.response) { console.log(e.response.data) }
-      else { throw e }
+      if (e.response) {
+        console.log(e.response.data)
+      } else {
+        throw e
+      }
     }
   })
 

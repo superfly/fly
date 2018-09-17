@@ -100,8 +100,9 @@ const deploy = root
             console.log(`App should be updated in a few seconds.`)
           })
         } catch (e) {
-          if (e.response) { console.log(e.response.data) }
-          else {
+          if (e.response) {
+            console.log(e.response.data)
+          } else {
             throw e
           }
         }

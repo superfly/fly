@@ -32,7 +32,9 @@ export class FetchEvent {
   constructor(type, init, callback) {
     this.type = type
     this.request = init.request
-    if (!this.request) { throw new Error("init.request is required.") }
+    if (!this.request) {
+      throw new Error("init.request is required.")
+    }
     this.callback = callback
     this.respondWithEntered = false
   }
@@ -56,7 +58,9 @@ export class FetchEvent {
       if (ret instanceof Promise) {
         ret
           .then(res => {
-            if (res instanceof Response) { return this.callback(null, res) }
+            if (res instanceof Response) {
+              return this.callback(null, res)
+            }
             logger.debug("weird response:", res ? res.constructor : undefined)
             this.callback(invalidResponseType)
           })
@@ -132,8 +136,11 @@ export function fireFetchEvent(url, req, body, callback) {
         b = res.body.flyStreamId
       } else {
         logger.debug("body source type:", res.bodySource.constructor.name)
-        if (typeof res.bodySource === "string") { b = res.bodySource }
-        else { b = bridge.wrapValue(await res.arrayBuffer()) }
+        if (typeof res.bodySource === "string") {
+          b = res.bodySource
+        } else {
+          b = bridge.wrapValue(await res.arrayBuffer())
+        }
       }
 
       logger.debug("got ourselves a body")

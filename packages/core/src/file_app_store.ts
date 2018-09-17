@@ -28,29 +28,44 @@ export class FileAppStore {
     this.cwd = cwd
     this.options = options
 
-    if (!fs.existsSync(cwd)) { throw new Error("Could not find path: " + cwd) }
+    if (!fs.existsSync(cwd)) {
+      throw new Error("Could not find path: " + cwd)
+    }
 
     const stat = fs.statSync(cwd)
-    if (!stat.isDirectory()) { this.cwd = path.dirname(cwd) }
+    if (!stat.isDirectory()) {
+      this.cwd = path.dirname(cwd)
+    }
 
     const env = options.env || getEnv()
 
     if (options.noReleaseReuse) {
       this.release = new LocalRelease(cwd, env, { noWatch: options.noWatch })
+    } else {
+      this.release = getLocalRelease(cwd, env, { noWatch: options.noWatch })
     }
-    else { this.release = getLocalRelease(cwd, env, { noWatch: options.noWatch }) }
 
     this.app = new App(this.release)
 
-    if (this.options.config) { this.release.config = this.options.config }
-    if (this.options.secrets) { this.release.secrets = this.options.secrets }
+    if (this.options.config) {
+      this.release.config = this.options.config
+    }
+    if (this.options.secrets) {
+      this.release.secrets = this.options.secrets
+    }
 
-    if (options.noSource) { return }
+    if (options.noSource) {
+      return
+    }
 
     if (!options.build) {
       let fullPath = cwd
-      if (stat.isDirectory()) { fullPath = path.resolve(cwd, "./index.js") }
-      if (!fs.existsSync(fullPath)) { throw new Error("no code to use") }
+      if (stat.isDirectory()) {
+        fullPath = path.resolve(cwd, "./index.js")
+      }
+      if (!fs.existsSync(fullPath)) {
+        throw new Error("no code to use")
+      }
       this.release.source = fs.readFileSync(fullPath).toString()
       return
     }
@@ -59,7 +74,9 @@ export class FileAppStore {
       cwd,
       { watch: true, uglify: this.options.uglify },
       (err: Error, code: string, hash: string, sourceMap: string) => {
-        if (err) { return console.error(err) }
+        if (err) {
+          return console.error(err)
+        }
 
         this.release.source = code
         this.release.source_hash = hash

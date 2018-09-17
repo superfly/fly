@@ -27,7 +27,9 @@ function errorMessage(err: any): string {
 
 export function processResponse(res: any, successFn?: Function | undefined): void {
   if (res.status >= 200 && res.status < 299) {
-    if (successFn) { successFn(res) }
+    if (successFn) {
+      successFn(res)
+    }
   } else {
     if (res.status == 401) {
       // TODO: Store and use `refresh_token` to automatically fix this predicament

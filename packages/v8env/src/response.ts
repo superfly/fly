@@ -30,7 +30,9 @@ export class Response extends Body {
   }
 
   constructor(body, init) {
-    if (arguments.length < 1) { body = "" }
+    if (arguments.length < 1) {
+      body = ""
+    }
 
     super(body)
 
@@ -52,7 +54,9 @@ export class Response extends Body {
 
     // readonly attribute unsigned short status;
     const status = "status" in init ? ushort(init.status) : 200
-    if (status < 200 || status > 599) { throw RangeError() }
+    if (status < 200 || status > 599) {
+      throw RangeError()
+    }
 
     /**
      * @public
@@ -71,7 +75,9 @@ export class Response extends Body {
 
     // readonly attribute ByteString statusText;
     const statusText = "statusText" in init ? String(init.statusText) : "OK"
-    if (/[^\x00-\xFF]/.test(statusText)) { throw TypeError() }
+    if (/[^\x00-\xFF]/.test(statusText)) {
+      throw TypeError()
+    }
 
     /**
      * @public
@@ -99,13 +105,17 @@ export class Response extends Body {
    * @type CookieJar
    */
   get cookies() {
-    if (this.cookieJar) { return this.cookieJar }
+    if (this.cookieJar) {
+      return this.cookieJar
+    }
     this.cookieJar = new CookieJar(this)
     return this.cookieJar
   }
 
   public clone() {
-    if (this.bodyUsed) { throw new Error("Body has already been used") }
+    if (this.bodyUsed) {
+      throw new Error("Body has already been used")
+    }
     let body2 = this.bodySource
     if (this.bodySource instanceof ReadableStream) {
       const tees = this.body.tee()

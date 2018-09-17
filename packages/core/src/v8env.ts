@@ -37,7 +37,9 @@ export class V8Environment extends EventEmitter {
   constructor() {
     super()
     this.bootstrapped = false
-    if (!v8EnvCode) { throw new Error("v8env not found, please run npm build to generate it") }
+    if (!v8EnvCode) {
+      throw new Error("v8env not found, please run npm build to generate it")
+    }
   }
 
   get isReady() {
@@ -121,7 +123,9 @@ export class V8Environment extends EventEmitter {
         }
       ])
       this.emit("snapshot", v8EnvSnapshot)
-      if (!wasReady) { this.emit("ready") }
+      if (!wasReady) {
+        this.emit("ready")
+      }
     }
   }
 }

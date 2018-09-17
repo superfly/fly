@@ -14,7 +14,9 @@ export class MemoryCacheStore implements CacheStore {
 
   public async get(ns: string, key: string): Promise<Buffer | null> {
     const buf = await this.redis.getBuffer(keyFor(ns, key))
-    if (!buf) { return null }
+    if (!buf) {
+      return null
+    }
     return Buffer.from(buf)
   }
 
@@ -45,7 +47,9 @@ export class MemoryCacheStore implements CacheStore {
       const p = ttl ? this.redis.set(k, value, "EX", ttl, "NX") : this.redis.set(k, value, "NX")
       const result = await p
       // this happens if the key already exists
-      if (result !== "OK") { return false }
+      if (result !== "OK") {
+        return false
+      }
     }
     if (ttl && !isNaN(ttl)) {
       pipeline.set(k, value, "EX", ttl)
@@ -135,7 +139,7 @@ export class MemoryCacheStore implements CacheStore {
 }
 
 if (Symbol && !Symbol.asyncIterator) {
-  (Symbol as any).asyncIterator = Symbol.for("Symbol.asyncIterator")
+  ;(Symbol as any).asyncIterator = Symbol.for("Symbol.asyncIterator")
 }
 async function* setScanner(redis: IORedis.Redis, key: string) {
   let cursor = 0
@@ -158,7 +162,9 @@ function pipelineResultOK(result: any) {
     if (r[0]) {
       return true
     }
-    if (r[1] !== "OK" || (typeof r[1] === "number" && r[1] < 0)) { return false }
+    if (r[1] !== "OK" || (typeof r[1] === "number" && r[1] < 0)) {
+      return false
+    }
   })
   return errors.length === 0
 }

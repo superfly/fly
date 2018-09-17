@@ -25,10 +25,11 @@ class CookieJar {
 
   constructor(parent) {
     this.parent = parent
-    if (parent instanceof Request) { this.cookies = parseCookies(parent.headers.getAll("Cookie")) }
-    else if (parent instanceof Response) {
+    if (parent instanceof Request) {
+      this.cookies = parseCookies(parent.headers.getAll("Cookie"))
+    } else if (parent instanceof Response) {
       this.cookies = parseCookies(parent.headers.getAll("Set-Cookie"))
-         }
+    }
   }
 
   /**
@@ -48,8 +49,11 @@ class CookieJar {
   public append(name, value, options) {
     const cookieStr = cookie.serialize(name, value, options)
     this.cookies = this.cookies.concat(parseCookie(cookieStr))
-    if (this.parent instanceof Request) { this.parent.headers.append("Cookie", cookieStr) }
-    else if (this.parent instanceof Response) { this.parent.headers.append("Set-Cookie", cookieStr) }
+    if (this.parent instanceof Request) {
+      this.parent.headers.append("Cookie", cookieStr)
+    } else if (this.parent instanceof Response) {
+      this.parent.headers.append("Set-Cookie", cookieStr)
+    }
   }
 }
 

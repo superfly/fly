@@ -39,7 +39,9 @@ export default function refToStream(id) {
               } catch (e) {}
               logger.error("error in stream:", args[0])
               controller.error(new Error(args[0]))
-            } else { logger.error("unhandled event", name) }
+            } else {
+              logger.error("unhandled event", name)
+            }
           },
           { release: false }
         )

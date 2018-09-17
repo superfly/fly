@@ -37,8 +37,11 @@ async function continuouslyGetLogs(API: AxiosInstance, appName: string) {
       lastNextToken = nextToken
       showLogs(logs)
     } catch (e) {
-      if (e.response) { processResponse(e.response) }
-      else { console.log(e.stack) }
+      if (e.response) {
+        processResponse(e.response)
+      } else {
+        console.log(e.stack)
+      }
       break
     }
     await sleep(count > 5 ? 200 : 2500) // give it a rest!

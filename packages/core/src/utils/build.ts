@@ -30,7 +30,9 @@ export function buildAppWithConfig(
 
   const cb = compileCallback(cwd, compiler, callback)
 
-  if (opts.watch) { return compiler.watch({}, cb) }
+  if (opts.watch) {
+    return compiler.watch({}, cb)
+  }
 
   compiler.run(cb)
 }

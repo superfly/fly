@@ -95,7 +95,9 @@ export default function initBridge(ivm, dispatch) {
 
     wrapFunction(fn, options: BridgeTransferOptions = { release: true }) {
       const opts = Object.assign({}, DEFAULT_BRIDGE_TRANSFER_OPTIONS, options || {})
-      if (!opts.release) { return new ivm.Reference(fn) }
+      if (!opts.release) {
+        return new ivm.Reference(fn)
+      }
 
       const cb = new ivm.Reference(function bridgeAutoReleaseFn(...args) {
         try {

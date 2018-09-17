@@ -33,8 +33,11 @@ export const apps = root
         console.log(table.toString())
       })
     } catch (e) {
-      if (e.response) { console.log(e.response.data) }
-      else { throw e }
+      if (e.response) {
+        console.log(e.response.data)
+      } else {
+        throw e
+      }
     }
   })
 
@@ -67,14 +70,15 @@ const appsCreate = apps
         console.log(`App ${res.data.data.attributes.name} created!`)
         if (existsSync(".fly.yml")) {
           console.log(`Add it to your .fly.yml like: \`app: ${res.data.data.attributes.name}\``)
-        }
-        else {
+        } else {
           writeFileSync(".fly.yml", `app: ${res.data.data.attributes.name}`)
           console.log("Created a .fly.yml for you.")
         }
       })
     } catch (e) {
-      if (e.response) { return console.log(e.response.data) }
+      if (e.response) {
+        return console.log(e.response.data)
+      }
       console.error(e.stack)
       throw e
     }
@@ -91,10 +95,14 @@ const appsMove = apps
       const res = await API.get(`/api/v1/orgs`)
       processResponse(res, async (res: any) => {
         const choices: any = {}
-        for (const i in res.data.data) { choices[i] = res.data.data[i].id }
+        for (const i in res.data.data) {
+          choices[i] = res.data.data[i].id
+        }
 
         let choiceText = ""
-        for (const [i, slug] of Object.entries(choices)) { choiceText += `${i}) ${slug}\n` }
+        for (const [i, slug] of Object.entries(choices)) {
+          choiceText += `${i}) ${slug}\n`
+        }
 
         const chose = await promptly.choose(
           `Select organization to move to:
@@ -113,7 +121,9 @@ Enter a number:`,
         })
       })
     } catch (e) {
-      if (e.response) { return console.log(e.response.data) }
+      if (e.response) {
+        return console.log(e.response.data)
+      }
       console.error(e.stack)
       throw e
     }
@@ -144,12 +154,19 @@ Please type the app's name to confirm:`,
           console.log("App deleted.")
         })
       } catch (e) {
-        if (e.message.includes("Invalid choice")) { console.log("NOT deleting app.") }
-        else { throw e }
+        if (e.message.includes("Invalid choice")) {
+          console.log("NOT deleting app.")
+        } else {
+          throw e
+        }
       }
     } catch (e) {
-      if (e.response) { return console.log(e.response.data) }
-      if (e.message.includes("canceled")) { return }
+      if (e.response) {
+        return console.log(e.response.data)
+      }
+      if (e.message.includes("canceled")) {
+        return
+      }
       console.error(e.stack)
       throw e
     }

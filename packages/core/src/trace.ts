@@ -79,7 +79,9 @@ export class Trace {
   }
 
   public nanoseconds() {
-    if (!this.diff) { return 0 }
+    if (!this.diff) {
+      return 0
+    }
     return this.diff[0] * nsPerSecond + this.diff[1]
   }
 

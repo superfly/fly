@@ -22,8 +22,11 @@ const hostnames = root
         }
       })
     } catch (e) {
-      if (e.response) { console.log(e.response.data) }
-      else { throw e }
+      if (e.response) {
+        console.log(e.response.data)
+      } else {
+        throw e
+      }
     }
   })
 
@@ -45,8 +48,11 @@ const hostnamesAdd = hostnames
         console.log(`Successfully added hostname ${args.hostname}`)
       })
     } catch (e) {
-      if (e.response) { console.log(e.response.data) }
-      else { throw e }
+      if (e.response) {
+        console.log(e.response.data)
+      } else {
+        throw e
+      }
     }
   })
 

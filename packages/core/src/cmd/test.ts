@@ -57,7 +57,9 @@ root
       conf,
       { watch: false },
       async (err: Error, code: string, hash: string, sourceMap: string) => {
-        if (err) { throw err }
+        if (err) {
+          throw err
+        }
 
         const app = appStore.app
 
@@ -81,7 +83,9 @@ root
           await rt.set(
             "_mocha_done",
             new ivm.Reference(function(failures: number) {
-              if (failures) { return process.exit(1) }
+              if (failures) {
+                return process.exit(1)
+              }
               process.exit()
             })
           )

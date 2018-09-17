@@ -37,7 +37,12 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
 
   public send(msg: CacheNotifyMessage) {
     return new Promise<boolean>((resolve, reject) => {
-      log.debug("sending redis cache notification:", msg.ts, msg.value, (this.writer as any).address)
+      log.debug(
+        "sending redis cache notification:",
+        msg.ts,
+        msg.value,
+        (this.writer as any).address
+      )
       this.writer.zadd(notifierKey, msg.ts, JSON.stringify(msg), (err, _) => {
         if (err) {
           return reject(err)

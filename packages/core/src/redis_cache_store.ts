@@ -49,7 +49,9 @@ export class RedisCacheStore implements CacheStore {
         : this.redis.setAsync(k, value, "NX")
       const result = await p
       // this happens if the key already exists
-      if (result !== "OK") { return false }
+      if (result !== "OK") {
+        return false
+      }
 
       // otherwise we carry on
     } else {
@@ -151,7 +153,7 @@ function redisGroupOK(result: any) {
 }
 
 if (Symbol && !Symbol.asyncIterator) {
-  (Symbol as any).asyncIterator = Symbol.for("Symbol.asyncIterator")
+  ;(Symbol as any).asyncIterator = Symbol.for("Symbol.asyncIterator")
 }
 async function* setScanner(redis: FlyRedis, key: string) {
   let cursor = 0
@@ -198,7 +200,9 @@ class FlyRedis {
 
   // fake sscan function for mock redis
   public async sscanShim(key: string, cursor: number, count?: number) {
-    if (!count) { count = 10 }
+    if (!count) {
+      count = 10
+    }
     const members = await this.smembersAsync(key)
     if (members && cursor < members.length) {
       let newCursor = cursor + count

@@ -74,7 +74,9 @@ export class LocalRelease extends EventEmitter implements Release {
     this.source_hash = ""
     this.files = conf.files || []
 
-    if (!options.noWatch) { this.watchConfig() }
+    if (!options.noWatch) {
+      this.watchConfig()
+    }
   }
 
   public getConfig(): FlyConfig {
@@ -100,7 +102,9 @@ export class LocalRelease extends EventEmitter implements Release {
   }
 
   public expandFiles(config: FlyConfig) {
-    if (!config.files) { return }
+    if (!config.files) {
+      return
+    }
     let dirty = false
     const files = config.files
     config.files = []
@@ -114,7 +118,9 @@ export class LocalRelease extends EventEmitter implements Release {
         }
       }
       for (const f of glob.sync(p, { cwd: this.cwd })) {
-        if (f !== p) { dirty = true } // at least one glob
+        if (f !== p) {
+          dirty = true
+        } // at least one glob
         config.files.push(f)
       }
     }

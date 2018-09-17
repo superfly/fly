@@ -25,5 +25,7 @@ export const logger = {
 
 /** @hidden */
 function flyLog(lvl: string, message: string) {
-  if (typeof _log !== "undefined") { _log.apply(null, [lvl, message]) }
+  if (typeof _log !== "undefined") {
+    _log.apply(null, [lvl, message])
+  }
 }

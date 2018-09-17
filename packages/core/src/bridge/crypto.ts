@@ -53,6 +53,8 @@ function digestHash(algo: string, data: ArrayBuffer | string, encoding?: HexBase
   let h: Hash
   h = createHash(algo.replace("-", ""))
   h.update(typeof data === "string" ? data : Buffer.from(data))
-  if (!encoding) { return transferInto(h.digest()) }
+  if (!encoding) {
+    return transferInto(h.digest())
+  }
   return h.digest(encoding)
 }

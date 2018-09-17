@@ -36,7 +36,9 @@ export class App {
   }
 
   get config() {
-    if (this._config) { return this._config }
+    if (this._config) {
+      return this._config
+    }
     this._config = this.release.config
     applySecrets(this._config, this.release.secrets)
     return this._config
