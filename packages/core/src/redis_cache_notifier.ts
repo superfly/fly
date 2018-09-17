@@ -65,7 +65,7 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
       await configAsync("set", "notify-keyspace-events", conf)
     }
     this._lastEventTime = Date.now()
-    const dbIndex = parseInt((this.subscriber as any).selected_db || 0)
+    const dbIndex = parseInt((this.subscriber as any).selected_db || 0, 10)
     log.info("Subscribing to Redis Cache notifications:", (this.subscriber as any).address)
     this.subscriber.subscribe(`__keyspace@${dbIndex}__:notifier:cache`)
     this.subscriber.on("message", async (channel, message) => {

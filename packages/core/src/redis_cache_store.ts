@@ -159,7 +159,7 @@ async function* setScanner(redis: FlyRedis, key: string) {
   let cursor = 0
   do {
     const result = await redis.sscanAsync(key, cursor)
-    cursor = parseInt(result[0])
+    cursor = parseInt(result[0], 10)
     yield* result[1] as string[]
   } while (cursor > 0)
 }

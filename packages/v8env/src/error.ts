@@ -181,7 +181,7 @@ function mapEvalOrigin(origin) {
     const position = mapSourcePosition({
       source: match[2],
       line: +match[3],
-      column: parseInt(match[4]) - 1
+      column: parseInt(match[4], 10) - 1
     })
     return (
       "eval at " +

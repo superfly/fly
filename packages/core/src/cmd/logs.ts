@@ -70,7 +70,7 @@ async function showLogs(logs: Log[]) {
   for (const l of logs) {
     const region = l.attributes.meta.region
     const ts = new Date(l.attributes.timestamp)
-    const lvl = levels[parseInt(l.attributes.level)] || l.attributes.level
+    const lvl = levels[parseInt(l.attributes.level, 10)] || l.attributes.level
     const levelColor = levelColorFn[lvl] || colors.white
     console.log(
       `${colors.dim(ts.toISOString().split(".")[0] + "Z")} ${colors.green(region)} [${levelColor(
