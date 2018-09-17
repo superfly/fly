@@ -6,14 +6,14 @@ setupApps({
   "set-immediate.test": path.resolve(__dirname, "setImmediate.js"),
 })
 
-const timerTolerance = 150 // ms
+const timerTolerance = 125 // ms
 
 describe("setTimeout", () => {
   test.each([250, 50, 0])("with %dms delay", async (timeout) => {
     const response = await fetch(`http://set-timeout.test?t=${timeout}`)
     expect(response.status).toEqual(200)
     const duration = parseInt(await response.text())
-    expect(duration - timeout).toBeGreaterThan(timeout)
+    expect(Math.abs((duration - timeout))).toBeLessThanOrEqual(timerTolerance)
   })
 })
 
