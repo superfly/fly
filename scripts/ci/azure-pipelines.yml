@@ -35,7 +35,6 @@ jobs:
           searchFolder: $(Build.SourcesDirectory)/artifacts
 
   - job: macOS
-    dependsOn: lint
     pool:
       vmImage: xcode9-macos10.13
     strategy:
@@ -69,7 +68,6 @@ jobs:
           searchFolder: $(Build.SourcesDirectory)/artifacts
 
   - job: Linux
-    dependsOn: lint
     pool:
       vmImage: ubuntu-16.04
     strategy:
@@ -110,7 +108,6 @@ jobs:
           searchFolder: $(Build.SourcesDirectory)/artifacts
 
   - job: Windows
-    dependsOn: lint
     pool:
       vmImage: vs2017-win2016
     strategy:
