@@ -133,7 +133,7 @@ jobs:
       #   inputs:
       #     versionSpec: '2.7'
       #     architecture: 'x64'
-      - script: npm install --global --production windows-build-tools@4.0.0
+      - script: npm install --global windows-build-tools
         displayName: "Install windows build tools"
       - script: npm install -g yarn
         displayName: "Install yarn"
