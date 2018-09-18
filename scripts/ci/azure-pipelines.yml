@@ -4,6 +4,36 @@
 # https://docs.microsoft.com/vsts/pipelines/languages/javascript
 
 jobs:
+  - job: lint
+    pool:
+      vmImage: ubuntu-16.04
+    variables:
+      CI: true
+    timeoutInMinutes: 10
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+          checkLatest: $(node_check_latest)
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "2.7"
+          architecture: "x64"
+      - script: |
+          sudo apt-get update && sudo apt-get install -y nasm
+          npm install -g yarn
+          yarn install --no-progress && yarn bootstrap
+        name: Install
+      - script: yarn test:lint
+        name: Lint
+      - script: yarn test:format
+        name: Format
+      - task: PublishTestResults@2
+        condition: always()
+        inputs:
+          testResultsFiles: "**/*junit.xml"
+          searchFolder: $(Build.SourcesDirectory)/artifacts
+
   - job: macOS
     pool:
       vmImage: xcode9-macos10.13
@@ -76,6 +106,7 @@ jobs:
         inputs:
           testResultsFiles: "**/*junit.xml"
           searchFolder: $(Build.SourcesDirectory)/artifacts
+
   - job: Windows
     pool:
       vmImage: vs2017-win2016
