@@ -175,11 +175,7 @@ registerBridge("fetch", function fetchBridge(
       return cb.applyIgnored(null, [null, retInit])
     }
 
-    cb.applyIgnored(null, [
-      null,
-      retInit,
-      streamManager.add(rt, res, { readTimeout: init.readTimeout })
-    ])
+    cb.applyIgnored(null, [null, retInit, streamManager.add(rt, res, { readTimeout: init.readTimeout })])
   }
 
   function handleError(err: Error) {

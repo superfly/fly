@@ -40,9 +40,7 @@ const deploy = root
       { watch: false, uglify: true },
       async (err: Error, source: string, hash: string, sourceMap: string) => {
         // look for generated config
-        const configPath = existsSync(pathResolve(".fly", ".fly.yml"))
-          ? ".fly/.fly.yml"
-          : ".fly.yml"
+        const configPath = existsSync(pathResolve(".fly", ".fly.yml")) ? ".fly/.fly.yml" : ".fly.yml"
         try {
           const entries = [
             configPath, // processed .fly.yml
@@ -92,11 +90,7 @@ const deploy = root
           })
 
           processResponse(res, () => {
-            console.log(
-              `Deploying v${
-                res.data.data.attributes.version
-              } globally @ https://${appName}.edgeapp.net`
-            )
+            console.log(`Deploying v${res.data.data.attributes.version} globally @ https://${appName}.edgeapp.net`)
             console.log(`App should be updated in a few seconds.`)
           })
         } catch (e) {

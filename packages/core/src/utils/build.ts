@@ -37,11 +37,7 @@ export function buildAppWithConfig(
   compiler.run(cb)
 }
 
-function compileCallback(
-  cwd: string,
-  compiler: webpack.Compiler,
-  callback: (...args: any[]) => void
-) {
+function compileCallback(cwd: string, compiler: webpack.Compiler, callback: (...args: any[]) => void) {
   let codeHash: string
   return (err: Error, stats: any) => {
     if (err) {

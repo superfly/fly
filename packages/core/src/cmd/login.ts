@@ -24,10 +24,7 @@ root
       processResponse(res, () => {
         const homepath = homeConfigPath()
         const credspath = path.join(homepath, "credentials.yml")
-        fs.writeFileSync(
-          credspath,
-          YAML.dump({ access_token: res.data.data.attributes.access_token })
-        )
+        fs.writeFileSync(credspath, YAML.dump({ access_token: res.data.data.attributes.access_token }))
         console.log("Wrote credentials at:", credspath)
       })
     } catch (e) {

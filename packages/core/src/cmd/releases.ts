@@ -20,9 +20,7 @@ export const releases = root
         }
         for (const r of res.data.data) {
           console.log(
-            `v${r.attributes.version} ${r.attributes.reason} by ${r.attributes.author} on ${
-              r.attributes.created_at
-            }`
+            `v${r.attributes.version} ${r.attributes.reason} by ${r.attributes.author} on ${r.attributes.created_at}`
           )
         }
       })

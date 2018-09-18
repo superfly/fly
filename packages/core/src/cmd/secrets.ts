@@ -24,9 +24,7 @@ const secretsSet = secrets
     try {
       const appName = getAppName(this)
 
-      const value = opts.filename
-        ? fs.readFileSync(opts.filename[0]).toString()
-        : args.value && args.value
+      const value = opts.filename ? fs.readFileSync(opts.filename[0]).toString() : args.value && args.value
 
       if (!value) {
         throw new Error("Either a value or --from-file needs to be provided.")
@@ -41,11 +39,7 @@ const secretsSet = secrets
         }
       })
       processResponse(res, () => {
-        console.log(
-          `Deploying v${
-            res.data.data.attributes.version
-          } globally, should be updated in a few seconds.`
-        )
+        console.log(`Deploying v${res.data.data.attributes.version} globally, should be updated in a few seconds.`)
       })
     } catch (e) {
       if (e.response) {

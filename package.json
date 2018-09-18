@@ -41,6 +41,6 @@
   "prettier": {
     "parser": "typescript",
     "semi": false,
-    "printWidth": 100
+    "printWidth": 120
   }
 }

@@ -10,15 +10,14 @@ import { App } from "../app"
 import { SQLiteDataStore } from "../sqlite_data_store"
 import { v8envModulePath } from "../v8env"
 
-const scripts = [
-  require.resolve("mocha/mocha"),
-  require.resolve(path.join(v8envModulePath, "testing", "setup"))
-].map(filename => {
-  return {
-    filename,
-    code: fs.readFileSync(filename).toString()
+const scripts = [require.resolve("mocha/mocha"), require.resolve(path.join(v8envModulePath, "testing", "setup"))].map(
+  filename => {
+    return {
+      filename,
+      code: fs.readFileSync(filename).toString()
+    }
   }
-})
+)
 
 const runPath = require.resolve(path.join(v8envModulePath, "testing", "run"))
 

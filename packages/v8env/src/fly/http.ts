@@ -19,9 +19,7 @@ function handleFetch(event) {
   if (flyFetchHandler != null) {
     const resp = flyFetchHandler(req)
     if (!(resp instanceof Promise) && !(resp instanceof Response)) {
-      throw new Error(
-        "fly.http.respondWith function returned the wrong type, expected Promise<Response> or Response"
-      )
+      throw new Error("fly.http.respondWith function returned the wrong type, expected Promise<Response> or Response")
     }
     event.respondWith(resp)
     return

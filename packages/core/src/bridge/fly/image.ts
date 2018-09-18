@@ -81,13 +81,7 @@ registerBridge("fly.Image()", function imageConstructor(
 
 registerBridge(
   "fly.Image.operation",
-  (
-    rt: Runtime,
-    bridge: Bridge,
-    ref: ivm.Reference<sharp.SharpInstance>,
-    name: string,
-    ...args: any[]
-  ) => {
+  (rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, name: string, ...args: any[]) => {
     try {
       const img = refToImage(ref)
       const operation = allowedOperations.get(name)
@@ -125,23 +119,15 @@ registerBridge(
   }
 )
 
-registerBridge(
-  "fly.Image.metadata",
-  async (rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>) => {
-    const img = ref.deref()
-    const meta = await img.metadata()
-    return new ivm.ExternalCopy(extractMetadata(meta)).copyInto({ release: true })
-  }
-)
+registerBridge("fly.Image.metadata", async (rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>) => {
+  const img = ref.deref()
+  const meta = await img.metadata()
+  return new ivm.ExternalCopy(extractMetadata(meta)).copyInto({ release: true })
+})
 
 registerBridge(
   "fly.Image.toBuffer",
-  (
-    rt: Runtime,
-    bridge: Bridge,
-    ref: ivm.Reference<sharp.SharpInstance>,
-    callback: ivm.Reference<() => void>
-  ) => {
+  (rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, callback: ivm.Reference<() => void>) => {
     const img = refToImage(ref)
     if (!img) {
       callback.applyIgnored(null, ["ref must be a valid image instance"])
@@ -155,11 +141,7 @@ registerBridge(
         return
       }
       const info = extractMetadata(metadata)
-      callback.applyIgnored(null, [
-        null,
-        transferInto(d),
-        new ivm.ExternalCopy(info).copyInto({ release: true })
-      ])
+      callback.applyIgnored(null, [null, transferInto(d), new ivm.ExternalCopy(info).copyInto({ release: true })])
     })
   }
 )

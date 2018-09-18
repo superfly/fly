@@ -72,10 +72,7 @@ export class LocalRuntime implements Runtime {
     setInterval(() => {
       if (this.isolate && !this.isolate.isDisposed) {
         log.info(
-          `Runtime heap: ${(
-            this.isolate.getHeapStatisticsSync().total_heap_size /
-            (1024 * 1024)
-          ).toFixed(2)} MB`
+          `Runtime heap: ${(this.isolate.getHeapStatisticsSync().total_heap_size / (1024 * 1024)).toFixed(2)} MB`
         )
       }
     }, 5000)

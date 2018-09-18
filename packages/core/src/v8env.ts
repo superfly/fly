@@ -55,10 +55,7 @@ export class V8Environment extends EventEmitter {
       return v8EnvSnapshot
     }
     if (!v8SnapshotsEnabled) {
-      console.warn(
-        "can't use v8 snapshots with this version of node, boot will be slower",
-        process.version
-      )
+      console.warn("can't use v8 snapshots with this version of node, boot will be slower", process.version)
     } else {
       console.log("v8 snapshots enabled")
 

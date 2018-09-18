@@ -4,15 +4,7 @@
  */
 import * as cookie from "cookie"
 
-const cookieAttributeNames = [
-  "Max-Age",
-  "Expires",
-  "HttpOnly",
-  "Secure",
-  "Path",
-  "SameSite",
-  "Domain"
-]
+const cookieAttributeNames = ["Max-Age", "Expires", "HttpOnly", "Secure", "Path", "SameSite", "Domain"]
 
 /**
  * A jar for storing delicious cookies.

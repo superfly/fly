@@ -54,11 +54,7 @@ export class LocalRelease extends EventEmitter implements Release {
   public secrets: any
   public files: string[]
 
-  constructor(
-    cwd: string = process.cwd(),
-    env: string = getEnv(),
-    options: LocalReleaseOptions = {}
-  ) {
+  constructor(cwd: string = process.cwd(), env: string = getEnv(), options: LocalReleaseOptions = {}) {
     super()
     this.cwd = cwd
     this.env = env || getEnv()

@@ -1,9 +1,4 @@
-import {
-  CacheNotifierAdapter,
-  CacheOperation,
-  ReceiveHandler,
-  CacheNotifyMessage
-} from "./cache_notifier"
+import { CacheNotifierAdapter, CacheOperation, ReceiveHandler, CacheNotifyMessage } from "./cache_notifier"
 import { RedisClient } from "redis"
 import { RedisConnectionOptions, initRedisClient } from "./redis_adapter"
 import { promisify } from "util"
@@ -37,12 +32,7 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
 
   public send(msg: CacheNotifyMessage) {
     return new Promise<boolean>((resolve, reject) => {
-      log.debug(
-        "sending redis cache notification:",
-        msg.ts,
-        msg.value,
-        (this.writer as any).address
-      )
+      log.debug("sending redis cache notification:", msg.ts, msg.value, (this.writer as any).address)
       this.writer.zadd(notifierKey, msg.ts, JSON.stringify(msg), (err, _) => {
         if (err) {
           return reject(err)
@@ -82,12 +72,7 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
             if (this._handler && isNotifierMessage(msg)) {
               this._handler(msg)
             } else {
-              log.error(
-                "error handling notification:",
-                !!this._handler,
-                isNotifierMessage(msg),
-                msg
-              )
+              log.error("error handling notification:", !!this._handler, isNotifierMessage(msg), msg)
             }
           } catch (err) {
             console.error("Error handling cache notifier:", err)

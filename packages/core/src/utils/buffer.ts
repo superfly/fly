@@ -12,9 +12,7 @@ export function bufferToArrayBuffer(buffer: Buffer): ArrayBuffer | SharedArrayBu
   return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
 }
 
-export function transferInto(
-  buffer: Buffer | ArrayBuffer | TypedArray | null
-): ivm.Copy<ArrayBuffer> | null {
+export function transferInto(buffer: Buffer | ArrayBuffer | TypedArray | null): ivm.Copy<ArrayBuffer> | null {
   if (!buffer) {
     return null
   }

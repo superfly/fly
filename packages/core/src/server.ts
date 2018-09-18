@@ -130,9 +130,10 @@ export class Server extends http.Server {
       const end = process.hrtime(start)
       this.runtime.log(
         "info",
-        `${request.connection.remoteAddress} ${request.method} ${request.url} ${
-          response.statusCode
-        } ${((end[0] * 1e9 + end[1]) / 1e6).toFixed(2)}ms`
+        `${request.connection.remoteAddress} ${request.method} ${request.url} ${response.statusCode} ${(
+          (end[0] * 1e9 + end[1]) /
+          1e6
+        ).toFixed(2)}ms`
       )
     }
   }
@@ -140,11 +141,7 @@ export class Server extends http.Server {
 
 type V8ResponseBody = null | string | number | ArrayBuffer | Buffer
 
-export function handleRequest(
-  rt: Runtime,
-  req: http.IncomingMessage,
-  res: http.ServerResponse
-): Promise<number> {
+export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.ServerResponse): Promise<number> {
   const flyRecurseHeader = req.headers["fly-allow-recursion"]
   if (!flyRecurseHeader || !flyRecurseHeader[0]) {
     const flyAppHeader = req.headers["fly-app"]
@@ -263,12 +260,7 @@ export function handleRequest(
   })
 }
 
-function handleResponse(
-  rt: Runtime,
-  src: V8ResponseBody,
-  res: http.ServerResponse,
-  dst: Writable
-): Promise<number> {
+function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerResponse, dst: Writable): Promise<number> {
   if (!src) {
     return Promise.resolve(0)
   }
@@ -299,12 +291,7 @@ function handleResponse(
   })
 }
 
-function handleResponseStream(
-  rt: Runtime,
-  streamId: number,
-  res: http.ServerResponse,
-  dst: Writable
-): Promise<number> {
+function handleResponseStream(rt: Runtime, streamId: number, res: http.ServerResponse, dst: Writable): Promise<number> {
   return new Promise<number>((resolve, reject) => {
     setImmediate(() => {
       let dataOut = 0

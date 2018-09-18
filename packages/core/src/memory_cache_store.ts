@@ -26,12 +26,7 @@ export class MemoryCacheStore implements CacheStore {
     return bufs.map((b: any) => (!b ? null : Buffer.from(b)))
   }
 
-  public async set(
-    ns: string,
-    key: string,
-    value: any,
-    options?: CacheSetOptions | number
-  ): Promise<boolean> {
+  public async set(ns: string, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean> {
     const k = keyFor(ns, key)
     const pipeline = this.redis.pipeline()
     let ttl: number | undefined
@@ -86,12 +81,7 @@ export class MemoryCacheStore implements CacheStore {
     return this.redis.ttl(keyFor(ns, key))
   }
 
-  public async setTags(
-    ns: string,
-    key: string,
-    tags: string[],
-    pipeline?: IORedis.Pipeline
-  ): Promise<boolean> {
+  public async setTags(ns: string, key: string, tags: string[], pipeline?: IORedis.Pipeline): Promise<boolean> {
     const doSave = !pipeline
     if (!pipeline) {
       pipeline = this.redis.pipeline()

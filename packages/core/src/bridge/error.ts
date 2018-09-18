@@ -13,12 +13,7 @@ const smConsumers: { [source: string]: SourceMapConsumer } = {}
 
 registerBridge(
   "SourceMapConsumer.originalPositionFor",
-  (
-    rt: Runtime,
-    bridge: Bridge,
-    source: string,
-    position: Position
-  ): Promise<ivm.Copy<MappedPosition>> => {
+  (rt: Runtime, bridge: Bridge, source: string, position: Position): Promise<ivm.Copy<MappedPosition>> => {
     let mp: MappedPosition
     if (source === "dist/v8env.js") {
       mp = v8EnvSourceMapConsumer.originalPositionFor(position)
@@ -27,8 +22,7 @@ registerBridge(
         const sourceKey = `${rt.app.name}:${rt.app.version}:${source}`
         try {
           const sm =
-            smConsumers[sourceKey] ||
-            (smConsumers[sourceKey] = new SourceMapConsumer(JSON.parse(rt.app.sourceMap)))
+            smConsumers[sourceKey] || (smConsumers[sourceKey] = new SourceMapConsumer(JSON.parse(rt.app.sourceMap)))
           mp = sm.originalPositionFor(position)
         } catch (e) {
           mp = Object.assign({}, position, { source })

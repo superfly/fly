@@ -9,26 +9,14 @@ import { Runtime } from "../runtime"
 
 registerBridge(
   "digestHash",
-  (
-    rt: Runtime,
-    bridge: Bridge,
-    algo: string,
-    data: ArrayBuffer | string,
-    encoding?: HexBase64Latin1Encoding
-  ) => {
+  (rt: Runtime, bridge: Bridge, algo: string, data: ArrayBuffer | string, encoding?: HexBase64Latin1Encoding) => {
     return digestHash(algo, data, encoding)
   }
 )
 
 registerBridge(
   "digestHashAsync",
-  (
-    rt: Runtime,
-    bridge: Bridge,
-    algo: string,
-    data: ArrayBuffer | string,
-    encoding?: HexBase64Latin1Encoding
-  ) => {
+  (rt: Runtime, bridge: Bridge, algo: string, data: ArrayBuffer | string, encoding?: HexBase64Latin1Encoding) => {
     try {
       const h = digestHash(algo, data, encoding)
       return Promise.resolve(h)

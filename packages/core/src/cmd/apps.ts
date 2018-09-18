@@ -23,13 +23,7 @@ export const apps = root
           style: { head: [] },
           head: ["org", "name", "version"]
         })
-        table.push(
-          ...res.data.data.map((a: any) => [
-            a.attributes.org,
-            a.attributes.name,
-            a.attributes.version
-          ])
-        )
+        table.push(...res.data.data.map((a: any) => [a.attributes.org, a.attributes.name, a.attributes.version]))
         console.log(table.toString())
       })
     } catch (e) {

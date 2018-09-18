@@ -73,18 +73,14 @@ async function showLogs(logs: Log[]) {
     const lvl = levels[parseInt(l.attributes.level, 10)] || l.attributes.level
     const levelColor = levelColorFn[lvl] || colors.white
     console.log(
-      `${colors.dim(ts.toISOString().split(".")[0] + "Z")} ${colors.green(region)} [${levelColor(
-        lvl
-      )}] ${l.attributes.message}`
+      `${colors.dim(ts.toISOString().split(".")[0] + "Z")} ${colors.green(region)} [${levelColor(lvl)}] ${
+        l.attributes.message
+      }`
     )
   }
 }
 
-async function getLogs(
-  API: AxiosInstance,
-  appName: string,
-  nextToken?: string
-): Promise<[any[], string | undefined]> {
+async function getLogs(API: AxiosInstance, appName: string, nextToken?: string): Promise<[any[], string | undefined]> {
   const res = await API.get(`/api/v1/apps/${appName}/logs`, {
     params: { next_token: nextToken }
   })

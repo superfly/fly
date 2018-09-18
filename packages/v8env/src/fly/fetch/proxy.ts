@@ -60,12 +60,7 @@ export default proxy
  * @param req
  * @param init
  */
-export function buildProxyRequest(
-  origin: string | URL,
-  options: ProxyOptions,
-  r: RequestInfo,
-  init?: RequestInit
-) {
+export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r: RequestInfo, init?: RequestInit) {
   const req = normalizeRequest(r)
 
   const url = new URL(req.url)

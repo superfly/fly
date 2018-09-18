@@ -14,9 +14,7 @@ export declare namespace fly {
    * The Fly HTTP interface, use this to work with HTTP requests
    */
   export namespace http {
-    export function respondWith(
-      response: Promise<Response> | Response | ((req: Request) => Promise<Response>)
-    ): void
+    export function respondWith(response: Promise<Response> | Response | ((req: Request) => Promise<Response>)): void
   }
   export namespace log {
     export function log(lvl: string, ...args: any[]): void

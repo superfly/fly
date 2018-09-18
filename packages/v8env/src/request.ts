@@ -12,14 +12,7 @@ function byteUpperCase(s) {
 
 function normalizeMethod(m) {
   const u = byteUpperCase(m)
-  if (
-    u === "DELETE" ||
-    u === "GET" ||
-    u === "HEAD" ||
-    u === "OPTIONS" ||
-    u === "POST" ||
-    u === "PUT"
-  ) {
+  if (u === "DELETE" || u === "GET" || u === "HEAD" || u === "OPTIONS" || u === "POST" || u === "PUT") {
     return u
   }
   return m
@@ -123,10 +116,7 @@ export class Request extends Body {
       this.headers = new Headers(init.headers)
     }
 
-    if (
-      "credentials" in init &&
-      ["omit", "same-origin", "include"].indexOf(init.credentials) !== -1
-    ) {
+    if ("credentials" in init && ["omit", "same-origin", "include"].indexOf(init.credentials) !== -1) {
       this.credentials = init.credentials
     }
   }

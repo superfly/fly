@@ -130,9 +130,7 @@ export function fireFetchEvent(url, req, body, callback) {
       }
 
       if (res.bodyUsed) {
-        return selfCleaningCallback.apply(null, [
-          new Error("Body has already been used").toString()
-        ])
+        return selfCleaningCallback.apply(null, [new Error("Body has already been used").toString()])
       }
 
       let b = null
@@ -167,9 +165,7 @@ export function fireFetchEvent(url, req, body, callback) {
   }
 
   if ((fn(fetchEvent) as any) instanceof Promise) {
-    return selfCleaningCallback.apply(null, [
-      "'fetch' event handler function cannot return a promise."
-    ])
+    return selfCleaningCallback.apply(null, ["'fetch' event handler function cannot return a promise."])
   }
 
   if (!fetchEvent.respondWithEntered) {

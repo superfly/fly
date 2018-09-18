@@ -18,9 +18,7 @@ export class LocalFileStore implements FileStore {
     if (found) {
       return createReadStream(resolve(this.cwd, path), { encoding })
     }
-    throw new FileNotFound(
-      `file '${path}' not found, make sure it's in your .fly.yml's \"files\" property`
-    )
+    throw new FileNotFound(`file '${path}' not found, make sure it's in your .fly.yml's \"files\" property`)
   }
 
   public async exists(rt: Runtime, path: string) {

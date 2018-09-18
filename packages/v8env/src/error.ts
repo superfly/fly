@@ -134,10 +134,7 @@ function CallSiteToString() {
         line += typeName + "."
       }
       line += functionName
-      if (
-        methodName &&
-        functionName.indexOf("." + methodName) !== functionName.length - methodName.length - 1
-      ) {
+      if (methodName && functionName.indexOf("." + methodName) !== functionName.length - methodName.length - 1) {
         line += " [as " + methodName + "]"
       }
     } else {
@@ -159,9 +156,7 @@ function CallSiteToString() {
 
 function cloneCallSite(frame) {
   const object = {}
-  Object.getOwnPropertyNames(Object.getPrototypeOf(frame)).forEach(function cloneCallSiteForEach(
-    name
-  ) {
+  Object.getOwnPropertyNames(Object.getPrototypeOf(frame)).forEach(function cloneCallSiteForEach(name) {
     object[name] = /^(?:is|get)/.test(name)
       ? function frameCallFn() {
           return frame[name].call(frame)
@@ -183,17 +178,7 @@ function mapEvalOrigin(origin) {
       line: +match[3],
       column: parseInt(match[4], 10) - 1
     })
-    return (
-      "eval at " +
-      match[1] +
-      " (" +
-      position.source +
-      ":" +
-      position.line +
-      ":" +
-      (position.column + 1) +
-      ")"
-    )
+    return "eval at " + match[1] + " (" + position.source + ":" + position.line + ":" + (position.column + 1) + ")"
   }
 
   // Parse nested eval() calls using recursion

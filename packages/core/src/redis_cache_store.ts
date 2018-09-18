@@ -28,12 +28,7 @@ export class RedisCacheStore implements CacheStore {
     return bufs.map((b: any) => (!b ? null : Buffer.from(b)))
   }
 
-  public async set(
-    ns: string,
-    key: string,
-    value: any,
-    options?: CacheSetOptions | number
-  ): Promise<boolean> {
+  public async set(ns: string, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean> {
     const k = keyFor(ns, key)
     let ttl: number | undefined
     if (typeof options === "number") {
@@ -44,9 +39,7 @@ export class RedisCacheStore implements CacheStore {
     const commands = new Array<any>()
     if (typeof options === "object" && options.onlyIfEmpty === true) {
       // can't pipeline set NX
-      const p = ttl
-        ? this.redis.setAsync(k, value, "EX", ttl, "NX")
-        : this.redis.setAsync(k, value, "NX")
+      const p = ttl ? this.redis.setAsync(k, value, "EX", ttl, "NX") : this.redis.setAsync(k, value, "NX")
       const result = await p
       // this happens if the key already exists
       if (result !== "OK") {
@@ -77,10 +70,7 @@ export class RedisCacheStore implements CacheStore {
 
   public async expire(ns: string, key: string, ttl: number): Promise<boolean> {
     const k = keyFor(ns, key)
-    const cmds = await Promise.all([
-      this.redis.expireAsync(k, ttl),
-      this.redis.expireAsync(k + ":tags", ttl)
-    ])
+    const cmds = await Promise.all([this.redis.expireAsync(k, ttl), this.redis.expireAsync(k + ":tags", ttl)])
     return redisGroupOK(cmds)
   }
 

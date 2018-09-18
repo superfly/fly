@@ -4,14 +4,7 @@
  */
 import * as htmlparser from "htmlparser2"
 
-import {
-  getOuterHTML,
-  getText,
-  getInnerHTML,
-  replaceElement,
-  getAttributeValue,
-  appendChild
-} from "domutils"
+import { getOuterHTML, getText, getInnerHTML, replaceElement, getAttributeValue, appendChild } from "domutils"
 
 import { logger } from "./logger"
 

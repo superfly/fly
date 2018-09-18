@@ -8,14 +8,7 @@ import { Runtime } from "../../runtime"
 
 registerBridge(
   "fly.Data.put",
-  (
-    rt: Runtime,
-    bridge: Bridge,
-    collName: string,
-    key: string,
-    obj: string,
-    cb: ivm.Reference<() => void>
-  ) => {
+  (rt: Runtime, bridge: Bridge, collName: string, key: string, obj: string, cb: ivm.Reference<() => void>) => {
     if (!bridge.dataStore) {
       log.error("Data store was not present")
       cb.applyIgnored(null, ["data store not present, this is a bug, please report!"])
