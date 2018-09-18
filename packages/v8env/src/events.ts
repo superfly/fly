@@ -95,7 +95,7 @@ export function addEventListener(name, fn) {
  */
 export function fireFetchEvent(url, req, body, callback) {
   logger.debug("handling request event")
-  const selfCleaningCallback = function selfCleaningCallback(...args) {
+  const selfCleaningCallback = (...args) => {
     callback.apply(null, args)
     try {
       callback.release()

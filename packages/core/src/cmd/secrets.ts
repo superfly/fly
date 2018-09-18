@@ -40,7 +40,7 @@ const secretsSet = secrets
           }
         }
       })
-      processResponse(res, (res: any) => {
+      processResponse(res, () => {
         console.log(
           `Deploying v${
             res.data.data.attributes.version

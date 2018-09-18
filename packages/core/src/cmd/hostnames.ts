@@ -13,7 +13,7 @@ const hostnames = root
     const API = apiClient(this)
     try {
       const res = await API.get(`/api/v1/apps/${getAppName(this)}/hostnames`)
-      processResponse(res, (res: any) => {
+      processResponse(res, () => {
         if (!res.data.data || res.data.data.length === 0) {
           return console.log("No hostnames configured, use `fly hostnames add` to add one.")
         }
@@ -44,7 +44,7 @@ const hostnamesAdd = hostnames
       const res = await API.post(`/api/v1/apps/${getAppName(this)}/hostnames`, {
         data: { attributes: { hostname: args.hostname } }
       })
-      processResponse(res, (res: any) => {
+      processResponse(res, () => {
         console.log(`Successfully added hostname ${args.hostname}`)
       })
     } catch (e) {

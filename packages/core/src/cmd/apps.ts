@@ -18,7 +18,7 @@ export const apps = root
     const API = apiClient(this)
     try {
       const res = await API.get("/api/v1/apps")
-      processResponse(res, (res: any) => {
+      processResponse(res, () => {
         const table = new Table({
           style: { head: [] },
           head: ["org", "name", "version"]
@@ -66,7 +66,7 @@ const appsCreate = apps
         name = args.name
       }
       const res = await API.post(`/api/v1/apps`, { data: { attributes: { name } } })
-      processResponse(res, (res: any) => {
+      processResponse(res, () => {
         console.log(`App ${res.data.data.attributes.name} created!`)
         if (existsSync(".fly.yml")) {
           console.log(`Add it to your .fly.yml like: \`app: ${res.data.data.attributes.name}\``)
@@ -93,7 +93,7 @@ const appsMove = apps
     const appName = getAppName(this)
     try {
       const res = await API.get(`/api/v1/orgs`)
-      processResponse(res, async (res: any) => {
+      processResponse(res, async () => {
         const choices: any = {}
         for (const i in res.data.data) {
           choices[i] = res.data.data[i].id
@@ -116,7 +116,7 @@ Enter a number:`,
           data: { attributes: { org_slug: orgSlug } }
         })
 
-        processResponse(resUpdate, (res: any) => {
+        processResponse(resUpdate, () => {
           console.log("Successfully moved app.")
         })
       })
@@ -150,7 +150,7 @@ Please type the app's name to confirm:`,
         }
 
         const res = await API.delete(`/api/v1/apps/${appName}`)
-        processResponse(res, (res: any) => {
+        processResponse(res, () => {
           console.log("App deleted.")
         })
       } catch (e) {

@@ -174,9 +174,9 @@ function configureBridge(bridge: Bridge, context: EdgeContext) {
   if (!oldFetch) {
     throw new Error("Fetch not registered")
   }
-  const newFetch = function fetchBridge(rt: Runtime, bridge: Bridge, url: string, ...args: any[]) {
+  const newFetch = (rt: Runtime, newBridge: Bridge, url: string, ...args: any[]) => {
     const mappedUrl = context.rewriteUrl(url)
-    return oldFetch.apply(bridge, [rt, bridge, ...[mappedUrl].concat(args)])
+    return oldFetch.apply(newBridge, [rt, newBridge, ...[mappedUrl].concat(args)])
   }
   bridge.set("fetch", newFetch)
 }

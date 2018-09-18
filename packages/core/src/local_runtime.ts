@@ -145,7 +145,6 @@ export class LocalRuntime implements Runtime {
 
 async function startInspector(iso: ivm.Isolate) {
   // Create an inspector channel on port 10000
-  const channel = iso.createInspectorSession()
   const wss = new WebSocket.Server({ port: 10000 })
 
   wss.on("connection", ws => {

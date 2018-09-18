@@ -146,14 +146,14 @@ export class LocalRelease extends EventEmitter implements Release {
     watcher.on("change", this.update.bind(this, "change"))
   }
 
-  public update(event: string, path: string) {
-    log.info(`Config watch (${event}: ${path})`)
-    if (path.endsWith(configFile)) {
+  public update(event: string, appPath: string) {
+    log.info(`Config watch (${event}: ${appPath})`)
+    if (appPath.endsWith(configFile)) {
       const conf = this.getConfig()
       this.config = conf.config
       this.files = conf.files || []
       this.app = conf.app || conf.app_id || ""
-    } else if (path.endsWith(secretsFile)) {
+    } else if (appPath.endsWith(secretsFile)) {
       this.secrets = this.getSecrets()
     }
     this.emit("update", this)

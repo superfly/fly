@@ -83,86 +83,90 @@ registerBridge("fly.Image()", function imageConstructor(
   }
 })
 
-registerBridge("fly.Image.operation", function imageOperation(
-  rt: Runtime,
-  bridge: Bridge,
-  ref: ivm.Reference<sharp.SharpInstance>,
-  name: string,
-  ...args: any[]
-) {
-  try {
-    const img = refToImage(ref)
-    const operation = allowedOperations.get(name)
+registerBridge(
+  "fly.Image.operation",
+  (
+    rt: Runtime,
+    bridge: Bridge,
+    ref: ivm.Reference<sharp.SharpInstance>,
+    name: string,
+    ...args: any[]
+  ) => {
+    try {
+      const img = refToImage(ref)
+      const operation = allowedOperations.get(name)
 
-    if (!operation) {
-      throw new Error("Invalid image operation: " + name)
-    }
-
-    for (let i = 0; i < args.length; i++) {
-      const v = args[i]
-      // replace image references with `toBuffer` promises
-      if (v instanceof ivm.Reference) {
-        const img = refToImage(v)
-        args[i] = img.toBuffer()
+      if (!operation) {
+        throw new Error("Invalid image operation: " + name)
       }
-    }
-    return new Promise((resolve, reject) => {
-      // resolve any promise arguments
-      Promise.all(args)
-        .then(args => {
-          for (let i = 0; i < args.length; i++) {
-            const v = args[i]
-            // and convert ArrayBuffers
-            if (v instanceof ArrayBuffer) {
-              args[i] = Buffer.from(v)
+
+      for (let i = 0; i < args.length; i++) {
+        const v = args[i]
+        // replace image references with `toBuffer` promises
+        if (v instanceof ivm.Reference) {
+          args[i] = refToImage(v).toBuffer()
+        }
+      }
+      return new Promise((resolve, reject) => {
+        // resolve any promise arguments
+        Promise.all(args)
+          .then(resolvedArgs => {
+            for (let i = 0; i < resolvedArgs.length; i++) {
+              const v = resolvedArgs[i]
+              // and convert ArrayBuffers
+              if (v instanceof ArrayBuffer) {
+                resolvedArgs[i] = Buffer.from(v)
+              }
             }
-          }
-          operation.apply(img, args)
-          resolve(ref)
-        })
-        .catch(reject)
-    })
-  } catch (err) {
-    return Promise.reject(err)
+            operation.apply(img, resolvedArgs)
+            resolve(ref)
+          })
+          .catch(reject)
+      })
+    } catch (err) {
+      return Promise.reject(err)
+    }
   }
-})
+)
 
-registerBridge("fly.Image.metadata", async function imageMetadata(
-  rt: Runtime,
-  bridge: Bridge,
-  ref: ivm.Reference<sharp.SharpInstance>
-) {
-  const img = ref.deref()
-  const meta = await img.metadata()
-  return new ivm.ExternalCopy(extractMetadata(meta)).copyInto({ release: true })
-})
-
-registerBridge("fly.Image.toBuffer", function imageToBuffer(
-  rt: Runtime,
-  bridge: Bridge,
-  ref: ivm.Reference<sharp.SharpInstance>,
-  callback: ivm.Reference<() => void>
-) {
-  const img = refToImage(ref)
-  if (!img) {
-    callback.applyIgnored(null, ["ref must be a valid image instance"])
-    return
+registerBridge(
+  "fly.Image.metadata",
+  async (rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>) => {
+    const img = ref.deref()
+    const meta = await img.metadata()
+    return new ivm.ExternalCopy(extractMetadata(meta)).copyInto({ release: true })
   }
+)
 
-  img.toBuffer((err, d, metadata) => {
-    if (err) {
-      log.debug("sending error:", err)
-      callback.applyIgnored(null, [err.toString()])
+registerBridge(
+  "fly.Image.toBuffer",
+  (
+    rt: Runtime,
+    bridge: Bridge,
+    ref: ivm.Reference<sharp.SharpInstance>,
+    callback: ivm.Reference<() => void>
+  ) => {
+    const img = refToImage(ref)
+    if (!img) {
+      callback.applyIgnored(null, ["ref must be a valid image instance"])
       return
     }
-    const info = extractMetadata(metadata)
-    callback.applyIgnored(null, [
-      null,
-      transferInto(d),
-      new ivm.ExternalCopy(info).copyInto({ release: true })
-    ])
-  })
-})
+
+    img.toBuffer((err, d, metadata) => {
+      if (err) {
+        log.debug("sending error:", err)
+        callback.applyIgnored(null, [err.toString()])
+        return
+      }
+      const info = extractMetadata(metadata)
+      callback.applyIgnored(null, [
+        null,
+        transferInto(d),
+        new ivm.ExternalCopy(info).copyInto({ release: true })
+      ])
+    })
+  }
+)
 
 function refToImage(ref: ivm.Reference<sharp.SharpInstance>) {
   const img = ref.deref()

@@ -61,8 +61,6 @@ root
           throw err
         }
 
-        const app = appStore.app
-
         try {
           const app = appStore.app
           const rt = new LocalRuntime(

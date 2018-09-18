@@ -9,7 +9,7 @@ import { AxiosInstance } from "axios"
 export interface LogsOptions extends CommonOptions {}
 export interface LogsArgs {}
 
-const logs = root
+const logsCommand = root
   .subCommand<LogsOptions, LogsArgs>("logs")
   .description("Logs from your app.")
   .action(async function(this: Command<LogsArgs, LogsOptions>, opts, args, rest) {
@@ -110,4 +110,4 @@ class LogResponseError extends Error {
   }
 }
 
-addCommonOptions(logs)
+addCommonOptions(logsCommand)

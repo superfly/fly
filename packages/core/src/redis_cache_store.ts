@@ -71,8 +71,8 @@ export class RedisCacheStore implements CacheStore {
     } else {
       commands.push(this.redis.delAsync(k + ":tags"))
     }
-    const result = await Promise.all(commands)
-    return redisGroupOK(result)
+    const pipelineResult = await Promise.all(commands)
+    return redisGroupOK(pipelineResult)
   }
 
   public async expire(ns: string, key: string, ttl: number): Promise<boolean> {
@@ -124,7 +124,7 @@ export class RedisCacheStore implements CacheStore {
     }
     deletes.push(this.redis.delAsync(s))
 
-    const r = await Promise.all(deletes)
+    await Promise.all(deletes)
     return keysToDelete.map(k => k.replace(/^cache:[^:]+:/, ""))
   }
 }

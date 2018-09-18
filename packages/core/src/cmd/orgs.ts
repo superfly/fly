@@ -10,7 +10,7 @@ const orgs = root
     const API = apiClient(this)
     try {
       const res = await API.get(`/api/v1/orgs`)
-      processResponse(res, (res: any) => {
+      processResponse(res, () => {
         for (const org of res.data.data) {
           console.log(org.id)
         }

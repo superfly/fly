@@ -66,8 +66,8 @@ export class MemoryCacheStore implements CacheStore {
     } else {
       pipeline.del(k + ":tags")
     }
-    const result = await pipeline.exec()
-    return pipelineResultOK(result)
+    const pipelineResult = await pipeline.exec()
+    return pipelineResultOK(pipelineResult)
   }
 
   public async del(ns: string, key: string): Promise<boolean> {
@@ -133,7 +133,7 @@ export class MemoryCacheStore implements CacheStore {
     deletes.del(...keysToDelete)
     deletes.del(s)
 
-    const r = await deletes.exec()
+    await deletes.exec()
     return keysToDelete.map(k => k.replace(/^cache:[^:]+:/, ""))
   }
 }

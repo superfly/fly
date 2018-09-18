@@ -68,12 +68,12 @@ const deploy = root
                   console.log(`Bundle size: ${buf.byteLength / (1024 * 1024)}MB`)
                   const gz = pako.gzip(buf)
                   console.log(`Bundle compressed size: ${gz.byteLength / (1024 * 1024)}MB`)
-                  const hash = createHash("sha1") // we need to verify the upload is :+1:
-                  hash.update(buf)
+                  const bundleHash = createHash("sha1") // we need to verify the upload is :+1:
+                  bundleHash.update(buf)
 
-                  const res = API.post(`/api/v1/apps/${appName}/releases`, gz, {
+                  API.post(`/api/v1/apps/${appName}/releases`, gz, {
                     params: {
-                      sha1: hash.digest("hex"),
+                      sha1: bundleHash.digest("hex"),
                       env
                     },
                     headers: {
@@ -91,7 +91,7 @@ const deploy = root
               .pipe(createWriteStream(pathResolve(cwd, ".fly/bundle.tar")))
           })
 
-          processResponse(res, (res: any) => {
+          processResponse(res, () => {
             console.log(
               `Deploying v${
                 res.data.data.attributes.version

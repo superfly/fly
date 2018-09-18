@@ -21,7 +21,7 @@ root
       const res = await axios.post(`${baseURL}/api/v1/sessions`, {
         data: { attributes: { email, password, otp } }
       })
-      processResponse(res, (res: any) => {
+      processResponse(res, () => {
         const homepath = homeConfigPath()
         const credspath = path.join(homepath, "credentials.yml")
         fs.writeFileSync(
