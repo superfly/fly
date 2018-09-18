@@ -130,11 +130,37 @@ export class Image {
    *   .crop(Image.strategy.entropy)
    *   .toBuffer()
    * ```
+   * @param crop the cropping strategy to use
+   * @return the Image instance
    */
-  public crop(crop?: Image.gravity | Image.strategy) {
-    this._imageOperation("crop", crop)
+  public crop(crop?: Image.gravity | Image.strategy)
+  /**
+   * Crop to the specified width/height.
+   * 
+   * @param width width to crop to
+   * @param height height to crop to, defaults to proportional height
+   * @param crop the cropping strategy to use
+   * @return the Image instance
+   */
+  public crop(width: number, height?: number, crop?: Image.gravity | Image.strategy)
+  public crop(widthOrCrop?: number | Image.gravity | Image.strategy, heightOrCrop?: number | Image.gravity | Image.strategy, crop?: Image.gravity | Image.strategy) {
+    // crop can be an int so if we have one arg, assume it's crop
+    if (widthOrCrop && !heightOrCrop && !crop) {
+      crop = widthOrCrop
+      widthOrCrop = undefined
+    }
+    const width = typeof widthOrCrop === "number" ? widthOrCrop : undefined
+    const height = typeof heightOrCrop === "number" ? heightOrCrop : undefined
+    if (!crop && !height && heightOrCrop) {
+      crop = heightOrCrop
+    }
+    if (!crop && !width && widthOrCrop) {
+      crop = widthOrCrop
+    }
+    this._imageOperation("crop", width, height, crop)
     return this
   }
+
   /**
    * Preserving aspect ratio, resize the image to the maximum `width` or `height` specified
    * then embed on a background of the exact `width` and `height` specified.
@@ -152,8 +178,7 @@ export class Image {
    * @param gravity embed to an edge/corner, defaults to `center`.
    */
   public embed(gravity?: Image.gravity) {
-    this._imageOperation("embed", gravity)
-    return this
+    return this._imageOperation("embed", gravity)
   }
   /**
    * Set the background for the `embed`, `flatten` and `extend` operations.
@@ -284,7 +309,12 @@ export class Image {
     if (!imageOperation) {
       throw new Error("Image operations not enabled")
     }
-    return imageOperation(this._ref, name, ...args)
+    const oldref = this._ref
+    this._ref = imageOperation(this._ref, name, ...args)
+    if (oldref && oldref != this._ref) {
+      oldref.release()
+    }
+    return this
   }
 
   public async toBuffer(): Promise<Image.OperationResult> {
@@ -416,11 +446,17 @@ export namespace Image {
     allowEnlargement?: boolean,
 
     /**
-     * Resize to exactly the width specified, changing aspect ratio if necessary
+     * Resize to exactly the width and height specified, changing aspect ratio if necessary
      * 
      * Defaults to `false`
      */
     ignoreAspectRatio?: boolean
+
+    /**
+     * `fit` specifies how an image be scaled to fit the new dimensions
+     * Defaults to `contain`.
+     */
+    fit?: fit
   }
 
   export interface OverlayOptions {
@@ -464,12 +500,7 @@ function constructImage(data: ArrayBuffer | Image.CreateOptions, options?: any) 
   return bridge.dispatchSync("fly.Image()", ...args)
 }
 function imageOperation(ref: any, name: string, ...args: any[]) {
-  const result = bridge.dispatchSync("fly.Image.operation", ref, name, ...args)
-  if (result != ref) {
-    // console.error("Image ref mismatch:", name, ref.typeof, result.typeof)
-    // throw new Error(["image operation failed, result not expected:", ref.typeof, result.typeof].join(" "))
-  }
-  return result
+  return bridge.dispatchSync("fly.Image.operation", ref, name, ...args)
 }
 async function imageToBuffer(ref: any) {
   return new Promise<Image.OperationResult>((resolve, reject) => {
@@ -510,5 +541,26 @@ export namespace Image {
     cubic = "cubic",
     lanczos2 = "lanczos2",
     lanczos3 = "lanczos3"
+  }
+
+  /**
+   * Specifies how an image should fit into the provided `width` and `height`
+   */
+  export enum fit {
+    /**
+     * Preserving aspect ratio, resize the image to be as small as possible while ensuring its 
+     * dimensions are greater than or equal to the `width` and `height` specified.
+     */
+    cover = "cover",
+    /**
+     * Preserving aspect ratio, resize the image to be as large as possible while ensuring its 
+     *  dimensions are less than or equal to the `width` and `height` specified.
+     */
+    contain = "contain",
+    /**
+     * Ignoring the aspect ratio of the input, stretch the image to the exact `width` and/or 
+     * `height` provided.
+     */
+    fill = "fill"
   }
 }

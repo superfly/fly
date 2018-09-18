@@ -8,16 +8,12 @@ import * as sharp from "sharp"
 import { Bridge } from "../bridge"
 import { Runtime } from "../../runtime"
 
-interface sharpImage extends sharp.SharpInstance {
-  options: any
-}
-
 type imageOperation = (...args: any[]) => sharp.SharpInstance
 
 const allowedOperations: Map<string, imageOperation> = new Map([
   ["resize", sharp.prototype.resize],
   ["scale", scale],
-  ["crop", sharp.prototype.crop],
+  ["crop", crop],
   ["embed", sharp.prototype.embed],
   ["background", sharp.prototype.background],
   ["withoutEnlargement", sharp.prototype.withoutEnlargement],
@@ -92,7 +88,8 @@ registerBridge("fly.Image.operation", function imageOperation(
   ...args: any[]
 ) {
   try {
-    const img = refToImage(ref)
+    const originalImage = refToImage(ref)
+    let img = originalImage
     const operation = allowedOperations.get(name)
 
     if (!operation) {
@@ -110,7 +107,7 @@ registerBridge("fly.Image.operation", function imageOperation(
     return new Promise((resolve, reject) => {
       // resolve any promise arguments
       Promise.all(args)
-        .then(args => {
+        .then(async (args) => {
           for (let i = 0; i < args.length; i++) {
             const v = args[i]
             // and convert ArrayBuffers
@@ -118,7 +115,15 @@ registerBridge("fly.Image.operation", function imageOperation(
               args[i] = Buffer.from(v)
             }
           }
-          operation.apply(img, args)
+          img = operation.apply(img, args)
+          if (img instanceof Promise) {
+            img = await img
+          }
+          if (img !== originalImage) {
+            const oldref = ref
+            ref = new ivm.Reference(img)
+            oldref.release()
+          }
           resolve(ref)
         })
         .catch(reject)
@@ -180,6 +185,7 @@ async function scale(this: sharp.SharpInstance, ...args: any[]) {
     kernel: sharp.kernel.lanczos3,
     fastShrinkOnLoad: true
   }
+  const fit = opts && opts.fit
 
   if (opts) {
     sharpOpts.kernel = opts.kernel
@@ -194,26 +200,40 @@ async function scale(this: sharp.SharpInstance, ...args: any[]) {
 
   if (!width || !height) {
     const meta = await this.metadata()
-    width = relativeDimension(width, meta.width || 0, height, meta.height || 0)
-    height = relativeDimension(height, meta.height || 0, width, meta.width || 0)
+    if (!width && height) width = relativeDimension(width, meta.width || 0, height, meta.height || 0)
+    if (!height && width) height = relativeDimension(height, meta.height || 0, width, meta.width || 0)
   }
 
-  this.resize(width, height, sharpOpts)
+  let img = this
+  img = img.resize(width, height, sharpOpts)
 
-  if (ignoreAspectRatio === true) {
-    this.ignoreAspectRatio()
-  } else {
-    this.max()
-  }
   if (withoutEnlargement) {
-    this.withoutEnlargement()
+    img = img.withoutEnlargement()
+  }
+  if (ignoreAspectRatio === true || fit === "fill") {
+    img = img.ignoreAspectRatio()
+  } else if (fit === "cover") {
+    img = img.min()
+  } else {
+    img = img.max()
   }
 
-  return this
+  return img
+}
+
+async function crop(this: sharp.SharpInstance, width?: number, height?: number, opts?: any) {
+  let img = this
+  if (width || height) {
+    const meta = await this.metadata()
+    if (!width && height) width = relativeDimension(width, meta.width || 0, height, meta.height || 0)
+    if (!height && width) height = relativeDimension(height, meta.height || 0, width, meta.width || 0)
+    img = this.resize(width, height)
+  }
+  return img.crop(opts)
 }
 
 function relativeDimension(x: number | undefined, original: number, other: number, basis: number) {
-  if (x && typeof x === "number") return x
+  if (x && typeof x === "number" && !isNaN(x)) return x
 
   const scale = other / basis
 
