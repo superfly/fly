@@ -128,11 +128,11 @@ jobs:
         inputs:
           versionSpec: $(node_version)
           checkLatest: $(node_check_latest)
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: '2.7'
-          architecture: 'x64'
       # for node-gyp
+      # - task: UsePythonVersion@0
+      #   inputs:
+      #     versionSpec: '2.7'
+      #     architecture: 'x64'
       - script: npm install --global --production windows-build-tools
         displayName: "Install windows build tools"
       - script: npm install -g yarn
