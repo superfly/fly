@@ -16,6 +16,7 @@ type imageOperation = (...args: any[]) => sharp.SharpInstance
 
 const allowedOperations: Map<string, imageOperation> = new Map([
   ["resize", sharp.prototype.resize],
+  ["scale", scale],
   ["crop", sharp.prototype.crop],
   ["embed", sharp.prototype.embed],
   ["background", sharp.prototype.background],
@@ -171,4 +172,50 @@ function refToImage(ref: ivm.Reference<sharp.SharpInstance>) {
   }
 
   return img
+}
+
+async function scale(this: sharp.SharpInstance, ...args: any[]) {
+  const opts = typeof args[args.length - 1] === "object" ? args[args.length - 1] : undefined
+  const sharpOpts = {
+    kernel: sharp.kernel.lanczos3,
+    fastShrinkOnLoad: true
+  }
+
+  if (opts) {
+    sharpOpts.kernel = opts.kernel
+    sharpOpts.fastShrinkOnLoad = opts.fastShrinkOnLoad
+  }
+
+  let width = typeof args[0] === "number" ? args[0] : undefined
+  let height = typeof args[1] === "number" ? args[1] : undefined
+  const ignoreAspectRatio = typeof opts === "object" && opts.ignoreAspectRatio === true
+  const withoutEnlargement = typeof opts === "object" && opts.allowEnlargement === false
+
+
+  if (!width || !height) {
+    const meta = await this.metadata()
+    width = relativeDimension(width, meta.width || 0, height, meta.height || 0)
+    height = relativeDimension(height, meta.height || 0, width, meta.width || 0)
+  }
+
+  this.resize(width, height, sharpOpts)
+
+  if (ignoreAspectRatio === true) {
+    this.ignoreAspectRatio()
+  } else {
+    this.max()
+  }
+  if (withoutEnlargement) {
+    this.withoutEnlargement()
+  }
+
+  return this
+}
+
+function relativeDimension(x: number | undefined, original: number, other: number, basis: number) {
+  if (x && typeof x === "number") return x
+
+  const scale = other / basis
+
+  return Math.ceil(scale * original)
 }

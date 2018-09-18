@@ -35,6 +35,31 @@ describe("Image", () => {
     expect(img2.info.format).to.eq("webp")
   })
 
+  describe("scale()", () => {
+    it("shrinks to fit, maintains aspect ratio", async () =>{
+      const img = new Image(logo)
+      const meta = img.metadata()
+
+      const scaled = await img.scale(500, 1000).toImage()
+      const scaledMeta = scaled.metadata()
+
+      expect(scaledMeta.width).to.eq(500)
+      expect(scaledMeta.height).to.eq(500)
+
+      expect(meta.width / scaledMeta.width).to.eq(meta.height / scaledMeta.height)
+    })
+
+    it('fills dimensions, ignores aspect ratio', async () => {
+      const img = new Image(logo)
+
+      const scaled = await img.scale(500, 1000, { ignoreAspectRatio: true }).toImage()
+      const scaledMeta = scaled.metadata()
+
+      expect(scaledMeta.width).to.eq(500)
+      expect(scaledMeta.height).to.eq(1000)
+    })
+  })
+
   it("flatten()", async () => {
     const img = new Image(logo)
     const img2 = await img
