@@ -8,10 +8,6 @@ import * as sharp from "sharp"
 import { Bridge } from "../bridge"
 import { Runtime } from "../../runtime"
 
-interface sharpImage extends sharp.SharpInstance {
-  options: any
-}
-
 type imageOperation = (...args: any[]) => sharp.SharpInstance
 
 const allowedOperations: Map<string, imageOperation> = new Map([
