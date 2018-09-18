@@ -1,23 +1,30 @@
 import { Image } from '@fly/image'
 
-const pictureURL = "https://raw.githubusercontent.com/superfly/fly/147f2a327dc76ce6cf10c46b7ea1c19a9d8f2d87/v8env/test/fixtures/picture.jpg"
-const logoURL = "https://raw.githubusercontent.com/superfly/fly/147f2a327dc76ce6cf10c46b7ea1c19a9d8f2d87/v8env/test/fixtures/overlay.png"
+const pictureURL = "https://raw.githubusercontent.com/superfly/fly/075939824c66c3db38f94d552138a4802e0c3838/tests/v8env/tests/fixtures/picture.jpg"
+const logoURL = "https://raw.githubusercontent.com/superfly/fly/075939824c66c3db38f94d552138a4802e0c3838/tests/v8env/tests/fixtures/overlay.png"
 
 fly.http.respondWith(async function (req) {
   const url = new URL(req.url)
 
   if (url.pathname == "/picture.jpg") {
-    return watermarkPicture(req.headers.get("accept"))
+    return watermarkPicture(url.searchParams.get('width'), url.searchParams.get('height'))
   }
 
   return new Response("not found", { status: 404 })
 })
 
-async function watermarkPicture() {
-  const [picture, logo] = await Promise.all([
+async function watermarkPicture(width, height) {
+  let [picture, logo] = await Promise.all([
     loadImage(pictureURL),
     loadImage(logoURL)
   ])
+
+  if(width || height){
+    width = width ? parseInt(width) : width
+    height = height ? parseInt(height) : height
+
+    picture = await picture.scale(width, height, { allowEnlargement: true}).toImage()
+  }
 
   const meta = picture.metadata()
 

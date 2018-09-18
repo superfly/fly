@@ -49,10 +49,24 @@ export class Image {
    * Pass `undefined` or `null` to auto-scale the width to match the height.
    * @param height Height in pixels of the resulting image.
    * Pass `undefind` or `null` to auto-scale the height to match the width.
-   * @param options Resize options}
+   * @param options Resize options
    */
   public resize(width?: number, height?: number, options?: Image.ResizeOptions) {
     this._imageOperation("resize", width, height, options)
+    return this
+  }
+
+  /**
+   * Scale image to `width` x `height`. This does not crop the image, it scales it to fit 
+   * the specified width and height, and keeps the aspect ratio by default.
+   * @param width Width in pixels of the resulting image.
+   * Pass `undefined` or `null` to auto-scale the width to match the height.
+   * @param height Height in pixels of the resulting image.
+   * Pass `undefind` or `null` to auto-scale the height to match the width.
+   * @param options Scale options
+   */
+  public scale(width?: number, height?: number, options?: Image.ScaleOptions) {
+    this._imageOperation('scale', width, height, options)
     return this
   }
 
@@ -373,6 +387,9 @@ export namespace Image {
     force?: boolean
   }
 
+  /**
+   * Options for resizing an image
+   */
   export interface ResizeOptions {
     /**
      * the kernel to use for image reduction.
@@ -384,7 +401,26 @@ export namespace Image {
      * and WebP shrink-on-load feature, which can lead to a slight moiré pattern on
      * some images. (optional, default `true`)
      */
-    fastShrinkOnLoad?: boolean
+    fastShrinkOnLoad?: boolean,
+  }
+
+  /**
+   * Options for scaling an image (see crop for cropping)
+   */
+  export interface ScaleOptions extends ResizeOptions {
+    /**
+     * Stretch image if resize dimensions are larger than the source image.
+     * 
+     * Defaults to `true`
+     */
+    allowEnlargement?: boolean,
+
+    /**
+     * Resize to exactly the width specified, changing aspect ratio if necessary
+     * 
+     * Defaults to `false`
+     */
+    ignoreAspectRatio?: boolean
   }
 
   export interface OverlayOptions {
