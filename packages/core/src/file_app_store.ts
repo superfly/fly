@@ -79,8 +79,8 @@ export class FileAppStore {
         }
 
         this.release.source = code
-        this.release.source_hash = hash
-        this.release.source_map = sourceMap
+        this.release.sourceHash = hash
+        this.release.sourceMap = sourceMap
       }
     )
   }

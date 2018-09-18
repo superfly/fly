@@ -5,8 +5,8 @@ export interface Release {
   app: string
   version: number
   source: string
-  source_hash: string
-  source_map?: string
+  sourceHash: string
+  sourceMap?: string
   config: any
   hash?: string
   secrets: any
@@ -57,11 +57,11 @@ export class App {
   }
 
   get sourceHash() {
-    return this.release.source_hash
+    return this.release.sourceHash
   }
 
   get sourceMap() {
-    return this.release.source_map
+    return this.release.sourceMap
   }
 
   public asJSON() {

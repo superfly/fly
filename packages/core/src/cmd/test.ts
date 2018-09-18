@@ -68,7 +68,7 @@ root
               app: app.name,
               version: app.version,
               source: "",
-              source_hash: "",
+              sourceHash: "",
               config: {},
               secrets: {},
               env: "test"

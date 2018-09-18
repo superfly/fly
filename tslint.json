@@ -11,6 +11,13 @@
     "no-console": false,
     "interface-name": false,
     "prettier": false, // enable on CI
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-pascal-case", // remove this once no-var-requires is enabled
+      "allow-leading-underscore"
+    ],
     // revisit later, too much change at once
     "ordered-imports": false,
     "member-ordering": false,

@@ -47,8 +47,8 @@ export class LocalRelease extends EventEmitter implements Release {
   public app: string
   public version: number
   public source: string
-  public source_hash: string
-  public source_map?: string
+  public sourceHash: string
+  public sourceMap?: string
   public hash?: string
   public config: any
   public secrets: any
@@ -71,7 +71,7 @@ export class LocalRelease extends EventEmitter implements Release {
     this.version = 0
     this.source = ""
     this.hash = ""
-    this.source_hash = ""
+    this.sourceHash = ""
     this.files = conf.files || []
 
     if (!options.noWatch) {
