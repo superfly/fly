@@ -1,3 +1,5 @@
+/* tslint:disable:prefer-for-of */
+
 /**
  * @module fly
  * @private

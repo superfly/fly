@@ -184,6 +184,7 @@ export function handleRequest(
         return reject(err)
       }
 
+      // tslint:disable-next-line:forin
       for (let n in v8res.headers) {
         try {
           n = n.trim()
@@ -227,7 +228,9 @@ export function handleRequest(
         ) {
           res.removeHeader("Content-Length")
           res.setHeader("Content-Encoding", "gzip")
-          dst = zlib.createGzip({ level: 2 })
+          dst = zlib.createGzip({
+            level: 2
+          })
           dst.pipe(res)
         }
       }
@@ -236,7 +239,9 @@ export function handleRequest(
 
       handleResponse(rt, resBody, res, dst)
         .then(len => {
-          rt.reportUsage("http", { data_out: len })
+          rt.reportUsage("http", {
+            data_out: len
+          })
           if (!res.finished) {
             res.end()
           } // we are done. triggers 'finish' event

@@ -95,6 +95,7 @@ const appsMove = apps
       const res = await API.get(`/api/v1/orgs`)
       processResponse(res, async () => {
         const choices: any = {}
+        // tslint:disable-next-line:forin
         for (const i in res.data.data) {
           choices[i] = res.data.data[i].id
         }
@@ -113,7 +114,11 @@ Enter a number:`,
         const orgSlug = choices[chose]
         console.log(`Moving app '${appName}' to organization '${orgSlug}'`)
         const resUpdate = await API.patch(`/api/v1/apps/${appName}`, {
-          data: { attributes: { org_slug: orgSlug } }
+          data: {
+            attributes: {
+              org_slug: orgSlug
+            }
+          }
         })
 
         processResponse(resUpdate, () => {

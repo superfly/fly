@@ -69,6 +69,7 @@ function parseCookie(cookieStr) {
   const options = {}
   const cookies = []
   const parsed = cookie.parse(cookieStr)
+  // tslint:disable-next-line:forin
   for (const k in parsed) {
     if (cookieAttributeNames.indexOf(k) !== -1) {
       options[k] = parsed[k]
