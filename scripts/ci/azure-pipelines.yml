@@ -13,8 +13,7 @@ jobs:
     steps:
       - task: NodeTool@0
         inputs:
-          versionSpec: $(node_version)
-          checkLatest: $(node_check_latest)
+          versionSpec: 10
       - task: UsePythonVersion@0
         inputs:
           versionSpec: "2.7"
