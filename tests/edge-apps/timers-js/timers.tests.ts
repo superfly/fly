@@ -3,17 +3,17 @@ import * as path from "path"
 setupApps({
   "set-timeout.test": path.resolve(__dirname, "setTimeout.js"),
   "clear-timeout.test": path.resolve(__dirname, "clearTimeout.js"),
-  "set-immediate.test": path.resolve(__dirname, "setImmediate.js"),
+  "set-immediate.test": path.resolve(__dirname, "setImmediate.js")
 })
 
-const timerTolerance = 125 // ms
+const timerTolerance = 250 // ms
 
 describe("setTimeout", () => {
-  test.each([250, 50, 0])("with %dms delay", async (timeout) => {
+  test.each([1000, 500, 0])("with %dms delay", async timeout => {
     const response = await fetch(`http://set-timeout.test?t=${timeout}`)
     expect(response.status).toEqual(200)
     const duration = parseInt(await response.text())
-    expect(Math.abs((duration - timeout))).toBeLessThanOrEqual(timerTolerance)
+    expect(Math.abs(duration - timeout)).toBeLessThanOrEqual(timerTolerance)
   })
 })
 
@@ -28,4 +28,3 @@ test("setImmediate", async () => {
   expect(response.status).toEqual(200)
   expect(parseInt(await response.text())).toBeLessThanOrEqual(timerTolerance)
 })
-
