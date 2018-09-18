@@ -31,8 +31,10 @@ Headers.prototype = {
     this._headerList.push([name, value])
   },
 
-  /** Deletes header(s) by name
-   * @param {String} name */
+  /**
+   * Deletes header(s) by name
+   * @param {String} name
+   */
   delete: function delete_(name) {
     name = name.toLowerCase()
     let index = 0
