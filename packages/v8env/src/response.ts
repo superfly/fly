@@ -5,6 +5,7 @@ import CookieJar from "./cookie_jar"
 import Body from "./body_mixin"
 
 function ushort(x) {
+  // tslint:disable-next-line:no-bitwise
   return x & 0xffff
 }
 
