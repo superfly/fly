@@ -22,6 +22,7 @@ jobs:
           sudo apt-get update && sudo apt-get install -y nasm
           npm install -g yarn
           yarn install --no-progress && yarn bootstrap
+          mkdir ./artifacts
         name: Install
       - script: yarn test:lint
         name: Lint
