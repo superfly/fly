@@ -1,3 +1,5 @@
+/* tslint:disable:one-variable-per-declaration */
+
 /**
  * @module fly
  * @private
