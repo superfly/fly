@@ -23,7 +23,8 @@ async function watermarkPicture(width, height) {
     width = width ? parseInt(width) : width
     height = height ? parseInt(height) : height
 
-    picture = await picture.scale(width, height, { allowEnlargement: true}).toImage()
+    picture.crop(width, height, "center")
+    picture = await picture.toImage()
   }
 
   const meta = picture.metadata()
