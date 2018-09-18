@@ -2,7 +2,6 @@
   "defaultSeverity": "warning",
   "extends": [
     "tslint:recommended",
-    "tslint-plugin-prettier",
     "tslint-config-prettier"
   ],
   "jsRules": {},
@@ -10,7 +9,6 @@
     "semicolon": false,
     "no-console": false,
     "interface-name": false,
-    "prettier": false, // enable on CI
     "variable-name": [
       true,
       "ban-keywords",
