@@ -1,7 +1,7 @@
 /**
  * @module fly
  * @private
- * @hidden
+ * @ignore
  */
 import { logger } from "./logger"
 
@@ -11,7 +11,7 @@ const DEFAULT_BRIDGE_TRANSFER_OPTIONS = {
 }
 
 /**
- * @hidden
+ * @ignore
  */
 export interface BridgeTransferOptions {
   release?: boolean
@@ -19,7 +19,7 @@ export interface BridgeTransferOptions {
 }
 
 /**
- * @hidden
+ * @ignore
  */
 export default function initBridge(ivm, dispatch) {
   const bridge = (global.bridge = {

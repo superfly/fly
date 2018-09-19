@@ -320,6 +320,11 @@ export class Image {
     return this
   }
 
+  /**
+   * Generate modified image.
+   * 
+   * @returns result with an `ArrayBuffer` and the new `Metadata` for the generated image.
+   */
   public async toBuffer(): Promise<OperationResult> {
     if (!imageToBuffer) {
       throw new Error("Image operations not enabled")
@@ -328,6 +333,11 @@ export class Image {
     return result
   }
 
+  /**
+   * Generate modified image.
+   * 
+   * @returns a new `Image` instance with the generated image.
+   */
   public async toImage(): Promise<Image> {
     if (!imageToBuffer) {
       throw new Error("Image operations not enabled")
@@ -338,15 +348,20 @@ export class Image {
     return i
   }
 
+  /** these are for backwards compat with previous `Image` interface */
+  /** @ignore */
   static get gravity() {
     return gravity
   }
+  /** @ignore */
   static get strategy() {
     return strategy
   }
+  /** @ignore */
   static get kernel() {
     return kernel
   }
+  /** @ignore */
   static get fit() {
     return fit
   }

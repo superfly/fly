@@ -19,6 +19,7 @@ const WritableParser = htmlparser.WritableStream
 
 import * as css from "css-select"
 
+/** @ignore */
 export class Node {
   protected _dom: any
 
@@ -61,6 +62,7 @@ export class Node {
   }
 }
 
+/** @ignore */
 export class Document extends Node {
   public static Parser: any
 
@@ -85,6 +87,7 @@ export class Document extends Node {
   }
 }
 
+/** @ignore */
 export class Element extends Node {
   constructor(dom) {
     super(dom)
@@ -122,6 +125,7 @@ export class Element extends Node {
   }
 }
 
+/** @ignore */
 class DocumentParser {
   public parser: any
   public selectors: any

@@ -1,19 +1,23 @@
 /** @module fly
+ * @ignore
  */
 import { parse as queryParse } from "querystring"
 
+/** @ignore */
 interface ReadableStreamController {
   enqueue(chunk: string | ArrayBuffer): void
   close(): void
 }
-/** @hidden */
+/** @ignore */
 declare var ReadableStream: {
   prototype: ReadableStream
-  new (source: any | undefined): ReadableStream
+  new(source: any | undefined): ReadableStream
 }
 
+/** @ignore */
 export type BodySource = Blob | BufferSource | FormData | URLSearchParams | ReadableStream | String
 
+/** @ignore */
 export default class BodyMixin implements Body {
   protected bodySource: BodySource
   protected stream: ReadableStream | null
@@ -118,7 +122,7 @@ export default class BodyMixin implements Body {
   }
 }
 
-/** @hidden */
+/** @ignore */
 function validateBodyType(owner: any, bodySource: any) {
   if (
     bodySource instanceof Int8Array ||
@@ -146,40 +150,41 @@ function validateBodyType(owner: any, bodySource: any) {
   throw new Error(`Bad ${owner.constructor.name} body type: ${bodySource.constructor.name}`)
 }
 
+/** @ignore */
 function bufferFromStream(stream: ReadableStreamReader): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     const parts: Uint8Array[] = []
     const encoder = new TextEncoder()
-    // recurse
-    ;(function pump() {
-      stream
-        .read()
-        .then(({ done, value }) => {
-          if (done) {
-            return resolve(concatenate(...parts))
-          }
+      // recurse
+      ; (function pump() {
+        stream
+          .read()
+          .then(({ done, value }) => {
+            if (done) {
+              return resolve(concatenate(...parts))
+            }
 
-          if (typeof value === "string") {
-            parts.push(encoder.encode(value))
-          } else if (value instanceof ArrayBuffer) {
-            parts.push(new Uint8Array(value))
-          } else if (!value) {
-            // noop for undefined
-          } else {
-            console.log("unhandled type on stream read:", value)
-            reject("unhandled type on stream read")
-          }
+            if (typeof value === "string") {
+              parts.push(encoder.encode(value))
+            } else if (value instanceof ArrayBuffer) {
+              parts.push(new Uint8Array(value))
+            } else if (!value) {
+              // noop for undefined
+            } else {
+              console.log("unhandled type on stream read:", value)
+              reject("unhandled type on stream read")
+            }
 
-          return pump()
-        })
-        .catch(err => {
-          reject(err)
-        })
-    })()
+            return pump()
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })()
   })
 }
 
-/** @hidden */
+/** @ignore */
 function concatenate(...arrays: Uint8Array[]): ArrayBuffer {
   let totalLength = 0
   for (const arr of arrays) {

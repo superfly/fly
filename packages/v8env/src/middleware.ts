@@ -1,7 +1,7 @@
 /**
  * @module fly
  * @private
- * @hidden
+ * @ignore
  */
 import { logger } from "./logger"
 
@@ -105,7 +105,7 @@ export class MiddlewareChain {
           fn: mw
         })
       )
-           }
+    }
     else { this.chain.push(new Middleware(mw)) }
   }
 

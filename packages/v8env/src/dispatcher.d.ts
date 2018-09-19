@@ -1,5 +1,5 @@
 /**
- * @hidden
+ * @ignore
  * @private
  * @module fly
  */

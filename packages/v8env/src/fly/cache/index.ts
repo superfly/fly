@@ -17,7 +17,7 @@
  * @module fly/cache
  */
 
-/** */
+/** @ignore */
 declare var bridge: any
 export interface CacheSetOptions {
   ttl?: number

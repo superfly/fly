@@ -14,14 +14,14 @@ const invalidResponseType = new Error(
 
 /**
  * The fetch event fires when your app receives an HTTP request
- * @hidden
+ * @ignore
  * @event #fetch
  * @type {FetchEvent}
  * @property {FetchEvent} event
  */
 
 /**
- * @hidden
+ * @ignore
  */
 export class FetchEvent {
   public type: any
@@ -75,19 +75,19 @@ export class FetchEvent {
 }
 
 /**
- * @hidden
+ * @ignore
  */
 export const emitter = new EventEmitter()
 
 /**
- * @hidden
+ * @ignore
  */
 export function addEventListener(name, fn) {
   emitter.addListener(name, fn)
 }
 
 /**
- * @hidden
+ * @ignore
  */
 export function fireFetchEvent(url, req, body, callback) {
   logger.debug("handling request event")
@@ -167,7 +167,7 @@ export function fireFetchEvent(url, req, body, callback) {
 }
 
 /**
- * @hidden
+ * @ignore
  */
 export function dispatchEvent(event) {
   emitter.emit(event.type, event)

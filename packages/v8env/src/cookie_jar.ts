@@ -1,6 +1,7 @@
 /**
  * @module fly
  * @private
+ * @ignore
  */
 import * as cookie from "cookie"
 
@@ -18,6 +19,7 @@ const cookieAttributeNames = [
  * A jar for storing delicious cookies.
  * @class
  * @param {Response|Request} [parent] Underlying resource that contains cookies in headers
+ * @ignore
  */
 class CookieJar {
   private cookies: any
@@ -28,7 +30,7 @@ class CookieJar {
     if (parent instanceof Request) { this.cookies = parseCookies(parent.headers.getAll("Cookie")) }
     else if (parent instanceof Response) {
       this.cookies = parseCookies(parent.headers.getAll("Set-Cookie"))
-         }
+    }
   }
 
   /**
@@ -75,5 +77,7 @@ function parseCookie(cookieStr) {
   return cookies.map(c => Object.assign(c, options))
 }
 
+/** @ignore */
 export { CookieJar }
+/** @ignore */
 export default CookieJar

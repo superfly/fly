@@ -4,10 +4,17 @@
 import { logger } from "./logger"
 import refToStream, { isFlyStream } from "./fly/streams"
 
+/** @ignore */
 declare var bridge: any
 
+/**
+ * Fly Request options, includes Fly specific params
+ */
 export interface FlyRequestInit extends RequestInit {
+  /** Timeout before request is canceled */
   timeout?: number
+
+  /** Read timeout on underlyig socket */
   readTimeout?: number
 }
 
@@ -37,7 +44,7 @@ export function fetch(req: RequestInfo, init?: FlyRequestInit): Promise<Response
       if (!req.bodySource) { bridge.dispatch("fetch", url, init, null, fetchCb) }
       else if (typeof req.bodySource === "string") {
         bridge.dispatch("fetch", url, init, req.bodySource, fetchCb)
-           }
+      }
       else {
         req
           .arrayBuffer()
@@ -45,7 +52,7 @@ export function fetch(req: RequestInfo, init?: FlyRequestInit): Promise<Response
             bridge.dispatch("fetch", url, init, body, fetchCb)
           })
           .catch(reject)
-           }
+      }
     } catch (err) {
       logger.debug("err applying nativeFetch", err.toString())
       reject(err)
@@ -60,4 +67,7 @@ export function fetch(req: RequestInfo, init?: FlyRequestInit): Promise<Response
   })
 }
 
-export class TimeoutError extends Error {}
+/**
+ * Error thrown when a fetch times out
+ */
+export class TimeoutError extends Error { }

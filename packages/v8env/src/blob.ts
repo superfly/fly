@@ -3,10 +3,10 @@
  * @private
  */
 
-/** @hidden */
+/** @ignore */
 export type BlobPart = BufferSource | USVString | Blob
 
-/** @hidden */
+/** @ignore */
 export default class Blob {
   public readonly size: number
   public readonly type: string
@@ -60,7 +60,7 @@ export default class Blob {
   }
 }
 
-/** @hidden */
+/** @ignore */
 function concatenate(...arrays: Uint8Array[]): Uint8Array {
   let totalLength = 0
   for (const arr of arrays) {

@@ -1,13 +1,13 @@
 /**
  * @private
  * @module fly
- * @hidden
+ * @ignore
  */
 type CryptoData = BufferSource | string
 
 declare var bridge: any
 
-/** @hidden */
+/** @ignore */
 export const crypto = {
   subtle: {
     digest(algo: string, data: CryptoData, encoding?: string): Promise<ArrayBuffer | string> {

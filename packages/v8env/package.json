@@ -20,7 +20,7 @@
         "build": "tsc -b .",
         "build:watch": "tsc -b -w -v .",
         "bundle": "webpack",
-        "docs": "compodoc -p tsconfig.json -d ../../dist/docs/api/ --disableSourceCode"
+        "docs": "compodoc -p tsconfig.json -d ../../dist/docs/api/ --disableSourceCode --disablePrivate --disableInternal --disableProtected --disableCoverage"
     },
     "dependencies": {
         "better-assert": "^1.0.2",
