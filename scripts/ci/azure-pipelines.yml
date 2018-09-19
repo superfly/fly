@@ -1,0 +1,154 @@
+# Node.js
+# Build a general Node.js application with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/vsts/pipelines/languages/javascript
+
+jobs:
+  - job: lint
+    pool:
+      vmImage: ubuntu-16.04
+    variables:
+      CI: true
+    timeoutInMinutes: 10
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: 10
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "2.7"
+          architecture: "x64"
+      - script: |
+          sudo apt-get update && sudo apt-get install -y nasm
+          npm install -g yarn
+          yarn install --no-progress && yarn bootstrap
+          mkdir ./artifacts
+        name: Install
+      - script: yarn test:lint
+        name: Lint
+      - script: yarn test:format
+        name: Format
+      - task: PublishTestResults@2
+        condition: always()
+        inputs:
+          testResultsFiles: "**/*junit.xml"
+          searchFolder: $(Build.SourcesDirectory)/artifacts
+
+  - job: macOS
+    pool:
+      vmImage: xcode9-macos10.13
+    strategy:
+      maxParallel: 3
+      matrix:
+        node-8:
+          node_version: 8
+        node-10-3:
+          node_version: 10.3
+        node-latest:
+          node_version: ">=10"
+          node_check_latest: true
+    variables:
+      CI: true
+    timeoutInMinutes: 10
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+          checkLatest: $(node_check_latest)
+      - script: yarn install --no-progress && yarn bootstrap
+        name: Install
+      - script: yarn build && yarn bundle
+        name: Build
+      - script: yarn test
+        name: Test
+      - task: PublishTestResults@2
+        condition: always()
+        inputs:
+          testResultsFiles: "**/*junit.xml"
+          searchFolder: $(Build.SourcesDirectory)/artifacts
+
+  - job: Linux
+    pool:
+      vmImage: ubuntu-16.04
+    strategy:
+      maxParallel: 3
+      matrix:
+        node-8:
+          node_version: 8
+        node-10-3:
+          node_version: 10.3
+        node-latest:
+          node_version: ">=10"
+          node_check_latest: true
+    variables:
+      CI: true
+    timeoutInMinutes: 10
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+          checkLatest: $(node_check_latest)
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "2.7"
+          architecture: "x64"
+      - script: |
+          sudo apt-get update && sudo apt-get install -y nasm
+          npm install -g yarn
+          yarn install --no-progress && yarn bootstrap
+        name: Install
+      - script: yarn build && yarn bundle
+        name: Build
+      - script: yarn test
+        name: Test
+      - task: PublishTestResults@2
+        condition: always()
+        inputs:
+          testResultsFiles: "**/*junit.xml"
+          searchFolder: $(Build.SourcesDirectory)/artifacts
+
+  # - job: Windows
+  #   pool:
+  #     vmImage: vs2017-win2016
+  #   strategy:
+  #     maxParallel: 3
+  #     matrix:
+  #       node-8:
+  #         node_version: 8
+  #       node-10-3:
+  #         node_version: 10.3
+  #       node-latest:
+  #         node_version: ">=10"
+  #         node_check_latest: true
+  #   variables:
+  #     CI: true
+  #   timeoutInMinutes: 10
+  #   steps:
+  #     - task: NodeTool@0
+  #       inputs:
+  #         versionSpec: $(node_version)
+  #         checkLatest: $(node_check_latest)
+  #     # for node-gyp
+  #     # - task: UsePythonVersion@0
+  #     #   inputs:
+  #     #     versionSpec: '2.7'
+  #     #     architecture: 'x64'
+  #     - script: npm install --global windows-build-tools
+  #       displayName: "Install windows build tools"
+  #     - script: npm install -g yarn
+  #       displayName: "Install yarn"
+  #     - script: yarn install --no-progress
+  #       displayName: "yarn install"
+  #     - script: yarn bootstrap --no-progress
+  #       displayName: "yarn bootstrap"
+  #     - script: yarn build && yarn bundle
+  #       displayName: "yarn build && yarn bundle"
+  #       name: Build
+  #     - script: yarn test
+  #       displayName: "yarn test"
+  #       name: Test
+  #     - task: PublishTestResults@2
+  #       condition: always()
+  #       inputs:
+  #         testResultsFiles: "**/*junit.xml"
+  #         searchFolder: $(Build.SourcesDirectory)/artifacts

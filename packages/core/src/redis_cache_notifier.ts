@@ -1,18 +1,18 @@
-import { CacheNotifierAdapter, CacheOperation, ReceiveHandler, CacheNotifyMessage } from "./cache_notifier";
-import { RedisClient } from "redis";
-import { RedisConnectionOptions, initRedisClient } from "./redis_adapter";
-import { promisify } from "util";
-import log from "./log";
+import { CacheNotifierAdapter, CacheOperation, ReceiveHandler, CacheNotifyMessage } from "./cache_notifier"
+import { RedisClient } from "redis"
+import { RedisConnectionOptions, initRedisClient } from "./redis_adapter"
+import { promisify } from "util"
+import log from "./log"
 
 export interface RedisCacheNotifierConfig {
-  reader: RedisConnectionOptions,
+  reader: RedisConnectionOptions
   writer?: RedisConnectionOptions
 }
 const notifierKey = "notifier:cache"
 export class RedisCacheNotifier implements CacheNotifierAdapter {
-  subscriber: RedisClient
-  reader: RedisClient
-  writer: RedisClient
+  public subscriber: RedisClient
+  public reader: RedisClient
+  public writer: RedisClient
   private _handler: ReceiveHandler | undefined
   private _lastEventTime = Date.now() - 10000
 
@@ -30,9 +30,9 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
     this.writer = initRedisClient(opts.writer)
   }
 
-  send(msg: CacheNotifyMessage) {
+  public send(msg: CacheNotifyMessage) {
     return new Promise<boolean>((resolve, reject) => {
-      log.debug("sending redis cache notification:", msg.ts, msg.value, (<any>this.writer).address)
+      log.debug("sending redis cache notification:", msg.ts, msg.value, (this.writer as any).address)
       this.writer.zadd(notifierKey, msg.ts, JSON.stringify(msg), (err, _) => {
         if (err) {
           return reject(err)
@@ -42,29 +42,29 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
       })
     })
   }
-  async start(handler: ReceiveHandler) {
+  public async start(handler: ReceiveHandler) {
     this._handler = handler
 
-    const configAsync = promisify(this.subscriber.config).bind(this.subscriber);
-    const zrangebyscore = promisify(this.reader.zrangebyscore).bind(this.reader);
+    const configAsync = promisify(this.subscriber.config).bind(this.subscriber)
+    const zrangebyscore = promisify(this.reader.zrangebyscore).bind(this.reader)
 
     let [, conf] = await configAsync("get", "notify-keyspace-events")
-    if (!conf.includes("E") || !conf.includes('z') || !conf.includes('A')) {
+    if (!conf.includes("E") || !conf.includes("z") || !conf.includes("A")) {
       conf = conf + "KEz"
       log.info("Enabling zset notifications in redis:", conf)
       await configAsync("set", "notify-keyspace-events", conf)
     }
     this._lastEventTime = Date.now()
-    const dbIndex = parseInt((<any>this.subscriber).selected_db || 0)
-    log.info("Subscribing to Redis Cache notifications:", (<any>this.subscriber).address)
+    const dbIndex = parseInt((this.subscriber as any).selected_db || 0, 10)
+    log.info("Subscribing to Redis Cache notifications:", (this.subscriber as any).address)
     this.subscriber.subscribe(`__keyspace@${dbIndex}__:notifier:cache`)
-    this.subscriber.on('message', async (channel, message) => {
+    this.subscriber.on("message", async (channel, message) => {
       log.debug("redis cache notification:", channel, message)
 
       if (message === "zadd") {
         const start = this._lastEventTime
         this._lastEventTime = Date.now()
-        const changes = await zrangebyscore(notifierKey, start, '+inf')
+        const changes = await zrangebyscore(notifierKey, start, "+inf")
         log.debug("redis cache notification changes:", start, changes.length)
         for (const raw of changes) {
           try {
@@ -91,10 +91,12 @@ function isRedisCacheNotifierConfig(opts: any): opts is RedisCacheNotifierConfig
 }
 
 function isNotifierMessage(msg: any): msg is CacheNotifyMessage {
-  if (typeof msg.type === "string" &&
+  if (
+    typeof msg.type === "string" &&
     typeof msg.ns === "string" &&
     typeof msg.value === "string" &&
-    typeof msg.ts === "number") {
+    typeof msg.ts === "number"
+  ) {
     return true
   }
   return false

@@ -1,8 +1,10 @@
+/* tslint:disable:prefer-for-of */
+
 /**
  * @module fly
  * @private
  */
-import { logger } from './logger'
+import { logger } from "./logger"
 
 /**
  * @class

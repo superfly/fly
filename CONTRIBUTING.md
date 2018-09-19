@@ -61,7 +61,7 @@ You can now run the test suite:
 yarn test
 ```
 
-If the test suite passed, you're environment is ready to go.
+If the test suite passed, your environment is ready to go.
 
 ### 4. Make your changes
 

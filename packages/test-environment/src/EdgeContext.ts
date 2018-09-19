@@ -1,6 +1,5 @@
-
 import { Server, FileAppStore, LocalFileStore, Runtime, Bridge, SQLiteDataStore } from "@fly/core"
-import { parse, format } from "url";
+import { parse, format } from "url"
 
 export interface Options {
   servers: { [hostname: string]: string }
@@ -21,11 +20,11 @@ export class EdgeContext {
     this.hostname = options.hostname || "127.0.0.1"
 
     for (const [hostname, path] of Object.entries(options.servers)) {
-      const server = new TestServer(this, { host: hostname, path: path })
+      const server = new TestServer(this, { host: hostname, path })
       this.servers.push(server)
     }
 
-    if (this.servers.length == 0) {
+    if (this.servers.length === 0) {
       throw new Error("No servers specified")
     }
   }
@@ -69,7 +68,6 @@ export class TestServer {
   public readonly path: string
   public port: number
 
-
   public constructor(context: EdgeContext, options: ServerOptions) {
     this.context = context
     this.host = options.host
@@ -92,16 +90,16 @@ export class TestServer {
           dataStore: new SQLiteDataStore(appStore.app.name, "test")
         })
         this.server = new Server({ appStore, bridge, inspect: false, monitorFrequency: 0 })
-        this.server.on('error', (e: Error | any) => {
-          if (e.code === 'EADDRINUSE') {
+        this.server.on("error", (e: Error | any) => {
+          if (e.code === "EADDRINUSE") {
             this.port = this.port + 1
-            console.log('Port in use, trying:', this.port);
+            console.log("Port in use, trying:", this.port)
             setTimeout(() => {
               if (this.server) {
-                this.server.close();
-                this.server.listen(this.port);
+                this.server.close()
+                this.server.listen(this.port)
               }
-            }, 1000);
+            }, 1000)
           } else {
             throw e
           }
@@ -159,7 +157,7 @@ export class TestServer {
   }
 
   public get isRunning(): boolean {
-    return this.server && this.server.listening || false
+    return (this.server && this.server.listening) || false
   }
 }
 
@@ -168,7 +166,7 @@ export function isContext(value: any): value is EdgeContext {
 }
 
 function nextPort() {
-  return Math.floor((Math.random() * 1000) + 4000)
+  return Math.floor(Math.random() * 1000 + 4000)
 }
 
 function configureBridge(bridge: Bridge, context: EdgeContext) {
@@ -176,9 +174,9 @@ function configureBridge(bridge: Bridge, context: EdgeContext) {
   if (!oldFetch) {
     throw new Error("Fetch not registered")
   }
-  const newFetch = function fetchBridge(rt: Runtime, bridge: Bridge, url: string, ...args: any[]) {
+  const newFetch = (rt: Runtime, newBridge: Bridge, url: string, ...args: any[]) => {
     const mappedUrl = context.rewriteUrl(url)
-    return oldFetch.apply(bridge, [rt, bridge, ...[mappedUrl].concat(args)])
+    return oldFetch.apply(newBridge, [rt, newBridge, ...[mappedUrl].concat(args)])
   }
   bridge.set("fetch", newFetch)
 }

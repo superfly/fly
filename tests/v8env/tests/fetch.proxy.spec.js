@@ -1,11 +1,11 @@
-import { expect } from 'chai'
+import { expect } from "chai"
 
-import * as proxy from '@fly/proxy'
+import * as proxy from "@fly/proxy"
 
 const origin = "https://fly.io/proxy/"
-const req = new Request("https://wat.com/path/to/thing", { headers: { "host": "notwat.com" } })
+const req = new Request("https://wat.com/path/to/thing", { headers: { host: "notwat.com" } })
 describe("proxy", () => {
-  it('includes host header and base path properly', () => {
+  it("includes host header and base path properly", () => {
     const breq = proxy.buildProxyRequest(origin, {}, req)
     const url = new URL(breq.url)
     expect(breq.headers.get("host")).to.eq("fly.io")
@@ -13,7 +13,7 @@ describe("proxy", () => {
     expect(url.pathname).to.eq("/proxy/path/to/thing")
   })
 
-  it('includes host header from request when forwardHostHeader', () => {
+  it("includes host header from request when forwardHostHeader", () => {
     const breq = proxy.buildProxyRequest(origin, { forwardHostHeader: true }, req)
     const url = new URL(breq.url)
     expect(breq.headers.get("host")).to.eq("notwat.com")
@@ -21,7 +21,7 @@ describe("proxy", () => {
     expect(url.pathname).to.eq("/proxy/path/to/thing")
   })
 
-  it('rewrite paths properly', () => {
+  it("rewrite paths properly", () => {
     const breq = proxy.buildProxyRequest(origin, { stripPath: "/path/to/" }, req)
     const url = new URL(breq.url)
     expect(url.pathname).to.eq("/proxy/thing")

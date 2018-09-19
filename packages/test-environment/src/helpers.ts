@@ -1,7 +1,7 @@
-import fetch, { RequestInit, Response } from "node-fetch";
-import { URL } from "url";
-import JestEnvironment from "./JestEnvironment";
-import { TestServer } from "./EdgeContext";
+import fetch, { RequestInit, Response } from "node-fetch"
+import { URL } from "url"
+import JestEnvironment from "./JestEnvironment"
+import { TestServer } from "./EdgeContext"
 
 export function install(env: JestEnvironment, global: {}) {
   Object.assign(global, {
@@ -18,10 +18,14 @@ function testFetch(this: JestEnvironment, url: string, init?: RequestInit): Prom
   if (!init) {
     init = {}
   }
-  const headers: { [name: string]: string } = Object.assign({}, {
-    "user-agent": "test-server/fetch",
-    'Host': parsedUrl.hostname
-  }, init.headers)
+  const headers: { [name: string]: string } = Object.assign(
+    {},
+    {
+      "user-agent": "test-server/fetch",
+      Host: parsedUrl.hostname
+    },
+    init.headers
+  )
 
   // node-fetch overrides Accept-Encoding w/ "gzip,deflate" unless init.compress is false
   // disable compression if init includes an Accept-Encoding header

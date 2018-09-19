@@ -1,6 +1,6 @@
-import { expect } from 'chai'
+import { expect } from "chai"
 
-import pipeline from '@fly/fetch/pipeline'
+import pipeline from "@fly/fetch/pipeline"
 
 function outer(fetch) {
   return async function outerFetch(req, init) {
@@ -17,14 +17,19 @@ function inner(fetch) {
 }
 
 function echo(req, init) {
-  const headers = Object.assign({
-    stages: JSON.stringify(fn.stages.map((s) => {
-      if (typeof s === "function") {
-        return s.name
-      }
-      return typeof s
-    }))
-  }, req.headers.toJSON())
+  const headers = Object.assign(
+    {
+      stages: JSON.stringify(
+        fn.stages.map(s => {
+          if (typeof s === "function") {
+            return s.name
+          }
+          return typeof s
+        })
+      )
+    },
+    req.headers.toJSON()
+  )
   return new Response("hi", { headers: headers })
 }
 
@@ -46,7 +51,7 @@ describe("pipeline", () => {
     expect(fn.stages[1]).to.eq(inner)
   })
 
-  it('should run pipeline functions', async () => {
+  it("should run pipeline functions", async () => {
     const resp = await fn(new Request("http://localhost"))
     expect(resp.headers.get("Outer-Fn")).to.eq("woop!")
     expect(resp.headers.get("Inner-Fn")).to.eq("woowoo!")

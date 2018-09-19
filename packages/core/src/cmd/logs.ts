@@ -1,35 +1,34 @@
-import { root, getAppName, CommonOptions, addCommonOptions } from './root'
-import { apiClient } from './api'
-import { processResponse } from '../utils/cli'
+import { root, getAppName, CommonOptions, addCommonOptions } from "./root"
+import { apiClient } from "./api"
+import { processResponse } from "../utils/cli"
 
-import colors = require('ansi-colors')
-import { Command } from 'commandpost';
-import { AxiosInstance } from 'axios';
+import colors = require("ansi-colors")
+import { Command } from "commandpost"
+import { AxiosInstance } from "axios"
 
-export interface LogsOptions extends CommonOptions { }
-export interface LogsArgs { }
+export interface LogsOptions extends CommonOptions {}
+export interface LogsArgs {}
 
-const logs = root
+const logsCommand = root
   .subCommand<LogsOptions, LogsArgs>("logs")
   .description("Logs from your app.")
-  .action(async function (this: Command<LogsArgs, LogsOptions>, opts, args, rest) {
+  .action(async function(this: Command<LogsArgs, LogsOptions>, opts, args, rest) {
     continuouslyGetLogs(apiClient(this), getAppName(this))
   })
 
-
 const levels: { [key: number]: string } = {
-  7: 'debug',
-  6: 'info',
-  5: 'notice',
-  4: 'warning',
-  3: 'error',
-  2: 'crit',
-  1: 'alert',
-  0: 'emerg'
+  7: "debug",
+  6: "info",
+  5: "notice",
+  4: "warning",
+  3: "error",
+  2: "crit",
+  1: "alert",
+  0: "emerg"
 }
 
 async function continuouslyGetLogs(API: AxiosInstance, appName: string) {
-  let lastNextToken: string | undefined;
+  let lastNextToken: string | undefined
   while (true) {
     let count = 0
     try {
@@ -38,21 +37,22 @@ async function continuouslyGetLogs(API: AxiosInstance, appName: string) {
       lastNextToken = nextToken
       showLogs(logs)
     } catch (e) {
-      if (e.response)
+      if (e.response) {
         processResponse(e.response)
-      else
+      } else {
         console.log(e.stack)
-      break;
+      }
+      break
     }
     await sleep(count > 5 ? 200 : 2500) // give it a rest!
   }
 }
 
 const levelColorFn: { [lvl: string]: (message: string) => string } = {
-  "info": colors.grey,
-  "debug": colors.cyan,
-  "error": colors.red,
-  "warning": colors.magenta
+  info: colors.grey,
+  debug: colors.cyan,
+  error: colors.red,
+  warning: colors.magenta
 }
 
 interface LogAttributes {
@@ -70,9 +70,13 @@ async function showLogs(logs: Log[]) {
   for (const l of logs) {
     const region = l.attributes.meta.region
     const ts = new Date(l.attributes.timestamp)
-    const lvl = levels[parseInt(l.attributes.level)] || l.attributes.level
+    const lvl = levels[parseInt(l.attributes.level, 10)] || l.attributes.level
     const levelColor = levelColorFn[lvl] || colors.white
-    console.log(`${colors.dim(ts.toISOString().split('.')[0] + "Z")} ${colors.green(region)} [${levelColor(lvl)}] ${l.attributes.message}`)
+    console.log(
+      `${colors.dim(ts.toISOString().split(".")[0] + "Z")} ${colors.green(region)} [${levelColor(lvl)}] ${
+        l.attributes.message
+      }`
+    )
   }
 }
 
@@ -90,16 +94,16 @@ async function getLogs(API: AxiosInstance, appName: string, nextToken?: string):
 }
 
 function sleep(i: number) {
-  return new Promise((res) => setTimeout(res, i))
+  return new Promise(res => setTimeout(res, i))
 }
 
 class LogResponseError extends Error {
-  response: Object
+  public response: object
 
-  constructor(response: Object, ...params: any[]) {
+  constructor(response: object, ...params: any[]) {
     super(...params)
     this.response = response
   }
 }
 
-addCommonOptions(logs)
+addCommonOptions(logsCommand)

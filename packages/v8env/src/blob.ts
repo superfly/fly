@@ -1,4 +1,4 @@
-/** 
+/**
  * @module fly
  * @private
  */
@@ -8,17 +8,17 @@ export type BlobPart = BufferSource | USVString | Blob
 
 /** @hidden */
 export default class Blob {
-  readonly size: number;
-  readonly type: string;
+  public readonly size: number
+  public readonly type: string
 
-  protected bytes: Uint8Array;
+  protected bytes: Uint8Array
 
   constructor(blobParts?: BlobPart[], options?: BlobPropertyBag) {
-    if (!blobParts || blobParts.length === 0)
+    if (!blobParts || blobParts.length === 0) {
       this.bytes = new Uint8Array()
-    else {
-      let parts: Uint8Array[] = []
-      let encoder = new TextEncoder();
+    } else {
+      const parts: Uint8Array[] = []
+      const encoder = new TextEncoder()
       for (const part of blobParts) {
         switch (part.constructor) {
           case Int8Array:
@@ -30,52 +30,54 @@ export default class Blob {
           case Float32Array:
           case Float64Array:
           case DataView:
-            parts.push(new Uint8Array((<ArrayBufferView>part).buffer))
+            parts.push(new Uint8Array((part as ArrayBufferView).buffer))
             break
           case Uint8Array:
-            parts.push(<Uint8Array>part)
+            parts.push(part as Uint8Array)
             break
           case ArrayBuffer:
-            parts.push(new Uint8Array(<ArrayBuffer>part))
+            parts.push(new Uint8Array(part as ArrayBuffer))
             break
           case String:
-            parts.push(encoder.encode(<USVString>part))
+            parts.push(encoder.encode(part as USVString))
             break
           case Blob:
-            parts.push((<Blob>part).bytes)
+            parts.push((part as Blob).bytes)
             break
         }
       }
-      if (parts.length === 1)
+      if (parts.length === 1) {
         this.bytes = parts[0]
-      else
+      } else {
         this.bytes = concatenate(...parts)
+      }
     }
 
-    if (options && options.type)
+    if (options && options.type) {
       this.type = options.type.toLowerCase()
-    else
-      this.type = ''
+    } else {
+      this.type = ""
+    }
 
     this.size = this.bytes.byteLength
   }
 
-  slice(start?: number, end?: number, contentType?: string): Blob {
+  public slice(start?: number, end?: number, contentType?: string): Blob {
     return new Blob([this.bytes.slice(start, end)], { type: contentType })
   }
 }
 
 /** @hidden */
 function concatenate(...arrays: Uint8Array[]): Uint8Array {
-  let totalLength = 0;
-  for (let arr of arrays) {
-    totalLength += arr.length;
+  let totalLength = 0
+  for (const arr of arrays) {
+    totalLength += arr.length
   }
-  let result = new Uint8Array(totalLength);
-  let offset = 0;
-  for (let arr of arrays) {
-    result.set(arr, offset);
-    offset += arr.length;
+  const result = new Uint8Array(totalLength)
+  let offset = 0
+  for (const arr of arrays) {
+    result.set(arr, offset)
+    offset += arr.length
   }
-  return result;
+  return result
 }

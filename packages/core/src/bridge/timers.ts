@@ -1,32 +1,55 @@
-import { registerBridge } from './'
+import { registerBridge } from "./"
 
-import { ivm, Bridge } from '../'
-import { Runtime } from '../runtime';
+import { ivm, Bridge } from "../"
+import { Runtime } from "../runtime"
 import { setTimeout, clearTimeout } from "timers"
 
-registerBridge('setTimeout', function (rt: Runtime, bridge: Bridge, fn: ivm.Reference<Function>, timeout: number) {
-  const t = setTimeout(function () {
-    try { fn.applyIgnored(null, []) } catch (e) { }
-    try { fn.release() } catch (e) { }
+registerBridge("setTimeout", (rt: Runtime, bridge: Bridge, fn: ivm.Reference<() => void>, timeout: number) => {
+  const t = setTimeout(() => {
+    try {
+      fn.applyIgnored(null, [])
+    } catch (e) {
+      // ignore
+    }
+    try {
+      fn.release()
+    } catch (e) {
+      // ignore
+    }
   }, timeout)
   t.unref()
   return Promise.resolve(new ivm.Reference(t))
 })
 
-registerBridge('clearTimeout', function (rt: Runtime, bridge: Bridge, id: ivm.Reference<NodeJS.Timer>) {
-  try { clearTimeout(id.deref()) } catch (e) { }
+registerBridge("clearTimeout", (rt: Runtime, bridge: Bridge, id: ivm.Reference<NodeJS.Timer>) => {
+  try {
+    clearTimeout(id.deref())
+  } catch (e) {
+    // ignore
+  }
 })
 
-registerBridge('setInterval', function (rt: Runtime, bridge: Bridge, fn: ivm.Reference<Function>, every: number) {
-  const i = setInterval(function () {
-    try { fn.applyIgnored(null, []) } catch (e) { }
-    try { fn.release() } catch (e) { }
+registerBridge("setInterval", (rt: Runtime, bridge: Bridge, fn: ivm.Reference<() => void>, every: number) => {
+  const i = setInterval(() => {
+    try {
+      fn.applyIgnored(null, [])
+    } catch (e) {
+      // ignore
+    }
+    try {
+      fn.release()
+    } catch (e) {
+      // ignore
+    }
   }, every)
   i.unref()
   return Promise.resolve(new ivm.Reference(i))
 })
 
-registerBridge('clearInterval', function (rt: Runtime, bridge: Bridge, id: ivm.Reference<NodeJS.Timer>) {
-  try { clearInterval(id.deref()) } catch (e) { }
+registerBridge("clearInterval", (rt: Runtime, bridge: Bridge, id: ivm.Reference<NodeJS.Timer>) => {
+  try {
+    clearInterval(id.deref())
+  } catch (e) {
+    // ignore
+  }
 })
-

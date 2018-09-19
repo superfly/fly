@@ -1,6 +1,5 @@
-
-import { expect } from 'chai'
-import cache from '@fly/cache'
+import { expect } from "chai"
+import cache from "@fly/cache"
 
 describe("@fly/cache#tags", () => {
   it("purges tags", async () => {

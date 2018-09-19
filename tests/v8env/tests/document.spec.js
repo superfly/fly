@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { expect } from "chai"
 
 const html = `
 <html>
@@ -7,11 +7,11 @@ const html = `
 `
 
 describe("Document", () => {
-  it('exists', () => {
-    expect(typeof Document).to.equal('function')
+  it("exists", () => {
+    expect(typeof Document).to.equal("function")
   })
 
-  it("parses html into a queryable dom tree", function () {
+  it("parses html into a queryable dom tree", function() {
     const dom = Document.parse(html)
     expect(dom).to.be.instanceof(Document)
     const p = dom.querySelector("p")
@@ -19,19 +19,19 @@ describe("Document", () => {
     expect(p.getAttribute("something")).to.equal("yo")
   })
 
-  it('can stringify a DOM', () => {
+  it("can stringify a DOM", () => {
     const doc = Document.parse(html)
     expect(doc.documentElement.outerHTML).to.equal(html)
   })
 
-  it('can replace elements', () => {
+  it("can replace elements", () => {
     const doc = Document.parse(html)
     doc.querySelector("p").replaceWith("<div>booya</div>")
     expect(doc.querySelector("div").textContent).to.equal("booya")
     expect(doc.querySelector("p")).to.equal(null)
   })
 
-  it('can append elements', () => {
+  it("can append elements", () => {
     const doc = Document.parse(html)
     doc.querySelector("p").appendChild("<div>booya</div>")
     const div = doc.querySelector("p div")

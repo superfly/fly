@@ -1,12 +1,12 @@
 /**
  * Utilities and types for working with `fetch` functions.
- * 
+ *
  * @preferred
  * @module fly/fetch
  */
 
 /**
- * Fly augmented Request, adds extra relevant fields for proxy level 
+ * Fly augmented Request, adds extra relevant fields for proxy level
  * Requests.
  */
 export interface FlyRequest extends Request {
@@ -15,16 +15,12 @@ export interface FlyRequest extends Request {
 /**
  * A fetch-like function.
  */
-export interface FetchFunction {
-  (req: RequestInfo, init?: RequestInit): Promise<Response>
-}
+export type FetchFunction = (req: RequestInfo, init?: RequestInit) => Promise<Response>
 
 /**
  * A function that generates a fetch-like function with additional logic
  */
-export interface FetchGenerator {
-  (...any: any[]): FetchFunction
-}
+export type FetchGenerator = (...args: any[]) => FetchFunction
 
 /**
  * Converts RequestInfo into a Request object.
@@ -37,5 +33,5 @@ export function normalizeRequest(req: RequestInfo) {
   if (!(req instanceof Request)) {
     throw new Error("req must be either a string or a Request object")
   }
-  return <FlyRequest>req
+  return req as FlyRequest
 }

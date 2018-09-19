@@ -1,18 +1,18 @@
 /**
  * An API for accessing a regional, volatile cache. Data stored in `@fly/cache` can have an associated per-key time to live (TTL), and we will evict key data automatically after the elapsed TTL. We will also evict unused data when we need to reclaim space.
- * 
+ *
  * ```javascript
  * import cache from "@fly/cache"
- * 
+ *
  * await cache.set("test-key", "test-value")
- * 
+ *
  * const s = await cache.getString("test-key")
  * ```
- * 
+ *
  * See {@link fly/cache/response} for caching HTTP Response objects.
- * 
+ *
  * See {@link fly/cache/global} for global cache del/purge
- * 
+ *
  * @preferred
  * @module fly/cache
  */
@@ -20,11 +20,10 @@
 /** */
 declare var bridge: any
 export interface CacheSetOptions {
-  ttl?: number;
-  tags?: string[];
-  onlyIfEmpty?: boolean;
+  ttl?: number
+  tags?: string[]
+  onlyIfEmpty?: boolean
 }
-
 
 /**
  * Get an ArrayBuffer value (or null) from the cache
@@ -33,17 +32,13 @@ export interface CacheSetOptions {
  */
 export function get(key: string) {
   return new Promise<ArrayBuffer | null>(function cacheGetPromise(resolve, reject) {
-    bridge.dispatch(
-      "flyCacheGet",
-      key,
-      function cacheGetCallback(err: string | null | undefined, value?: ArrayBuffer) {
-        if (err != null) {
-          reject(err)
-          return
-        }
-        resolve(value)
+    bridge.dispatch("flyCacheGet", key, function cacheGetCallback(err: string | null | undefined, value?: ArrayBuffer) {
+      if (err != null) {
+        reject(err)
+        return
       }
-    )
+      resolve(value)
+    })
   })
 }
 
@@ -55,7 +50,9 @@ export function get(key: string) {
  */
 export async function getString(key: string) {
   const buf = await get(key)
-  if (!buf) { return null }
+  if (!buf) {
+    return null
+  }
   try {
     return new TextDecoder("utf-8").decode(buf)
   } catch (err) {
@@ -68,18 +65,18 @@ export async function getString(key: string) {
  * @param keys list of keys to retrieve
  * @returns List of results in the same order as the provided keys
  */
-export function getMulti(keys: string[]): Promise<(ArrayBuffer | null)[]> {
-  return new Promise<(ArrayBuffer | null)[]>(function cacheGetMultiPromise(resolve, reject) {
-    bridge.dispatch(
-      "flyCacheGetMulti",
-      JSON.stringify(keys),
-      function cacheGetMultiCallback(err: string | null | undefined, ...values: (ArrayBuffer | null)[]) {
-        if (err != null) {
-          reject(err)
-          return
-        }
-        resolve(values)
-      })
+export function getMulti(keys: string[]): Promise<Array<ArrayBuffer | null>> {
+  return new Promise<Array<ArrayBuffer | null>>(function cacheGetMultiPromise(resolve, reject) {
+    bridge.dispatch("flyCacheGetMulti", JSON.stringify(keys), function cacheGetMultiCallback(
+      err: string | null | undefined,
+      ...values: Array<ArrayBuffer | null>
+    ) {
+      if (err != null) {
+        reject(err)
+        return
+      }
+      resolve(values)
+    })
   })
 }
 
@@ -90,7 +87,7 @@ export function getMulti(keys: string[]): Promise<(ArrayBuffer | null)[]> {
  */
 export async function getMultiString(keys: string[]) {
   const raw = await getMulti(keys)
-  return raw.map((b) => b ? new TextDecoder("utf-8").decode(b) : null)
+  return raw.map(b => (b ? new TextDecoder("utf-8").decode(b) : null))
 }
 
 /**
@@ -105,7 +102,10 @@ export function set(key: string, value: string | ArrayBuffer, options?: CacheSet
     throw new Error("Cache values must be either a string or array buffer")
   }
   return new Promise<boolean>(function cacheSetPromise(resolve, reject) {
-    bridge.dispatch("flyCacheSet", key, value, options && JSON.stringify(options), function cacheSetCallback(err: string | null, ok?: boolean) {
+    bridge.dispatch("flyCacheSet", key, value, options && JSON.stringify(options), function cacheSetCallback(
+      err: string | null,
+      ok?: boolean
+    ) {
       if (err != null) {
         reject(err)
         return
@@ -164,7 +164,7 @@ export function purgeTag(tag: string) {
       }
       const result = JSON.parse(keys)
       if (result instanceof Array) {
-        resolve(<string[]>result)
+        resolve(result as string[])
         return
       } else {
         reject("got back gibberish")
@@ -172,7 +172,6 @@ export function purgeTag(tag: string) {
     })
   })
 }
-
 
 /**
  * Deletes the value (if any) at the specified key
@@ -193,15 +192,15 @@ export function del(key: string) {
 
 /**
  * A library for caching/retrieving Response objects
- * 
+ *
  * See {@link fly/cache/response}
  */
 export { default as responseCache } from "./response"
 
 /**
  * API for sending global cache notifications
- * 
- * See {@link fly/cache/global} 
+ *
+ * See {@link fly/cache/global}
  */
 import { default as global } from "./global"
 

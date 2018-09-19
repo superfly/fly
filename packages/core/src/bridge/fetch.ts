@@ -1,15 +1,15 @@
-import { registerBridge } from './'
+import { registerBridge } from "./"
 
-import { ivm } from '../'
+import { ivm } from "../"
 import log from "../log"
-import * as http from 'http'
-import * as https from 'https'
-import { parse as parseURL } from 'url'
+import * as http from "http"
+import * as https from "https"
+import { parse as parseURL } from "url"
 
-import { Bridge } from './bridge';
-import { Runtime } from '../runtime';
-import { streamManager } from '../stream_manager';
-import { isNumber } from 'util';
+import { Bridge } from "./bridge"
+import { Runtime } from "../runtime"
+import { streamManager } from "../stream_manager"
+import { isNumber } from "util"
 import { setTimeout } from "timers"
 
 const fetchAgent = new http.Agent({
@@ -17,7 +17,7 @@ const fetchAgent = new http.Agent({
   keepAliveMsecs: 5 * 1000,
   maxSockets: 64, // seems sensible, this is per origin
   maxFreeSockets: 64
-});
+})
 const fetchHttpsAgent = new https.Agent({
   keepAlive: true,
   keepAliveMsecs: 5 * 1000,
@@ -28,47 +28,62 @@ const fetchHttpsAgent = new https.Agent({
 
 function makeResponse(status: number, statusText: string, url: string, headers?: any) {
   return {
-    status: status,
-    statusText: statusText,
-    ok: (status >= 200 && status < 300),
-    url: url,
+    status,
+    statusText,
+    ok: status >= 200 && status < 300,
+    url,
     headers: headers || {}
   }
 }
-registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr: string, init: any, body: ArrayBuffer | null | string, cb: ivm.Reference<Function>) {
+registerBridge("fetch", function fetchBridge(
+  rt: Runtime,
+  bridge: Bridge,
+  urlStr: string,
+  init: any,
+  body: ArrayBuffer | null | string,
+  cb: ivm.Reference<() => void>
+) {
   log.debug("native fetch with url:", urlStr)
-  init || (init = {})
+  if (!init) {
+    init = {}
+  }
   const u = parseURL(urlStr)
 
-  if (u.protocol === 'file:') {
+  if (u.protocol === "file:") {
     if (!bridge.fileStore) {
       cb.applyIgnored(null, ["no file store configured, should not happen!"])
       return
     }
 
-    if (init.method && init.method != 'GET') {
-      cb.applyIgnored(null, [null,
-        makeResponse(405, "Method Not Allowed", urlStr)
-      ])
+    if (init.method && init.method !== "GET") {
+      cb.applyIgnored(null, [null, makeResponse(405, "Method Not Allowed", urlStr)])
       return
     }
 
     try {
-      bridge.fileStore.createReadStream(rt, urlStr.replace("file://", "")).then((stream) => {
-        const id = streamManager.add(rt, stream)
-        cb.applyIgnored(null, [null,
-          new ivm.ExternalCopy(makeResponse(200, "OK", urlStr)).copyInto({ release: true }),
-          id
-        ])
-      }).catch((err) => {
-        cb.applyIgnored(null, [null,
-          new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({ release: true }),
-          ""
-        ])
-      })
+      bridge.fileStore
+        .createReadStream(rt, urlStr.replace("file://", ""))
+        .then(stream => {
+          const id = streamManager.add(rt, stream)
+          cb.applyIgnored(null, [
+            null,
+            new ivm.ExternalCopy(makeResponse(200, "OK", urlStr)).copyInto({ release: true }),
+            id
+          ])
+        })
+        .catch(err => {
+          cb.applyIgnored(null, [
+            null,
+            new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({
+              release: true
+            }),
+            ""
+          ])
+        })
     } catch (e) {
       // Might throw FileNotFound
-      cb.applyIgnored(null, [null,
+      cb.applyIgnored(null, [
+        null,
         new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({ release: true }),
         ""
       ])
@@ -76,13 +91,13 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     return
   }
 
-  const httpFn = u.protocol == 'http:' ? http.request : https.request
-  const httpAgent = u.protocol == 'http:' ? fetchAgent : fetchHttpsAgent
+  const httpFn = u.protocol === "http:" ? http.request : https.request
+  const httpAgent = u.protocol === "http:" ? fetchAgent : fetchHttpsAgent
 
-  let method = init.method || "GET"
-  let headers = init.headers || {}
+  const method = init.method || "GET"
+  const headers = init.headers || {}
 
-  let req: http.ClientRequest;
+  let req: http.ClientRequest
 
   let path = u.pathname
   if (u.query != null) {
@@ -95,22 +110,22 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   const reqOptions: https.RequestOptions = {
     agent: httpAgent,
     protocol: u.protocol,
-    path: path,
+    path,
     hostname: u.hostname,
     host: u.host,
     port: u.port,
-    method: method,
-    headers: headers,
+    method,
+    headers,
     timeout: 60 * 1000
   }
 
-  if (httpFn == https.request) {
+  if (httpFn === https.request) {
     reqOptions.servername = reqOptions.hostname
   }
   req = httpFn(reqOptions)
   req.setNoDelay(true)
 
-  req.setHeader('fly-app', rt.app.name)
+  req.setHeader("fly-app", rt.app.name)
 
   req.once("error", handleError)
   req.once("timeout", handleTimeout)
@@ -119,7 +134,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   const start = process.hrtime()
   const dataOut = body ? Buffer.byteLength(body) : 0
 
-  setImmediate(function () {
+  setImmediate(() => {
     if (body instanceof ArrayBuffer) {
       req.end(Buffer.from(body))
     } else {
@@ -138,7 +153,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     clearFetchTimeout()
     rt.reportUsage("fetch", {
       data_out: dataOut,
-      method: method,
+      method,
       host: u.host,
       path: u.path,
       remote_addr: res.socket.remoteAddress,
@@ -156,7 +171,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
       headers: res.headers
     }).copyInto({ release: true })
 
-    if (res.method === 'GET' || res.method === 'HEAD') {
+    if (res.method === "GET" || res.method === "HEAD") {
       return cb.applyIgnored(null, [null, retInit])
     }
 
@@ -166,10 +181,15 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
   function handleError(err: Error) {
     clearFetchTimeout()
     log.error("error requesting http resource", err)
-    cb.applyIgnored(null, [err && err.toString() || "unknown error"])
+    cb.applyIgnored(null, [(err && err.toString()) || "unknown error"])
     req.removeAllListeners()
-    if (!req.aborted)
-      try { req.abort() } catch (e) { }
+    if (!req.aborted) {
+      try {
+        req.abort()
+      } catch (e) {
+        // ignore
+      }
+    }
   }
 
   function handleUserTimeout() {
@@ -177,7 +197,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     log.error("fetch timeout")
     cb.applyIgnored(null, ["http request timeout"])
     req.removeAllListeners()
-    req.once("error", (err) => log.debug("error after fetch timeout:", err)) // swallow next errors
+    req.once("error", err => log.debug("error after fetch timeout:", err)) // swallow next errors
     req.once("timeout", () => log.debug("timeout after fetch timeout")) // swallow next errors
     req.abort()
   }
@@ -185,7 +205,7 @@ registerBridge('fetch', function fetchBridge(rt: Runtime, bridge: Bridge, urlStr
     clearFetchTimeout()
     cb.applyIgnored(null, ["http request timeout"])
     req.removeAllListeners()
-    req.once("error", (err) => log.debug("error after timeout:", err)) // swallow possible error before abort
+    req.once("error", err => log.debug("error after timeout:", err)) // swallow possible error before abort
     req.abort()
   }
 })
