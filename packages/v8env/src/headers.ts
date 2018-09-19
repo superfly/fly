@@ -9,7 +9,7 @@ import { logger } from './logger'
  * @param {Object} [init]
  */
 export default class Headers {
-  private headerMap: { [key: string]: string } = {};
+  private headerMap: { [key: string]: string[] } = {};
 
   constructor(init: HeadersInit) {
     if (init instanceof Headers) {
@@ -44,11 +44,10 @@ export default class Headers {
   public append(name: string, value: string): void {
     name = name.toLowerCase();
     if (this.headerMap[name]) {
-      this.headerMap[name] += `, ${value}`;
-      return;
+      this.headerMap[name].push(name)
+    } else {
+      this.set(name, value);
     }
-
-    this.set(name, value);
   }
 
   /** Deletes header(s) by name
@@ -65,7 +64,18 @@ export default class Headers {
    */
   public get(name: string): string | null {
     name = name.toLowerCase();
-    return this.headerMap[name] || null;
+    if (name === 'cookie' || name === 'set-cookie') {
+      return this.headerMap[name][0] || null;
+    }
+
+    if (this.headerMap[name] && this.headerMap[name].length > 0) {
+      return this.headerMap[name].join(", ");
+    }
+    return null;
+  }
+
+  public getAll(name: string): string[] {
+    return this.headerMap[name.toLowerCase()] || [];
   }
 
   /**
@@ -75,7 +85,7 @@ export default class Headers {
    */
   public has(name: string): boolean {
     name = name.toLowerCase();
-    return this.headerMap[name] == null;
+    return this.headerMap[name] && this.headerMap[name].length > 0;
   }
 
   /**
@@ -83,27 +93,32 @@ export default class Headers {
    * @param {String} name
    * @param {String} value
    */
-  public set(name: string, value: string): void {
+  public set(name: string, value: string | string[]): void {
     name = name.toLowerCase();
-    this.headerMap[name] = value
+    if (Array.isArray(value)) {
+      this.headerMap[name] = value
+    } else {
+      this.headerMap[name] = [value];
+    }
   }
 
   /**
    * @returns {Object<string,string[]>}
    */
-  public toJSON(): { [key: string]: string } {
-    const jsonHeaders = {}
-    this.forEach((value, key) => {
-      logger.debug("setting", key, value);
-      jsonHeaders[key] = value;
-    });
-    return jsonHeaders;
+  public toJSON(): { [key: string]: string[] } {
+    return { ...this.headerMap };
   }
 
   public forEach(callbackfn: (value: string, key: string, parent: Headers) => void, thisArg?: any): void {
     const cb = thisArg ? callbackfn.bind(thisArg) : callbackfn;
     for (const key in this.headerMap) {
-      cb(this.headerMap[key], key, this);
+      if (key === "cookie" || key === "set-cookie") {
+        for (const valueIdx in this.headerMap[key]) {
+          cb(this.headerMap[key][valueIdx], key, this);
+        }
+      } else {
+        cb(this.get(key), key, this);
+      }
     }
   }
 }
