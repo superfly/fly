@@ -83,9 +83,11 @@ export class MiddlewareChain {
   public use(mw, settings) {
     // logger.debug("use called", mw.type, mw.settings.toString())
 
-    if (mw instanceof Middleware) { this.chain.push(mw) }
-    else if (typeof mw === "object") { this.chain.push(new Middleware(mw)) }
-    else if (typeof mw === "string") {
+    if (mw instanceof Middleware) {
+      this.chain.push(mw)
+    } else if (typeof mw === "object") {
+      this.chain.push(new Middleware(mw))
+    } else if (typeof mw === "string") {
       const fn = middleware[mw]
       if (fn) {
         this.chain.push(
@@ -95,8 +97,9 @@ export class MiddlewareChain {
             fn
           })
         )
+      } else {
+        throw new Error("middleware " + mw + " not found")
       }
-      else { throw new Error("middleware " + mw + " not found") }
     } else if (typeof mw === "function") {
       this.chain.push(
         new Middleware({
@@ -105,8 +108,9 @@ export class MiddlewareChain {
           fn: mw
         })
       )
-           }
-    else { this.chain.push(new Middleware(mw)) }
+    } else {
+      this.chain.push(new Middleware(mw))
+    }
   }
 
   /**
@@ -117,7 +121,9 @@ export class MiddlewareChain {
   public async run(req) {
     try {
       const res = await this.buildNext(this.chain[0], this.currentPos)(req)
-      if (res instanceof Response) { return res }
+      if (res instanceof Response) {
+        return res
+      }
       throw errMiddlewareNotPromise
     } catch (err) {
       logger.debug("error running middleware chain:", err.toString())
@@ -129,7 +135,9 @@ export class MiddlewareChain {
 
   public buildNext(mw, pos) {
     logger.debug("buildNext pos:", pos)
-    if (!mw) { return this.lastNextFunc }
+    if (!mw) {
+      return this.lastNextFunc
+    }
 
     logger.debug("mw.type", mw.type)
     const newPos = ++pos
@@ -145,7 +153,9 @@ export class MiddlewareChain {
     logger.debug("run mw:", mw.type)
     try {
       const res = mw.fn.call(mw, req, next)
-      if (res instanceof Promise) { return res }
+      if (res instanceof Promise) {
+        return res
+      }
       throw errMiddlewareNotPromise
     } catch (err) {
       logger.debug("error running middleware")

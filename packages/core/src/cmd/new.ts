@@ -15,11 +15,7 @@ export interface NewArgs {
 const newCommand = root
   .subCommand<NewOptions, NewArgs>("new [name]")
   .description("Create a new Fly app.")
-  .option(
-    "-t, --template [template]",
-    "Name of the template to use. default: getting-started",
-    "getting-started"
-  )
+  .option("-t, --template [template]", "Name of the template to use. default: getting-started", "getting-started")
   .option("-l, --list", "List available templates.")
   .action(async (options, args) => {
     const templateIndex = new TemplateIndex([path.resolve(__dirname, "..", "..", "examples")])
@@ -161,12 +157,12 @@ class Generator {
       return
     }
 
-    let packageData = JSON.parse(fs.readFileSync(packageFile, "utf8"))
+    const packageData = JSON.parse(fs.readFileSync(packageFile, "utf8"))
     packageData.name = this.appName
     fs.writeFileSync(packageFile, JSON.stringify(packageData), "utf8")
 
     console.log("Installing packages...")
-    let exec = execa("npm", ["install"], { cwd: this.rootDir })
+    const exec = execa("npm", ["install"], { cwd: this.rootDir })
     exec.stdout.pipe(process.stdout)
     exec.stderr.pipe(process.stderr)
 
@@ -174,7 +170,7 @@ class Generator {
   }
 
   private translateTemplateFilePath(inputPath: string): string {
-    let templateRelativePath = path.relative(this.template.path, inputPath)
+    const templateRelativePath = path.relative(this.template.path, inputPath)
     return path.join(this.rootDir, templateRelativePath)
   }
 }

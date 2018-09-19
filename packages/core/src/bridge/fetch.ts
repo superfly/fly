@@ -41,10 +41,12 @@ registerBridge("fetch", function fetchBridge(
   urlStr: string,
   init: any,
   body: ArrayBuffer | null | string,
-  cb: ivm.Reference<Function>
+  cb: ivm.Reference<() => void>
 ) {
   log.debug("native fetch with url:", urlStr)
-  init || (init = {})
+  if (!init) {
+    init = {}
+  }
   const u = parseURL(urlStr)
 
   if (u.protocol === "file:") {
@@ -53,7 +55,7 @@ registerBridge("fetch", function fetchBridge(
       return
     }
 
-    if (init.method && init.method != "GET") {
+    if (init.method && init.method !== "GET") {
       cb.applyIgnored(null, [null, makeResponse(405, "Method Not Allowed", urlStr)])
       return
     }
@@ -89,8 +91,8 @@ registerBridge("fetch", function fetchBridge(
     return
   }
 
-  const httpFn = u.protocol == "http:" ? http.request : https.request
-  const httpAgent = u.protocol == "http:" ? fetchAgent : fetchHttpsAgent
+  const httpFn = u.protocol === "http:" ? http.request : https.request
+  const httpAgent = u.protocol === "http:" ? fetchAgent : fetchHttpsAgent
 
   const method = init.method || "GET"
   const headers = init.headers || {}
@@ -117,7 +119,7 @@ registerBridge("fetch", function fetchBridge(
     timeout: 60 * 1000
   }
 
-  if (httpFn == https.request) {
+  if (httpFn === https.request) {
     reqOptions.servername = reqOptions.hostname
   }
   req = httpFn(reqOptions)
@@ -132,7 +134,7 @@ registerBridge("fetch", function fetchBridge(
   const start = process.hrtime()
   const dataOut = body ? Buffer.byteLength(body) : 0
 
-  setImmediate(function() {
+  setImmediate(() => {
     if (body instanceof ArrayBuffer) {
       req.end(Buffer.from(body))
     } else {
@@ -173,11 +175,7 @@ registerBridge("fetch", function fetchBridge(
       return cb.applyIgnored(null, [null, retInit])
     }
 
-    cb.applyIgnored(null, [
-      null,
-      retInit,
-      streamManager.add(rt, res, { readTimeout: init.readTimeout })
-    ])
+    cb.applyIgnored(null, [null, retInit, streamManager.add(rt, res, { readTimeout: init.readTimeout })])
   }
 
   function handleError(err: Error) {
@@ -188,7 +186,9 @@ registerBridge("fetch", function fetchBridge(
     if (!req.aborted) {
       try {
         req.abort()
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
     }
   }
 

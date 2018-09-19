@@ -18,7 +18,7 @@ export default class FormData {
   public append(name: string, value: string) {
     let vals: string[]
     const currentVals = this._data.get(name)
-    if (currentVals == undefined) {
+    if (currentVals === undefined) {
       vals = [value]
     } else {
       vals = currentVals.concat([value])
@@ -36,7 +36,7 @@ export default class FormData {
 
   public get(name: string): string | null {
     const vals = this._data.get(name)
-    if (vals == undefined) {
+    if (vals === undefined) {
       return null
     }
     return vals[0]
@@ -44,7 +44,7 @@ export default class FormData {
 
   public getAll(name: string): string[] {
     const vals = this._data.get(name)
-    if (vals == undefined) {
+    if (vals === undefined) {
       return []
     }
     return vals

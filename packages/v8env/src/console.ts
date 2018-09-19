@@ -27,7 +27,9 @@ export const console: Console = {
     fly.log("info", ...args)
   },
   assert(assertion, ...args) {
-    if (!assertion) { fly.log("info", ...args) }
+    if (!assertion) {
+      fly.log("info", ...args)
+    }
   },
   error(...args) {
     fly.log("error", ...args)
@@ -70,4 +72,6 @@ export const console: Console = {
   timeEnd: noop
 }
 
-function noop() {}
+function noop() {
+  // noop
+}

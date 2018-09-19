@@ -94,9 +94,11 @@ export class Server extends http.Server {
       return
     }
 
-    if (request.headers.host === undefined) { return }
+    if (request.headers.host === undefined) {
+      return
+    }
 
-    if (request.url == undefined) {
+    if (request.url === undefined) {
       // typescript check fix
       return
     }
@@ -128,9 +130,10 @@ export class Server extends http.Server {
       const end = process.hrtime(start)
       this.runtime.log(
         "info",
-        `${request.connection.remoteAddress} ${request.method} ${request.url} ${
-          response.statusCode
-        } ${((end[0] * 1e9 + end[1]) / 1e6).toFixed(2)}ms`
+        `${request.connection.remoteAddress} ${request.method} ${request.url} ${response.statusCode} ${(
+          (end[0] * 1e9 + end[1]) /
+          1e6
+        ).toFixed(2)}ms`
       )
     }
   }
@@ -138,17 +141,13 @@ export class Server extends http.Server {
 
 type V8ResponseBody = null | string | number | ArrayBuffer | Buffer
 
-export function handleRequest(
-  rt: Runtime,
-  req: http.IncomingMessage,
-  res: http.ServerResponse
-): Promise<number> {
+export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.ServerResponse): Promise<number> {
   const flyRecurseHeader = req.headers["fly-allow-recursion"]
   if (!flyRecurseHeader || !flyRecurseHeader[0]) {
     const flyAppHeader = req.headers["fly-app"]
     if (flyAppHeader) {
       const flyAppName: string = Array.isArray(flyAppHeader) ? flyAppHeader[0] : flyAppHeader
-      if (flyAppName == rt.app.name) {
+      if (flyAppName === rt.app.name) {
         res.writeHead(400)
         res.end("Too much recursion")
         req.destroy() // stop everything I guess.
@@ -182,10 +181,13 @@ export function handleRequest(
         return reject(err)
       }
 
+      // tslint:disable-next-line:forin
       for (let n in v8res.headers) {
         try {
           n = n.trim()
-          if (/^server$/i.test(n)) { continue }
+          if (/^server$/i.test(n)) {
+            continue
+          }
 
           const val = v8res.headers[n]
 
@@ -195,7 +197,9 @@ export function handleRequest(
         }
       }
 
-      for (const n of hopHeaders) { res.removeHeader(n) }
+      for (const n of hopHeaders) {
+        res.removeHeader(n)
+      }
 
       let dst: Writable = res
       const contentEncoding = res.getHeader("content-encoding")
@@ -221,7 +225,9 @@ export function handleRequest(
         ) {
           res.removeHeader("Content-Length")
           res.setHeader("Content-Encoding", "gzip")
-          dst = zlib.createGzip({ level: 2 })
+          dst = zlib.createGzip({
+            level: 2
+          })
           dst.pipe(res)
         }
       }
@@ -230,8 +236,12 @@ export function handleRequest(
 
       handleResponse(rt, resBody, res, dst)
         .then(len => {
-          rt.reportUsage("http", { data_out: len })
-          if (!res.finished) { res.end() } // we are done. triggers 'finish' event
+          rt.reportUsage("http", {
+            data_out: len
+          })
+          if (!res.finished) {
+            res.end()
+          } // we are done. triggers 'finish' event
           resolve(len)
         })
         .catch(reject)
@@ -250,26 +260,28 @@ export function handleRequest(
   })
 }
 
-function handleResponse(
-  rt: Runtime,
-  src: V8ResponseBody,
-  res: http.ServerResponse,
-  dst: Writable
-): Promise<number> {
-  if (!src) { return Promise.resolve(0) }
+function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerResponse, dst: Writable): Promise<number> {
+  if (!src) {
+    return Promise.resolve(0)
+  }
 
-  if (typeof src == "number") {
+  if (typeof src === "number") {
     return handleResponseStream(rt, src, res, dst)
   }
 
   let totalLength = 0
 
-  if (src instanceof ArrayBuffer) { src = Buffer.from(src) }
+  if (src instanceof ArrayBuffer) {
+    src = Buffer.from(src)
+  }
 
   return new Promise<number>((resolve, reject) => {
     res.on("finish", () => {
-      if (src instanceof Buffer) { totalLength = src.byteLength }
-      else if (typeof src === "string") { totalLength = Buffer.byteLength(src, "utf8") }
+      if (src instanceof Buffer) {
+        totalLength = src.byteLength
+      } else if (typeof src === "string") {
+        totalLength = Buffer.byteLength(src, "utf8")
+      }
       resolve(totalLength)
     })
     res.on("error", err => {
@@ -279,20 +291,15 @@ function handleResponse(
   })
 }
 
-function handleResponseStream(
-  rt: Runtime,
-  streamId: number,
-  res: http.ServerResponse,
-  dst: Writable
-): Promise<number> {
+function handleResponseStream(rt: Runtime, streamId: number, res: http.ServerResponse, dst: Writable): Promise<number> {
   return new Promise<number>((resolve, reject) => {
     setImmediate(() => {
       let dataOut = 0
-      dst.on("data", function(d) {
+      dst.on("data", d => {
         dataOut += d.byteLength
       })
       res
-        .on("finish", function() {
+        .on("finish", () => {
           resolve(dataOut)
         })
         .on("error", reject)
@@ -312,7 +319,9 @@ function handleResponseStream(
 
 function handleCriticalError(err: Error, req: http.IncomingMessage, res: http.ServerResponse) {
   log.error("critical error:", err)
-  if (res.finished) { return }
+  if (res.finished) {
+    return
+  }
   res.writeHead(500)
   res.end("Critical error.")
   req.destroy() // stop everything I guess.

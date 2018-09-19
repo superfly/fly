@@ -3,8 +3,8 @@ import { registerBridge } from "./"
 import { ivm } from "../"
 import { Runtime } from "../runtime"
 
-registerBridge("getHeapStatistics", function(rt: Runtime) {
-  return function(cb: ivm.Reference<Function>) {
+registerBridge("getHeapStatistics", (rt: Runtime) => {
+  return (cb: ivm.Reference<() => void>) => {
     rt.isolate
       .getHeapStatistics()
       .then(heap => {

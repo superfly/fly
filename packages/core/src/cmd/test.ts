@@ -10,15 +10,14 @@ import { App } from "../app"
 import { SQLiteDataStore } from "../sqlite_data_store"
 import { v8envModulePath } from "../v8env"
 
-const scripts = [
-  require.resolve("mocha/mocha"),
-  require.resolve(path.join(v8envModulePath, "testing", "setup"))
-].map(filename => {
-  return {
-    filename,
-    code: fs.readFileSync(filename).toString()
+const scripts = [require.resolve("mocha/mocha"), require.resolve(path.join(v8envModulePath, "testing", "setup"))].map(
+  filename => {
+    return {
+      filename,
+      code: fs.readFileSync(filename).toString()
+    }
   }
-})
+)
 
 const runPath = require.resolve(path.join(v8envModulePath, "testing", "run"))
 
@@ -57,9 +56,9 @@ root
       conf,
       { watch: false },
       async (err: Error, code: string, hash: string, sourceMap: string) => {
-        if (err) { throw err }
-
-        const app = appStore.app
+        if (err) {
+          throw err
+        }
 
         try {
           const app = appStore.app
@@ -68,7 +67,7 @@ root
               app: app.name,
               version: app.version,
               source: "",
-              source_hash: "",
+              sourceHash: "",
               config: {},
               secrets: {},
               env: "test"
@@ -80,8 +79,10 @@ root
 
           await rt.set(
             "_mocha_done",
-            new ivm.Reference(function(failures: number) {
-              if (failures) { return process.exit(1) }
+            new ivm.Reference((failures: number) => {
+              if (failures) {
+                return process.exit(1)
+              }
               process.exit()
             })
           )

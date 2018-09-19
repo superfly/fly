@@ -1,3 +1,5 @@
+/* tslint:disable:no-namespace */
+
 /**
  * Image manipulation APIs. Resize, convert, crop, etc. You can use this library to optimize images on-the-fly. Or, do clever things like adding watermarks.
  *
@@ -57,7 +59,7 @@ export class Image {
   }
 
   /**
-   * Scale image to `width` x `height`. This does not crop the image, it scales it to fit 
+   * Scale image to `width` x `height`. This does not crop the image, it scales it to fit
    * the specified width and height, and keeps the aspect ratio by default.
    * @param width Width in pixels of the resulting image.
    * Pass `undefined` or `null` to auto-scale the width to match the height.
@@ -66,7 +68,7 @@ export class Image {
    * @param options Scale options
    */
   public scale(width?: number, height?: number, options?: Image.ScaleOptions) {
-    this._imageOperation('scale', width, height, options)
+    this._imageOperation("scale", width, height, options)
     return this
   }
 
@@ -136,14 +138,18 @@ export class Image {
   public crop(crop?: Image.gravity | Image.strategy)
   /**
    * Crop to the specified width/height.
-   * 
+   *
    * @param width width to crop to
    * @param height height to crop to, defaults to proportional height
    * @param crop the cropping strategy to use
    * @return the Image instance
    */
   public crop(width: number, height?: number, crop?: Image.gravity | Image.strategy)
-  public crop(widthOrCrop?: number | Image.gravity | Image.strategy, heightOrCrop?: number | Image.gravity | Image.strategy, crop?: Image.gravity | Image.strategy) {
+  public crop(
+    widthOrCrop?: number | Image.gravity | Image.strategy,
+    heightOrCrop?: number | Image.gravity | Image.strategy,
+    crop?: Image.gravity | Image.strategy
+  ) {
     // crop can be an int so if we have one arg, assume it's crop
     if (widthOrCrop && !heightOrCrop && !crop) {
       crop = widthOrCrop
@@ -311,7 +317,7 @@ export class Image {
     }
     const oldref = this._ref
     this._ref = imageOperation(this._ref, name, ...args)
-    if (oldref && oldref != this._ref) {
+    if (oldref && oldref !== this._ref) {
       oldref.release()
     }
     return this
@@ -431,7 +437,7 @@ export namespace Image {
      * and WebP shrink-on-load feature, which can lead to a slight moiré pattern on
      * some images. (optional, default `true`)
      */
-    fastShrinkOnLoad?: boolean,
+    fastShrinkOnLoad?: boolean
   }
 
   /**
@@ -440,14 +446,14 @@ export namespace Image {
   export interface ScaleOptions extends ResizeOptions {
     /**
      * Stretch image if resize dimensions are larger than the source image.
-     * 
+     *
      * Defaults to `true`
      */
-    allowEnlargement?: boolean,
+    allowEnlargement?: boolean
 
     /**
      * Resize to exactly the width and height specified, changing aspect ratio if necessary
-     * 
+     *
      * Defaults to `false`
      */
     ignoreAspectRatio?: boolean
@@ -464,8 +470,8 @@ export namespace Image {
     gravity?: gravity
     top?: number
     left?: number
-    tile?: Boolean
-    cutout?: Boolean
+    tile?: boolean
+    cutout?: boolean
     density?: number
   }
 
@@ -499,9 +505,11 @@ function constructImage(data: ArrayBuffer | Image.CreateOptions, options?: any) 
   }
   return bridge.dispatchSync("fly.Image()", ...args)
 }
+
 function imageOperation(ref: any, name: string, ...args: any[]) {
   return bridge.dispatchSync("fly.Image.operation", ref, name, ...args)
 }
+
 async function imageToBuffer(ref: any) {
   return new Promise<Image.OperationResult>((resolve, reject) => {
     bridge.dispatch("fly.Image.toBuffer", ref, (err: string, data: ArrayBuffer, info: any) => {
@@ -548,17 +556,17 @@ export namespace Image {
    */
   export enum fit {
     /**
-     * Preserving aspect ratio, resize the image to be as small as possible while ensuring its 
+     * Preserving aspect ratio, resize the image to be as small as possible while ensuring its
      * dimensions are greater than or equal to the `width` and `height` specified.
      */
     cover = "cover",
     /**
-     * Preserving aspect ratio, resize the image to be as large as possible while ensuring its 
+     * Preserving aspect ratio, resize the image to be as large as possible while ensuring its
      *  dimensions are less than or equal to the `width` and `height` specified.
      */
     contain = "contain",
     /**
-     * Ignoring the aspect ratio of the input, stretch the image to the exact `width` and/or 
+     * Ignoring the aspect ratio of the input, stretch the image to the exact `width` and/or
      * `height` provided.
      */
     fill = "fill"

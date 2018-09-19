@@ -32,10 +32,7 @@ export interface CacheSetOptions {
  */
 export function get(key: string) {
   return new Promise<ArrayBuffer | null>(function cacheGetPromise(resolve, reject) {
-    bridge.dispatch("flyCacheGet", key, function cacheGetCallback(
-      err: string | null | undefined,
-      value?: ArrayBuffer
-    ) {
+    bridge.dispatch("flyCacheGet", key, function cacheGetCallback(err: string | null | undefined, value?: ArrayBuffer) {
       if (err != null) {
         reject(err)
         return
@@ -105,19 +102,16 @@ export function set(key: string, value: string | ArrayBuffer, options?: CacheSet
     throw new Error("Cache values must be either a string or array buffer")
   }
   return new Promise<boolean>(function cacheSetPromise(resolve, reject) {
-    bridge.dispatch(
-      "flyCacheSet",
-      key,
-      value,
-      options && JSON.stringify(options),
-      function cacheSetCallback(err: string | null, ok?: boolean) {
-        if (err != null) {
-          reject(err)
-          return
-        }
-        resolve(ok)
+    bridge.dispatch("flyCacheSet", key, value, options && JSON.stringify(options), function cacheSetCallback(
+      err: string | null,
+      ok?: boolean
+    ) {
+      if (err != null) {
+        reject(err)
+        return
       }
-    )
+      resolve(ok)
+    })
   })
 }
 
@@ -129,10 +123,7 @@ export function set(key: string, value: string | ArrayBuffer, options?: CacheSet
  */
 export function expire(key: string, ttl: number) {
   return new Promise<boolean>(function cacheSetPromise(resolve, reject) {
-    bridge.dispatch("flyCacheExpire", key, ttl, function cacheSetCallback(
-      err: string | null,
-      ok?: boolean
-    ) {
+    bridge.dispatch("flyCacheExpire", key, ttl, function cacheSetCallback(err: string | null, ok?: boolean) {
       if (err != null) {
         reject(err)
         return
@@ -150,10 +141,7 @@ export function expire(key: string, ttl: number) {
  */
 export function setTags(key: string, tags: string[]) {
   return new Promise<boolean>(function cacheSetTagsPromise(resolve, reject) {
-    bridge.dispatch("flyCacheSetTags", key, tags, function cacheSetTagsCallback(
-      err: string | null,
-      ok?: boolean
-    ) {
+    bridge.dispatch("flyCacheSetTags", key, tags, function cacheSetTagsCallback(err: string | null, ok?: boolean) {
       if (err != null) {
         reject(err)
         return
@@ -169,10 +157,7 @@ export function setTags(key: string, tags: string[]) {
  */
 export function purgeTag(tag: string) {
   return new Promise<string[]>(function cachePurgeTagsPromise(resolve, reject) {
-    bridge.dispatch("flyCachePurgeTags", tag, function cachePurgeTagsCallback(
-      err: string | null,
-      keys?: string
-    ) {
+    bridge.dispatch("flyCachePurgeTags", tag, function cachePurgeTagsCallback(err: string | null, keys?: string) {
       if (err != null || !keys) {
         reject(err || "weird result")
         return
@@ -195,10 +180,7 @@ export function purgeTag(tag: string) {
  */
 export function del(key: string) {
   return new Promise<boolean>(function cacheDelPromise(resolve, reject) {
-    bridge.dispatch("flyCacheDel", key, function cacheDelCallback(
-      err: string | null,
-      ok?: boolean
-    ) {
+    bridge.dispatch("flyCacheDel", key, function cacheDelCallback(err: string | null, ok?: boolean) {
       if (err != null) {
         reject(err)
         return

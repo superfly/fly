@@ -24,11 +24,11 @@ const secretsSet = secrets
     try {
       const appName = getAppName(this)
 
-      const value = opts.filename
-        ? fs.readFileSync(opts.filename[0]).toString()
-        : args.value && args.value
+      const value = opts.filename ? fs.readFileSync(opts.filename[0]).toString() : args.value && args.value
 
-      if (!value) { throw new Error("Either a value or --from-file needs to be provided.") }
+      if (!value) {
+        throw new Error("Either a value or --from-file needs to be provided.")
+      }
 
       const res = await API.patch(`/api/v1/apps/${appName}/secrets`, {
         data: {
@@ -38,16 +38,15 @@ const secretsSet = secrets
           }
         }
       })
-      processResponse(res, (res: any) => {
-        console.log(
-          `Deploying v${
-            res.data.data.attributes.version
-          } globally, should be updated in a few seconds.`
-        )
+      processResponse(res, () => {
+        console.log(`Deploying v${res.data.data.attributes.version} globally, should be updated in a few seconds.`)
       })
     } catch (e) {
-      if (e.response) { console.log(e.response.data) }
-      else { throw e }
+      if (e.response) {
+        console.log(e.response.data)
+      } else {
+        throw e
+      }
     }
   })
 

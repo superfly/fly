@@ -10,12 +10,17 @@ const orgs = root
     const API = apiClient(this)
     try {
       const res = await API.get(`/api/v1/orgs`)
-      processResponse(res, (res: any) => {
-        for (const org of res.data.data) { console.log(org.id) }
+      processResponse(res, () => {
+        for (const org of res.data.data) {
+          console.log(org.id)
+        }
       })
     } catch (e) {
-      if (e.response) { console.log(e.response.data) }
-      else { throw e }
+      if (e.response) {
+        console.log(e.response.data)
+      } else {
+        throw e
+      }
     }
   })
 

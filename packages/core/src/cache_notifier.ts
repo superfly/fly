@@ -37,7 +37,9 @@ export class CacheNotifier {
     const lockKey = "lock:" + [type, value, ts].join(":")
     log.debug("cache notifier received msg:", type, ns, value, this.adapter.constructor.name)
     const hasLock = await this.cacheStore.set(ns, lockKey, this.pid, { ttl: 10, onlyIfEmpty: true })
-    if (!hasLock) { return false }
+    if (!hasLock) {
+      return false
+    }
     try {
       switch (type) {
         case CacheOperation.del: {
@@ -58,7 +60,9 @@ export class CacheNotifier {
 }
 
 export function isCacheOperation(op: any): op is CacheOperation {
-  if (typeof op !== "string") { return false }
+  if (typeof op !== "string") {
+    return false
+  }
 
   const v = Object.getOwnPropertyNames(CacheOperation)
 
@@ -74,7 +78,9 @@ export class LocalCacheNotifier implements CacheNotifierAdapter {
     // using setImmediate here to fake an async adapter
     return new Promise<boolean>(resolve => {
       setImmediate(() => {
-        this._handler && this._handler(msg)
+        if (this._handler) {
+          this._handler(msg)
+        }
         resolve(true)
       })
     })

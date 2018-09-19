@@ -5,6 +5,7 @@ import CookieJar from "./cookie_jar"
 import Body from "./body_mixin"
 
 function ushort(x) {
+  // tslint:disable-next-line:no-bitwise
   return x & 0xffff
 }
 
@@ -30,7 +31,9 @@ export class Response extends Body {
   }
 
   constructor(body, init) {
-    if (arguments.length < 1) { body = "" }
+    if (arguments.length < 1) {
+      body = ""
+    }
 
     super(body)
 
@@ -51,8 +54,10 @@ export class Response extends Body {
     this.url = init.url || ""
 
     // readonly attribute unsigned short status;
-    let status = "status" in init ? ushort(init.status) : 200
-    if (status < 200 || status > 599) { throw RangeError() }
+    const status = "status" in init ? ushort(init.status) : 200
+    if (status < 200 || status > 599) {
+      throw RangeError()
+    }
 
     /**
      * @public
@@ -70,8 +75,10 @@ export class Response extends Body {
     this.ok = 200 <= this.status && this.status <= 299
 
     // readonly attribute ByteString statusText;
-    let statusText = "statusText" in init ? String(init.statusText) : "OK"
-    if (/[^\x00-\xFF]/.test(statusText)) { throw TypeError() }
+    const statusText = "statusText" in init ? String(init.statusText) : "OK"
+    if (/[^\x00-\xFF]/.test(statusText)) {
+      throw TypeError()
+    }
 
     /**
      * @public
@@ -99,13 +106,17 @@ export class Response extends Body {
    * @type CookieJar
    */
   get cookies() {
-    if (this.cookieJar) { return this.cookieJar }
+    if (this.cookieJar) {
+      return this.cookieJar
+    }
     this.cookieJar = new CookieJar(this)
     return this.cookieJar
   }
 
   public clone() {
-    if (this.bodyUsed) { throw new Error("Body has already been used") }
+    if (this.bodyUsed) {
+      throw new Error("Body has already been used")
+    }
     let body2 = this.bodySource
     if (this.bodySource instanceof ReadableStream) {
       const tees = this.body.tee()

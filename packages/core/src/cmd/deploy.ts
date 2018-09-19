@@ -40,9 +40,7 @@ const deploy = root
       { watch: false, uglify: true },
       async (err: Error, source: string, hash: string, sourceMap: string) => {
         // look for generated config
-        const configPath = existsSync(pathResolve(".fly", ".fly.yml"))
-          ? ".fly/.fly.yml"
-          : ".fly.yml"
+        const configPath = existsSync(pathResolve(".fly", ".fly.yml")) ? ".fly/.fly.yml" : ".fly.yml"
         try {
           const entries = [
             configPath, // processed .fly.yml
@@ -68,12 +66,12 @@ const deploy = root
                   console.log(`Bundle size: ${buf.byteLength / (1024 * 1024)}MB`)
                   const gz = pako.gzip(buf)
                   console.log(`Bundle compressed size: ${gz.byteLength / (1024 * 1024)}MB`)
-                  const hash = createHash("sha1") // we need to verify the upload is :+1:
-                  hash.update(buf)
+                  const bundleHash = createHash("sha1") // we need to verify the upload is :+1:
+                  bundleHash.update(buf)
 
-                  const res = API.post(`/api/v1/apps/${appName}/releases`, gz, {
+                  API.post(`/api/v1/apps/${appName}/releases`, gz, {
                     params: {
-                      sha1: hash.digest("hex"),
+                      sha1: bundleHash.digest("hex"),
                       env
                     },
                     headers: {
@@ -91,17 +89,14 @@ const deploy = root
               .pipe(createWriteStream(pathResolve(cwd, ".fly/bundle.tar")))
           })
 
-          processResponse(res, (res: any) => {
-            console.log(
-              `Deploying v${
-                res.data.data.attributes.version
-              } globally @ https://${appName}.edgeapp.net`
-            )
+          processResponse(res, () => {
+            console.log(`Deploying v${res.data.data.attributes.version} globally @ https://${appName}.edgeapp.net`)
             console.log(`App should be updated in a few seconds.`)
           })
         } catch (e) {
-          if (e.response) { console.log(e.response.data) }
-          else {
+          if (e.response) {
+            console.log(e.response.data)
+          } else {
             throw e
           }
         }

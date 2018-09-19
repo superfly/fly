@@ -79,7 +79,9 @@ export class Trace {
   }
 
   public nanoseconds() {
-    if (!this.diff) { return 0 }
+    if (!this.diff) {
+      return 0
+    }
     return this.diff[0] * nsPerSecond + this.diff[1]
   }
 
@@ -87,13 +89,13 @@ export class Trace {
     return this.nanoseconds() / (1000 * 1000.0)
   }
 
-  public static start = function(name: string, parent?: Trace) {
+  public static start = (name: string, parent?: Trace) => {
     const t: Trace = new Trace(name, parent)
     t.start()
     return t
   }
 
-  public static tryStart = function(name: string, trace?: Trace) {
+  public static tryStart = (name: string, trace?: Trace) => {
     if (trace) {
       return trace.start(name)
     } else {

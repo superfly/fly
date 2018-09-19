@@ -31,7 +31,9 @@ export function getToken(cmd: Command<any, CommonOptions>) {
   if (!token) {
     try {
       const creds = getCredentials()
-      if (creds) { return creds.access_token }
+      if (creds) {
+        return creds.access_token
+      }
     } catch (e) {
       // do nothing
     }
@@ -77,12 +79,14 @@ export function homeConfigPath() {
 }
 
 function getUserHome() {
-  return process.env[process.platform == "win32" ? "USERPROFILE" : "HOME"]
+  return process.env[process.platform === "win32" ? "USERPROFILE" : "HOME"]
 }
 
 function getCredentials() {
   const credspath = path.join(homeConfigPath(), "credentials.yml")
-  if (!fs.existsSync(credspath)) { return }
+  if (!fs.existsSync(credspath)) {
+    return
+  }
   return YAML.load(fs.readFileSync(credspath).toString())
 }
 

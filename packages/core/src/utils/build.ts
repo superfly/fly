@@ -15,7 +15,7 @@ export interface AppBuilderOptions {
   uglify?: boolean
 }
 
-export function buildApp(cwd: string, opts: AppBuilderOptions, callback: Function) {
+export function buildApp(cwd: string, opts: AppBuilderOptions, callback: (...args: any[]) => void) {
   buildAppWithConfig(cwd, getWebpackConfig(cwd, opts), opts, callback)
 }
 
@@ -23,21 +23,23 @@ export function buildAppWithConfig(
   cwd: string,
   config: webpack.Configuration,
   opts: AppBuilderOptions,
-  callback: Function
+  callback: () => void
 ) {
   console.log("Compiling app w/ options:", opts)
   const compiler = webpack(config)
 
   const cb = compileCallback(cwd, compiler, callback)
 
-  if (opts.watch) { return compiler.watch({}, cb) }
+  if (opts.watch) {
+    return compiler.watch({}, cb)
+  }
 
   compiler.run(cb)
 }
 
-function compileCallback(cwd: string, compiler: webpack.Compiler, callback: Function) {
+function compileCallback(cwd: string, compiler: webpack.Compiler, callback: (...args: any[]) => void) {
   let codeHash: string
-  return function(err: Error, stats: any) {
+  return (err: Error, stats: any) => {
     if (err) {
       callback(err)
       return
@@ -54,7 +56,7 @@ function compileCallback(cwd: string, compiler: webpack.Compiler, callback: Func
       return
     }
 
-    if (stats.hash != codeHash) {
+    if (stats.hash !== codeHash) {
       console.log(`Compiled app bundle (hash: ${stats.hash})`)
       const source = fs.readFileSync(path.resolve(cwd, ".fly/build/bundle.js"))
       const sourceMap = fs.readFileSync(path.resolve(cwd, ".fly/build/bundle.map.json"))

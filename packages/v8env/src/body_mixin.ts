@@ -12,7 +12,7 @@ declare var ReadableStream: {
   new (source: any | undefined): ReadableStream
 }
 
-export type BodySource = Blob | BufferSource | FormData | URLSearchParams | ReadableStream | String
+export type BodySource = Blob | BufferSource | FormData | URLSearchParams | ReadableStream | string
 
 export default class BodyMixin implements Body {
   protected bodySource: BodySource
@@ -61,6 +61,7 @@ export default class BodyMixin implements Body {
     const raw = await this.text()
     const query = queryParse(raw)
     const formdata = new FormData()
+    // tslint:disable-next-line:forin
     for (const key in query) {
       const value = query[key]
       if (Array.isArray(value)) {

@@ -9,7 +9,7 @@ import { AxiosInstance } from "axios"
 export interface LogsOptions extends CommonOptions {}
 export interface LogsArgs {}
 
-const logs = root
+const logsCommand = root
   .subCommand<LogsOptions, LogsArgs>("logs")
   .description("Logs from your app.")
   .action(async function(this: Command<LogsArgs, LogsOptions>, opts, args, rest) {
@@ -37,8 +37,11 @@ async function continuouslyGetLogs(API: AxiosInstance, appName: string) {
       lastNextToken = nextToken
       showLogs(logs)
     } catch (e) {
-      if (e.response) { processResponse(e.response) }
-      else { console.log(e.stack) }
+      if (e.response) {
+        processResponse(e.response)
+      } else {
+        console.log(e.stack)
+      }
       break
     }
     await sleep(count > 5 ? 200 : 2500) // give it a rest!
@@ -67,21 +70,17 @@ async function showLogs(logs: Log[]) {
   for (const l of logs) {
     const region = l.attributes.meta.region
     const ts = new Date(l.attributes.timestamp)
-    const lvl = levels[parseInt(l.attributes.level)] || l.attributes.level
+    const lvl = levels[parseInt(l.attributes.level, 10)] || l.attributes.level
     const levelColor = levelColorFn[lvl] || colors.white
     console.log(
-      `${colors.dim(ts.toISOString().split(".")[0] + "Z")} ${colors.green(region)} [${levelColor(
-        lvl
-      )}] ${l.attributes.message}`
+      `${colors.dim(ts.toISOString().split(".")[0] + "Z")} ${colors.green(region)} [${levelColor(lvl)}] ${
+        l.attributes.message
+      }`
     )
   }
 }
 
-async function getLogs(
-  API: AxiosInstance,
-  appName: string,
-  nextToken?: string
-): Promise<[any[], string | undefined]> {
+async function getLogs(API: AxiosInstance, appName: string, nextToken?: string): Promise<[any[], string | undefined]> {
   const res = await API.get(`/api/v1/apps/${appName}/logs`, {
     params: { next_token: nextToken }
   })
@@ -99,12 +98,12 @@ function sleep(i: number) {
 }
 
 class LogResponseError extends Error {
-  public response: Object
+  public response: object
 
-  constructor(response: Object, ...params: any[]) {
+  constructor(response: object, ...params: any[]) {
     super(...params)
     this.response = response
   }
 }
 
-addCommonOptions(logs)
+addCommonOptions(logsCommand)

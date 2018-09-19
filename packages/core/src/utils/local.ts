@@ -47,18 +47,14 @@ export class LocalRelease extends EventEmitter implements Release {
   public app: string
   public version: number
   public source: string
-  public source_hash: string
-  public source_map?: string
+  public sourceHash: string
+  public sourceMap?: string
   public hash?: string
   public config: any
   public secrets: any
   public files: string[]
 
-  constructor(
-    cwd: string = process.cwd(),
-    env: string = getEnv(),
-    options: LocalReleaseOptions = {}
-  ) {
+  constructor(cwd: string = process.cwd(), env: string = getEnv(), options: LocalReleaseOptions = {}) {
     super()
     this.cwd = cwd
     this.env = env || getEnv()
@@ -71,10 +67,12 @@ export class LocalRelease extends EventEmitter implements Release {
     this.version = 0
     this.source = ""
     this.hash = ""
-    this.source_hash = ""
+    this.sourceHash = ""
     this.files = conf.files || []
 
-    if (!options.noWatch) { this.watchConfig() }
+    if (!options.noWatch) {
+      this.watchConfig()
+    }
   }
 
   public getConfig(): FlyConfig {
@@ -100,7 +98,9 @@ export class LocalRelease extends EventEmitter implements Release {
   }
 
   public expandFiles(config: FlyConfig) {
-    if (!config.files) { return }
+    if (!config.files) {
+      return
+    }
     let dirty = false
     const files = config.files
     config.files = []
@@ -114,7 +114,9 @@ export class LocalRelease extends EventEmitter implements Release {
         }
       }
       for (const f of glob.sync(p, { cwd: this.cwd })) {
-        if (f !== p) { dirty = true } // at least one glob
+        if (f !== p) {
+          dirty = true
+        } // at least one glob
         config.files.push(f)
       }
     }
@@ -140,14 +142,14 @@ export class LocalRelease extends EventEmitter implements Release {
     watcher.on("change", this.update.bind(this, "change"))
   }
 
-  public update(event: string, path: string) {
-    log.info(`Config watch (${event}: ${path})`)
-    if (path.endsWith(configFile)) {
+  public update(event: string, appPath: string) {
+    log.info(`Config watch (${event}: ${appPath})`)
+    if (appPath.endsWith(configFile)) {
       const conf = this.getConfig()
       this.config = conf.config
       this.files = conf.files || []
       this.app = conf.app || conf.app_id || ""
-    } else if (path.endsWith(secretsFile)) {
+    } else if (appPath.endsWith(secretsFile)) {
       this.secrets = this.getSecrets()
     }
     this.emit("update", this)

@@ -36,22 +36,22 @@ describe("Image", () => {
   })
 
   describe("scale()", () => {
-    it("fit:contain", async () =>{
+    it("fit:contain", async () => {
       const img = new Image(picture)
       const meta = img.metadata()
 
-      const scaled = await img.scale(500, 1000, { fit: Image.fit.contain}).toImage()
+      const scaled = await img.scale(500, 1000, { fit: Image.fit.contain }).toImage()
       const scaledMeta = scaled.metadata()
 
       expect(scaledMeta.width).to.eq(500)
       expect(scaledMeta.height).to.eq(335)
 
-      const widthRatio = Math.round(meta.width / scaledMeta.width * 10) / 10
-      const heigthRatio = Math.round(meta.height / scaledMeta.height * 10) / 10
+      const widthRatio = Math.round((meta.width / scaledMeta.width) * 10) / 10
+      const heigthRatio = Math.round((meta.height / scaledMeta.height) * 10) / 10
       expect(widthRatio).to.eq(heigthRatio)
     })
 
-    it('fit:cover', async () => {
+    it("fit:cover", async () => {
       const img = new Image(picture)
 
       const scaled = await img.scale(100, 300, { fit: Image.fit.cover }).toImage()
@@ -61,7 +61,7 @@ describe("Image", () => {
       expect(scaledMeta.height).to.be.gte(300)
     })
 
-    it('fit:fill', async() =>{
+    it("fit:fill", async () => {
       const img = new Image(picture)
 
       const scaled = await img.scale(100, 300, { fit: Image.fit.fill }).toImage()

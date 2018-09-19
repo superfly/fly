@@ -28,19 +28,13 @@ export class Collection {
   public put(key: string, obj: string) {
     return new Promise((resolve, reject) => {
       try {
-        bridge.dispatch(
-          "fly.Data.put",
-          this.name,
-          key,
-          JSON.stringify(obj),
-          (err: string | null, ok: boolean) => {
-            if (err) {
-              reject(new Error(err))
-              return
-            }
-            resolve(ok)
+        bridge.dispatch("fly.Data.put", this.name, key, JSON.stringify(obj), (err: string | null, ok: boolean) => {
+          if (err) {
+            reject(new Error(err))
+            return
           }
-        )
+          resolve(ok)
+        })
       } catch (err) {
         reject(err)
       }

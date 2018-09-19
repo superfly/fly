@@ -1,3 +1,5 @@
+/* tslint:disable:prefer-for-of */
+
 /**
  * @module fly
  * @private
@@ -31,14 +33,19 @@ Headers.prototype = {
     this._headerList.push([name, value])
   },
 
-  /** Deletes header(s) by name
-   * @param {String} name */
+  /**
+   * Deletes header(s) by name
+   * @param {String} name
+   */
   delete: function delete_(name) {
     name = name.toLowerCase()
     let index = 0
     while (index < this._headerList.length) {
-      if (this._headerList[index][0] === name) { this._headerList.splice(index, 1) }
-      else { ++index }
+      if (this._headerList[index][0] === name) {
+        this._headerList.splice(index, 1)
+      } else {
+        ++index
+      }
     }
   },
 
@@ -51,9 +58,13 @@ Headers.prototype = {
     name = name.toLowerCase()
     const raw = []
     for (let index = 0; index < this._headerList.length; ++index) {
-      if (this._headerList[index][0] === name) { raw.push(this._headerList[index][1]) }
+      if (this._headerList[index][0] === name) {
+        raw.push(this._headerList[index][1])
+      }
     }
-    if (raw.length > 0) { return raw.join(", ") }
+    if (raw.length > 0) {
+      return raw.join(", ")
+    }
     return null
   },
 
@@ -66,7 +77,9 @@ Headers.prototype = {
     name = name.toLowerCase()
     const sequence = []
     for (let index = 0; index < this._headerList.length; ++index) {
-      if (this._headerList[index][0] === name) { sequence.push(this._headerList[index][1]) }
+      if (this._headerList[index][0] === name) {
+        sequence.push(this._headerList[index][1])
+      }
     }
     return sequence
   },
@@ -79,7 +92,9 @@ Headers.prototype = {
   has: function has(name) {
     name = name.toLowerCase()
     for (let index = 0; index < this._headerList.length; ++index) {
-      if (this._headerList[index][0] === name) { return true }
+      if (this._headerList[index][0] === name) {
+        return true
+      }
     }
     return false
   },
@@ -95,8 +110,11 @@ Headers.prototype = {
       if (this._headerList[index][0] === name) {
         this._headerList[index++][1] = value
         while (index < this._headerList.length) {
-          if (this._headerList[index][0] === name) { this._headerList.splice(index, 1) }
-          else { ++index }
+          if (this._headerList[index][0] === name) {
+            this._headerList.splice(index, 1)
+          } else {
+            ++index
+          }
         }
         return
       }
@@ -131,7 +149,9 @@ function HeadersIterator(headers) {
 }
 HeadersIterator.prototype = {}
 HeadersIterator.prototype.next = function() {
-  if (this._index >= this._headers._headerList.length) { return { value: undefined, done: true } }
+  if (this._index >= this._headers._headerList.length) {
+    return { value: undefined, done: true }
+  }
   return { value: this._headers._headerList[this._index++], done: false }
 }
 HeadersIterator.prototype[Symbol.iterator] = function() {
@@ -140,19 +160,21 @@ HeadersIterator.prototype[Symbol.iterator] = function() {
 
 function fill(headers, init) {
   if (init instanceof Headers) {
-    init._headerList.forEach(function(header) {
+    init._headerList.forEach(header => {
       headers.append(header[0], header[1])
     })
   } else if (Array.isArray(init)) {
-    init.forEach(function(header) {
-      if (!Array.isArray(header) || header.length !== 2) { throw TypeError() }
+    init.forEach(header => {
+      if (!Array.isArray(header) || header.length !== 2) {
+        throw TypeError()
+      }
       headers.append(header[0], header[1])
     })
   } else {
     init = Object(init)
     for (const name of Object.keys(init)) {
       if (Array.isArray(init[name])) {
-        init[name].forEach(function(v) {
+        init[name].forEach(v => {
           headers.append(name, v)
         })
       } else {

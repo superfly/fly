@@ -28,12 +28,7 @@ export class RedisCacheStore implements CacheStore {
     return bufs.map((b: any) => (!b ? null : Buffer.from(b)))
   }
 
-  public async set(
-    ns: string,
-    key: string,
-    value: any,
-    options?: CacheSetOptions | number
-  ): Promise<boolean> {
+  public async set(ns: string, key: string, value: any, options?: CacheSetOptions | number): Promise<boolean> {
     const k = keyFor(ns, key)
     let ttl: number | undefined
     if (typeof options === "number") {
@@ -44,12 +39,12 @@ export class RedisCacheStore implements CacheStore {
     const commands = new Array<any>()
     if (typeof options === "object" && options.onlyIfEmpty === true) {
       // can't pipeline set NX
-      const p = ttl
-        ? this.redis.setAsync(k, value, "EX", ttl, "NX")
-        : this.redis.setAsync(k, value, "NX")
+      const p = ttl ? this.redis.setAsync(k, value, "EX", ttl, "NX") : this.redis.setAsync(k, value, "NX")
       const result = await p
       // this happens if the key already exists
-      if (result !== "OK") { return false }
+      if (result !== "OK") {
+        return false
+      }
 
       // otherwise we carry on
     } else {
@@ -69,16 +64,13 @@ export class RedisCacheStore implements CacheStore {
     } else {
       commands.push(this.redis.delAsync(k + ":tags"))
     }
-    const result = await Promise.all(commands)
-    return redisGroupOK(result)
+    const pipelineResult = await Promise.all(commands)
+    return redisGroupOK(pipelineResult)
   }
 
   public async expire(ns: string, key: string, ttl: number): Promise<boolean> {
     const k = keyFor(ns, key)
-    const cmds = await Promise.all([
-      this.redis.expireAsync(k, ttl),
-      this.redis.expireAsync(k + ":tags", ttl)
-    ])
+    const cmds = await Promise.all([this.redis.expireAsync(k, ttl), this.redis.expireAsync(k + ":tags", ttl)])
     return redisGroupOK(cmds)
   }
 
@@ -122,7 +114,7 @@ export class RedisCacheStore implements CacheStore {
     }
     deletes.push(this.redis.delAsync(s))
 
-    const r = await Promise.all(deletes)
+    await Promise.all(deletes)
     return keysToDelete.map(k => k.replace(/^cache:[^:]+:/, ""))
   }
 }
@@ -151,13 +143,13 @@ function redisGroupOK(result: any) {
 }
 
 if (Symbol && !Symbol.asyncIterator) {
-  (Symbol as any).asyncIterator = Symbol.for("Symbol.asyncIterator")
+  ;(Symbol as any).asyncIterator = Symbol.for("Symbol.asyncIterator")
 }
 async function* setScanner(redis: FlyRedis, key: string) {
   let cursor = 0
   do {
     const result = await redis.sscanAsync(key, cursor)
-    cursor = parseInt(result[0])
+    cursor = parseInt(result[0], 10)
     yield* result[1] as string[]
   } while (cursor > 0)
 }
@@ -198,7 +190,9 @@ class FlyRedis {
 
   // fake sscan function for mock redis
   public async sscanShim(key: string, cursor: number, count?: number) {
-    if (!count) { count = 10 }
+    if (!count) {
+      count = 10
+    }
     const members = await this.smembersAsync(key)
     if (members && cursor < members.length) {
       let newCursor = cursor + count

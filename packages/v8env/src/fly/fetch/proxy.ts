@@ -60,12 +60,7 @@ export default proxy
  * @param req
  * @param init
  */
-export function buildProxyRequest(
-  origin: string | URL,
-  options: ProxyOptions,
-  r: RequestInfo,
-  init?: RequestInit
-) {
+export function buildProxyRequest(origin: string | URL, options: ProxyOptions, r: RequestInfo, init?: RequestInit) {
   const req = normalizeRequest(r)
 
   const url = new URL(req.url)
@@ -93,7 +88,7 @@ export function buildProxyRequest(
     url.pathname = url.pathname.substring(1)
   }
 
-  if (url.toString() != breq.url) {
+  if (url.toString() !== breq.url) {
     breq = new Request(url.toString(), breq)
   }
   // we extend req with remoteAddr

@@ -18,23 +18,20 @@ export const apps = root
     const API = apiClient(this)
     try {
       const res = await API.get("/api/v1/apps")
-      processResponse(res, (res: any) => {
+      processResponse(res, () => {
         const table = new Table({
           style: { head: [] },
           head: ["org", "name", "version"]
         })
-        table.push(
-          ...res.data.data.map((a: any) => [
-            a.attributes.org,
-            a.attributes.name,
-            a.attributes.version
-          ])
-        )
+        table.push(...res.data.data.map((a: any) => [a.attributes.org, a.attributes.name, a.attributes.version]))
         console.log(table.toString())
       })
     } catch (e) {
-      if (e.response) { console.log(e.response.data) }
-      else { throw e }
+      if (e.response) {
+        console.log(e.response.data)
+      } else {
+        throw e
+      }
     }
   })
 
@@ -63,18 +60,19 @@ const appsCreate = apps
         name = args.name
       }
       const res = await API.post(`/api/v1/apps`, { data: { attributes: { name } } })
-      processResponse(res, (res: any) => {
+      processResponse(res, () => {
         console.log(`App ${res.data.data.attributes.name} created!`)
         if (existsSync(".fly.yml")) {
           console.log(`Add it to your .fly.yml like: \`app: ${res.data.data.attributes.name}\``)
-        }
-        else {
+        } else {
           writeFileSync(".fly.yml", `app: ${res.data.data.attributes.name}`)
           console.log("Created a .fly.yml for you.")
         }
       })
     } catch (e) {
-      if (e.response) { return console.log(e.response.data) }
+      if (e.response) {
+        return console.log(e.response.data)
+      }
       console.error(e.stack)
       throw e
     }
@@ -89,12 +87,17 @@ const appsMove = apps
     const appName = getAppName(this)
     try {
       const res = await API.get(`/api/v1/orgs`)
-      processResponse(res, async (res: any) => {
+      processResponse(res, async () => {
         const choices: any = {}
-        for (const i in res.data.data) { choices[i] = res.data.data[i].id }
+        // tslint:disable-next-line:forin
+        for (const i in res.data.data) {
+          choices[i] = res.data.data[i].id
+        }
 
         let choiceText = ""
-        for (const [i, slug] of Object.entries(choices)) { choiceText += `${i}) ${slug}\n` }
+        for (const [i, slug] of Object.entries(choices)) {
+          choiceText += `${i}) ${slug}\n`
+        }
 
         const chose = await promptly.choose(
           `Select organization to move to:
@@ -105,15 +108,21 @@ Enter a number:`,
         const orgSlug = choices[chose]
         console.log(`Moving app '${appName}' to organization '${orgSlug}'`)
         const resUpdate = await API.patch(`/api/v1/apps/${appName}`, {
-          data: { attributes: { org_slug: orgSlug } }
+          data: {
+            attributes: {
+              org_slug: orgSlug
+            }
+          }
         })
 
-        processResponse(resUpdate, (res: any) => {
+        processResponse(resUpdate, () => {
           console.log("Successfully moved app.")
         })
       })
     } catch (e) {
-      if (e.response) { return console.log(e.response.data) }
+      if (e.response) {
+        return console.log(e.response.data)
+      }
       console.error(e.stack)
       throw e
     }
@@ -140,16 +149,23 @@ Please type the app's name to confirm:`,
         }
 
         const res = await API.delete(`/api/v1/apps/${appName}`)
-        processResponse(res, (res: any) => {
+        processResponse(res, () => {
           console.log("App deleted.")
         })
       } catch (e) {
-        if (e.message.includes("Invalid choice")) { console.log("NOT deleting app.") }
-        else { throw e }
+        if (e.message.includes("Invalid choice")) {
+          console.log("NOT deleting app.")
+        } else {
+          throw e
+        }
       }
     } catch (e) {
-      if (e.response) { return console.log(e.response.data) }
-      if (e.message.includes("canceled")) { return }
+      if (e.response) {
+        return console.log(e.response.data)
+      }
+      if (e.message.includes("canceled")) {
+        return
+      }
       console.error(e.stack)
       throw e
     }

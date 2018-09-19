@@ -52,7 +52,9 @@ export type CachedResponse = Response & {
 export async function get(key: string) {
   const [meta, body] = await Promise.all([getMeta(key), cache.get(key + ":body")])
 
-  if (!meta || !body) { return null } // miss
+  if (!meta || !body) {
+    return null
+  } // miss
   let age = 0
   if (meta.at) {
     age = Math.round(Date.now() / 1000) - meta.at
@@ -70,7 +72,9 @@ export async function get(key: string) {
  */
 export async function getMeta(key: string) {
   let meta: string | undefined | Metadata = await cache.getString(key + ":meta")
-  if (!meta) { return } // cache miss
+  if (!meta) {
+    return
+  } // cache miss
   try {
     meta = JSON.parse(meta) as Metadata
   } catch (err) {
@@ -120,7 +124,7 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
   const body = await resp.clone().arrayBuffer()
 
   let etag = resp.headers.get("etag")
-  if (!etag || etag == "") {
+  if (!etag || etag === "") {
     etag = hex(await crypto.subtle.digest("SHA-1", body))
     resp.headers.set("etag", etag)
   }
@@ -148,7 +152,9 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
  */
 export async function touch(key: string) {
   const meta = await getMeta(key)
-  if (!meta) { return false }
+  if (!meta) {
+    return false
+  }
   meta.at = Math.round(Date.now() / 1000)
   return await setMeta(key, meta, { ttl: meta.ttl, tags: meta.tags })
 }

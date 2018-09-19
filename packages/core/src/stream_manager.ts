@@ -33,50 +33,52 @@ export const streamManager = {
       : MIN_READ_TIMEOUT
     const readTimeout = setTimeout(cleanupStream.bind(null, key), readTimeoutMS)
     readTimeout.unref()
-    streams[key] = {
-      stream,
-      readLength: 0,
-      addedAt: Date.now(),
-      endedAt: 0,
-      readTimeout
-    }
+    streams[key] = { stream, readLength: 0, addedAt: Date.now(), endedAt: 0, readTimeout }
     return id
   },
-
-  subscribe(rt: Runtime, id: number | string, cb: ivm.Reference<Function>) {
+  subscribe(rt: Runtime, id: number | string, cb: ivm.Reference<() => void>) {
     const key = streamKey(rt, id)
     log.debug("stream subscribe id:", id)
     const info = streams[key]
-    if (!info) { return cb.applyIgnored(null, ["stream not found or destroyed after timeout"]) }
+    if (!info) {
+      return cb.applyIgnored(null, ["stream not found or destroyed after timeout"])
+    }
 
     info.stream.once("close", function streamClose() {
       log.debug("stream closed, id:", id)
       try {
         cb.applyIgnored(null, ["close"])
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
       endStream(key, cb)
     })
     info.stream.once("end", function streamEnd() {
       log.debug("stream ended, id:", id)
       try {
         cb.applyIgnored(null, ["end"])
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
       endStream(key, cb)
     })
     info.stream.on("error", function streamError(err: Error) {
       log.debug("stream error, id:", id, err)
       try {
         cb.applyIgnored(null, ["error", err.toString()])
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
       endStream(key, cb)
     })
   },
-
-  read(rt: Runtime, id: number | string, cb: ivm.Reference<Function>) {
+  read(rt: Runtime, id: number | string, cb: ivm.Reference<() => void>) {
     const key = streamKey(rt, id)
     log.debug("stream:read id:", id)
     const info = streams[key]
-    if (!info) { return cb.applyIgnored(null, ["stream closed, not found or destroyed after timeout"]) }
+    if (!info) {
+      return cb.applyIgnored(null, ["stream closed, not found or destroyed after timeout"])
+    }
 
     clearTimeout(info.readTimeout)
     let attempts = 0
@@ -88,7 +90,9 @@ export const streamManager = {
         const chunk = info.stream.read(1024 * 1024)
         log.debug("chunk is null? arraybuffer?", !chunk, chunk instanceof Buffer)
 
-        if (chunk) { info.readLength += Buffer.byteLength(chunk) }
+        if (chunk) {
+          info.readLength += Buffer.byteLength(chunk)
+        }
 
         if (!chunk && !info.endedAt && attempts < 10) {
           // no chunk, not ended, attemptable
@@ -96,30 +100,38 @@ export const streamManager = {
           return
         }
 
-        if (!chunk && attempts >= 10) { cb.applyIgnored(null, [null, null]) }
-        else if (chunk instanceof Buffer) {
+        if (!chunk && attempts >= 10) {
+          cb.applyIgnored(null, [null, null])
+        } else if (chunk instanceof Buffer) {
           // got a buffer
           cb.applyIgnored(null, [null, transferInto(chunk)])
-             }
+        }
         // got something else
-        else { cb.applyIgnored(null, [null, chunk]) }
+        else {
+          cb.applyIgnored(null, [null, chunk])
+        }
         try {
           cb.release()
-        } catch (e) {}
+        } catch (e) {
+          // ignore
+        }
       } catch (e) {
         cb.applyIgnored(null, [e.message])
         try {
           cb.release()
-        } catch (e) {}
+        } catch (e) {
+          // ignore
+        }
       }
     }
   },
-
   pipe(rt: Runtime, id: number | string, dst: Writable) {
     const key = streamKey(rt, id)
     log.debug("stream:pipe id:", id)
     const info = streams[key]
-    if (!info) { throw new Error("stream closed, not found or destroyed") }
+    if (!info) {
+      throw new Error("stream closed, not found or destroyed")
+    }
     info.stream.pipe(dst)
   }
 }
@@ -134,31 +146,41 @@ function generateStreamId(): number {
 
 function cleanupStream(key: string) {
   const info = streams[key]
-  if (!info) { return }
+  if (!info) {
+    return
+  }
 
   removeStream(key)
   try {
     info.stream.destroy()
-  } catch (e) {}
+  } catch (e) {
+    // ignore
+  }
 }
 
-function endStream(key: string, cb?: ivm.Reference<Function>) {
+function endStream(key: string, cb?: ivm.Reference<() => void>) {
   const info = streams[key]
-  if (!info) { return }
+  if (!info) {
+    return
+  }
 
   clearTimeout(info.readTimeout)
   info.endedAt = Date.now()
   if (cb) {
     try {
       cb.release()
-    } catch (e) {}
+    } catch (e) {
+      // ignore
+    }
   }
   removeStream(key)
 }
 
 function removeStream(key: string) {
   const info = streams[key]
-  if (!info) { return }
+  if (!info) {
+    return
+  }
 
   info.stream.removeAllListeners()
   delete streams[key]

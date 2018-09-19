@@ -78,10 +78,7 @@ export default function initBridge(ivm, dispatch) {
           return arg.stack || arg.message || arg.toString()
 
         default:
-          throw new Error(
-            `Can't prepare a non-transferable value (constructor: '${(ctor && ctor.name) ||
-              "unknown"}')`
-          )
+          throw new Error(`Can't prepare a non-transferable value (constructor: '${(ctor && ctor.name) || "unknown"}')`)
       }
     },
     dispatch(name, ...args) {
@@ -95,12 +92,15 @@ export default function initBridge(ivm, dispatch) {
 
     wrapFunction(fn, options: BridgeTransferOptions = { release: true }) {
       const opts = Object.assign({}, DEFAULT_BRIDGE_TRANSFER_OPTIONS, options || {})
-      if (!opts.release) { return new ivm.Reference(fn) }
+      if (!opts.release) {
+        return new ivm.Reference(fn)
+      }
 
       const cb = new ivm.Reference(function bridgeAutoReleaseFn(...args) {
         try {
           cb.release()
         } catch (err) {
+          // ignore
         } finally {
           fn(...args)
         }

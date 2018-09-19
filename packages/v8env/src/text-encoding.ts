@@ -5,7 +5,6 @@
 declare var bridge: any
 
 export class TextEncoder {
-  constructor() {}
   public encode(input) {
     return bridge.dispatchSync("TextEncoder.encode", input)
   }

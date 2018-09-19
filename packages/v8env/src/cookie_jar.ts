@@ -4,15 +4,7 @@
  */
 import * as cookie from "cookie"
 
-const cookieAttributeNames = [
-  "Max-Age",
-  "Expires",
-  "HttpOnly",
-  "Secure",
-  "Path",
-  "SameSite",
-  "Domain"
-]
+const cookieAttributeNames = ["Max-Age", "Expires", "HttpOnly", "Secure", "Path", "SameSite", "Domain"]
 
 /**
  * A jar for storing delicious cookies.
@@ -25,10 +17,11 @@ class CookieJar {
 
   constructor(parent) {
     this.parent = parent
-    if (parent instanceof Request) { this.cookies = parseCookies(parent.headers.getAll("Cookie")) }
-    else if (parent instanceof Response) {
+    if (parent instanceof Request) {
+      this.cookies = parseCookies(parent.headers.getAll("Cookie"))
+    } else if (parent instanceof Response) {
       this.cookies = parseCookies(parent.headers.getAll("Set-Cookie"))
-         }
+    }
   }
 
   /**
@@ -48,8 +41,11 @@ class CookieJar {
   public append(name, value, options) {
     const cookieStr = cookie.serialize(name, value, options)
     this.cookies = this.cookies.concat(parseCookie(cookieStr))
-    if (this.parent instanceof Request) { this.parent.headers.append("Cookie", cookieStr) }
-    else if (this.parent instanceof Response) { this.parent.headers.append("Set-Cookie", cookieStr) }
+    if (this.parent instanceof Request) {
+      this.parent.headers.append("Cookie", cookieStr)
+    } else if (this.parent instanceof Response) {
+      this.parent.headers.append("Set-Cookie", cookieStr)
+    }
   }
 }
 
@@ -65,8 +61,9 @@ function parseCookie(cookieStr) {
   const options = {}
   const cookies = []
   const parsed = cookie.parse(cookieStr)
+  // tslint:disable-next-line:forin
   for (const k in parsed) {
-    if (cookieAttributeNames.indexOf(k) != -1) {
+    if (cookieAttributeNames.indexOf(k) !== -1) {
       options[k] = parsed[k]
       continue
     }

@@ -32,7 +32,9 @@ export class FetchEvent {
   constructor(type, init, callback) {
     this.type = type
     this.request = init.request
-    if (!this.request) { throw new Error("init.request is required.") }
+    if (!this.request) {
+      throw new Error("init.request is required.")
+    }
     this.callback = callback
     this.respondWithEntered = false
   }
@@ -56,7 +58,9 @@ export class FetchEvent {
       if (ret instanceof Promise) {
         ret
           .then(res => {
-            if (res instanceof Response) { return this.callback(null, res) }
+            if (res instanceof Response) {
+              return this.callback(null, res)
+            }
             logger.debug("weird response:", res ? res.constructor : undefined)
             this.callback(invalidResponseType)
           })
@@ -91,15 +95,19 @@ export function addEventListener(name, fn) {
  */
 export function fireFetchEvent(url, req, body, callback) {
   logger.debug("handling request event")
-  const selfCleaningCallback = function selfCleaningCallback(...args) {
+  const selfCleaningCallback = (...args) => {
     callback.apply(null, args)
     try {
       callback.release()
-    } catch (e) {}
+    } catch (e) {
+      // ignore
+    }
     if (body) {
       try {
         body.release()
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
     }
   }
 
@@ -122,9 +130,7 @@ export function fireFetchEvent(url, req, body, callback) {
       }
 
       if (res.bodyUsed) {
-        return selfCleaningCallback.apply(null, [
-          new Error("Body has already been used").toString()
-        ])
+        return selfCleaningCallback.apply(null, [new Error("Body has already been used").toString()])
       }
 
       let b = null
@@ -132,8 +138,11 @@ export function fireFetchEvent(url, req, body, callback) {
         b = res.body.flyStreamId
       } else {
         logger.debug("body source type:", res.bodySource.constructor.name)
-        if (typeof res.bodySource === "string") { b = res.bodySource }
-        else { b = bridge.wrapValue(await res.arrayBuffer()) }
+        if (typeof res.bodySource === "string") {
+          b = res.bodySource
+        } else {
+          b = bridge.wrapValue(await res.arrayBuffer())
+        }
       }
 
       logger.debug("got ourselves a body")
@@ -156,9 +165,7 @@ export function fireFetchEvent(url, req, body, callback) {
   }
 
   if ((fn(fetchEvent) as any) instanceof Promise) {
-    return selfCleaningCallback.apply(null, [
-      "'fetch' event handler function cannot return a promise."
-    ])
+    return selfCleaningCallback.apply(null, ["'fetch' event handler function cannot return a promise."])
   }
 
   if (!fetchEvent.respondWithEntered) {

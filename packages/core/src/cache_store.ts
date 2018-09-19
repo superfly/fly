@@ -21,7 +21,9 @@ export interface CacheStore {
 
 let _defaultCacheStore: CacheStore | undefined
 export function defaultCacheStore(): CacheStore {
-  if (_defaultCacheStore) { return _defaultCacheStore }
+  if (_defaultCacheStore) {
+    return _defaultCacheStore
+  }
   const url = process.env.REDIS_CACHE_URL
   if (url) {
     _defaultCacheStore = new RedisCacheStore(url)

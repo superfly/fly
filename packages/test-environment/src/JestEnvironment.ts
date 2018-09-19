@@ -68,11 +68,7 @@ class JestEnvironment extends NodeEnvironment {
     Object.entries(apps).forEach(([host, path]) => {
       const hostApps = this.appIndex.get(host)
       if (!hostApps || hostApps[0] !== path) {
-        console.warn(
-          "Attempting to pop an app that isn't configured!",
-          { host: path },
-          this.appIndex
-        )
+        console.warn("Attempting to pop an app that isn't configured!", { host: path }, this.appIndex)
         return
       }
       hostApps.shift()

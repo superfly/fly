@@ -14,8 +14,9 @@ export default class Blob {
   protected bytes: Uint8Array
 
   constructor(blobParts?: BlobPart[], options?: BlobPropertyBag) {
-    if (!blobParts || blobParts.length === 0) { this.bytes = new Uint8Array() }
-    else {
+    if (!blobParts || blobParts.length === 0) {
+      this.bytes = new Uint8Array()
+    } else {
       const parts: Uint8Array[] = []
       const encoder = new TextEncoder()
       for (const part of blobParts) {
@@ -45,12 +46,18 @@ export default class Blob {
             break
         }
       }
-      if (parts.length === 1) { this.bytes = parts[0] }
-      else { this.bytes = concatenate(...parts) }
+      if (parts.length === 1) {
+        this.bytes = parts[0]
+      } else {
+        this.bytes = concatenate(...parts)
+      }
     }
 
-    if (options && options.type) { this.type = options.type.toLowerCase() }
-    else { this.type = "" }
+    if (options && options.type) {
+      this.type = options.type.toLowerCase()
+    } else {
+      this.type = ""
+    }
 
     this.size = this.bytes.byteLength
   }

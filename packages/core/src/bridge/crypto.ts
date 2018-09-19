@@ -7,32 +7,26 @@ import { createHash, Hash, HexBase64Latin1Encoding, randomBytes } from "crypto"
 import { transferInto } from "../utils/buffer"
 import { Runtime } from "../runtime"
 
-registerBridge("digestHash", function(
-  rt: Runtime,
-  bridge: Bridge,
-  algo: string,
-  data: ArrayBuffer | string,
-  encoding?: HexBase64Latin1Encoding
-) {
-  return digestHash(algo, data, encoding)
-})
-
-registerBridge("digestHashAsync", function(
-  rt: Runtime,
-  bridge: Bridge,
-  algo: string,
-  data: ArrayBuffer | string,
-  encoding?: HexBase64Latin1Encoding
-) {
-  try {
-    const h = digestHash(algo, data, encoding)
-    return Promise.resolve(h)
-  } catch (e) {
-    return Promise.reject(e)
+registerBridge(
+  "digestHash",
+  (rt: Runtime, bridge: Bridge, algo: string, data: ArrayBuffer | string, encoding?: HexBase64Latin1Encoding) => {
+    return digestHash(algo, data, encoding)
   }
-})
+)
 
-registerBridge("getRandomValues", function(rt: Runtime, bridge: Bridge, bufLen: number) {
+registerBridge(
+  "digestHashAsync",
+  (rt: Runtime, bridge: Bridge, algo: string, data: ArrayBuffer | string, encoding?: HexBase64Latin1Encoding) => {
+    try {
+      const h = digestHash(algo, data, encoding)
+      return Promise.resolve(h)
+    } catch (e) {
+      return Promise.reject(e)
+    }
+  }
+)
+
+registerBridge("getRandomValues", (rt: Runtime, bridge: Bridge, bufLen: number) => {
   return new Promise<ivm.Copy<ArrayBuffer> | null>((resolve, reject) => {
     if (bufLen > 65536) {
       return reject(
@@ -53,6 +47,8 @@ function digestHash(algo: string, data: ArrayBuffer | string, encoding?: HexBase
   let h: Hash
   h = createHash(algo.replace("-", ""))
   h.update(typeof data === "string" ? data : Buffer.from(data))
-  if (!encoding) { return transferInto(h.digest()) }
+  if (!encoding) {
+    return transferInto(h.digest())
+  }
   return h.digest(encoding)
 }

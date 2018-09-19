@@ -1,8 +1,7 @@
 {
-  "defaultSeverity": "warning",
+  "defaultSeverity": "error",
   "extends": [
     "tslint:recommended",
-    "tslint-plugin-prettier",
     "tslint-config-prettier"
   ],
   "jsRules": {},
@@ -10,11 +9,20 @@
     "semicolon": false,
     "no-console": false,
     "interface-name": false,
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-pascal-case", // remove this once no-var-requires is enabled
+      "allow-leading-underscore"
+    ],
     // revisit later, too much change at once
     "ordered-imports": false,
     "member-ordering": false,
     "object-literal-sort-keys": false,
-    "prettier": false // enable on CI
+    "max-classes-per-file": false,
+    "no-var-requires": false,
+    "no-empty-interface": false
   },
   "rulesDirectory": [],
   "linterOptions": {

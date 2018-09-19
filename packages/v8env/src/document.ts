@@ -4,14 +4,7 @@
  */
 import * as htmlparser from "htmlparser2"
 
-import {
-  getOuterHTML,
-  getText,
-  getInnerHTML,
-  replaceElement,
-  getAttributeValue,
-  appendChild
-} from "domutils"
+import { getOuterHTML, getText, getInnerHTML, replaceElement, getAttributeValue, appendChild } from "domutils"
 
 import { logger } from "./logger"
 
@@ -28,7 +21,9 @@ export class Node {
 
   public querySelector(selector) {
     const found = css.selectOne(selector, this._dom)
-    if (!found) { return null }
+    if (!found) {
+      return null
+    }
     return new Element(this._withParent(found))
   }
 
@@ -37,7 +32,9 @@ export class Node {
   }
 
   public _withParent(node) {
-    node.parent || (node.parent = this)
+    if (!node.parent) {
+      node.parent = this
+    }
     return node
   }
 
@@ -52,8 +49,11 @@ export class Node {
   public appendChild(html) {
     if (typeof html._dom !== "undefined") {
       // Document
-      if (Array.isArray(this._dom)) { appendChild(this._dom[1], html._dom) }
-      else { appendChild(this._dom, html._dom) }
+      if (Array.isArray(this._dom)) {
+        appendChild(this._dom[1], html._dom)
+      } else {
+        appendChild(this._dom, html._dom)
+      }
       return html
     }
     html = new Element(parseDOMSync(html)[0])
@@ -138,13 +138,18 @@ class DocumentParser {
   }
   public onElement(elem) {
     const found = this.selectors.find(s => s.fn(elem))
-    if (found) { found.callback(new Element(elem)) }
+    if (found) {
+      found.callback(new Element(elem))
+    }
   }
   public async parse(stream) {
     let fullyRead = false
 
-    if (stream instanceof ReadableStream) { stream = stream.getReader() }
-    else { return this.parseSync(stream) }
+    if (stream instanceof ReadableStream) {
+      stream = stream.getReader()
+    } else {
+      return this.parseSync(stream)
+    }
 
     while (!fullyRead) {
       const { done, value } = await stream.read()

@@ -1,3 +1,5 @@
+/* tslint:disable:no-namespace */
+
 /**
  * @module fly
  * @private

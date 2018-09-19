@@ -5,8 +5,8 @@ export interface Release {
   app: string
   version: number
   source: string
-  source_hash: string
-  source_map?: string
+  sourceHash: string
+  sourceMap?: string
   config: any
   hash?: string
   secrets: any
@@ -36,7 +36,9 @@ export class App {
   }
 
   get config() {
-    if (this._config) { return this._config }
+    if (this._config) {
+      return this._config
+    }
     this._config = this.release.config
     applySecrets(this._config, this.release.secrets)
     return this._config
@@ -55,11 +57,11 @@ export class App {
   }
 
   get sourceHash() {
-    return this.release.source_hash
+    return this.release.sourceHash
   }
 
   get sourceMap() {
-    return this.release.source_map
+    return this.release.sourceMap
   }
 
   public asJSON() {

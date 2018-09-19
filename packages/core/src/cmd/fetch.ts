@@ -14,12 +14,15 @@ const fetch = root
     try {
       const appName = getAppName(this)
       const res = await API.get(`/api/v1/apps/${appName}/source`)
-      processResponse(res, (res: any) => {
+      processResponse(res, () => {
         console.log(res.data.data.attributes.source)
       })
     } catch (e) {
-      if (e.response) { console.log(e.response.data) }
-      else { throw e }
+      if (e.response) {
+        console.log(e.response.data)
+      } else {
+        throw e
+      }
     }
   })
 

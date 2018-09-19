@@ -1,3 +1,5 @@
+/* tslint:disable:one-variable-per-declaration */
+
 /**
  * @module fly
  * @private
@@ -6,9 +8,7 @@
 /**
  * @hidden
  */
-export const {
-    ReadableStream
-  } = require("whatwg-streams/reference-implementation/lib/readable-stream"),
+export const { ReadableStream } = require("whatwg-streams/reference-implementation/lib/readable-stream"),
   { WritableStream } = require("whatwg-streams/reference-implementation/lib/writable-stream"),
   ByteLengthQueuingStrategy = require("whatwg-streams/reference-implementation/lib/byte-length-queuing-strategy"),
   CountQueuingStrategy = require("whatwg-streams/reference-implementation/lib/count-queuing-strategy"),

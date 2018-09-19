@@ -21,17 +21,17 @@ root
       const res = await axios.post(`${baseURL}/api/v1/sessions`, {
         data: { attributes: { email, password, otp } }
       })
-      processResponse(res, (res: any) => {
+      processResponse(res, () => {
         const homepath = homeConfigPath()
         const credspath = path.join(homepath, "credentials.yml")
-        fs.writeFileSync(
-          credspath,
-          YAML.dump({ access_token: res.data.data.attributes.access_token })
-        )
+        fs.writeFileSync(credspath, YAML.dump({ access_token: res.data.data.attributes.access_token }))
         console.log("Wrote credentials at:", credspath)
       })
     } catch (e) {
-      if (e.response) { console.log(e.response.data) }
-      else { throw e }
+      if (e.response) {
+        console.log(e.response.data)
+      } else {
+        throw e
+      }
     }
   })

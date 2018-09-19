@@ -6,7 +6,9 @@ export type RedisConnectionOptions = redis.ClientOpts | string
  * Utility method for taking common redis configs and creating a RedisClient
  */
 export function initRedisClient(opts: RedisConnectionOptions) {
-  if (opts instanceof redis.RedisClient) { return opts }
+  if (opts instanceof redis.RedisClient) {
+    return opts
+  }
   if (typeof opts === "string") {
     opts = { url: opts }
   }

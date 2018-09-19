@@ -37,7 +37,9 @@ export class V8Environment extends EventEmitter {
   constructor() {
     super()
     this.bootstrapped = false
-    if (!v8EnvCode) { throw new Error("v8env not found, please run `yarn bundle` to generate it") }
+    if (!v8EnvCode) {
+      throw new Error("v8env not found, please run `yarn bundle` to generate it")
+    }
   }
 
   get isReady() {
@@ -53,10 +55,7 @@ export class V8Environment extends EventEmitter {
       return v8EnvSnapshot
     }
     if (!v8SnapshotsEnabled) {
-      console.warn(
-        "can't use v8 snapshots with this version of node, boot will be slower",
-        process.version
-      )
+      console.warn("can't use v8 snapshots with this version of node, boot will be slower", process.version)
     } else {
       console.log("v8 snapshots enabled")
 
@@ -107,7 +106,7 @@ export class V8Environment extends EventEmitter {
     const hash = createHash("sha")
       .update(code)
       .digest("hex")
-    if (hash != v8EnvHash) {
+    if (hash !== v8EnvHash) {
       const wasReady = this.isReady
       v8EnvCode = code
       v8EnvHash = hash
@@ -121,7 +120,9 @@ export class V8Environment extends EventEmitter {
         }
       ])
       this.emit("snapshot", v8EnvSnapshot)
-      if (!wasReady) { this.emit("ready") }
+      if (!wasReady) {
+        this.emit("ready")
+      }
     }
   }
 }

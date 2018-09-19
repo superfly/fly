@@ -1,6 +1,7 @@
 import colors = require("ansi-colors")
+import { AxiosResponse } from "axios"
 
-function getErrorMessages(res: any): string[] {
+function getErrorMessages(res: AxiosResponse): string[] {
   if (res.data.errors) {
     return res.data.errors.map((err: any) => errorMessage(err))
   }
@@ -25,11 +26,13 @@ function errorMessage(err: any): string {
   return ""
 }
 
-export function processResponse(res: any, successFn?: Function | undefined): void {
+export function processResponse(res: AxiosResponse, successFn?: () => void): void {
   if (res.status >= 200 && res.status < 299) {
-    if (successFn) { successFn(res) }
+    if (successFn) {
+      successFn()
+    }
   } else {
-    if (res.status == 401) {
+    if (res.status === 401) {
       // TODO: Store and use `refresh_token` to automatically fix this predicament
       return console.log("Please login again with `fly login`, your token is probably expired.")
     }

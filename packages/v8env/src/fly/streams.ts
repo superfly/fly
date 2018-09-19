@@ -28,7 +28,9 @@ export default function refToStream(id) {
             if (name === "close" || name === "end") {
               try {
                 cb.release()
-              } catch (e) {}
+              } catch (e) {
+                // ignore
+              }
               if (!closed) {
                 closed = true
                 controller.close()
@@ -36,10 +38,14 @@ export default function refToStream(id) {
             } else if (name === "error") {
               try {
                 cb.release()
-              } catch (e) {}
+              } catch (e) {
+                // ignore
+              }
               logger.error("error in stream:", args[0])
               controller.error(new Error(args[0]))
-            } else { logger.error("unhandled event", name) }
+            } else {
+              logger.error("unhandled event", name)
+            }
           },
           { release: false }
         )

@@ -11,15 +11,8 @@ function byteUpperCase(s) {
 }
 
 function normalizeMethod(m) {
-  let u = byteUpperCase(m)
-  if (
-    u === "DELETE" ||
-    u === "GET" ||
-    u === "HEAD" ||
-    u === "OPTIONS" ||
-    u === "POST" ||
-    u === "PUT"
-  ) {
+  const u = byteUpperCase(m)
+  if (u === "DELETE" || u === "GET" || u === "HEAD" || u === "OPTIONS" || u === "POST" || u === "PUT") {
     return u
   }
   return m
@@ -43,14 +36,18 @@ export class Request extends Body {
   private cookieJar: CookieJar
 
   constructor(input, init?) {
-    if (arguments.length < 1) { throw TypeError("Not enough arguments") }
+    if (arguments.length < 1) {
+      throw TypeError("Not enough arguments")
+    }
 
     let body = null
     if (init && init.body) {
       body = init.body
     }
     if (!body && input instanceof Request) {
-      if (input.bodyUsed) { throw TypeError() }
+      if (input.bodyUsed) {
+        throw TypeError()
+      }
       // grab request body if we can
       body = input.bodySource
     }
@@ -86,7 +83,9 @@ export class Request extends Body {
     this.headers = new Headers()
 
     if (input instanceof Request) {
-      if (input.bodyUsed) { throw TypeError() }
+      if (input.bodyUsed) {
+        throw TypeError()
+      }
       this.method = input.method
       this.url = input.url
       this.headers = new Headers(input.headers)
@@ -117,22 +116,23 @@ export class Request extends Body {
       this.headers = new Headers(init.headers)
     }
 
-    if (
-      "credentials" in init &&
-      ["omit", "same-origin", "include"].indexOf(init.credentials) !== -1
-    ) {
+    if ("credentials" in init && ["omit", "same-origin", "include"].indexOf(init.credentials) !== -1) {
       this.credentials = init.credentials
     }
   }
 
   get cookies() {
-    if (this.cookieJar) { return this.cookieJar }
+    if (this.cookieJar) {
+      return this.cookieJar
+    }
     this.cookieJar = new CookieJar(this)
     return this.cookieJar
   }
 
   public clone() {
-    if (this.bodyUsed) { throw new Error("body has already been used") }
+    if (this.bodyUsed) {
+      throw new Error("body has already been used")
+    }
     let body2 = this.bodySource
 
     if (this.bodySource instanceof ReadableStream) {

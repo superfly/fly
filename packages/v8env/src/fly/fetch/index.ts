@@ -20,7 +20,7 @@ export type FetchFunction = (req: RequestInfo, init?: RequestInit) => Promise<Re
 /**
  * A function that generates a fetch-like function with additional logic
  */
-export type FetchGenerator = (...any: any[]) => FetchFunction
+export type FetchGenerator = (...args: any[]) => FetchFunction
 
 /**
  * Converts RequestInfo into a Request object.

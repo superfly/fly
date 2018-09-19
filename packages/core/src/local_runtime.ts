@@ -39,12 +39,16 @@ export class LocalRuntime implements Runtime {
     })
 
     this.startMonitoring()
-    if (this.options.inspect) { startInspector(this.isolate) }
+    if (this.options.inspect) {
+      startInspector(this.isolate)
+    }
 
     this.logger = require("console-log-level")({ level: process.env.LOG_LEVEL || "info" })
     this.context = this.resetContext()
     this.lastSourceHash = app.sourceHash
-    if (app.source) { this.runApp(app) }
+    if (app.source) {
+      this.runApp(app)
+    }
   }
 
   public get(name: string) {
@@ -62,21 +66,22 @@ export class LocalRuntime implements Runtime {
   }
 
   private startMonitoring() {
-    if (!this.options.monitorFrequency) { return } // 0 or undefined
+    if (!this.options.monitorFrequency) {
+      return
+    } // 0 or undefined
     setInterval(() => {
       if (this.isolate && !this.isolate.isDisposed) {
         log.info(
-          `Runtime heap: ${(
-            this.isolate.getHeapStatisticsSync().total_heap_size /
-            (1024 * 1024)
-          ).toFixed(2)} MB`
+          `Runtime heap: ${(this.isolate.getHeapStatisticsSync().total_heap_size / (1024 * 1024)).toFixed(2)} MB`
         )
       }
     }, 5000)
   }
 
   private resetContext(current?: ivm.Context) {
-    if (current) { current.release() }
+    if (current) {
+      current.release()
+    }
     const context = this.isolate.createContextSync({ inspector: !!this.options.inspect })
 
     if (!v8Env.snapshot) {
@@ -89,7 +94,7 @@ export class LocalRuntime implements Runtime {
     g.setSync("global", g.derefInto())
     g.setSync(
       "_log",
-      new ivm.Reference(function(lvl: string, ...args: any[]) {
+      new ivm.Reference((lvl: string, ...args: any[]) => {
         log[lvl](...args)
       })
     )
@@ -114,10 +119,10 @@ export class LocalRuntime implements Runtime {
   }
 
   public async setApp(app: App) {
-    if (!app.sourceHash || this.lastSourceHash != app.sourceHash) {
+    if (!app.sourceHash || this.lastSourceHash !== app.sourceHash) {
       console.log("Updating app in local runtime...")
       this.app = app
-      if (this.lastSourceHash != "") {
+      if (this.lastSourceHash !== "") {
         // we had not setup the context
         this.context = this.resetContext(this.context)
       }
@@ -137,22 +142,23 @@ export class LocalRuntime implements Runtime {
 
 async function startInspector(iso: ivm.Isolate) {
   // Create an inspector channel on port 10000
-  const channel = iso.createInspectorSession()
   const wss = new WebSocket.Server({ port: 10000 })
 
-  wss.on("connection", function(ws) {
+  wss.on("connection", ws => {
     // Dispose inspector session on websocket disconnect
     const channel = iso.createInspectorSession()
     function dispose() {
       try {
         channel.dispose()
-      } catch (err) {}
+      } catch (err) {
+        // ignore
+      }
     }
     ws.on("error", dispose)
     ws.on("close", dispose)
 
     // Relay messages from frontend to backend
-    ws.on("message", function(message) {
+    ws.on("message", message => {
       try {
         channel.dispatchProtocolMessage(message)
       } catch (err) {
