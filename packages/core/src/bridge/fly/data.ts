@@ -64,6 +64,37 @@ registerBridge(
 )
 
 registerBridge(
+  "fly.Data.getAll",
+  (rt: Runtime, bridge: Bridge, collName: string, prefix: string, opts: any, cb: ivm.Reference<() => void>) => {
+    if (!bridge.dataStore) {
+      log.error("Data store was not present")
+      cb.applyIgnored(null, ["data store not present, this is a bug, please report!"])
+      return
+    }
+
+    bridge.dataStore
+      .collection(rt, collName)
+      .then(coll => {
+        coll
+          .getAll(rt, prefix, opts)
+          .then(res => {
+            const result = res.map(r => r.obj)
+            result.unshift(null)
+            cb.applyIgnored(null, result)
+          })
+          .catch(err => {
+            log.error("Error getting data:", err.toString())
+            cb.applyIgnored(null, ["error getting data"])
+          })
+      })
+      .catch(err => {
+        log.error("Error getting or making collection:", err.toString())
+        cb.applyIgnored(null, ["error getting or making collection"])
+      })
+  }
+)
+
+registerBridge(
   "fly.Data.dropCollection",
   (rt: Runtime, bridge: Bridge, collName: string, cb: ivm.Reference<() => void>) => {
     if (!bridge.dataStore) {

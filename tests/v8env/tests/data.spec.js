@@ -44,4 +44,16 @@ describe("@fly/data", () => {
       })
     })
   })
+
+  describe(".getAll", () => {
+    it("gets multiple results", async () => {
+      const coll = db.collection("testing")
+      const records = Array.from(Array(10).keys()).map(i => coll.put(`asdf${i}`, { some: `asdf-${i}` }))
+      await Promise.all(records)
+
+      const results = await coll.getAll("asdf")
+      expect(results[0].some).to.eq("asdf-0")
+      expect(results.length).to.eq(10)
+    })
+  })
 })

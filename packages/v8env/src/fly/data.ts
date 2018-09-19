@@ -61,6 +61,22 @@ export class Collection {
     })
   }
 
+  public getAll(prefix: string): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      bridge.dispatch("fly.Data.getAll", this.name, prefix, undefined, (err: string | null, ...res: any[]) => {
+        if (err) {
+          reject(new Error(err))
+          return
+        }
+        try {
+          resolve(res.map(r => (typeof r === "string" ? JSON.parse(r) : r)))
+        } catch (err) {
+          reject(err)
+        }
+      })
+    })
+  }
+
   /**
    * Deletes data from the collection store.
    * @param key key to delete

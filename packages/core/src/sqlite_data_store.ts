@@ -1,6 +1,6 @@
 import Database = require("better-sqlite3")
 import { mkdirpSync } from "fs-extra"
-import { DataStore, CollectionStore } from "./data_store"
+import { DataStore, CollectionStore, CollectionItem } from "./data_store"
 import log from "./log"
 import { Runtime } from "./runtime"
 import * as path from "path"
@@ -23,9 +23,25 @@ export class Collection implements CollectionStore {
     }
   }
 
-  public get(rt: Runtime, key: string) {
+  public get(rt: Runtime, key: string): Promise<CollectionItem> {
     try {
       const data = this.db.prepare(`SELECT obj FROM ${this.name} WHERE key == ?`).get(key)
+      return Promise.resolve(data)
+    } catch (err) {
+      return Promise.reject(err)
+    }
+  }
+
+  public getAll(rt: Runtime, prefix: string, opts: any): Promise<CollectionItem[]> {
+    try {
+      let limit = opts && typeof opts.limit === "number" ? Math.round(opts.limit) : 100
+      if (limit < 1) {
+        limit = 1
+      }
+      if (limit > 100) {
+        limit = 100
+      }
+      const data = this.db.prepare(`SELECT obj FROM ${this.name} WHERE key LIKE ? LIMIT ?`).all(`${prefix}%`, limit)
       return Promise.resolve(data)
     } catch (err) {
       return Promise.reject(err)
