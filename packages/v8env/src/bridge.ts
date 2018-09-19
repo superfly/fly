@@ -1,6 +1,7 @@
 /**
  * @module fly
  * @private
+ * @hidden
  */
 import { logger } from "./logger"
 
@@ -80,7 +81,7 @@ export default function initBridge(ivm, dispatch) {
         default:
           throw new Error(
             `Can't prepare a non-transferable value (constructor: '${(ctor && ctor.name) ||
-              "unknown"}')`
+            "unknown"}')`
           )
       }
     },

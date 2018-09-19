@@ -22,6 +22,7 @@
     "test:v8env": "lerna exec --concurrency 1 yarn test --scope \"@fly-test/v8env\"",
     "doc": "lerna run doc",
     "publish": "lerna publish",
+    "publish:docs": "./scripts/docs/publish.sh",
     "publish:pre": "lerna publish prerelease --npm-tag pre --force-publish='*'"
   },
   "devDependencies": {
@@ -35,8 +36,7 @@
     "tslint": "^5.11.0",
     "tslint-config-prettier": "1.15.0",
     "tslint-plugin-prettier": "^1.3.0",
-    "typescript": "3.0.1",
-    "typedoc": "^0.12.0"
+    "typescript": "3.0.1"
   },
   "prettier": {
     "parser": "typescript",

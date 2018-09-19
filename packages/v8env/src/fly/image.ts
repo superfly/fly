@@ -1,38 +1,40 @@
 /**
- * Image manipulation APIs. Resize, convert, crop, etc. You can use this library to optimize images on-the-fly. Or, do clever things like adding watermarks.
- *
- * Example:
- * ```javascript
- *   import { Image } from "@fly/image"
- *   const resp = await fetch(url)
- *   if (resp.status != 200) {
- *     throw new Error("Couldn't load image: " + url)
- *   }
- *   const body = await resp.arrayBuffer()
- *
- *   return new Image(body)
- * ```
- * @module fly/image
- * @preferred
+ * 
+ * @module image
+ */
+
+/**
+ * @ignore
  */
 declare var bridge: any
+
 /**
- * A class representing an Image. This uses operations from [Sharp](http://sharp.pixelplumbing.com/en/stable/) under the hood.
+ * Image manipulation APIs. Resize, convert, crop, etc. You can use this library to optimize images on-the-fly. Or, do clever things like adding watermarks.
+```javascript
+import { Image } from "@fly/image"
+const resp = await fetch(url)
+if (resp.status != 200) {
+  throw new Error("Couldn't load image: " + url)
+}
+const body = await resp.arrayBuffer()
+
+return new Image(body)
+```
  */
 export class Image {
-  /** @hidden */
+  /** @ignore */
   public data: ArrayBuffer | null
-  /** @hidden */
-  public info: Image.Metadata | null
+  /** @ignore */
+  public info: Metadata | null
 
-  /** @hidden */
+  /** @ignore */
   private _ref: any
 
   /**
    * Constructs a new Image from raw Buffer data
    * @param data Raw image data as a buffer, or options to create a new image
    */
-  constructor(data: ArrayBuffer | Image.CreateOptions) {
+  constructor(data: ArrayBuffer | CreateOptions) {
     this.data = null
     this._ref = null
     if (data instanceof ArrayBuffer) {
@@ -93,12 +95,12 @@ export class Image {
    *
    * Both `width` and `height` must be provided via `resize` otherwise the behavior will default to `crop`.
    *
-   * ```
-   * const data = await new ImageinputBuffer)
-   *   .resize(200, 200)
-   *   .max()
-   *   .toBuffer()
-   * ```
+   ```javascript
+   const data = await new Image(inputBuffer)
+     .resize(200, 200)
+     .max()
+     .toBuffer()
+   ```
    */
   public max() {
     this._imageOperation("max")
@@ -124,16 +126,16 @@ export class Image {
    * - `entropy`: focus on the region with the highest [Shannon entropy](https://en.wikipedia.org/wiki/Entropy_%28information_theory%29).
    * - `attention`: focus on the region with the highest luminance frequency, colour saturation and presence of skin tones.
    *
-   * ```
+   * ```javascript
    * const cropped = await new Image(input)
    *   .resize(200, 200)
-   *   .crop(Image.strategy.entropy)
+   *   .crop(strategy.entropy)
    *   .toBuffer()
    * ```
    * @param crop the cropping strategy to use
    * @return the Image instance
    */
-  public crop(crop?: Image.gravity | Image.strategy)
+  public crop(crop?: gravity | strategy)
   /**
    * Crop to the specified width/height.
    * 
@@ -142,8 +144,9 @@ export class Image {
    * @param crop the cropping strategy to use
    * @return the Image instance
    */
-  public crop(width: number, height?: number, crop?: Image.gravity | Image.strategy)
-  public crop(widthOrCrop?: number | Image.gravity | Image.strategy, heightOrCrop?: number | Image.gravity | Image.strategy, crop?: Image.gravity | Image.strategy) {
+  public crop(width: number, height?: number, crop?: gravity | strategy)
+  /** @ignore */
+  public crop(widthOrCrop?: number | gravity | strategy, heightOrCrop?: number | gravity | strategy, crop?: gravity | strategy) {
     // crop can be an int so if we have one arg, assume it's crop
     if (widthOrCrop && !heightOrCrop && !crop) {
       crop = widthOrCrop
@@ -168,16 +171,16 @@ export class Image {
    * If the background contains an alpha value then WebP and PNG format output images will
    * contain an alpha channel, even when the input image does not.
    *
-   * ```
-   * const data = new Image(input)
-   *   .resize(200, 300)
-   *   .background({r: 0, g: 0, b: 0, alpha: 0})
-   *   .embed()
-   *   .toBuffer();
-   * ```
+   ```javascript
+   const data = new Image(input)
+     .resize(200, 300)
+     .background({r: 0, g: 0, b: 0, alpha: 0})
+     .embed()
+     .toBuffer();
+   ```
    * @param gravity embed to an edge/corner, defaults to `center`.
    */
-  public embed(gravity?: Image.gravity) {
+  public embed(gravity?: gravity) {
     return this._imageOperation("embed", gravity)
   }
   /**
@@ -190,7 +193,7 @@ export class Image {
    *
    * @param rgba - parsed by the [color](https://www.npmjs.org/package/color) module to extract values for red, green, blue and alpha.
    */
-  public background(rgba: string | Image.Color) {
+  public background(rgba: string | Color) {
     this._imageOperation("background", rgba)
     return this
   }
@@ -209,19 +212,19 @@ export class Image {
   /**
    * Output image to JPEG
    *
-   * ```
-   *  * // Convert any input to very high quality JPEG output
-   * const data = await new Image(input)
-   *   .jpeg({
-   *     quality: 100,
-   *     chromaSubsampling: '4:4:4'
-   *   })
-   *   .toBuffer();
-   * ```
+   ```javascript
+   // Convert any input to very high quality JPEG output
+   const data = await new Image(input)
+     .jpeg({
+       quality: 100,
+       chromaSubsampling: '4:4:4'
+     })
+     .toBuffer();
+   ```
    *
    * @param options JPEG output options
    */
-  public jpeg(options?: Image.JpegOptions) {
+  public jpeg(options?: JpegOptions) {
     this._imageOperation("jpeg", options)
     return this
   }
@@ -231,16 +234,16 @@ export class Image {
    * PNG output is always full colour at 8 or 16 bits per pixel.
    * Indexed PNG input at 1, 2 or 4 bits per pixel is converted to 8 bits per pixel.
    *
-   * ```
-   * // Convert any input to PNG output
-   * const data = await new Image(input)
-   *   .png()
-   *   .toBuffer();
-   * ```
+   ``` javascript
+   // Convert any input to PNG output
+   const data = await new Image(input)
+     .png()
+     .toBuffer();
+   ```
    *
    * @param options Compression and encoding options
    */
-  public png(options?: Image.PngOptions) {
+  public png(options?: PngOptions) {
     this._imageOperation("png", options)
     return this
   }
@@ -248,15 +251,15 @@ export class Image {
   /**
    * Output to webp.
    *
-   * ```
-   * // Convert any input to lossless WebP output
-   * const data = await new Image(input)
-   *   .webp({ lossless: true })
-   *   .toBuffer();
-   * ```
+   ```
+   // Convert any input to lossless WebP output
+   const data = await new Image(input)
+     .webp({ lossless: true })
+     .toBuffer();
+   ```
    * @param options webp encoding options, quality, etc
    */
-  public webp(options?: Image.WebpOptions) {
+  public webp(options?: WebpOptions) {
     this._imageOperation("webp", options)
     return this
   }
@@ -290,7 +293,7 @@ export class Image {
    *
    * Otherwise, pad each side by the specified amount.
    */
-  public extend(extend: number | Image.ExtendOptions) {
+  public extend(extend: number | ExtendOptions) {
     this._imageOperation("extend", extend)
     return this
   }
@@ -298,13 +301,13 @@ export class Image {
   /**
    * Get metadata from image
    */
-  public metadata(): Image.Metadata {
+  public metadata(): Metadata {
     const m = imageMetadata(this._ref)
     this.info = m
     return m
   }
 
-  /** @hidden */
+  /** @ignore */
   private _imageOperation(name: string, ...args: any[]) {
     if (!imageOperation) {
       throw new Error("Image operations not enabled")
@@ -317,7 +320,7 @@ export class Image {
     return this
   }
 
-  public async toBuffer(): Promise<Image.OperationResult> {
+  public async toBuffer(): Promise<OperationResult> {
     if (!imageToBuffer) {
       throw new Error("Image operations not enabled")
     }
@@ -334,163 +337,178 @@ export class Image {
     i.info = result.info
     return i
   }
+
+  static get gravity() {
+    return gravity
+  }
+  static get strategy() {
+    return strategy
+  }
+  static get kernel() {
+    return kernel
+  }
+  static get fit() {
+    return fit
+  }
+
+
 }
 
-export namespace Image {
-  export interface Color {
-    /** red channel, 0-255 */
-    r: number
-    /** green channel, 0-255 */
-    g: number
-    /** blue channel, 0-255 */
-    b: number
-    /** alpha channel, 0.0-1.0 */
-    alpha: number
-  }
-
-  export interface Metadata {
-    /** Number of pixels wide */
-    width?: number
-    /** Number of pixels high */
-    height?: number
-    /** Name of colour space interpretation e.g. srgb, rgb, cmyk, lab, b-w ... */
-    space?: string
-    /** Number of bands e.g. 3 for sRGB, 4 for CMYK */
-    channels?: number
-    /** Number of pixels per inch (DPI), if present */
-    density?: number
-    /** Boolean indicating the presence of an embedded ICC profile */
-    hasProfile?: boolean
-    /** Boolean indicating the presence of an alpha transparency channel */
-    hasAlpha?: boolean
-    /** Number value of the EXIF Orientation header, if present */
-    orientation?: number
-
-    format?: string
-  }
-  export interface OperationResult {
-    info: Image.Metadata
-    data: ArrayBuffer
-  }
-
-  /**
-   * WebP output options
-   */
-  export interface WebpOptions {
-    /** quality, integer 1-100, defaults to 80 */
-    quality?: number
-    /** quality of alpha layer, integer 0-100, default to 100 */
-    alphaQuality?: number
-    /** use lossless compression mode */
-    lossless?: boolean
-    /** use near_lossless compression mode */
-    nearLossless?: boolean
-    /** force WebP output, otherwise attempt to use input format, defaults to true */
-    force?: boolean
-  }
-
-  /**
-   * JPEG output options
-   */
-  export interface JpegOptions {
-    /** quality, integer 1-100, defaults to 80 */
-    quality?: number
-    /** use progressive (interlace) scan (defaults to false) */
-    progressive?: boolean
-    /** set to '4:4:4' to prevent chroma subsampling when quality <= 90 */
-    chromaSubsampling?: boolean
-    /** force output to jpeg (default true) */
-    force?: boolean
-  }
-
-  /**
-   * PNG output options
-   */
-  export interface PngOptions {
-    /** use progressive (interlace) scan (defaults to false) */
-    progressive?: boolean
-    /** zlib compression level, 0-9 (default to 9) */
-    compressionLevel?: number
-    /** use adaptive row filtering (defaults to false) */
-    adaptiveFiltering?: boolean
-    /** force PNG output (defaults to true) */
-    force?: boolean
-  }
-
-  /**
-   * Options for resizing an image
-   */
-  export interface ResizeOptions {
-    /**
-     * the kernel to use for image reduction.
-     *  (optional, default `'lanczos3'`)
-     */
-    kernel?: kernel
-    /**
-     * take greater advantage of the JPEG
-     * and WebP shrink-on-load feature, which can lead to a slight moiré pattern on
-     * some images. (optional, default `true`)
-     */
-    fastShrinkOnLoad?: boolean,
-  }
-
-  /**
-   * Options for scaling an image (see crop for cropping)
-   */
-  export interface ScaleOptions extends ResizeOptions {
-    /**
-     * Stretch image if resize dimensions are larger than the source image.
-     * 
-     * Defaults to `true`
-     */
-    allowEnlargement?: boolean,
-
-    /**
-     * Resize to exactly the width and height specified, changing aspect ratio if necessary
-     * 
-     * Defaults to `false`
-     */
-    ignoreAspectRatio?: boolean
-
-    /**
-     * `fit` specifies how an image be scaled to fit the new dimensions
-     * Defaults to `contain`.
-     */
-    fit?: fit
-  }
-
-  export interface OverlayOptions {
-    /**  gravity at which to place the overlay. (optional, default `center`) */
-    gravity?: gravity
-    top?: number
-    left?: number
-    tile?: Boolean
-    cutout?: Boolean
-    density?: number
-  }
-
-  export interface ExtendOptions {
-    top?: number
-    left?: number
-    bottom?: number
-    right?: number
-  }
-
-  export interface CreateOptions {
-    width: number
-    height: number
-    channels: number
-    background: Color | string
-  }
+//export namespace Image {
+export interface Color {
+  /** red channel, 0-255 */
+  r: number
+  /** green channel, 0-255 */
+  g: number
+  /** blue channel, 0-255 */
+  b: number
+  /** alpha channel, 0.0-1.0 */
+  alpha: number
 }
 
-/** @hidden */
-type OperationFunction = (image: Image) => Promise<Image.OperationResult>
-/** @hidden */
-type MetadataFunction = (image: Image) => Promise<Image.Metadata>
+export interface Metadata {
+  /** Number of pixels wide */
+  width?: number
+  /** Number of pixels high */
+  height?: number
+  /** Name of colour space interpretation e.g. srgb, rgb, cmyk, lab, b-w ... */
+  space?: string
+  /** Number of bands e.g. 3 for sRGB, 4 for CMYK */
+  channels?: number
+  /** Number of pixels per inch (DPI), if present */
+  density?: number
+  /** Boolean indicating the presence of an embedded ICC profile */
+  hasProfile?: boolean
+  /** Boolean indicating the presence of an alpha transparency channel */
+  hasAlpha?: boolean
+  /** Number value of the EXIF Orientation header, if present */
+  orientation?: number
 
-/** @hidden */
-function constructImage(data: ArrayBuffer | Image.CreateOptions, options?: any) {
+  format?: string
+}
+export interface OperationResult {
+  info: Metadata
+  data: ArrayBuffer
+}
+
+/**
+ * WebP output options
+ */
+export interface WebpOptions {
+  /** quality, integer 1-100, defaults to 80 */
+  quality?: number
+  /** quality of alpha layer, integer 0-100, default to 100 */
+  alphaQuality?: number
+  /** use lossless compression mode */
+  lossless?: boolean
+  /** use near_lossless compression mode */
+  nearLossless?: boolean
+  /** force WebP output, otherwise attempt to use input format, defaults to true */
+  force?: boolean
+}
+
+/**
+ * JPEG output options
+ */
+export interface JpegOptions {
+  /** quality, integer 1-100, defaults to 80 */
+  quality?: number
+  /** use progressive (interlace) scan (defaults to false) */
+  progressive?: boolean
+  /** set to '4:4:4' to prevent chroma subsampling when quality <= 90 */
+  chromaSubsampling?: boolean
+  /** force output to jpeg (default true) */
+  force?: boolean
+}
+
+/**
+ * PNG output options
+ */
+export interface PngOptions {
+  /** use progressive (interlace) scan (defaults to false) */
+  progressive?: boolean
+  /** zlib compression level, 0-9 (default to 9) */
+  compressionLevel?: number
+  /** use adaptive row filtering (defaults to false) */
+  adaptiveFiltering?: boolean
+  /** force PNG output (defaults to true) */
+  force?: boolean
+}
+
+/**
+ * Options for resizing an image
+ */
+export interface ResizeOptions {
+  /**
+   * the kernel to use for image reduction.
+   *  (optional, default `'lanczos3'`)
+   */
+  kernel?: kernel
+  /**
+   * take greater advantage of the JPEG
+   * and WebP shrink-on-load feature, which can lead to a slight moiré pattern on
+   * some images. (optional, default `true`)
+   */
+  fastShrinkOnLoad?: boolean,
+}
+
+/**
+ * Options for scaling an image (see crop for cropping)
+ */
+export interface ScaleOptions extends ResizeOptions {
+  /**
+   * Stretch image if resize dimensions are larger than the source image.
+   * 
+   * Defaults to `true`
+   */
+  allowEnlargement?: boolean,
+
+  /**
+   * Resize to exactly the width and height specified, changing aspect ratio if necessary
+   * 
+   * Defaults to `false`
+   */
+  ignoreAspectRatio?: boolean
+
+  /**
+   * `fit` specifies how an image be scaled to fit the new dimensions
+   * Defaults to `contain`.
+   */
+  fit?: fit
+}
+
+export interface OverlayOptions {
+  /**  gravity at which to place the overlay. (optional, default `center`) */
+  gravity?: gravity
+  top?: number
+  left?: number
+  tile?: Boolean
+  cutout?: Boolean
+  density?: number
+}
+
+export interface ExtendOptions {
+  top?: number
+  left?: number
+  bottom?: number
+  right?: number
+}
+
+export interface CreateOptions {
+  width: number
+  height: number
+  channels: number
+  background: Color | string
+}
+//}
+
+/** @ignore */
+type OperationFunction = (image: Image) => Promise<OperationResult>
+/** @ignore */
+type MetadataFunction = (image: Image) => Promise<Metadata>
+
+/** @ignore */
+function constructImage(data: ArrayBuffer | CreateOptions, options?: any) {
   const args: any[] = [undefined, undefined]
   if (data instanceof ArrayBuffer) {
     args[0] = data
@@ -503,7 +521,7 @@ function imageOperation(ref: any, name: string, ...args: any[]) {
   return bridge.dispatchSync("fly.Image.operation", ref, name, ...args)
 }
 async function imageToBuffer(ref: any) {
-  return new Promise<Image.OperationResult>((resolve, reject) => {
+  return new Promise<OperationResult>((resolve, reject) => {
     bridge.dispatch("fly.Image.toBuffer", ref, (err: string, data: ArrayBuffer, info: any) => {
       if (err) {
         reject(err)
@@ -513,54 +531,54 @@ async function imageToBuffer(ref: any) {
     })
   })
 }
-function imageMetadata(ref: any): Image.Metadata {
-  return bridge.dispatchSync("fly.Image.metadata", ref)
+function imageMetadata(ref: any): Metadata {
+  return bridge.dispatchSync("fly.Metadata", ref)
 }
 
-export namespace Image {
-  export enum gravity {
-    center = 0,
-    centre = 0,
-    north = 1,
-    east = 2,
-    south = 3,
-    west = 4,
-    northeast = 5,
-    southeast = 6,
-    southwest = 7,
-    northwest = 8
-  }
+//export namespace Image {
+export enum gravity {
+  center = 0,
+  centre = 0,
+  north = 1,
+  east = 2,
+  south = 3,
+  west = 4,
+  northeast = 5,
+  southeast = 6,
+  southwest = 7,
+  northwest = 8
+}
 
-  export enum strategy {
-    entropy = 16,
-    attention = 17
-  }
+export enum strategy {
+  entropy = 16,
+  attention = 17
+}
 
-  export enum kernel {
-    nearest = "nearest",
-    cubic = "cubic",
-    lanczos2 = "lanczos2",
-    lanczos3 = "lanczos3"
-  }
+export enum kernel {
+  nearest = "nearest",
+  cubic = "cubic",
+  lanczos2 = "lanczos2",
+  lanczos3 = "lanczos3"
+}
 
+/**
+ * Specifies how an image should fit into the provided `width` and `height`
+ */
+export enum fit {
   /**
-   * Specifies how an image should fit into the provided `width` and `height`
+   * Preserving aspect ratio, resize the image to be as small as possible while ensuring its 
+   * dimensions are greater than or equal to the `width` and `height` specified.
    */
-  export enum fit {
-    /**
-     * Preserving aspect ratio, resize the image to be as small as possible while ensuring its 
-     * dimensions are greater than or equal to the `width` and `height` specified.
-     */
-    cover = "cover",
-    /**
-     * Preserving aspect ratio, resize the image to be as large as possible while ensuring its 
-     *  dimensions are less than or equal to the `width` and `height` specified.
-     */
-    contain = "contain",
-    /**
-     * Ignoring the aspect ratio of the input, stretch the image to the exact `width` and/or 
-     * `height` provided.
-     */
-    fill = "fill"
-  }
+  cover = "cover",
+  /**
+   * Preserving aspect ratio, resize the image to be as large as possible while ensuring its 
+   *  dimensions are less than or equal to the `width` and `height` specified.
+   */
+  contain = "contain",
+  /**
+   * Ignoring the aspect ratio of the input, stretch the image to the exact `width` and/or 
+   * `height` provided.
+   */
+  fill = "fill"
 }
+//}
