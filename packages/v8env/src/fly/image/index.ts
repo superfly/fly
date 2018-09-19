@@ -51,10 +51,24 @@ export class Image {
    * Pass `undefined` or `null` to auto-scale the width to match the height.
    * @param height Height in pixels of the resulting image.
    * Pass `undefind` or `null` to auto-scale the height to match the width.
-   * @param options Resize options}
+   * @param options Resize options
    */
   public resize(width?: number, height?: number, options?: Image.ResizeOptions) {
     this._imageOperation("resize", width, height, options)
+    return this
+  }
+
+  /**
+   * Scale image to `width` x `height`. This does not crop the image, it scales it to fit
+   * the specified width and height, and keeps the aspect ratio by default.
+   * @param width Width in pixels of the resulting image.
+   * Pass `undefined` or `null` to auto-scale the width to match the height.
+   * @param height Height in pixels of the resulting image.
+   * Pass `undefind` or `null` to auto-scale the height to match the width.
+   * @param options Scale options
+   */
+  public scale(width?: number, height?: number, options?: Image.ScaleOptions) {
+    this._imageOperation("scale", width, height, options)
     return this
   }
 
@@ -118,11 +132,41 @@ export class Image {
    *   .crop(Image.strategy.entropy)
    *   .toBuffer()
    * ```
+   * @param crop the cropping strategy to use
+   * @return the Image instance
    */
-  public crop(crop?: Image.gravity | Image.strategy) {
-    this._imageOperation("crop", crop)
+  public crop(crop?: Image.gravity | Image.strategy)
+  /**
+   * Crop to the specified width/height.
+   *
+   * @param width width to crop to
+   * @param height height to crop to, defaults to proportional height
+   * @param crop the cropping strategy to use
+   * @return the Image instance
+   */
+  public crop(width: number, height?: number, crop?: Image.gravity | Image.strategy)
+  public crop(
+    widthOrCrop?: number | Image.gravity | Image.strategy,
+    heightOrCrop?: number | Image.gravity | Image.strategy,
+    crop?: Image.gravity | Image.strategy
+  ) {
+    // crop can be an int so if we have one arg, assume it's crop
+    if (widthOrCrop && !heightOrCrop && !crop) {
+      crop = widthOrCrop
+      widthOrCrop = undefined
+    }
+    const width = typeof widthOrCrop === "number" ? widthOrCrop : undefined
+    const height = typeof heightOrCrop === "number" ? heightOrCrop : undefined
+    if (!crop && !height && heightOrCrop) {
+      crop = heightOrCrop
+    }
+    if (!crop && !width && widthOrCrop) {
+      crop = widthOrCrop
+    }
+    this._imageOperation("crop", width, height, crop)
     return this
   }
+
   /**
    * Preserving aspect ratio, resize the image to the maximum `width` or `height` specified
    * then embed on a background of the exact `width` and `height` specified.
@@ -140,8 +184,7 @@ export class Image {
    * @param gravity embed to an edge/corner, defaults to `center`.
    */
   public embed(gravity?: Image.gravity) {
-    this._imageOperation("embed", gravity)
-    return this
+    return this._imageOperation("embed", gravity)
   }
   /**
    * Set the background for the `embed`, `flatten` and `extend` operations.
@@ -272,7 +315,12 @@ export class Image {
     if (!imageOperation) {
       throw new Error("Image operations not enabled")
     }
-    return imageOperation(this._ref, name, ...args)
+    const oldref = this._ref
+    this._ref = imageOperation(this._ref, name, ...args)
+    if (oldref && oldref !== this._ref) {
+      oldref.release()
+    }
+    return this
   }
 
   public async toBuffer(): Promise<Image.OperationResult> {
@@ -375,6 +423,9 @@ export namespace Image {
     force?: boolean
   }
 
+  /**
+   * Options for resizing an image
+   */
   export interface ResizeOptions {
     /**
      * the kernel to use for image reduction.
@@ -387,6 +438,31 @@ export namespace Image {
      * some images. (optional, default `true`)
      */
     fastShrinkOnLoad?: boolean
+  }
+
+  /**
+   * Options for scaling an image (see crop for cropping)
+   */
+  export interface ScaleOptions extends ResizeOptions {
+    /**
+     * Stretch image if resize dimensions are larger than the source image.
+     *
+     * Defaults to `true`
+     */
+    allowEnlargement?: boolean
+
+    /**
+     * Resize to exactly the width and height specified, changing aspect ratio if necessary
+     *
+     * Defaults to `false`
+     */
+    ignoreAspectRatio?: boolean
+
+    /**
+     * `fit` specifies how an image be scaled to fit the new dimensions
+     * Defaults to `contain`.
+     */
+    fit?: fit
   }
 
   export interface OverlayOptions {
@@ -429,14 +505,11 @@ function constructImage(data: ArrayBuffer | Image.CreateOptions, options?: any) 
   }
   return bridge.dispatchSync("fly.Image()", ...args)
 }
+
 function imageOperation(ref: any, name: string, ...args: any[]) {
-  const result = bridge.dispatchSync("fly.Image.operation", ref, name, ...args)
-  if (result !== ref) {
-    // console.error("Image ref mismatch:", name, ref.typeof, result.typeof)
-    // throw new Error(["image operation failed, result not expected:", ref.typeof, result.typeof].join(" "))
-  }
-  return result
+  return bridge.dispatchSync("fly.Image.operation", ref, name, ...args)
 }
+
 async function imageToBuffer(ref: any) {
   return new Promise<Image.OperationResult>((resolve, reject) => {
     bridge.dispatch("fly.Image.toBuffer", ref, (err: string, data: ArrayBuffer, info: any) => {
@@ -476,5 +549,26 @@ export namespace Image {
     cubic = "cubic",
     lanczos2 = "lanczos2",
     lanczos3 = "lanczos3"
+  }
+
+  /**
+   * Specifies how an image should fit into the provided `width` and `height`
+   */
+  export enum fit {
+    /**
+     * Preserving aspect ratio, resize the image to be as small as possible while ensuring its
+     * dimensions are greater than or equal to the `width` and `height` specified.
+     */
+    cover = "cover",
+    /**
+     * Preserving aspect ratio, resize the image to be as large as possible while ensuring its
+     *  dimensions are less than or equal to the `width` and `height` specified.
+     */
+    contain = "contain",
+    /**
+     * Ignoring the aspect ratio of the input, stretch the image to the exact `width` and/or
+     * `height` provided.
+     */
+    fill = "fill"
   }
 }

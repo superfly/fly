@@ -20,6 +20,7 @@
     "test": "yarn test:packages && yarn test:e2e",
     "test:packages": "jest",
     "test:e2e": "lerna exec --concurrency 1 yarn test --scope \"@fly-test/*\"",
+    "test:v8env": "lerna exec --concurrency 1 yarn test --scope \"@fly-test/v8env\"",
     "test:format": "prettier --parser typescript -l '{packages,tests}/*/{src,tests}/**/*.{ts,tsx,js,jsx,json}'",
     "test:lint": "yarn lint --test --format junit --out ./artifacts/lint.junit.xml",
     "doc": "lerna run doc",
@@ -36,6 +37,7 @@
     "ts-jest": "^23.1.4",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "1.15.0",
+    "typedoc": "^0.12.0",
     "typescript": "3.0.1"
   },
   "prettier": {

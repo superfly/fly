@@ -12,7 +12,8 @@ type imageOperation = (...args: any[]) => sharp.SharpInstance
 
 const allowedOperations: Map<string, imageOperation> = new Map([
   ["resize", sharp.prototype.resize],
-  ["crop", sharp.prototype.crop],
+  ["scale", scale],
+  ["crop", crop],
   ["embed", sharp.prototype.embed],
   ["background", sharp.prototype.background],
   ["withoutEnlargement", sharp.prototype.withoutEnlargement],
@@ -83,7 +84,8 @@ registerBridge(
   "fly.Image.operation",
   (rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, name: string, ...args: any[]) => {
     try {
-      const img = refToImage(ref)
+      const originalImage = refToImage(ref)
+      let img = originalImage
       const operation = allowedOperations.get(name)
 
       if (!operation) {
@@ -94,13 +96,14 @@ registerBridge(
         const v = args[i]
         // replace image references with `toBuffer` promises
         if (v instanceof ivm.Reference) {
-          args[i] = refToImage(v).toBuffer()
+          const imgRef = refToImage(v)
+          args[i] = imgRef.toBuffer()
         }
       }
       return new Promise((resolve, reject) => {
         // resolve any promise arguments
         Promise.all(args)
-          .then(resolvedArgs => {
+          .then(async resolvedArgs => {
             for (let i = 0; i < resolvedArgs.length; i++) {
               const v = resolvedArgs[i]
               // and convert ArrayBuffers
@@ -108,7 +111,15 @@ registerBridge(
                 resolvedArgs[i] = Buffer.from(v)
               }
             }
-            operation.apply(img, resolvedArgs)
+            img = operation.apply(img, resolvedArgs)
+            if (img instanceof Promise) {
+              img = await img
+            }
+            if (img !== originalImage) {
+              const oldref = ref
+              ref = new ivm.Reference(img)
+              oldref.release()
+            }
             resolve(ref)
           })
           .catch(reject)
@@ -119,32 +130,38 @@ registerBridge(
   }
 )
 
-registerBridge("fly.Image.metadata", async (rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>) => {
+registerBridge("fly.Image.metadata", async function imageMetadata(
+  rt: Runtime,
+  bridge: Bridge,
+  ref: ivm.Reference<sharp.SharpInstance>
+) {
   const img = ref.deref()
   const meta = await img.metadata()
   return new ivm.ExternalCopy(extractMetadata(meta)).copyInto({ release: true })
 })
 
-registerBridge(
-  "fly.Image.toBuffer",
-  (rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, callback: ivm.Reference<() => void>) => {
-    const img = refToImage(ref)
-    if (!img) {
-      callback.applyIgnored(null, ["ref must be a valid image instance"])
+registerBridge("fly.Image.toBuffer", function imageToBuffer(
+  rt: Runtime,
+  bridge: Bridge,
+  ref: ivm.Reference<sharp.SharpInstance>,
+  callback: ivm.Reference<(...args: any[]) => void>
+) {
+  const img = refToImage(ref)
+  if (!img) {
+    callback.applyIgnored(null, ["ref must be a valid image instance"])
+    return
+  }
+
+  img.toBuffer((err, d, metadata) => {
+    if (err) {
+      log.debug("sending error:", err)
+      callback.applyIgnored(null, [err.toString()])
       return
     }
-
-    img.toBuffer((err, d, metadata) => {
-      if (err) {
-        log.debug("sending error:", err)
-        callback.applyIgnored(null, [err.toString()])
-        return
-      }
-      const info = extractMetadata(metadata)
-      callback.applyIgnored(null, [null, transferInto(d), new ivm.ExternalCopy(info).copyInto({ release: true })])
-    })
-  }
-)
+    const info = extractMetadata(metadata)
+    callback.applyIgnored(null, [null, transferInto(d), new ivm.ExternalCopy(info).copyInto({ release: true })])
+  })
+})
 
 function refToImage(ref: ivm.Reference<sharp.SharpInstance>) {
   const img = ref.deref()
@@ -153,4 +170,74 @@ function refToImage(ref: ivm.Reference<sharp.SharpInstance>) {
   }
 
   return img
+}
+
+async function scale(this: sharp.SharpInstance, ...args: any[]) {
+  const opts = typeof args[args.length - 1] === "object" ? args[args.length - 1] : undefined
+  const sharpOpts = {
+    kernel: sharp.kernel.lanczos3,
+    fastShrinkOnLoad: true
+  }
+  const fit = opts && opts.fit
+
+  if (opts) {
+    sharpOpts.kernel = opts.kernel
+    sharpOpts.fastShrinkOnLoad = opts.fastShrinkOnLoad
+  }
+
+  let width = typeof args[0] === "number" ? args[0] : undefined
+  let height = typeof args[1] === "number" ? args[1] : undefined
+  const ignoreAspectRatio = typeof opts === "object" && opts.ignoreAspectRatio === true
+  const withoutEnlargement = typeof opts === "object" && opts.allowEnlargement === false
+
+  if (!width || !height) {
+    const meta = await this.metadata()
+    if (!width && height) {
+      width = relativeDimension(width, meta.width || 0, height, meta.height || 0)
+    }
+    if (!height && width) {
+      height = relativeDimension(height, meta.height || 0, width, meta.width || 0)
+    }
+  }
+
+  let img = this
+  img = img.resize(width, height, sharpOpts)
+
+  if (withoutEnlargement) {
+    img = img.withoutEnlargement()
+  }
+  if (ignoreAspectRatio === true || fit === "fill") {
+    img = img.ignoreAspectRatio()
+  } else if (fit === "cover") {
+    img = img.min()
+  } else {
+    img = img.max()
+  }
+
+  return img
+}
+
+async function crop(this: sharp.SharpInstance, width?: number, height?: number, opts?: any) {
+  let img = this
+  if (width || height) {
+    const meta = await this.metadata()
+    if (!width && height) {
+      width = relativeDimension(width, meta.width || 0, height, meta.height || 0)
+    }
+    if (!height && width) {
+      height = relativeDimension(height, meta.height || 0, width, meta.width || 0)
+    }
+    img = this.resize(width, height)
+  }
+  return img.crop(opts)
+}
+
+function relativeDimension(x: number | undefined, original: number, other: number, basis: number) {
+  if (x && typeof x === "number" && !isNaN(x)) {
+    return x
+  }
+
+  const scaleVal = other / basis
+
+  return Math.ceil(scaleVal * original)
 }

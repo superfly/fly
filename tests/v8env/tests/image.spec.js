@@ -35,6 +35,43 @@ describe("Image", () => {
     expect(img2.info.format).to.eq("webp")
   })
 
+  describe("scale()", () => {
+    it("fit:contain", async () => {
+      const img = new Image(picture)
+      const meta = img.metadata()
+
+      const scaled = await img.scale(500, 1000, { fit: Image.fit.contain }).toImage()
+      const scaledMeta = scaled.metadata()
+
+      expect(scaledMeta.width).to.eq(500)
+      expect(scaledMeta.height).to.eq(335)
+
+      const widthRatio = Math.round((meta.width / scaledMeta.width) * 10) / 10
+      const heigthRatio = Math.round((meta.height / scaledMeta.height) * 10) / 10
+      expect(widthRatio).to.eq(heigthRatio)
+    })
+
+    it("fit:cover", async () => {
+      const img = new Image(picture)
+
+      const scaled = await img.scale(100, 300, { fit: Image.fit.cover }).toImage()
+      const scaledMeta = scaled.metadata()
+
+      expect(scaledMeta.width).to.be.gte(100)
+      expect(scaledMeta.height).to.be.gte(300)
+    })
+
+    it("fit:fill", async () => {
+      const img = new Image(picture)
+
+      const scaled = await img.scale(100, 300, { fit: Image.fit.fill }).toImage()
+      const scaledMeta = scaled.metadata()
+
+      expect(scaledMeta.width).to.eq(100)
+      expect(scaledMeta.height).to.eq(300)
+    })
+  })
+
   it("flatten()", async () => {
     const img = new Image(logo)
     const img2 = await img
@@ -70,14 +107,22 @@ describe("Image", () => {
     expect(img2.info.width).to.eq(256)
   })
 
-  it("crop()", async () => {
-    const img = new Image(logo)
-    const img2 = await img
-      .resize(128, 64)
-      .crop(Image.strategy.entropy)
-      .toImage()
-    expect(img2.info.width).to.eq(128)
-    expect(img2.info.height).to.eq(64)
+  describe("crop()", () => {
+    it("crops after resize", async () => {
+      const img = new Image(logo)
+      const img2 = await img
+        .resize(128, 64)
+        .crop(Image.strategy.entropy)
+        .toImage()
+      expect(img2.info.width).to.eq(128)
+      expect(img2.info.height).to.eq(64)
+    })
+    it("crops with dimensions", async () => {
+      const img = new Image(logo)
+      const img2 = await img.crop(40, 40, Image.strategy.entropy).toImage()
+      expect(img2.info.width).to.eq(40)
+      expect(img2.info.height).to.eq(40)
+    })
   })
 
   it("errors with bad ops", async () => {

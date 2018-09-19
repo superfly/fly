@@ -1,12 +1,12 @@
 {
   "name": "@fly-test/edge-apps",
-  "version": "0.42.0-pre.8",
+  "version": "0.42.0",
   "private": true,
   "scripts": {
     "test": "jest"
   },
   "devDependencies": {
-    "@fly/test-environment": "0.42.0-pre.8",
+    "@fly/test-environment": "0.42.0",
     "@types/jest": "^23.3.1",
     "jest": "^23.5.0",
     "ts-jest": "^23.1.4"
