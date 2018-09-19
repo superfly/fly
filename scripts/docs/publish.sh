@@ -9,6 +9,7 @@ git clone https://github.com/superfly/fly.docs.git ./dist/docs/ -q
 pushd ./packages/v8env/
   yarn docs
 popd
+exit
 pushd ./dist/docs/
 current_repo=$(git config --get remote.origin.url)
 if [ "$current_repo" != "https://github.com/superfly/fly.docs.git" ]; then

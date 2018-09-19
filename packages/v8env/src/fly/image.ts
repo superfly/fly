@@ -53,7 +53,7 @@ export class Image {
    * Pass `undefind` or `null` to auto-scale the height to match the width.
    * @param options Resize options
    */
-  public resize(width?: number, height?: number, options?: Image.ResizeOptions) {
+  public resize(width?: number, height?: number, options?: ResizeOptions) {
     this._imageOperation("resize", width, height, options)
     return this
   }
@@ -67,7 +67,7 @@ export class Image {
    * Pass `undefind` or `null` to auto-scale the height to match the width.
    * @param options Scale options
    */
-  public scale(width?: number, height?: number, options?: Image.ScaleOptions) {
+  public scale(width?: number, height?: number, options?: ScaleOptions) {
     this._imageOperation('scale', width, height, options)
     return this
   }
@@ -81,7 +81,7 @@ export class Image {
    * @param overlay image to overlay
    * @param options control how the overlay is composited
    */
-  public overlayWith(overlay: ArrayBuffer | Image, options?: Image.OverlayOptions) {
+  public overlayWith(overlay: ArrayBuffer | Image, options?: OverlayOptions) {
     let p: any = overlay
     if (p instanceof Image) {
       p = p._ref
