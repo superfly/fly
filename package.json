@@ -32,7 +32,7 @@
     "jest": "^23.5.0",
     "jest-junit": "^5.1.0",
     "jest-silent-reporter": "^0.1.1",
-    "lerna": "^3.3.0",
+    "lerna": "^3.4.0",
     "prettier": "1.14.2",
     "ts-jest": "^23.1.4",
     "tslint": "^5.11.0",
