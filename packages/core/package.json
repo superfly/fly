@@ -17,6 +17,7 @@
         "build:watch": "tsc -b -w -v ."
     },
     "dependencies": {
+        "@fly/examples": "0.42.0",
         "@fly/v8env": "0.42.0",
         "ansi-colors": "^1.1.0",
         "axios": "^0.18.0",
