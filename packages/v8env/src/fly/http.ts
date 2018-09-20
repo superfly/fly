@@ -4,7 +4,6 @@
  * @private
  */
 
-declare var fly
 let fetchEventBound = false
 let flyFetchHandler = null
 
