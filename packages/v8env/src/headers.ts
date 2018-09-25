@@ -1,5 +1,3 @@
-/* tslint:disable:prefer-for-of */
-
 /**
  * @module fly
  * @private
@@ -10,10 +8,10 @@ import { logger } from "./logger"
  * @class
  * @param {Object} [init]
  */
-export default class Headers {
+export default class FlyHeaders implements Headers {
   private headerMap: { [key: string]: string[] } = {};
 
-  constructor(init: HeadersInit) {
+  constructor(init?: HeadersInit) {
     if (init instanceof Headers) {
       init.forEach((val, key) => {
         this.append(key, val);
