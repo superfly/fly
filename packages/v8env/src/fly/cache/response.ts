@@ -21,6 +21,7 @@
 
 /** */
 import cache, { CacheSetOptions } from "."
+import FlyHeaders from "../../headers";
 
 /**
  * Response metadata suitable for caching
@@ -130,7 +131,7 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
   }
 
   const skipHeaderSet = new Set(skipHeaderOption);
-  resp.headers.forEach((value, name) => {
+  for (const [value, name] of resp.headers as FlyHeaders) {
     if (skipHeaderSet.has(name.toLowerCase())) {
       return;
     }
@@ -141,7 +142,7 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
     } else {
       meta.headers[name] = value
     }
-  })
+  }
   return cacheResult([setMeta(key, meta, options), cache.set(key + ":body", body, options)])
 }
 
