@@ -5,7 +5,7 @@ describe("cookies", () => {
     const req = new Request("http://example.com", { headers: { cookie: "foo=bar;hello=world;" } })
     const foo = req.cookies.get("foo").value
     const hello = req.cookies.get("hello").value
-    const no = req.cookies.get("no").value
+    const no = req.cookies.get("no")
 
     expect(foo).to.eq("bar")
     expect(hello).to.eq("world")
@@ -18,6 +18,6 @@ describe("cookies", () => {
     resp.cookies.append("test2", "val2")
 
     const setCookie = resp.headers.get("set-cookie")
-    expect(setCookie).to.eq("test1=val1; Max-Age=1000,test2=val2")
+    expect(setCookie).to.eq("test1=val1; Max-Age=1000, test2=val2")
   })
 })
