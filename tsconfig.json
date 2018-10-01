@@ -9,6 +9,9 @@
     },
     {
       "path": "./packages/v8env"
+    },
+    {
+      "path": "./packages/examples"
     }
   ],
   "include": []

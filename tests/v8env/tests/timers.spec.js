@@ -7,7 +7,7 @@ describe("timers", () => {
       setTimeout(function() {
         const dur = Date.now() - t
         try {
-          expect(dur).to.be.within(19, 125)
+          expect(dur).to.be.within(19, 175)
         } catch (e) {
           done(e)
           return

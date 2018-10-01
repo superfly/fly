@@ -1,0 +1,25 @@
+{
+  "name": "@fly/examples",
+  "version": "0.42.2",
+  "description": "Example apps for the fly edge application runtime.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superfly/fly"
+  },
+  "homepage": "https://fly.io",
+  "main": "lib/index.js",
+  "files": [
+    "lib/",
+    "apps/"
+  ],
+  "scripts": {
+    "clean": "rm -rf apps",
+    "build": "yarn clean && cp -r ../../examples apps",
+    "prepublishOnly": "yarn build",
+    "postpublishOnly": "yarn clean"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

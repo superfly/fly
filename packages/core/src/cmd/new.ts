@@ -3,6 +3,7 @@ import * as path from "path"
 import * as fs from "fs"
 import { sync as glob } from "glob"
 import * as execa from "execa"
+import { examplesPath } from "@fly/examples"
 
 export interface NewOptions {
   template: string[]
@@ -18,7 +19,7 @@ const newCommand = root
   .option("-t, --template [template]", "Name of the template to use. default: getting-started", "getting-started")
   .option("-l, --list", "List available templates.")
   .action(async (options, args) => {
-    const templateIndex = new TemplateIndex([path.resolve(__dirname, "..", "..", "examples")])
+    const templateIndex = new TemplateIndex([examplesPath])
 
     if (args.name === undefined || options.list) {
       listTemplates(templateIndex)

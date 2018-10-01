@@ -6,6 +6,7 @@ import { spawn } from "child_process"
 import { FileAppStore } from "../file_app_store"
 import { Server } from "../server"
 import { RedisCacheNotifier } from "../redis_cache_notifier"
+import { examplesPath } from "@fly/examples"
 
 interface ServerOptions {
   port?: string
@@ -58,7 +59,8 @@ root
   })
 
 async function getExamplePath(name: string) {
-  const p = path.resolve(__dirname, "..", "..", "examples", name)
+  const p = path.resolve(examplesPath, name)
+
   if (!fs.existsSync(p)) {
     return undefined
   }
