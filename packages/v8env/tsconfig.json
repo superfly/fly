@@ -9,7 +9,8 @@
     "outDir": "./lib",
     "lib": [
       "es2017",
-      "dom"
+      "dom",
+      "dom.iterable"
     ],
     // ease the transition to TypeScript, remove after 2018-09-01 plzthx
     "strict": false,

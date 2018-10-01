@@ -122,15 +122,33 @@ export default class FlyHeaders implements Headers {
     }
   }
 
-  public *[Symbol.iterator]() {
+  public *keys(): IterableIterator<string> {
+    for (const [name] of this.headerMap) {
+      yield name
+    }
+  }
+
+  public *values(): IterableIterator<string> {
+    for (const [value] of this) {
+      yield value
+    }
+  }
+
+  public *entries(): IterableIterator<[string, string]> {
     for (const [name, values] of this.headerMap) {
       if (name === "cookie" || name === "set-cookie") {
         for (const value in values) {
-          yield value, name, this;
+          if (values.hasOwnProperty(value)) {
+            yield [value, name]
+          }
         }
       } else {
-        yield values, name, this;
+        yield [values.join(", "), name]
       }
     }
+  }
+
+  public *[Symbol.iterator](): IterableIterator<[string, string]> {
+    return this.entries()
   }
 }
