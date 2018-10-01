@@ -58,7 +58,7 @@ export default {
 
     for (const [value, name] of res.headers) {
       resHeaders[name] = value
-    };
+    }
     const cacheableRes = {
       status: res.status,
       headers: resHeaders
