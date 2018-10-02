@@ -1,4 +1,4 @@
-fly.http.respondWith(async function (request) {
+fly.http.respondWith(function(request) {
   const url = new URL(request.url)
 
   headers = {

@@ -2,18 +2,17 @@
  * @module fly
  * @private
  */
-import { logger } from "./logger"
 
 /**
  * @class
  * @param {Object} [init]
  */
-export default class FlyHeaders implements Headers {
+export class FlyHeaders implements Headers {
   private headerMap: Map<string, string[]> = new Map<string, string[]>()
 
   constructor(init?: HeadersInit) {
     if (init instanceof FlyHeaders) {
-      for (const [val, key] of init) {
+      for (const [key, val] of init) {
         this.append(key, val)
       }
     } else if (Array.isArray(init)) {
@@ -37,7 +36,6 @@ export default class FlyHeaders implements Headers {
     }
   }
 
-  // void append(ByteString name, ByteString value);
   /**
    * Adds a header. Does not overwrite existing headers with same name
    * @param {String} name
@@ -46,13 +44,14 @@ export default class FlyHeaders implements Headers {
   public append(name: string, value: string): void {
     name = name.toLowerCase()
     if (this.headerMap.has(name)) {
-      this.headerMap.get(name).push(name)
+      this.headerMap.get(name).push(value)
     } else {
       this.set(name, value)
     }
   }
 
-  /** Deletes header(s) by name
+  /**
+   * Deletes header(s) by name
    * @param {String} name
    */
   public delete(name: string): void {
@@ -67,14 +66,12 @@ export default class FlyHeaders implements Headers {
    */
   public get(name: string): string | null {
     name = name.toLowerCase()
-    if (name === "cookie" || name === "set-cookie") {
-      return this.headerMap.get(name)[0] || null
+    const values = this.headerMap.get(name)
+    if (!values || values.length === 0) {
+      return null
     }
 
-    if (this.has(name)) {
-      return this.headerMap.get(name).join(", ")
-    }
-    return null
+    return this.headerMap.get(name).join(", ")
   }
 
   public getAll(name: string): string[] {
@@ -109,46 +106,43 @@ export default class FlyHeaders implements Headers {
    */
   public toJSON(): { [key: string]: string[] } {
     const payload = {}
-    for (const [name, value] of this.headerMap) {
-      payload[name] = value
+    for (const [name, value] of [...this.headerMap]) {
+      if (name === "host") {
+        payload[name] = value[0]
+      } else {
+        payload[name] = value
+      }
     }
     return payload
   }
 
   public forEach(callbackfn: (value: string, key: string, parent: Headers) => void, thisArg?: any): void {
-    const cb = thisArg ? callbackfn.bind(thisArg) : callbackfn
-    for (const [name, value] of this) {
-      cb(value, name, parent)
-    }
+    this.headerMap.forEach((value, key) => {
+      callbackfn(value.join(", "), key, this)
+    })
   }
 
   public *keys(): IterableIterator<string> {
-    for (const [name] of this.headerMap) {
+    for (const [name, _] of this) {
       yield name
     }
   }
 
   public *values(): IterableIterator<string> {
-    for (const [value] of this) {
+    for (const [_, value] of this) {
       yield value
     }
   }
 
   public *entries(): IterableIterator<[string, string]> {
-    for (const [name, values] of this.headerMap) {
-      if (name === "cookie" || name === "set-cookie") {
-        for (const value in values) {
-          if (values.hasOwnProperty(value)) {
-            yield [value, name]
-          }
-        }
-      } else {
-        yield [values.join(", "), name]
-      }
+    for (const [name, values] of this.headerMap.entries()) {
+      yield [name, values.join(", ")]
     }
   }
 
-  public *[Symbol.iterator](): IterableIterator<[string, string]> {
+  public [Symbol.iterator](): IterableIterator<[string, string]> {
     return this.entries()
   }
 }
+
+export { FlyHeaders as Headers }

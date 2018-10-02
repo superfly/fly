@@ -21,7 +21,6 @@
 
 /** */
 import cache, { CacheSetOptions } from "."
-import FlyHeaders from "../../headers"
 
 /**
  * Response metadata suitable for caching
@@ -131,9 +130,9 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
   }
 
   const skipHeaderSet = new Set(skipHeaderOption)
-  for (const [value, name] of resp.headers) {
+  for (const [name, value] of resp.headers) {
     if (skipHeaderSet.has(name.toLowerCase())) {
-      return
+      continue
     }
 
     const existingVal = meta.headers[name]

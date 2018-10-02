@@ -13,7 +13,7 @@ import { console } from "./console"
 import flyInit from "./fly/index"
 
 import { URL, URLSearchParams } from "universal-url-lite" // 'whatwg-url'
-import Headers from "./headers"
+import { Headers } from "./headers"
 
 import { TextEncoder, TextDecoder } from "./text-encoding"
 import { fetch, TimeoutError } from "./fetch"

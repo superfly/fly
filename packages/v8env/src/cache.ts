@@ -56,7 +56,7 @@ export default {
     const resHeaders = {}
     const key = hashData(req)
 
-    for (const [value, name] of res.headers) {
+    for (const [name, value] of res.headers) {
       resHeaders[name] = value
     }
     const cacheableRes = {
