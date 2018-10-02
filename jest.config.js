@@ -13,7 +13,9 @@ if (process.env.CI) {
       ["jest-junit", {
         "output": "./artifacts/packages.junit.xml"
       }],
-      "jest-silent-reporter",
+      ["jest-silent-reporter", {
+        "useDots": true
+      }]
     ]
   })
 }

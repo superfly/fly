@@ -11,7 +11,9 @@ if (process.env.CI) {
       ["jest-junit", {
         "output": "../../artifacts/edge-apps.junit.xml"
       }],
-      "jest-silent-reporter"
+      ["jest-silent-reporter", {
+        "useDots": true
+      }]
     ]
   })
 }
