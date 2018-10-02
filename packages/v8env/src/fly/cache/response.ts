@@ -130,8 +130,7 @@ export async function set(key: string, resp: Response, options?: ResponseCacheSe
   }
 
   const skipHeaderSet = new Set(skipHeaderOption)
-  for (const headerSet of resp.headers as any) {
-    const [name, value] = headerSet
+  for (const [name, value] of resp.headers) {
     if (skipHeaderSet.has(name.toLowerCase())) {
       continue
     }

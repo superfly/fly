@@ -1,185 +1,148 @@
-/* tslint:disable:prefer-for-of */
-
 /**
  * @module fly
  * @private
  */
-import { logger } from "./logger"
 
 /**
  * @class
  * @param {Object} [init]
  */
-export default function Headers(init) {
-  Object.defineProperty(this, "_headerList", {
-    enumerable: false,
-    value: []
-  })
-  if (init) {
-    fill(this, init)
-  }
-}
+export class FlyHeaders implements Headers {
+  private headerMap: Map<string, string[]> = new Map<string, string[]>()
 
-// interface Headers
-Headers.prototype = {
-  // void append(ByteString name, ByteString value);
+  constructor(init?: HeadersInit) {
+    if (init instanceof FlyHeaders) {
+      for (const [key, val] of init) {
+        this.append(key, val)
+      }
+    } else if (Array.isArray(init)) {
+      init.forEach(header => {
+        if (!Array.isArray(header) || header.length !== 2) {
+          throw TypeError()
+        }
+        this.append(header[0], header[1])
+      })
+    } else {
+      init = Object(init)
+      for (const name of Object.keys(init)) {
+        if (Array.isArray(init[name])) {
+          init[name].forEach(v => {
+            this.append(name, v)
+          })
+        } else {
+          this.set(name, init[name])
+        }
+      }
+    }
+  }
+
   /**
    * Adds a header. Does not overwrite existing headers with same name
    * @param {String} name
    * @param {String} value
    */
-  append: function append(name, value) {
+  public append(name: string, value: string): void {
     name = name.toLowerCase()
-    this._headerList.push([name, value])
-  },
+    if (this.headerMap.has(name)) {
+      this.headerMap.get(name).push(value)
+    } else {
+      this.set(name, value)
+    }
+  }
 
   /**
    * Deletes header(s) by name
    * @param {String} name
    */
-  delete: function delete_(name) {
+  public delete(name: string): void {
     name = name.toLowerCase()
-    let index = 0
-    while (index < this._headerList.length) {
-      if (this._headerList[index][0] === name) {
-        this._headerList.splice(index, 1)
-      } else {
-        ++index
-      }
-    }
-  },
+    this.headerMap.delete(name)
+  }
 
   /**
    * Gets first header by name
    * @param {String} name
    * @returns {String?}
    */
-  get: function get(name) {
+  public get(name: string): string | null {
     name = name.toLowerCase()
-    const raw = []
-    for (let index = 0; index < this._headerList.length; ++index) {
-      if (this._headerList[index][0] === name) {
-        raw.push(this._headerList[index][1])
-      }
+    const values = this.headerMap.get(name)
+    if (!values || values.length === 0) {
+      return null
     }
-    if (raw.length > 0) {
-      return raw.join(", ")
-    }
-    return null
-  },
 
-  /**
-   * Gets all headers by name
-   * @param {String} name
-   * @returns {sequence<String>}
-   */
-  getAll: function getAll(name) {
-    name = name.toLowerCase()
-    const sequence = []
-    for (let index = 0; index < this._headerList.length; ++index) {
-      if (this._headerList[index][0] === name) {
-        sequence.push(this._headerList[index][1])
-      }
-    }
-    return sequence
-  },
+    return this.headerMap.get(name).join(", ")
+  }
+
+  public getAll(name: string): string[] {
+    return this.headerMap.get(name.toLowerCase()) || []
+  }
 
   /**
    * Checks for existence of header by name
    * @param {String} name
    * @returns {boolean}
    */
-  has: function has(name) {
-    name = name.toLowerCase()
-    for (let index = 0; index < this._headerList.length; ++index) {
-      if (this._headerList[index][0] === name) {
-        return true
-      }
-    }
-    return false
-  },
+  public has(name: string): boolean {
+    return this.headerMap.has(name) && this.headerMap.get(name).length > 0
+  }
 
   /**
    * Sets a header by name. Overwrites existing headers with same name
    * @param {String} name
    * @param {String} value
    */
-  set: function set(name, value) {
+  public set(name: string, value: string | string[]): void {
     name = name.toLowerCase()
-    for (let index = 0; index < this._headerList.length; ++index) {
-      if (this._headerList[index][0] === name) {
-        this._headerList[index++][1] = value
-        while (index < this._headerList.length) {
-          if (this._headerList[index][0] === name) {
-            this._headerList.splice(index, 1)
-          } else {
-            ++index
-          }
-        }
-        return
-      }
+    if (Array.isArray(value)) {
+      this.headerMap.set(name, value)
+    } else {
+      this.headerMap.set(name, [value])
     }
-    this._headerList.push([name, value])
-  },
+  }
 
   /**
    * @returns {Object<string,string[]>}
    */
-  toJSON: function toJSON() {
-    const jsonHeaders = {}
-    for (const h of this._headerList) {
-      if (h[0] === "host") {
-        jsonHeaders[h[0]] = this.get(h[0])
-        continue
-      }
-
-      logger.debug("setting", h[0], this.getAll(h[0]))
-      jsonHeaders[h[0]] = this.getAll(h[0])
-    }
-    return jsonHeaders
-  }
-}
-Headers.prototype[Symbol.iterator] = function() {
-  return new HeadersIterator(this)
-}
-
-function HeadersIterator(headers) {
-  this._headers = headers
-  this._index = 0
-}
-HeadersIterator.prototype = {}
-HeadersIterator.prototype.next = function() {
-  if (this._index >= this._headers._headerList.length) {
-    return { value: undefined, done: true }
-  }
-  return { value: this._headers._headerList[this._index++], done: false }
-}
-HeadersIterator.prototype[Symbol.iterator] = function() {
-  return this
-}
-
-function fill(headers, init) {
-  if (init instanceof Headers) {
-    init._headerList.forEach(header => {
-      headers.append(header[0], header[1])
-    })
-  } else if (Array.isArray(init)) {
-    init.forEach(header => {
-      if (!Array.isArray(header) || header.length !== 2) {
-        throw TypeError()
-      }
-      headers.append(header[0], header[1])
-    })
-  } else {
-    init = Object(init)
-    for (const name of Object.keys(init)) {
-      if (Array.isArray(init[name])) {
-        init[name].forEach(v => {
-          headers.append(name, v)
-        })
+  public toJSON(): { [key: string]: string[] } {
+    const payload = {}
+    for (const [name, value] of [...this.headerMap]) {
+      if (name === "host") {
+        payload[name] = value[0]
       } else {
-        headers.set(name, init[name])
+        payload[name] = value
       }
     }
+    return payload
+  }
+
+  public forEach(callbackfn: (value: string, key: string, parent: Headers) => void, thisArg?: any): void {
+    this.headerMap.forEach((value, key) => {
+      callbackfn(value.join(", "), key, this)
+    })
+  }
+
+  public *keys(): IterableIterator<string> {
+    for (const [name, _] of this) {
+      yield name
+    }
+  }
+
+  public *values(): IterableIterator<string> {
+    for (const [_, value] of this) {
+      yield value
+    }
+  }
+
+  public *entries(): IterableIterator<[string, string]> {
+    for (const [name, values] of this.headerMap.entries()) {
+      yield [name, values.join(", ")]
+    }
+  }
+
+  public [Symbol.iterator](): IterableIterator<[string, string]> {
+    return this.entries()
   }
 }
+
+export { FlyHeaders as Headers }

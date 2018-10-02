@@ -56,12 +56,8 @@ export default {
     const resHeaders = {}
     const key = hashData(req)
 
-    for (const h of res.headers) {
-      if (h[0] === "set-cookie") {
-        resHeaders[h[0]] = h[1]
-      } else {
-        resHeaders[h[0]] = (h[1].join && h[1].join(",")) || h[1]
-      }
+    for (const [name, value] of res.headers) {
+      resHeaders[name] = value
     }
     const cacheableRes = {
       status: res.status,
