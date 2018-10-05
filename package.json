@@ -1,0 +1,25 @@
+{
+  "name": "@fly/load-balancer",
+  "private": false,
+  "version": "0.1.1",
+  "description": "",
+  "scripts": {
+    "start": "yarn fly server",
+    "test": "yarn fly test",
+    "build": "yarn tsc",
+    "prepublishOnly": "yarn build"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "main": "lib/balancer.js",
+  "devDependencies": {
+    "@fly/fly": "^0.42.0",
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.4",
+    "chai": "^4.1.2",
+    "standard-version": "^4.4.0",
+    "ts-loader": "^3.5.0",
+    "typescript": "^3.1.0"
+  },
+  "dependencies": {}
+}
