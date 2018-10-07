@@ -1,6 +1,6 @@
 /**
  * A fetch function load balancer. Distributes requests to a set of backends; attempts to 
- * send requests to most recently healthy backends using a 2 random (pick two healthiest, 
+ * send requests to lowest latency backends using a 2 random (pick two fastest, 
  * randomize which gets requests).
  * 
  * If all backends are healthy, tries to evenly distribute requests as much as possible.
@@ -21,9 +21,9 @@ export default function balancer(backends: FetchFn[]) {
       proxy: h,
       requestCount: 0,
       scoredRequestCount: 0,
-      statuses: Array<number>(10),
+      responseTime: Array<number>(10),
       lastError: 0,
-      healthScore: 1,
+      averageResponseTime: 0,
       errorCount: 0
     }
   })
@@ -57,22 +57,26 @@ export default function balancer(backends: FetchFn[]) {
       attempted.add(backend)
 
       let resp: Response
+      let beginTime = new Date();
+      let endTime;
+
       try {
         resp = await promise
       } catch (e) {
         resp = proxyError
+      } finally {
+        endTime = new Date();
       }
-      if (backend.statuses.length < 10) {
-        backend.statuses.push(resp.status)
+
+      //calculate the response time and save to backend
+      let responseTime = endTime.getMilliseconds() - beginTime.getMilliseconds();
+      if (backend.responseTime.length < 10) {
+        backend.responseTime.push(responseTime);
       } else {
-        backend.statuses[(backend.requestCount - 1) % backend.statuses.length] = resp.status
+        backend.responseTime[(backend.requestCount - 1) % backend.responseTime.length] = responseTime
       }
 
       if (resp.status >= 500 && resp.status < 600) {
-        backend.lastError = Date.now()
-        // always recompute score on errors
-        score(backend)
-
         // clear out response to trigger retry
         if (canRetry(req, resp)) {
           continue
@@ -99,40 +103,20 @@ export interface Backend {
   proxy: (req: RequestInfo, init?: RequestInit | undefined) => Promise<Response>,
   requestCount: 0,
   scoredRequestCount: 0,
-  statuses: number[],
+  responseTime: number[],
   lastError: number,
-  healthScore: number,
+  averageResponseTime: number,
   errorCount: 0
 }
-// compute a backend health score with time + status codes
-function score(backend: Backend, errorBasis?: number) {
-  if (typeof errorBasis !== "number" && !errorBasis) errorBasis = Date.now()
-
-  const timeSinceError = (errorBasis - backend.lastError)
-  const statuses = backend.statuses
-  const timeWeight = (backend.lastError === 0 && 0) ||
-    ((timeSinceError < 1000) && 1) ||
-    ((timeSinceError < 3000) && 0.8) ||
-    ((timeSinceError < 5000) && 0.3) ||
-    ((timeSinceError < 10000) && 0.1) ||
-    0;
-  if (statuses.length == 0) return 0
-  let requests = 0
-  let errors = 0
-  for (let i = 0; i < statuses.length; i++) {
-    const status = statuses[i]
-    if (status && !isNaN(status)) {
-      requests += 1
-      if (status >= 500 && status < 600) {
-        errors += 1
-      }
-    }
-  }
-  const score = (1 - (timeWeight * (errors / requests)))
-  backend.healthScore = score
+// calculate a health score based on the average responseTime
+function score(backend: Backend) {
+  const responseTimes = backend.responseTime;
+  const score = responseTimes.reduce(function (a, b) { return a + b; }) / responseTimes.length;
+  backend.averageResponseTime = score;
   backend.scoredRequestCount = backend.requestCount
   return score
 }
+
 function canRetry(req: Request, resp: Response) {
   if (resp && resp.status < 500) return false // don't retry normal boring errors or success
   if (req.method == "GET" || req.method == "HEAD") return true
@@ -171,8 +155,8 @@ function chooseBackends(backends: Backend[], attempted?: Set<Backend>) {
 
 function bestBackend(b1: Backend, b2: Backend) {
   if (
-    b1.healthScore > b2.healthScore ||
-    (b1.healthScore == b2.healthScore && b1.requestCount < b2.requestCount)
+    b1.averageResponseTime < b2.averageResponseTime ||
+    (b1.averageResponseTime == b2.averageResponseTime && b1.requestCount < b2.requestCount)
   ) {
     return b1
   }

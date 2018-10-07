@@ -12,53 +12,30 @@ function healthy() {
   return <Backend>{
     proxy: fakeFetch.bind({}), // same function, different times
     requestCount: 0,
-    statuses: [200, 200, 200],
+    responseTime: [30, 30, 30],
     lastError: 0,
-    healthScore: 1,
+    averageResponseTime: 30,
     errorCount: 0
   }
 }
 function unhealthy(score?: number) {
   const b = healthy()
-  b.statuses.push(500, 500, 500)
-  b.healthScore = score || 0.5
+  b.responseTime.push(500, 500, 500)
+  b.averageResponseTime = score || 10000
   return b
 }
 describe("balancing", () => {
   describe("backend scoring", () => {
-    it("should score healthy backends high", () => {
-      const backend = healthy()
+    it("should score backends correctly", () => {
+      const backend = unhealthy()
       const score = _internal.score(backend)
 
-      expect(score).to.eq(1)
-    })
-
-    it("should score unhealthy backends low", () => {
-      const backend = unhealthy()
-      const score = _internal.score(backend, 0)
-
-      expect(score).to.eq(0.5)
-    })
-
-
-    it("should give less weight to older errors", () => {
-      const backend = unhealthy()
-      let score = _internal.score(backend, backend.lastError + 999)
-      expect(score).to.eq(0.5)
-
-      score = _internal.score(backend, backend.lastError + 2000) // 2s old error
-      expect(score).to.eq(0.6)
-
-      score = _internal.score(backend, backend.lastError + 4000) // 4s old error
-      expect(score).to.eq(0.85)
-
-      score = _internal.score(backend, backend.lastError + 9000) // 9s old error
-      expect(score).to.eq(0.95)
+      expect(score).to.eq(265)
     })
   })
 
   describe("backend selection", () => {
-    it("should choose healthy backends first", () => {
+    it("should choose lower latency backends first", () => {
       const h = [healthy(), healthy()]
       const backends = [unhealthy(), unhealthy(), unhealthy()].concat(h)
       const [b1, b2] = _internal.chooseBackends(backends)
@@ -81,19 +58,15 @@ describe("balancing", () => {
   })
 
   describe("backend stats", () => {
-    it("should store last 10 statuses", async () => {
+    it("should store last 10 response times", async () => {
       const req = new Request("http://localhost/hello/")
       const fn = balancer([fakeFetch])
       const backend = fn.backends[0]
-      const statuses = Array<number>()
+      
       for (let i = 0; i < 20; i++) {
         let resp = await fn(req)
-        statuses.push(resp.status)
       }
-
-      expect(backend.statuses.length).to.eq(10)
-      expect(backend.statuses).to.deep.eq(statuses.slice(-10))
-      expect(backend.healthScore).to.eq(1)
+      expect(backend.responseTime.length).to.eq(10)
     })
 
     it("should retry on failure", async () => {
@@ -102,8 +75,8 @@ describe("balancing", () => {
         fakeFetchError.bind({}),
         fakeFetch
       ])
-      // lower health of the last backend so we try errors first
-      fn.backends[2].healthScore = 0.1
+      // raise health of the last backend so we try errors first
+      fn.backends[2].averageResponseTime = 1000
 
       const resp = await fn("http://localhost/")
       const used = fn.backends.filter((b) => b.requestCount > 0)
