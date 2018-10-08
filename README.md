@@ -88,7 +88,7 @@ Simply put:
 
 ### Configuration
 
-By default, fly will read your a `.fly.yml` file in your current working directory.
+By default, fly will read your `.fly.yml` file in your current working directory.
 
 ```yaml
 # .fly.yml
