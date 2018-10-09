@@ -43,6 +43,7 @@
         "sharp": "^0.20.5",
         "source-map": "^0.6.1",
         "tar-fs": "^1.16.0",
+        "uglifyjs-webpack-plugin": "^2.0.1",
         "webpack": "^3.11.0",
         "ws": "^4.0.0"
     },
