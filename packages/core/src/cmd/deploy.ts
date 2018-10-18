@@ -25,7 +25,7 @@ const deploy = root
   .description("Deploy your local Fly app.")
   .action(function(this: Command<DeployOptions, DeployArgs>, opts, args, rest) {
     const API = apiClient(this)
-    const { buildApp } = require("../utils/build")
+    const { buildApp } = require("../../../build")
     const env = getEnv(this)
     const cwd = args.path || process.cwd()
     const appName = getAppName(this, cwd)

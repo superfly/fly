@@ -2,6 +2,9 @@
   "extends": "./tsconfig.common.json",
   "references": [
     {
+      "path": "./packages/build"
+    },
+    {
       "path": "./packages/test-environment"
     },
     {

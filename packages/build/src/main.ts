@@ -2,13 +2,11 @@ import * as fs from "fs"
 import * as path from "path"
 import * as webpack from "webpack"
 
-import log from "../log"
+import log from "../../core/src/log"
 
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 
 const webpackConfPath = "./webpack.fly.config.js"
-
-import { v8envModulePath } from "../v8env"
 
 export interface AppBuilderOptions {
   watch: boolean
@@ -104,7 +102,10 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     sourceMapFilename: "bundle.map.json"
   }
 
-  const v8EnvPath = path.resolve(v8envModulePath, "lib")
+  const v8EnvPath = path.resolve(
+    path.resolve(path.dirname(require.resolve("@fly/v8env")), ".."),
+    "lib"
+  )
 
   conf.resolve = Object.assign(
     {
