@@ -1,6 +1,6 @@
 {
   "name": "@fly-test/v8env",
-  "version": "0.42.3-pre.3",
+  "version": "0.42.4-pre.0",
   "private": true,
   "scripts": {
     "test": "../../fly test ./tests/**/*.spec.js"
