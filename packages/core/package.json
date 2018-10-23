@@ -9,11 +9,9 @@
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "files": [
-        "lib"
+        "lib",
+        "scripts"
     ],
-    "bin": {
-        "fly-dns": "./bin/fly-dns"
-    },
     "scripts": {
         "clean": "rm -rf ./lib ./dist",
         "build": "tsc -b .",
