@@ -1,6 +1,6 @@
 {
     "name": "@fly/core",
-    "version": "0.42.3-pre.1+fd85fd4",
+    "version": "0.42.3-pre.2+af8af6b",
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
@@ -79,5 +79,5 @@
     "publishConfig": {
         "access": "public"
     },
-    "gitHead": "fd85fd45f6c4ce1dc257501c07a914b2027c805d"
+    "gitHead": "af8af6b4246117b139ee6712070d9f76e107241c"
 }

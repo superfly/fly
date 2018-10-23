@@ -1,6 +1,6 @@
 {
   "name": "@fly/fly",
-  "version": "0.42.3-pre.1+fd85fd4",
+  "version": "0.42.3-pre.2+af8af6b",
   "description": "Open source Edge Application runtime",
   "license": "Apache-2.0",
   "repository": {
@@ -23,11 +23,11 @@
     "node": ">=8 <11"
   },
   "dependencies": {
-    "@fly/core": "0.42.3-pre.1+fd85fd4",
+    "@fly/core": "0.42.3-pre.2+af8af6b",
     "@fly/v8env": "0.42.3-pre.0"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "fd85fd45f6c4ce1dc257501c07a914b2027c805d"
+  "gitHead": "af8af6b4246117b139ee6712070d9f76e107241c"
 }
