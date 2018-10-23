@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.43.1"></a>
+## [0.43.1](https://github.com/superfly/fly/compare/v0.43.0...v0.43.1) (2018-10-23)
+
+**Note:** Version bump only for package @fly-test/v8env
+
+
+
+
+
 <a name="0.43.0"></a>
 # [0.43.0](https://github.com/superfly/fly/compare/v0.42.2...v0.43.0) (2018-10-23)
 
