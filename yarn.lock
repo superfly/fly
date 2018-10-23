@@ -18,6 +18,60 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
+"@fly/core@0.42.3-pre.0":
+  version "0.43.1"
+  resolved "https://registry.yarnpkg.com/@fly/core/-/core-0.43.1.tgz#1c4e52c15289e0877c81650c700af8ab43785798"
+  integrity sha512-Wv1GFEYy7DO+C8a4Kg5LmKpEwtDqWswmvezW/eIPI0Sb2YmLtautfn+6T35IDiGmbrGUfIoSwww/kajNp6g5Cg==
+  dependencies:
+    "@fly/examples" "0.43.1"
+    "@fly/v8env" "0.43.1"
+    ansi-colors "^1.1.0"
+    axios "^0.18.0"
+    better-sqlite3 "^4.1.4"
+    bluebird "^3.5.1"
+    chokidar "^2.0.4"
+    cli-table3 "^0.5.0"
+    commandpost "^1.3.0"
+    console-log-level "^1.4.0"
+    execa "^0.7.0"
+    fs-extra "^5.0.0"
+    glob "^7.1.2"
+    ioredis "^3.2.2"
+    ioredis-mock "^3.10.2"
+    isolated-vm "1.7.2"
+    js-yaml "^3.10.0"
+    mocha "^4.0.1"
+    pako "1.0.6"
+    promptly "^3.0.3"
+    redis "^2.8.0"
+    segfault-handler "^1.0.1"
+    semver "^5.5.0"
+    sharp "^0.20.5"
+    source-map "^0.6.1"
+    tar-fs "^1.16.0"
+    uglifyjs-webpack-plugin "^1.3.0"
+    webpack "^3.11.0"
+    ws "^4.0.0"
+
+"@fly/examples@0.43.1":
+  version "0.43.1"
+  resolved "https://registry.yarnpkg.com/@fly/examples/-/examples-0.43.1.tgz#c8db1f0d5f92aa2570b84215e1b0fb59f5ec60ea"
+  integrity sha512-LX3qVYXS6HvhsvHVbxIDuUsW/7wMQhyla0OmEPtL7DJdU+Avjj0LLfysSsgar+0px5ZciV3Zs0mJh1yjBXqrZg==
+
+"@fly/v8env@0.43.1":
+  version "0.43.1"
+  resolved "https://registry.yarnpkg.com/@fly/v8env/-/v8env-0.43.1.tgz#3ac124769da579ba3be411a7cce542cd5e6e0c5e"
+  integrity sha512-jvA+5pPQMXQjjLbuizoHGMZi228avCw2OCsn7usBnOlSsHGY9cGMcGzvq9qyh1Kw62WVHm/CcwOgX1YOPIzDAg==
+  dependencies:
+    better-assert "^1.0.2"
+    cookie "^0.3.1"
+    css-select "^1.3.0-rc0"
+    domutils "^1.6.2"
+    eventemitter2 "^5.0.1"
+    htmlparser2 "^3.9.2"
+    http-cache-semantics "^3.8.1"
+    universal-url-lite "^1.0.0"
+
 "@goto-bus-stop/common-shake@^2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@goto-bus-stop/common-shake/-/common-shake-2.2.0.tgz#01deb388b0d7d00a66a00e032ae9b6adfc0c3cad"
