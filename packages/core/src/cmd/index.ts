@@ -4,6 +4,7 @@ import { root } from "./root"
 
 require("./new")
 require("./apps")
+require("./dns")
 require("./orgs")
 require("./deploy")
 require("./releases")

@@ -9,12 +9,17 @@
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "files": [
-        "lib"
+        "lib",
+        "bin"
     ],
+    "bin": {
+        "fly-dns": "./bin/fly-dns"
+    },
     "scripts": {
         "clean": "rm -rf ./lib ./dist",
         "build": "tsc -b .",
-        "build:watch": "tsc -b -w -v ."
+        "build:watch": "tsc -b -w -v .",
+        "postinstall": "node ./scripts/postinstall.js"
     },
     "dependencies": {
         "@fly/examples": "0.42.2",
