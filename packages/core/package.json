@@ -9,8 +9,7 @@
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "files": [
-        "lib",
-        "bin"
+        "lib"
     ],
     "bin": {
         "fly-dns": "./bin/fly-dns"
