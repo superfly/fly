@@ -18,7 +18,6 @@
         "build:watch": "tsc -b -w -v ."
     },
     "dependencies": {
-        "console-log-level": "^1.4.0",
         "uglifyjs-webpack-plugin": "^1.3.0",
         "webpack": "^3.11.0"
     },

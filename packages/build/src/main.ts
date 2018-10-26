@@ -2,8 +2,6 @@ import * as fs from "fs"
 import * as path from "path"
 import * as webpack from "webpack"
 
-import log from "../../core/src/log"
-
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 
 const webpackConfPath = "./webpack.fly.config.js"
@@ -23,7 +21,7 @@ export function buildAppWithConfig(
   opts: AppBuilderOptions,
   callback: () => void
 ) {
-  console.log("Compiling app w/ options:", opts)
+  console.info("Compiling app w/ options:", opts)
   const compiler = webpack(config)
 
   const cb = compileCallback(cwd, compiler, callback)
@@ -55,12 +53,12 @@ function compileCallback(cwd: string, compiler: webpack.Compiler, callback: (...
     }
 
     if (stats.hash !== codeHash) {
-      console.log(`Compiled app bundle (hash: ${stats.hash})`)
+      console.info(`Compiled app bundle (hash: ${stats.hash})`)
       const source = fs.readFileSync(path.resolve(cwd, ".fly/build/bundle.js"))
       const sourceMap = fs.readFileSync(path.resolve(cwd, ".fly/build/bundle.map.json"))
       codeHash = stats.hash
-      log.debug("Compiled size: ", source.byteLength / (1024 * 1024), "MB")
-      log.debug("Compiled sourcemap size: ", sourceMap.byteLength / (1024 * 1024), "MB")
+      console.info("Compiled size: ", source.byteLength / (1024 * 1024), "MB")
+      console.info("Compiled sourcemap size: ", sourceMap.byteLength / (1024 * 1024), "MB")
 
       const sanitizedSourceMap = sourceMap
         .toString("utf8")
@@ -78,10 +76,10 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
   let conf
   const defaultPathToWebpackConfig = path.join(cwd, webpackConfPath)
   if (fs.existsSync(defaultPathToWebpackConfig)) {
-    console.log(`Using Webpack config ${webpackConfPath}`)
+    console.info(`Using Webpack config ${webpackConfPath}`)
     conf = require(defaultPathToWebpackConfig)
   } else {
-    console.log("Generating Webpack config...")
+    console.info("Generating Webpack config...")
     conf = {
       entry: `${cwd}/index.js`,
       resolve: {
