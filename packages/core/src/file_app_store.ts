@@ -2,7 +2,7 @@ import { App } from "./app"
 import * as path from "path"
 import * as fs from "fs-extra"
 
-import { buildApp } from "../../build"
+import { buildApp } from "./utils/build"
 import { getEnv, getLocalRelease, LocalRelease } from "./utils/local"
 
 export interface FileAppStoreOptions {

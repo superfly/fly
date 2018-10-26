@@ -32,7 +32,7 @@ root
   .description("Run unit tests, defaults to {test,spec}/**/*.{test,spec}.{js,ts}")
   .action((opts, args, rest) => {
     const { ivm } = require("../")
-    const { getWebpackConfig, buildAppWithConfig } = require("../../../build")
+    const { getWebpackConfig, buildAppWithConfig } = require("../utils/build")
 
     const cwd = process.cwd()
 
