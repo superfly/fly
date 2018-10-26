@@ -11,10 +11,5 @@
       "es2017",
       "esnext.asynciterable"
     ]
-  },
-  "references": [
-    {
-      "path": "../examples"
-    }
-  ]
+  }
 }
