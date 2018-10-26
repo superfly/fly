@@ -2,8 +2,6 @@ import * as path from "path"
 import * as fs from "fs"
 import * as semver from "semver"
 
-import * as webpack from "webpack"
-
 import { EventEmitter } from "events"
 import { createHash } from "crypto"
 import * as ivm from "isolated-vm"
