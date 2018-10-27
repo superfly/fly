@@ -100,7 +100,7 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     sourceMapFilename: "bundle.map.json"
   }
 
-  const v8EnvPath = path.resolve(path.resolve(path.dirname(require.resolve("@fly/v8env")), ".."), "lib")
+  const v8EnvPath = path.dirname(require.resolve("@fly/v8env"))
 
   conf.resolve = Object.assign(
     {
