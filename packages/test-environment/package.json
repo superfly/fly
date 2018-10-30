@@ -1,7 +1,7 @@
 {
     "name": "@fly/test-environment",
     "private": true,
-    "version": "0.44.0-pre.0",
+    "version": "0.44.0",
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
@@ -18,7 +18,7 @@
         "clean": "rm -rf ./lib ./dist"
     },
     "dependencies": {
-        "@fly/core": "0.44.0-pre.0",
+        "@fly/core": "0.44.0",
         "@types/jest": "^23.3.1",
         "@types/node-fetch": "2.1.2",
         "jest": "^23.5.0",
