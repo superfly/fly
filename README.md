@@ -236,4 +236,4 @@ We support [Let's Encrypt](https://github.com/letsencrypt): We donate half our c
 
 ## Let's chat on Gitter & Twitter
 
-Find our devs and other community members on [Gitter](https://gitter.im/superfly/fly) and [Twitter](httyp://twitter.com/flydotio)! 
+Find our devs and other community members on [Gitter](https://gitter.im/superfly/fly) and [Twitter](https://twitter.com/flydotio)! 
