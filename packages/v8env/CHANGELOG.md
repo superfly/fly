@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.44.1"></a>
+## [0.44.1](https://github.com/superfly/fly/compare/v0.44.0...v0.44.1) (2018-11-02)
+
+
+### Bug Fixes
+
+* better URL for v8env (fixes [#191](https://github.com/superfly/fly/issues/191)) ([#192](https://github.com/superfly/fly/issues/192)) ([7e5d8cb](https://github.com/superfly/fly/commit/7e5d8cb))
+
+
+
+
+
 <a name="0.44.0"></a>
 # [0.44.0](https://github.com/superfly/fly/compare/v0.43.1...v0.44.0) (2018-10-30)
 
