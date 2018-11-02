@@ -233,3 +233,7 @@ We develop fly in the open. We're [Apache licensed](https://github.com/superfly/
 Our commercial offering is built on top of this library, with additional code for managing certificates, distributed caching, and multi-tenant isolation. Over time we expect to extract many of these features, document them, and include them in our open source releases.
 
 We support [Let's Encrypt](https://github.com/letsencrypt): We donate half our certificate management fees to Let's Encrypt every year.
+
+## Let's chat on Gitter & Twitter
+
+Find our devs and other community members on [Gitter](https://gitter.im/superfly/fly) and [Twitter](httyp://twitter.com/flydotio)! 
