@@ -12,7 +12,7 @@ import { ReadableStream, WritableStream, TransformStream } from "./streams"
 import { console } from "./console"
 import flyInit from "./fly/index"
 
-import { URL, URLSearchParams } from "universal-url-lite" // 'whatwg-url'
+import { URL, URLSearchParams } from "whatwg-url"
 import { Headers } from "./headers"
 
 import { TextEncoder, TextDecoder } from "./text-encoding"

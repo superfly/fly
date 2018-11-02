@@ -30,7 +30,7 @@
         "eventemitter2": "^5.0.1",
         "htmlparser2": "^3.9.2",
         "http-cache-semantics": "^3.8.1",
-        "universal-url-lite": "^1.0.0"
+        "whatwg-url": "^7.0.0"
     },
     "devDependencies": {
         "@types/cookie": "^0.3.1",
