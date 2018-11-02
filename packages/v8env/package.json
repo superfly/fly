@@ -29,8 +29,7 @@
         "domutils": "^1.6.2",
         "eventemitter2": "^5.0.1",
         "htmlparser2": "^3.9.2",
-        "http-cache-semantics": "^3.8.1",
-        "universal-url-lite": "^1.0.0"
+        "http-cache-semantics": "^3.8.1"
     },
     "devDependencies": {
         "@types/cookie": "^0.3.1",
