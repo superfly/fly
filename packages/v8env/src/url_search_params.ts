@@ -1,6 +1,9 @@
 // Copyright 2018 the Deno authors. All rights reserved. MIT license.
 /* tslint:disable */
-
+/**
+ * @module fetch
+ * @ignore
+ */
 export class URLSearchParams {
   private params: Array<[string, string]> = []
 

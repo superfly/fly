@@ -1,3 +1,8 @@
+/**
+ * @module fetch
+ * @ignore
+ */
+
 /*
  inspired from
  https://raw.githubusercontent.com/github/url-polyfill/master/url.js

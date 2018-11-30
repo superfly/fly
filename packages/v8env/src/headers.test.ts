@@ -1,3 +1,7 @@
+/**
+ * @module fetch
+ * @ignore
+ */
 import { FlyHeaders } from "./headers"
 
 describe("Constructor", () => {

@@ -1,3 +1,7 @@
+/**
+ * @module fetch
+ * @ignore
+ */
 import { CookieJar } from "./cookie_jar"
 
 test.skip("something", () => {

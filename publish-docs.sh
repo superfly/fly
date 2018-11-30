@@ -1,7 +1,7 @@
 echo "prepping docs clone"
 rm -rf docs/
 git clone https://github.com/superfly/fly.docs.git docs/ -q
-./node_modules/typedoc/bin/typedoc --tsconfig ./v8env/tsconfig.json --gitRevision v$npm_package_version > /dev/null
+./node_modules/typedoc/bin/typedoc --tsconfig ./packages/v8env/tsconfig.json --gitRevision v$npm_package_version > /dev/null
 pushd docs/
 current_repo=$(git config --get remote.origin.url)
 if [ "$current_repo" != "https://github.com/superfly/fly.docs.git" ]; then
