@@ -18,8 +18,8 @@
     },
     "dependencies": {
         "@fly/build": "0.44.2",
-        "@fly/examples": "0.42.2",
-        "@fly/v8env": "0.42.2",
+        "@fly/examples": "0.44.2",
+        "@fly/v8env": "0.44.2",
         "ansi-colors": "^1.1.0",
         "axios": "^0.18.0",
         "better-sqlite3": "^4.1.4",
