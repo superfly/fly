@@ -9,9 +9,6 @@
   "author": "",
   "license": "ISC",
   "main": "lib/index.js",
-  // "files": [
-  //   "lib/*"
-  // ],
   "devDependencies": {
     "typescript": "^2.9.2"
   },
