@@ -224,7 +224,7 @@ export class URL {
   set port(value: string) {
     let port = parseInt(value)
     if (isNaN(port)) {
-      this._parts.port = "0"
+      this._parts.port = ""
     } else {
       this._parts.port = Math.max(0, port % 2 ** 16).toString()
     }
