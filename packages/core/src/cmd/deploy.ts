@@ -15,7 +15,7 @@ import { AxiosResponse } from "axios"
 import { Command } from "commandpost"
 import { resolve as pathResolve } from "path"
 
-export interface DeployOptions extends CommonOptions { }
+export interface DeployOptions extends CommonOptions {}
 export interface DeployArgs {
   path?: string
 }
@@ -23,7 +23,7 @@ export interface DeployArgs {
 const deploy = root
   .subCommand<DeployOptions, DeployArgs>("deploy [path]")
   .description("Deploy your local Fly app.")
-  .action(function (this: Command<DeployOptions, DeployArgs>, opts, args, rest) {
+  .action(function(this: Command<DeployOptions, DeployArgs>, opts, args, rest) {
     const API = apiClient(this)
     const { buildApp } = require("../utils/build")
     const env = getEnv(this)
@@ -39,7 +39,7 @@ const deploy = root
       { watch: false, uglify: true },
       async (err: Error, source: string, hash: string, sourceMap: string) => {
         if (err) {
-          console.log(err);
+          console.log(err)
           return
         }
         // look for generated config
