@@ -40,7 +40,7 @@ const deploy = root
       async (err: Error, source: string, hash: string, sourceMap: string) => {
         if (err) {
           console.log(err);
-          return
+          return process.exit(1)
         }
         // look for generated config
         const configPath = existsSync(pathResolve(".fly", ".fly.yml")) ? ".fly/.fly.yml" : ".fly.yml"
