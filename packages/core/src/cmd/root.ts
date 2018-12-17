@@ -47,8 +47,8 @@ export function getToken(cmd: Command<any, CommonOptions>) {
 
 export const fullAppMatch = /^([a-z0-9_-]+)$/i
 
-export function getEnv(cmd: Command<CommonOptions, any>): string {
-  return process.env.FLY_ENV || recursivelyGetOption(cmd, "env") || "production"
+export function getEnv(cmd: Command<any, any>, defaultEnv: string = "production"): string {
+  return process.env.FLY_ENV || recursivelyGetOption(cmd, "env") || defaultEnv
 }
 
 export function getAppName(cmd: Command<CommonOptions, any>, cwd: string = process.cwd()) {
