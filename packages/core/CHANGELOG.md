@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.8](https://github.com/superfly/fly/compare/v0.44.7...v0.44.8) (2018-12-17)
+
+
+### Bug Fixes
+
+* Support env option on server command ([#203](https://github.com/superfly/fly/issues/203)) ([f4b1c1e](https://github.com/superfly/fly/commit/f4b1c1e))
+
+
+
+
+
 ## [0.44.7](https://github.com/superfly/fly/compare/v0.44.6...v0.44.7) (2018-12-16)
 
 **Note:** Version bump only for package @fly/core
