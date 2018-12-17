@@ -12,6 +12,7 @@ interface ServerOptions {
   port?: string
   inspect?: boolean
   uglify: boolean
+  env?: string[]
 }
 
 interface ServerArguments {
@@ -24,6 +25,7 @@ root
   .option("-p, --port <port>", "Port to bind to")
   .option("--inspect", "use the v8 inspector on your fly app")
   .option("--uglify", "uglify your code like we'll use in production (warning: slow!)")
+  .option("-e, --env <env>", "Environment to use for configuration.")
   .action(async function(this: Command<ServerOptions, ServerArguments>, opts, args, rest) {
     // const { FileAppStore } = require('../file_app_store')
     // const { Server } = require('../server')
@@ -37,8 +39,10 @@ root
 
     let port = parseInt((opts.port && opts.port[0]) || (process.env.PORT && process.env.PORT) || "3000", 10)
 
+    const env = (opts.env && opts.env[0]) || "development"
+
     // TODO: use env option for environment.
-    const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env: "development" })
+    const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env })
 
     const server = new Server({ appStore, inspect: !!opts.inspect })
     console.log("Cache Adapter: " + server.bridge.cacheStore.constructor.name)
