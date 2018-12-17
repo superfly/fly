@@ -25,7 +25,7 @@ root
   .option("-p, --port <port>", "Port to bind to")
   .option("--inspect", "use the v8 inspector on your fly app")
   .option("--uglify", "uglify your code like we'll use in production (warning: slow!)")
-  .option("-e, --env <env>", "Environment to use for configuration.")
+  .option("-e, --env <env>", "Environment to use for configuration. Defaults to development")
   .action(async function(this: Command<ServerOptions, ServerArguments>, opts, args, rest) {
     // const { FileAppStore } = require('../file_app_store')
     // const { Server } = require('../server')
