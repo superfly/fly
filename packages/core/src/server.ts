@@ -142,6 +142,7 @@ export class Server extends http.Server {
 type V8ResponseBody = null | string | number | ArrayBuffer | Buffer
 
 export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.ServerResponse): Promise<number> {
+  const startBytes = req.connection.bytesWritten
   const flyRecurseHeader = req.headers["fly-allow-recursion"]
   if (!flyRecurseHeader || !flyRecurseHeader[0]) {
     const flyAppHeader = req.headers["fly-app"]
@@ -235,14 +236,15 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
       writeHead(rt, res, v8res.status)
 
       handleResponse(rt, resBody, res, dst)
-        .then(len => {
+        .then(() => {
+          const dataOut = req.connection.bytesWritten - startBytes
           rt.reportUsage("http", {
-            data_out: len
+            data_out: dataOut
           })
           if (!res.finished) {
             res.end()
           } // we are done. triggers 'finish' event
-          resolve(len)
+          resolve(dataOut)
         })
         .catch(reject)
     }
@@ -260,30 +262,21 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
   })
 }
 
-function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerResponse, dst: Writable): Promise<number> {
+function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerResponse, dst: Writable): Promise<void> {
   if (!src) {
-    return Promise.resolve(0)
+    return Promise.resolve()
   }
 
   if (typeof src === "number") {
     return handleResponseStream(rt, src, res, dst)
   }
 
-  let totalLength = 0
-
   if (src instanceof ArrayBuffer) {
     src = Buffer.from(src)
   }
 
-  return new Promise<number>((resolve, reject) => {
-    res.on("finish", () => {
-      if (src instanceof Buffer) {
-        totalLength = src.byteLength
-      } else if (typeof src === "string") {
-        totalLength = Buffer.byteLength(src, "utf8")
-      }
-      resolve(totalLength)
-    })
+  return new Promise<void>((resolve, reject) => {
+    res.on("finish", resolve)
     res.on("error", err => {
       reject(err)
     })
@@ -291,18 +284,10 @@ function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerRespon
   })
 }
 
-function handleResponseStream(rt: Runtime, streamId: number, res: http.ServerResponse, dst: Writable): Promise<number> {
-  return new Promise<number>((resolve, reject) => {
+function handleResponseStream(rt: Runtime, streamId: number, res: http.ServerResponse, dst: Writable): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
     setImmediate(() => {
-      let dataOut = 0
-      dst.on("data", d => {
-        dataOut += d.byteLength
-      })
-      res
-        .on("finish", () => {
-          resolve(dataOut)
-        })
-        .on("error", reject)
+      res.on("finish", resolve).on("error", reject)
 
       try {
         streamManager.pipe(

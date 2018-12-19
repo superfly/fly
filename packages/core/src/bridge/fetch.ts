@@ -132,7 +132,7 @@ registerBridge("fetch", function fetchBridge(
   req.once("response", handleResponse)
 
   const start = process.hrtime()
-  const dataOut = body ? Buffer.byteLength(body) : 0
+  const startData = (req.connection && req.connection.bytesWritten) || 0
 
   setImmediate(() => {
     if (body instanceof ArrayBuffer) {
@@ -150,6 +150,7 @@ registerBridge("fetch", function fetchBridge(
     }
   }
   function handleResponse(res: http.IncomingMessage) {
+    const dataOut = req.connection.bytesWritten - startData
     clearFetchTimeout()
     rt.reportUsage("fetch", {
       data_out: dataOut,
