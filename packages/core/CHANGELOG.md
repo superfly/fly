@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.9-pre.0](https://github.com/superfly/fly/compare/v0.44.8...v0.44.9-pre.0) (2018-12-19)
+
+
+### Bug Fixes
+
+* Use underlying connection to count data ([ba58b38](https://github.com/superfly/fly/commit/ba58b38))
+
+
+
+
+
 ## [0.44.8](https://github.com/superfly/fly/compare/v0.44.7...v0.44.8) (2018-12-17)
 
 
