@@ -131,7 +131,7 @@ export class URL {
         password: baseParts.password,
         hostname: baseParts.hostname,
         port: baseParts.port,
-        path: urlParts.path || baseParts.path,
+        path: resolvePathFromBase(urlParts.path, baseParts.path),
         query: urlParts.query || baseParts.query,
         hash: urlParts.hash
       }
@@ -278,6 +278,16 @@ export class URL {
   toString(): string {
     return this.href
   }
+}
+
+function resolvePathFromBase(path: string, basePath: string) {
+  if (path.startsWith("/")) {
+    return path
+  }
+  if (basePath.endsWith("/")) {
+    return basePath + path
+  }
+  return basePath + "/" + path
 }
 
 URL.init()
