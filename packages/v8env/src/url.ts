@@ -280,6 +280,7 @@ export class URL {
   }
 }
 
+/* one off logic to fix buggy url implementation */
 function resolvePathFromBase(path: string, basePath: string) {
   if (path.startsWith("/")) {
     return path
