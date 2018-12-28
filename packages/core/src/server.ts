@@ -1,8 +1,10 @@
 import * as http from "http"
+import * as https from "https"
 import { ivm } from "./"
 import * as zlib from "zlib"
 import log from "./log"
 import * as httpUtils from "./utils/http"
+import * as path from "path";
 import { Writable } from "stream"
 import { App } from "./app"
 
@@ -14,6 +16,9 @@ import { LocalRuntime } from "./local_runtime"
 import { Runtime } from "./runtime"
 import { SQLiteDataStore } from "./sqlite_data_store"
 import { streamManager } from "./stream_manager"
+import { readFileSync, readdirSync } from "fs";
+import { EventEmitter } from "events";
+import { ListenOptions } from "net";
 
 const hopHeaders = [
   // From RFC 2616 section 13.5.1
@@ -30,6 +35,11 @@ const hopHeaders = [
   "Upgrade-Insecure-Requests"
 ]
 
+const defaultTlsConfig: https.ServerOptions = {
+  key: readFileSync(path.resolve(__dirname, "../dev-cert/key.pem")),
+  cert: readFileSync(path.resolve(__dirname, "../dev-cert/cert.crt")),
+}
+
 export interface RequestMeta {
   app?: App
   startedAt?: [number, number] // process.hrtime() ya know
@@ -44,12 +54,18 @@ declare module "http" {
   }
 }
 
+export interface ServerTlsOptions {
+  enabled: boolean
+  config: https.ServerOptions
+}
+
 export interface ServerOptions {
   env?: string
   appStore?: FileAppStore
   bridge?: Bridge
   inspect?: boolean
   monitorFrequency?: number
+  https?: ServerTlsOptions
 }
 
 export interface RequestTask {
@@ -57,16 +73,27 @@ export interface RequestTask {
   response: http.ServerResponse
 }
 
-export class Server extends http.Server {
-  public options: ServerOptions
+export class Server extends EventEmitter {
+  public options: ServerOptions & { https: ServerTlsOptions }
 
   public bridge: Bridge
   public runtime: LocalRuntime
   public appStore: FileAppStore
+  public httpServer: http.Server | https.Server;
 
   constructor(options: ServerOptions = {}) {
     super()
-    this.options = options
+    const httpsOptions: ServerTlsOptions = {
+      enabled: options.https ? options.https.enabled : false,
+      config: {
+        ...defaultTlsConfig,
+        ...(options.https && options.https.config),
+      },
+    }
+    this.options = {
+      ...options,
+      https: httpsOptions,
+    }
     this.appStore = options.appStore || new FileAppStore(process.cwd())
     this.bridge =
       options.bridge ||
@@ -78,11 +105,35 @@ export class Server extends http.Server {
       inspect: !!options.inspect,
       monitorFrequency: options.monitorFrequency
     })
-    this.on("request", this.handleRequest.bind(this))
-    this.on("listening", () => {
-      const addr = this.address()
+    if (this.options.https.enabled) {
+      this.httpServer = https.createServer(this.options.https.config)
+    } else {
+      this.httpServer = new http.Server()
+    }
+    this.httpServer.on("request", this.handleRequest.bind(this))
+    this.httpServer.on("listening", () => {
+      const addr = this.httpServer.address()
       console.log(`Server listening on ${addr.address}:${addr.port}`)
     })
+    this.httpServer.on("error", (...args: any[]) => {
+      this.emit("error", ...args);
+    })
+  }
+
+  get listening(): boolean {
+    return this.httpServer.listening;
+  }
+
+  public listen(port: number): this;
+  public listen(options: ListenOptions, listeningListener?: () => any): this;
+  public listen(optionsOrPort?: ListenOptions | number, listeningListener?: () => any): this {
+    this.httpServer.listen(optionsOrPort, listeningListener);
+    return this;
+  }
+
+  public close(callback?: () => any): this {
+    this.httpServer.close(callback);
+    return this;
   }
 
   private async handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {

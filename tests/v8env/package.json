@@ -9,6 +9,6 @@
     "@fly/core": "0.44.9-pre.2",
     "arraybuffer-loader": "^1.0.3",
     "chai": "^4.1.2",
-    "image-webpack-loader": "^4.3.1"
+    "image-webpack-loader": "^4.6.0"
   }
 }

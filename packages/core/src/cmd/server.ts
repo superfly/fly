@@ -4,12 +4,16 @@ import * as path from "path"
 import * as fs from "fs"
 import { spawn } from "child_process"
 import { FileAppStore } from "../file_app_store"
-import { Server } from "../server"
+import { Server, ServerTlsOptions } from "../server"
 import { RedisCacheNotifier } from "../redis_cache_notifier"
 import { examplesPath } from "@fly/examples"
+import { timingSafeEqual } from "crypto";
 
 interface ServerOptions extends CommonOptions {
   port?: string
+  useTls?: boolean
+  tlsKeyPath?: string
+  tlsCertPath?: string
   inspect?: boolean
   uglify: boolean
 }
@@ -22,6 +26,9 @@ root
   .subCommand<ServerOptions, ServerArguments>("server [path]")
   .description("Run the local Fly development server")
   .option("-p, --port <port>", "Port to bind to")
+  .option("--use-tls", "Use tls for dev server")
+  .option("--tls-key-path <path>", "Path to tls key")
+  .option("--tls-cert-path <path>", "Path to tls cert")
   .option("--inspect", "use the v8 inspector on your fly app")
   .option("--uglify", "uglify your code like we'll use in production (warning: slow!)")
   .action(async function(this: Command<ServerOptions, ServerArguments>, opts, args, rest) {
@@ -40,7 +47,23 @@ root
 
     const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env })
 
-    const server = new Server({ appStore, inspect: !!opts.inspect })
+    const httpsConfig: ServerTlsOptions = {
+      enabled: opts.useTls ? opts.useTls : false,
+      config: {},
+    }
+
+    const tlsKeyPath: string | undefined = (opts.tlsKeyPath && opts.tlsKeyPath.length) !== 0 ? opts.tlsKeyPath : undefined;
+    const tlsCertPath: string | undefined = (opts.tlsCertPath && opts.tlsCertPath.length) !== 0 ? opts.tlsCertPath : undefined;
+
+    if (tlsKeyPath) {
+      httpsConfig.config.key = fs.readFileSync(path.resolve(cwd, tlsKeyPath))
+    }
+
+    if (tlsCertPath) {
+      httpsConfig.config.key = fs.readFileSync(path.resolve(cwd, tlsCertPath))
+    }
+
+    const server = new Server({ appStore, inspect: !!opts.inspect, https: httpsConfig })
     console.log("Cache Adapter: " + server.bridge.cacheStore.constructor.name)
     if (port === 3000) {
       // auto increment if default port in use

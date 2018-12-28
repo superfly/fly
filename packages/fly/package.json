@@ -20,7 +20,7 @@
     "prepublishOnly": "yarn build"
   },
   "engines": {
-    "node": ">=8 <11"
+    "node": ">=8 <12"
   },
   "dependencies": {
     "@fly/core": "0.44.9-pre.2",

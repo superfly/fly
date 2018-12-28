@@ -33,7 +33,7 @@
         "glob": "^7.1.2",
         "ioredis": "^3.2.2",
         "ioredis-mock": "^3.10.2",
-        "isolated-vm": "1.7.2",
+        "isolated-vm": "1.7.6",
         "js-yaml": "^3.10.0",
         "mocha": "^4.0.1",
         "pako": "1.0.6",
