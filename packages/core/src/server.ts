@@ -4,7 +4,7 @@ import { ivm } from "./"
 import * as zlib from "zlib"
 import log from "./log"
 import * as httpUtils from "./utils/http"
-import * as path from "path";
+import * as path from "path"
 import { Writable } from "stream"
 import { App } from "./app"
 
@@ -16,9 +16,9 @@ import { LocalRuntime } from "./local_runtime"
 import { Runtime } from "./runtime"
 import { SQLiteDataStore } from "./sqlite_data_store"
 import { streamManager } from "./stream_manager"
-import { readFileSync, readdirSync } from "fs";
-import { EventEmitter } from "events";
-import { ListenOptions } from "net";
+import { readFileSync, readdirSync } from "fs"
+import { EventEmitter } from "events"
+import { ListenOptions } from "net"
 
 const hopHeaders = [
   // From RFC 2616 section 13.5.1
@@ -37,7 +37,7 @@ const hopHeaders = [
 
 const defaultTlsConfig: https.ServerOptions = {
   key: readFileSync(path.resolve(__dirname, "../dev-cert/key.pem")),
-  cert: readFileSync(path.resolve(__dirname, "../dev-cert/cert.crt")),
+  cert: readFileSync(path.resolve(__dirname, "../dev-cert/cert.crt"))
 }
 
 export interface RequestMeta {
@@ -79,7 +79,7 @@ export class Server extends EventEmitter {
   public bridge: Bridge
   public runtime: LocalRuntime
   public appStore: FileAppStore
-  public httpServer: http.Server | https.Server;
+  public httpServer: http.Server | https.Server
 
   constructor(options: ServerOptions = {}) {
     super()
@@ -87,12 +87,12 @@ export class Server extends EventEmitter {
       enabled: options.https ? options.https.enabled : false,
       config: {
         ...defaultTlsConfig,
-        ...(options.https && options.https.config),
-      },
+        ...(options.https && options.https.config)
+      }
     }
     this.options = {
       ...options,
-      https: httpsOptions,
+      https: httpsOptions
     }
     this.appStore = options.appStore || new FileAppStore(process.cwd())
     this.bridge =
@@ -116,24 +116,24 @@ export class Server extends EventEmitter {
       console.log(`Server listening on ${addr.address}:${addr.port}`)
     })
     this.httpServer.on("error", (...args: any[]) => {
-      this.emit("error", ...args);
+      this.emit("error", ...args)
     })
   }
 
   get listening(): boolean {
-    return this.httpServer.listening;
+    return this.httpServer.listening
   }
 
-  public listen(port: number): this;
-  public listen(options: ListenOptions, listeningListener?: () => any): this;
+  public listen(port: number): this
+  public listen(options: ListenOptions, listeningListener?: () => any): this
   public listen(optionsOrPort?: ListenOptions | number, listeningListener?: () => any): this {
-    this.httpServer.listen(optionsOrPort, listeningListener);
-    return this;
+    this.httpServer.listen(optionsOrPort, listeningListener)
+    return this
   }
 
   public close(callback?: () => any): this {
-    this.httpServer.close(callback);
-    return this;
+    this.httpServer.close(callback)
+    return this
   }
 
   private async handleRequest(request: http.IncomingMessage, response: http.ServerResponse) {

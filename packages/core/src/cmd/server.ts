@@ -7,7 +7,7 @@ import { FileAppStore } from "../file_app_store"
 import { Server, ServerTlsOptions } from "../server"
 import { RedisCacheNotifier } from "../redis_cache_notifier"
 import { examplesPath } from "@fly/examples"
-import { timingSafeEqual } from "crypto";
+import { timingSafeEqual } from "crypto"
 
 interface ServerOptions extends CommonOptions {
   port?: string
@@ -49,11 +49,13 @@ root
 
     const httpsConfig: ServerTlsOptions = {
       enabled: opts.useTls ? opts.useTls : false,
-      config: {},
+      config: {}
     }
 
-    const tlsKeyPath: string | undefined = (opts.tlsKeyPath && opts.tlsKeyPath.length) !== 0 ? opts.tlsKeyPath : undefined;
-    const tlsCertPath: string | undefined = (opts.tlsCertPath && opts.tlsCertPath.length) !== 0 ? opts.tlsCertPath : undefined;
+    const tlsKeyPath: string | undefined =
+      (opts.tlsKeyPath && opts.tlsKeyPath.length) !== 0 ? opts.tlsKeyPath : undefined
+    const tlsCertPath: string | undefined =
+      (opts.tlsCertPath && opts.tlsCertPath.length) !== 0 ? opts.tlsCertPath : undefined
 
     if (tlsKeyPath) {
       httpsConfig.config.key = fs.readFileSync(path.resolve(cwd, tlsKeyPath))
