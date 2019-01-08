@@ -1,0 +1,23 @@
+{
+  "name": "@fly/rustproxy-shim",
+  "version": "0.44.5",
+  "license": "Apache-2.0",
+  "main": "dist/nodeproxy-shim.js",
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "build": "webpack",
+    "build:watch": "webpack -w",
+    "bundle": "webpack"
+  },
+  "dependencies": {
+    "css-select": "^2.0.2",
+    "domutils": "^1.6.2",
+    "htmlparser2": "^3.10.0"
+  },
+  "devDependencies": {
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.2",
+    "webpack": "^4.28.1",
+    "webpack-cli": "^3.2.1"
+  }
+}
