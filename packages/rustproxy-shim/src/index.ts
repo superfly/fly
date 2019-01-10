@@ -1,13 +1,14 @@
 import * as bridge from "./bridge"
 import * as domUtils from "./document"
 
-if (!(window as any)) {
-  console.log("nodeproxy detected, skip rustproxy-shim")
-} else {
+if (window.libfly) {
   console.log("rustproxy detected, installing rustproxy-shim")
 
   Object.assign(window, {
     bridge,
-    ...domUtils
+    ...domUtils,
+    app: window.fly.app
   })
+} else {
+  console.log("nodeproxy detected, skip rustproxy-shim")
 }
