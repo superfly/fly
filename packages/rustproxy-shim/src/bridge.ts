@@ -7,31 +7,62 @@ const handlers = {
   flyCacheDel: (key: string, cb: OkCallback) => {
     flyCache
       .del(key)
-      .then(ok => cb(undefined, ok))
+      .then(ok => cb(null, ok))
       .catch(err => cb(err, false))
   },
   flyCacheSet: (key: string, value: string | ArrayBuffer, options: any, cb: OkCallback) => {
     flyCache
       .set(key, value, convertCacheSetOptions(options))
-      .then(ok => cb(undefined, ok))
+      .then(ok => cb(null, ok))
       .catch(err => cb(err, false))
   },
   flyCacheGet: (key: string, cb: CallbackFn<ArrayBuffer | SharedArrayBuffer>) => {
     flyCache
       .get(key)
-      .then(val => cb(undefined, val))
+      .then(val => cb(null, val))
       .catch(err => cb(err, undefined))
   },
   flyCacheExpire: (key: string, ttl: number, cb: OkCallback) => {
     flyCache
       .expire(key, ttl)
-      .then(ok => cb(undefined, ok))
+      .then(ok => cb(null, ok))
       .catch(err => cb(err, false))
   },
-  flyCacheGetMulti: notImplementedBridgeHandler,
-  flyCacheSetTags: notImplementedBridgeHandler,
-  flyCachePurgeTags: notImplementedBridgeHandler,
-  flyCacheNotify: notImplementedBridgeHandler,
+  flyCacheGetMulti: (jsonKeys: string, cb: CallbackFn<Array<ArrayBuffer | SharedArrayBuffer | null>>) => {
+    const keys = JSON.parse(jsonKeys)
+    Promise.all(keys.map(k => flyCache.get(k)))
+      .then(values => cb(null, values as any))
+      .catch(err => cb(err, undefined))
+  },
+  flyCacheSetTags: (key: string, tags: string[], cb: OkCallback) => {
+    flyCache
+      .setTags(key, tags)
+      .then(ok => cb(null, ok))
+      .catch(err => cb(err, false))
+  },
+  flyCachePurgeTags: (tag: string, cb: CallbackFn<string>) => {
+    // nodeproxy returned an array of purged tags on success, rustproxy returns an ok bool
+    // JSON serialize an empty array so the v8env bridge resolves the promise
+    flyCache
+      .purgeTag(tag)
+      .then(ok => cb(null, JSON.stringify([])))
+      .catch(err => cb(err, undefined))
+  },
+  flyCacheNotify: (op: string, keyOrTag: string, cb: OkCallback) => {
+    if (op === "del") {
+      flyCache.global
+        .del(keyOrTag)
+        .then(ok => cb(null, ok))
+        .catch(err => cb(err, false))
+    } else if (op === "purgeTag") {
+      flyCache.global
+        .purgeTag(keyOrTag)
+        .then(ok => cb(null, ok))
+        .catch(err => cb(err, false))
+    } else {
+      cb(`unknown operation ${op}`, false)
+    }
+  },
 
   "fly.Data.put": (collectionName: string, key: string, obj: string, cb: OkCallback) => {
     flyData
@@ -95,8 +126,4 @@ function convertCacheSetOptions(options: unknown) {
     options
   )
   return undefined
-}
-
-function notImplementedBridgeHandler(...args: Array<unknown>) {
-  throw new Error(`Unimplemented nodeproxy bridge handler: ${JSON.stringify(args)}`)
 }
