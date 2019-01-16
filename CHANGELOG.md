@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.9](https://github.com/superfly/fly/compare/v0.44.9-pre.2...v0.44.9) (2019-01-16)
+
+
+### Bug Fixes
+
+* don't escape % character in URL paths ([#208](https://github.com/superfly/fly/issues/208)) ([0c7be20](https://github.com/superfly/fly/commit/0c7be20))
+
+
+
+
+
 ## [0.44.9-pre.2](https://github.com/superfly/fly/compare/v0.44.9-pre.1...v0.44.9-pre.2) (2018-12-21)
 
 **Note:** Version bump only for package fly-root
