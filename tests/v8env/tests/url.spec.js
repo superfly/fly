@@ -21,4 +21,10 @@ describe("URL", () => {
     const url = new URL("fly", new URL("https://github.com/superfly"))
     expect(url.pathname).to.equal("/superfly/fly")
   })
+
+  it("doesn't double encode % in pathname", () => {
+    const url = new URL("https://fly.io")
+    url.pathname = "encoded%20space"
+    expect(url.pathname).to.equal("/encoded%20space")
+  })
 })
