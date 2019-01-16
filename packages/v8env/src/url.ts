@@ -210,6 +210,7 @@ export class URL {
       .toString()
       .split("/")
       .map(encodePathSegment)
+      .map(segment => segment.replace(/%25/g, "%"))
     if (chunks[0]) {
       // ensure joined string starts with slash.
       chunks.unshift("")
