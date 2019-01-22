@@ -226,6 +226,12 @@ Using `fly deploy`, here's what happens:
 - Your code is distributed instantly(-ish) across our global fleet of servers
 
 
+## Documentation
+
+- [Getting Started](https://fly.io/docs/apps/)
+- [API Reference](https://fly.io/docs/apps/api/index.html)
+- [Examples](https://github.com/superfly/cdn/)
+
 ## Open source <3
 
 We develop fly in the open. We're [Apache licensed](https://github.com/superfly/fly/blob/master/LICENSE) and designed to run easily in local dev. You _can_ deploy our core software to production, but it takes a little elbow grease and a fair amount of infrastructure. If you want to give this a try, let us know and we can help (and we would love related pull requests!).
