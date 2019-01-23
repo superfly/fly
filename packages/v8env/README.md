@@ -28,7 +28,9 @@ It's an enhanced version of the standard Web API [`fetch` function](https://deve
 
 ## Primary APIs
 
-* [`fly/cache`](modules/fly_cache.html): a regional, in memory cache for low latency reads/writes
-* [`fly/data`](modules/fly_data.html): a global persistent key/value store for permanent data
+* [`fly/cache`](https://fly.io/docs/apps/api/modules/fly_cache.html): a regional, in memory cache for low latency reads/writes
+* [`fly/data`](https://fly.io/docs/apps/api/modules/fly_data.html): a global persistent key/value store for permanent data
 * [`fly/image`](modules/fly_image.html): Image manipulation APIs
-* [`fly/fetch`](modules/fly_fetch.html): libraries for routing and proxying fetch requests
+* [`fly/fetch`](https://fly.io/docs/apps/api/modules/fly_image.html): libraries for routing and proxying fetch requests
+
+For more documentation, check out the Fly runtime API docs here: https://fly.io/docs/apps/api/index.html
