@@ -1,12 +1,14 @@
+![superfly octokitty](https://user-images.githubusercontent.com/7375749/44759033-57b92780-aafd-11e8-880c-818b01c65ff3.png)
+
+
+# Fly
+
 [![npm version](https://img.shields.io/npm/v/@fly/fly.svg)](https://www.npmjs.com/package/@fly/fly)
 [![isc license](https://img.shields.io/npm/l/@fly/fly.svg)](https://github.com/superfly/fly/blob/master/LICENSE) 
 [![Build Status](https://dev.azure.com/flydotio/fly/_apis/build/status/fly)](https://dev.azure.com/flydotio/fly/_build/latest?definitionId=1)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org) 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsuperfly%2Ffly.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsuperfly%2Ffly?ref=badge_shield)
-
-![superfly octokitty](https://user-images.githubusercontent.com/7375749/44759033-57b92780-aafd-11e8-880c-818b01c65ff3.png)
-
-# Fly
+![Gitter](https://img.shields.io/gitter/room/superfly/fly.svg?colorB=red)
 
 The Fly runtime is an open source Javascript environment built to run Edge Applications. It gives developers powerful caching, content modification, and routing tools.
 
@@ -232,7 +234,7 @@ Using `fly deploy`, here's what happens:
 - [API Reference](https://fly.io/docs/apps/api/index.html)
 - [Examples](https://github.com/superfly/cdn/)
 
-## Open source <3
+## Open source
 
 We develop fly in the open. We're [Apache licensed](https://github.com/superfly/fly/blob/master/LICENSE) and designed to run easily in local dev. You _can_ deploy our core software to production, but it takes a little elbow grease and a fair amount of infrastructure. If you want to give this a try, let us know and we can help (and we would love related pull requests!).
 
@@ -240,6 +242,4 @@ Our commercial offering is built on top of this library, with additional code fo
 
 We support [Let's Encrypt](https://github.com/letsencrypt): We donate half our certificate management fees to Let's Encrypt every year.
 
-## Let's chat on Gitter & Twitter
-
-Find our devs and other community members on [Gitter](https://gitter.im/superfly/fly) and [Twitter](https://twitter.com/flydotio)! 
+[![](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/flydotio)
