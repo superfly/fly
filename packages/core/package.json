@@ -41,7 +41,7 @@
         "redis": "^2.8.0",
         "segfault-handler": "^1.0.1",
         "semver": "^5.5.0",
-        "sharp": "^0.20.5",
+        "sharp": "^0.21.3",
         "source-map": "^0.6.1",
         "tar-fs": "^1.16.0",
         "ws": "^4.0.0"
@@ -61,7 +61,7 @@
         "@types/promise.prototype.finally": "^2.0.2",
         "@types/redis": "^2.8.1",
         "@types/semver": "^5.5.0",
-        "@types/sharp": "^0.17.6",
+        "@types/sharp": "^0.21.2",
         "@types/tar-fs": "^1.16.0",
         "@types/ws": "^4.0.0",
         "jest": "^23.5.0",
