@@ -1,6 +1,6 @@
 import * as bridge from "./bridge"
 import * as domUtils from "./document"
-import { MiddlewareChain } from '../../v8env/src/middleware'
+import { MiddlewareChain } from "../../v8env/src/middleware"
 
 if (window.libfly) {
   console.log("rustproxy detected, installing rustproxy-shim")
