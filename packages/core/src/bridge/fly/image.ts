@@ -8,7 +8,7 @@ import * as sharp from "sharp"
 import { Bridge } from "../bridge"
 import { Runtime } from "../../runtime"
 
-type imageOperation = (...args: any[]) => sharp.SharpInstance
+type imageOperation = (...args: any[]) => sharp.Sharp
 
 const allowedOperations: Map<string, imageOperation> = new Map([
   ["resize", sharp.prototype.resize],
@@ -82,7 +82,7 @@ registerBridge("fly.Image()", function imageConstructor(
 
 registerBridge(
   "fly.Image.operation",
-  (rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.SharpInstance>, name: string, ...args: any[]) => {
+  (rt: Runtime, bridge: Bridge, ref: ivm.Reference<sharp.Sharp>, name: string, ...args: any[]) => {
     try {
       const originalImage = refToImage(ref)
       let img = originalImage
@@ -133,7 +133,7 @@ registerBridge(
 registerBridge("fly.Image.metadata", async function imageMetadata(
   rt: Runtime,
   bridge: Bridge,
-  ref: ivm.Reference<sharp.SharpInstance>
+  ref: ivm.Reference<sharp.Sharp>
 ) {
   const img = ref.deref()
   const meta = await img.metadata()
@@ -143,7 +143,7 @@ registerBridge("fly.Image.metadata", async function imageMetadata(
 registerBridge("fly.Image.toBuffer", function imageToBuffer(
   rt: Runtime,
   bridge: Bridge,
-  ref: ivm.Reference<sharp.SharpInstance>,
+  ref: ivm.Reference<sharp.Sharp>,
   callback: ivm.Reference<(...args: any[]) => void>
 ) {
   const img = refToImage(ref)
@@ -163,7 +163,7 @@ registerBridge("fly.Image.toBuffer", function imageToBuffer(
   })
 })
 
-function refToImage(ref: ivm.Reference<sharp.SharpInstance>) {
+function refToImage(ref: ivm.Reference<sharp.Sharp>) {
   const img = ref.deref()
   if (!img) {
     throw new Error("ref must be a valid image instance")
@@ -172,7 +172,7 @@ function refToImage(ref: ivm.Reference<sharp.SharpInstance>) {
   return img
 }
 
-async function scale(this: sharp.SharpInstance, ...args: any[]) {
+async function scale(this: sharp.Sharp, ...args: any[]) {
   const opts = typeof args[args.length - 1] === "object" ? args[args.length - 1] : undefined
   const sharpOpts = {
     kernel: sharp.kernel.lanczos3,
@@ -217,7 +217,7 @@ async function scale(this: sharp.SharpInstance, ...args: any[]) {
   return img
 }
 
-async function crop(this: sharp.SharpInstance, width?: number, height?: number, opts?: any) {
+async function crop(this: sharp.Sharp, width?: number, height?: number, opts?: any) {
   let img = this
   if (width || height) {
     const meta = await this.metadata()
