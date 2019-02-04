@@ -176,8 +176,7 @@ async function scale(this: sharp.Sharp, ...args: any[]) {
   const opts = typeof args[args.length - 1] === "object" ? args[args.length - 1] : undefined
   const sharpOpts = {
     kernel: sharp.kernel.lanczos3,
-    fastShrinkOnLoad: true,
-    withoutEnlargement: typeof opts === "object" && opts.allowEnlargement === false
+    fastShrinkOnLoad: true
   }
   const fit = opts && opts.fit
 
@@ -186,26 +185,51 @@ async function scale(this: sharp.Sharp, ...args: any[]) {
     sharpOpts.fastShrinkOnLoad = opts.fastShrinkOnLoad
   }
 
-  const width = typeof args[0] === "number" ? args[0] : undefined
-  const height = typeof args[1] === "number" ? args[1] : undefined
-
+  let width = typeof args[0] === "number" ? args[0] : undefined
+  let height = typeof args[1] === "number" ? args[1] : undefined
   const ignoreAspectRatio = typeof opts === "object" && opts.ignoreAspectRatio === true
+  const withoutEnlargement = typeof opts === "object" && opts.allowEnlargement === false
+
+  if (!width || !height) {
+    const meta = await this.metadata()
+    if (!width && height) {
+      width = relativeDimension(width, meta.width || 0, height, meta.height || 0)
+    }
+    if (!height && width) {
+      height = relativeDimension(height, meta.height || 0, width, meta.width || 0)
+    }
+  }
 
   let img = this
+  img = img.resize(width, height, sharpOpts)
 
+  if (withoutEnlargement) {
+    img = (img as any).resize({ withoutEnlargement: true })
+  }
   if (ignoreAspectRatio === true || fit === "fill") {
-    img = img.resize(width, height, { ...sharpOpts, fit: "fill" })
+    img = (img as any).ignoreAspectRatio()
   } else if (fit === "cover") {
-    img = img.resize(width, height, { ...sharpOpts, fit: "outside" })
+    img = (img as any).resize({ fit: "outside" })
   } else {
-    img = img.resize(width, height, { ...sharpOpts, fit: "inside" })
+    img = (img as any).resize({ fit: "inside" })
   }
 
   return img
 }
 
 async function crop(this: sharp.Sharp, width?: number, height?: number, opts?: any) {
-  return this.resize(width, height, { fit: "cover" })
+  let img = this
+  if (width || height) {
+    const meta = await this.metadata()
+    if (!width && height) {
+      width = relativeDimension(width, meta.width || 0, height, meta.height || 0)
+    }
+    if (!height && width) {
+      height = relativeDimension(height, meta.height || 0, width, meta.width || 0)
+    }
+    img = this.resize(width, height)
+  }
+  return (img as any).crop(opts)
 }
 
 function relativeDimension(x: number | undefined, original: number, other: number, basis: number) {
