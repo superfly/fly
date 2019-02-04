@@ -204,14 +204,14 @@ async function scale(this: sharp.Sharp, ...args: any[]) {
   img = img.resize(width, height, sharpOpts)
 
   if (withoutEnlargement) {
-    img = (img as any).resize({ withoutEnlargement: true })
+    img = (img as any).withoutEnlargement()
   }
   if (ignoreAspectRatio === true || fit === "fill") {
     img = (img as any).ignoreAspectRatio()
   } else if (fit === "cover") {
-    img = (img as any).resize({ fit: "outside" })
+    img = (img as any).min()
   } else {
-    img = (img as any).resize({ fit: "inside" })
+    img = (img as any).max()
   }
 
   return img
