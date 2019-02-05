@@ -150,7 +150,7 @@ registerBridge("fetch", function fetchBridge(
     }
   }
   function handleResponse(res: http.IncomingMessage) {
-    req.once("error", handleError)
+    res.once("error", handleError)
     const dataOut = req.connection.bytesWritten - startData
     clearFetchTimeout()
     rt.reportUsage("fetch", {
