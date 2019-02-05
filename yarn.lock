@@ -4811,9 +4811,10 @@ isobject@^3.0.0, isobject@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 
-isolated-vm@1.7.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/isolated-vm/-/isolated-vm-1.7.2.tgz#3c01846a2b27f98e857633d6cd0b43093b3cfe24"
+isolated-vm@1.7.9:
+  version "1.7.9"
+  resolved "https://registry.yarnpkg.com/isolated-vm/-/isolated-vm-1.7.9.tgz#c2e68058524817fa33657e4edcd1512902a8509e"
+  integrity sha512-6Gkv8PYK9/UynG52zLTdxmwRb6rj395j08a37Ln6x5YpmXjMoF9o0E5VjDDOZeLNSRkhCccYuCUTsRtjDNDC2A==
 
 isstream@~0.1.2:
   version "0.1.2"
