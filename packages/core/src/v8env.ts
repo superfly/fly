@@ -27,7 +27,7 @@ if (fs.existsSync(v8dist)) {
     .digest("hex")
 }
 
-const v8SnapshotsEnabled = semver.lt(process.version, "10.4.0")
+const v8SnapshotsEnabled = true //semver.lt(process.version, "10.4.0")
 let v8SnapshotChecked = false
 
 export class V8Environment extends EventEmitter {
