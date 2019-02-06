@@ -1,6 +1,6 @@
 {
   "name": "@fly/examples",
-  "version": "0.44.10-pre.5",
+  "version": "0.44.10-pre.6",
   "description": "Example apps for the fly edge application runtime.",
   "license": "Apache-2.0",
   "repository": {
