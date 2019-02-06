@@ -1,6 +1,6 @@
 {
   "name": "@fly/rustproxy-shim",
-  "version": "0.44.10-pre.2",
+  "version": "0.44.10-pre.3",
   "private": true,
   "license": "Apache-2.0",
   "main": "dist/nodeproxy-shim.js",
