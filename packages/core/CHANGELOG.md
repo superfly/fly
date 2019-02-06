@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.10-pre.5](https://github.com/superfly/fly/compare/v0.44.10-pre.4...v0.44.10-pre.5) (2019-02-06)
+
+**Note:** Version bump only for package @fly/core
+
+
+
+
+
 ## [0.44.10-pre.4](https://github.com/superfly/fly/compare/v0.44.10-pre.3...v0.44.10-pre.4) (2019-02-06)
 
 **Note:** Version bump only for package @fly/core
