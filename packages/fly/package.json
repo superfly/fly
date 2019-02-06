@@ -19,9 +19,6 @@
     "build": "cp ../../README.md .",
     "prepublishOnly": "yarn build"
   },
-  "engines": {
-    "node": ">=8 <11"
-  },
   "dependencies": {
     "@fly/core": "0.44.10-pre.4",
     "@fly/v8env": "0.44.10-pre.4"
