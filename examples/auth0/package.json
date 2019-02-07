@@ -1,0 +1,22 @@
+{
+  "name": "auth0-example",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "yarn fly server",
+    "test": "yarn fly test"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@fly/cdn": "^0.5.2",
+    "jwt-decode": "^2.2.0"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "@fly/fly": "^0.44.8",
+    "@types/jwt-decode": "^2.2.1",
+    "arraybuffer-loader": "^1.0.3",
+    "ts-loader": "^3.5.0",
+    "typescript": "^3.1.2",
+    "webpack": "^4.28.4"
+  }
+}

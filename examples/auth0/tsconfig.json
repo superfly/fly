@@ -1,0 +1,17 @@
+{
+  "include": ["./index.ts"],
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "strict": true,
+    "noImplicitAny": true,
+    "esModuleInterop": false,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+  },
+}
