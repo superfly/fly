@@ -4,6 +4,7 @@ import { ivm } from "../"
 import log from "../log"
 import * as http from "http"
 import * as https from "https"
+import * as net from "net"
 import { parse as parseURL } from "url"
 
 import { Bridge } from "./bridge"
@@ -12,19 +13,67 @@ import { streamManager } from "../stream_manager"
 import { isNumber } from "util"
 import { setTimeout } from "timers"
 
-const fetchAgent = new http.Agent({
-  keepAlive: true,
-  keepAliveMsecs: 5 * 1000,
-  maxSockets: 64, // seems sensible, this is per origin
-  maxFreeSockets: 64
-})
-const fetchHttpsAgent = new https.Agent({
-  keepAlive: true,
-  keepAliveMsecs: 5 * 1000,
-  rejectUnauthorized: false, // for simplicity
-  maxSockets: 64,
-  maxFreeSockets: 64
-})
+const connectionStats = {
+  created: 0,
+  current: 0,
+  reused: 0,
+  keptAlive: 0
+}
+
+// this keeps track of connection counts for the fetch agent
+function createMonitoredAgent<T extends http.Agent>(agent: T) {
+  const a: any = agent
+  const { createConnection, keepSocketAlive, reuseSocket } = a
+  return Object.assign(agent, {
+    createConnection: function createConnectionMonitored(options: any, cb: any) {
+      const socket: net.Socket = createConnection.call(this, options, cb)
+      connectionStats.created += 1
+      connectionStats.current += 1
+      socket.on("close", function decrementConnectionCounter() {
+        connectionStats.current -= 1
+      })
+      return socket
+    },
+    keepSocketAlive: function keepSocketAliveMonitored(socket: net.Socket) {
+      connectionStats.keptAlive += 1
+      return keepSocketAlive.call(this, socket)
+    },
+    reuseSocket: function reuseSocketMonitored(socket: net.Socket, request: any) {
+      connectionStats.reused += 1
+      return reuseSocket.call(this, socket, request)
+    }
+  })
+}
+
+// tslint:disable-next-line
+let maxSockets = parseInt(process.env.MAX_FETCH_SOCKETS || "")
+if (isNaN(maxSockets) || maxSockets < 1) {
+  maxSockets = 1024 // maybe sane limit
+}
+// tslint:disable-next-line
+let maxFreeSockets = parseInt(process.env.MAX_FETCH_FREE_SOCKETS || "")
+if (isNaN(maxFreeSockets) || maxFreeSockets < 1) {
+  maxFreeSockets = 256 // default
+}
+
+console.log("Fetch connection pool:", { maxSockets, maxFreeSockets })
+const fetchAgent = createMonitoredAgent(
+  new http.Agent({
+    keepAlive: true,
+    keepAliveMsecs: 5 * 1000,
+    maxSockets,
+    maxFreeSockets
+  })
+)
+const fetchHttpsAgent = createMonitoredAgent(
+  new https.Agent({
+    keepAlive: true,
+    keepAliveMsecs: 1000,
+    rejectUnauthorized: false, // for simplicity
+    maxSockets,
+    maxFreeSockets
+  })
+)
 
 function makeResponse(status: number, statusText: string, url: string, headers?: any) {
   return {
@@ -160,8 +209,10 @@ registerBridge("fetch", function fetchBridge(
       path: u.path,
       remote_addr: res.socket.remoteAddress,
       status: res.statusCode,
-      response_time: process.hrtime(start)
+      response_time: process.hrtime(start),
+      globalConnectionStats: connectionStats
     })
+    console.log("Connection stats:", connectionStats)
 
     req.removeAllListeners()
 
@@ -173,6 +224,9 @@ registerBridge("fetch", function fetchBridge(
       headers: res.headers
     }).copyInto({ release: true })
 
+    if (res.headers.connection === "close") {
+      console.log("Got connection: close")
+    }
     if (res.method === "GET" || res.method === "HEAD") {
       return cb.applyIgnored(null, [null, retInit])
     }
