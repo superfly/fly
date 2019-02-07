@@ -212,7 +212,6 @@ registerBridge("fetch", function fetchBridge(
       response_time: process.hrtime(start),
       globalConnectionStats: connectionStats
     })
-    console.log("Connection stats:", connectionStats)
 
     req.removeAllListeners()
 
