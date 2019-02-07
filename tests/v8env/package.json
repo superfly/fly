@@ -1,12 +1,12 @@
 {
   "name": "@fly-test/v8env",
-  "version": "0.44.10-pre.7",
+  "version": "0.44.10-pre.8",
   "private": true,
   "scripts": {
     "test": "../../fly test ./tests/**/*.spec.js"
   },
   "devDependencies": {
-    "@fly/core": "0.44.10-pre.7",
+    "@fly/core": "0.44.10-pre.8",
     "arraybuffer-loader": "^1.0.3",
     "chai": "^4.1.2",
     "image-webpack-loader": "^4.3.1"
