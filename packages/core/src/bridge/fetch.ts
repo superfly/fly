@@ -223,9 +223,6 @@ registerBridge("fetch", function fetchBridge(
       headers: res.headers
     }).copyInto({ release: true })
 
-    if (res.headers.connection === "close") {
-      console.log("Got connection: close")
-    }
     if (res.method === "GET" || res.method === "HEAD") {
       return cb.applyIgnored(null, [null, retInit])
     }
