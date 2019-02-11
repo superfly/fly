@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.44.10-pre.10](https://github.com/superfly/fly/compare/v0.44.10-pre.9...v0.44.10-pre.10) (2019-02-11)
+
+
+### Bug Fixes
+
+* allow transfer-encoding chunked headers ([4a9d802](https://github.com/superfly/fly/commit/4a9d802))
+
+
+
+
+
 ## [0.44.10-pre.9](https://github.com/superfly/fly/compare/v0.44.10-pre.8...v0.44.10-pre.9) (2019-02-07)
 
 **Note:** Version bump only for package fly-root
