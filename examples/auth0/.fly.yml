@@ -1,0 +1,26 @@
+config: &config
+  callbackURL: http://localhost:3001/auth/callback
+  clientID:
+    fromSecret: clientID
+  secret: 
+    fromSecret: clientSecret
+  audience: 
+    fromSecret: audience
+  domain: 
+    fromSecret: domain
+
+default: &default
+  app: auth0-example
+  files:
+    - static/index.html
+  config:
+    <<: *config
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+  config:
+    <<: *config
+    callbackURL: https://auth0-example.edgeapp.net/auth/callback

@@ -1,0 +1,4 @@
+.envrc
+node_modules
+.fly.secrets.yml
+.fly/
