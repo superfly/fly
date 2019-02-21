@@ -1,8 +1,10 @@
 import { BlobStore } from "./blob_store"
 import { Readable } from "stream"
 import { Runtime } from "./runtime"
+import log from "./log"
 
 import * as AWS from "aws-sdk"
+import { bufferToStream } from "./utils/buffer"
 
 export interface Options {
   secretAccessKey: string
@@ -25,47 +27,21 @@ export class S3BlobStore implements BlobStore {
     })
   }
 
-  public get(ns: string, key: string): Promise<Readable> {
-    return new Promise((resolve, reject) => {
-      const fullKey = `${ns}/${key}`
-      const reqOpts = {
-        Key: fullKey,
-        Bucket: this.bucket
-      }
+  public async get(ns: string, key: string): Promise<Readable> {
+    log.info("get:", { ns, key })
+    const fullKey = `${ns}/${key}`
+    const reqOpts = {
+      Key: fullKey,
+      Bucket: this.bucket
+    }
 
-      this.s3.getObject(reqOpts, (err, data) => {
-        console.log("got response", { err, data })
-        if (err) {
-          reject(err)
-        } else {
-          resolve(data.Body as Readable)
-        }
-      })
-    })
+    return await this.s3.getObject(reqOpts).createReadStream()
   }
 
-  public set(ns: string, key: string, value: any): Promise<boolean> {
+  public set(ns: string, key: string, value: Readable): Promise<boolean> {
     throw new Error("Method not implemented.")
   }
   public del(ns: string, key: string): Promise<boolean> {
     throw new Error("Method not implemented.")
   }
-
-  // public async createReadStream(rt: Runtime, path: string): Promise<Readable> {
-  //   const resp = await this.s3.getObject({
-  //     Bucket: "flytest",
-  //     Key: path
-  //   })
-
-  //   return resp.createReadStream()
-  // }
-
-  // public async createWritableStream(rt: Runtime, path: string): Promise<Readable> {
-  //   const resp = await this.s3.getObject({
-  //     Bucket: "flytest",
-  //     Key: path
-  //   })
-
-  //   return resp.createReadStream()
-  // }
 }

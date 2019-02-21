@@ -1,3 +1,4 @@
 fly.http.respondWith(req => {
-  return new Response("HELLO")
+  return fetch("storage://cool-new-things.png")
+  // return new Response("HELLO")
 })

@@ -141,49 +141,49 @@ registerBridge("fetch", function fetchBridge(
     return
   }
 
-  if (u.protocol === "storage") {
-    log.debug("native fetch with url:", urlStr)
-    cb.applyIgnored(null, [
-      null,
-      new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({ release: true }),
-      ""
-    ])
-    return
+  if (u.protocol === "storage:") {
+    log.info("storage:", urlStr)
+    // cb.applyIgnored(null, [
+    //   null,
+    //   new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({ release: true }),
+    //   ""
+    // ])
+    // return
 
     // console.log("storage request!")
-    // if (!bridge.blobStore) {
-    //   cb.applyIgnored(null, ["no blob store configured!"])
-    //   return
-    // }
+    if (!bridge.blobStore) {
+      cb.applyIgnored(null, ["no blob store configured!"])
+      return
+    }
 
-    // try {
-    //   bridge.blobStore
-    //     .get(rt.app.id, urlStr.replace("storage://", ""))
-    //     .then(stream => {
-    //       const id = streamManager.add(rt, stream)
-    //       cb.applyIgnored(null, [
-    //         null,
-    //         new ivm.ExternalCopy(makeResponse(200, "OK", urlStr)).copyInto({ release: true }),
-    //         id
-    //       ])
-    //     })
-    //     .catch(err => {
-    //       cb.applyIgnored(null, [
-    //         null,
-    //         new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({
-    //           release: true
-    //         }),
-    //         ""
-    //       ])
-    //     })
-    // } catch (e) {
-    //   // Might throw FileNotFound
-    //   cb.applyIgnored(null, [
-    //     null,
-    //     new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({ release: true }),
-    //     ""
-    //   ])
-    // }
+    try {
+      bridge.blobStore
+        .get(rt.app.id, urlStr.replace("storage://", ""))
+        .then(stream => {
+          const id = streamManager.add(rt, stream)
+          cb.applyIgnored(null, [
+            null,
+            new ivm.ExternalCopy(makeResponse(200, "OK", urlStr)).copyInto({ release: true }),
+            id
+          ])
+        })
+        .catch(err => {
+          cb.applyIgnored(null, [
+            null,
+            new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({
+              release: true
+            }),
+            ""
+          ])
+        })
+    } catch (e) {
+      // Might throw FileNotFound
+      cb.applyIgnored(null, [
+        null,
+        new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({ release: true }),
+        ""
+      ])
+    }
     return
   }
 
