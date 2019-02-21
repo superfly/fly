@@ -76,8 +76,7 @@ export class Server extends http.Server {
         dataStore: new SQLiteDataStore(this.appStore.app.name, options.env || "development"),
         blobStore: new S3BlobStore({
           bucket: "flytest",
-          accessKeyId: "CMZFST3BVXZJUE2XVVLE",
-          secretAccessKey: "X8TzSmgGTPVNiFEfoG94VUOcNp406+/GFfaIKhr6OK8"
+          endpoint: "https://flytest.sfo2.digitaloceanspaces.com"
         })
       })
     this.runtime = new LocalRuntime(this.appStore.app, this.bridge, {

@@ -7,10 +7,12 @@ import { createHash } from "crypto"
 import * as AWS from "aws-sdk"
 import { bufferToStream } from "./utils/buffer"
 import { streamManager } from "./stream_manager"
+import { String } from "aws-sdk/clients/cloudhsm"
 
 export interface Options {
-  secretAccessKey: string
-  accessKeyId: string
+  secretAccessKey?: string
+  accessKeyId?: string
+  endpoint: string
   bucket: string
 }
 
@@ -18,6 +20,7 @@ type AWSRequest<T> = AWS.Request<T, AWS.AWSError>
 
 export class S3BlobStore implements BlobStore {
   private s3: AWS.S3
+
   private bucket: string
 
   constructor(options: Options) {
@@ -27,7 +30,7 @@ export class S3BlobStore implements BlobStore {
       accessKeyId: options.accessKeyId,
       secretAccessKey: options.secretAccessKey,
       s3BucketEndpoint: true,
-      endpoint: "https://flytest.sfo2.digitaloceanspaces.com"
+      endpoint: options.endpoint
     })
   }
 
@@ -93,12 +96,6 @@ export class S3BlobStore implements BlobStore {
     return true
   }
 }
-
-// function onGetHeaders(
-//   this: AWS.Request<AWS.S3.GetObjectOutput, AWS.AWSError>,
-//   statusCode: number,
-//   headers: { [key: string]: any }
-// ) {}
 
 function getKey(ns: string, key: string): string {
   ns = ns.replace(/\//g, "-")
