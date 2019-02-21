@@ -12,6 +12,7 @@ import { Runtime } from "../runtime"
 import { streamManager } from "../stream_manager"
 import { isNumber } from "util"
 import { setTimeout } from "timers"
+import { handleStorageRequest } from "./fetch/storage"
 
 const connectionStats = {
   created: 0,
@@ -84,6 +85,7 @@ function makeResponse(status: number, statusText: string, url: string, headers?:
     headers: headers || {}
   }
 }
+
 registerBridge("fetch", function fetchBridge(
   rt: Runtime,
   bridge: Bridge,
@@ -93,7 +95,7 @@ registerBridge("fetch", function fetchBridge(
   cb: ivm.Reference<() => void>
 ) {
   log.info("native fetch with url:", urlStr)
-  // log.info("error handling request:", err.stack)
+
   if (!init) {
     init = {}
   }
@@ -142,49 +144,7 @@ registerBridge("fetch", function fetchBridge(
   }
 
   if (u.protocol === "storage:") {
-    log.info("storage:", urlStr)
-    // cb.applyIgnored(null, [
-    //   null,
-    //   new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({ release: true }),
-    //   ""
-    // ])
-    // return
-
-    // console.log("storage request!")
-    if (!bridge.blobStore) {
-      cb.applyIgnored(null, ["no blob store configured!"])
-      return
-    }
-
-    try {
-      bridge.blobStore
-        .get(rt.app.id, urlStr.replace("storage://", ""))
-        .then(stream => {
-          const id = streamManager.add(rt, stream)
-          cb.applyIgnored(null, [
-            null,
-            new ivm.ExternalCopy(makeResponse(200, "OK", urlStr)).copyInto({ release: true }),
-            id
-          ])
-        })
-        .catch(err => {
-          cb.applyIgnored(null, [
-            null,
-            new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({
-              release: true
-            }),
-            ""
-          ])
-        })
-    } catch (e) {
-      // Might throw FileNotFound
-      cb.applyIgnored(null, [
-        null,
-        new ivm.ExternalCopy(makeResponse(404, "Not Found", urlStr)).copyInto({ release: true }),
-        ""
-      ])
-    }
-    return
+    return handleStorageRequest(rt, bridge, u, init, body, cb)
   }
 
   const httpFn = u.protocol === "http:" ? http.request : https.request
