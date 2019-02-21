@@ -14,6 +14,7 @@ import { LocalRuntime } from "./local_runtime"
 import { Runtime } from "./runtime"
 import { SQLiteDataStore } from "./sqlite_data_store"
 import { streamManager } from "./stream_manager"
+import { S3BlobStore } from "./s3_blob_store"
 
 const hopHeaders = [
   // From RFC 2616 section 13.5.1
@@ -72,7 +73,12 @@ export class Server extends http.Server {
       options.bridge ||
       new Bridge({
         fileStore: new LocalFileStore(process.cwd(), this.appStore.release),
-        dataStore: new SQLiteDataStore(this.appStore.app.name, options.env || "development")
+        dataStore: new SQLiteDataStore(this.appStore.app.name, options.env || "development"),
+        blobStore: new S3BlobStore({
+          bucket: "flytest",
+          accessKeyId: "CMZFST3BVXZJUE2XVVLE",
+          secretAccessKey: "X8TzSmgGTPVNiFEfoG94VUOcNp406+/GFfaIKhr6OK8"
+        })
       })
     this.runtime = new LocalRuntime(this.appStore.app, this.bridge, {
       inspect: !!options.inspect,
