@@ -5,6 +5,11 @@ import { UrlWithStringQuery } from "url"
 import log from "../../log"
 import { streamManager } from "../../stream_manager"
 import { KeyNotFound } from "../../blob_store"
+import { Readable } from "stream"
+import { bufferToStream } from "../../utils/buffer"
+import { OutgoingHttpHeaders } from "http"
+
+const scheme = "storage:"
 
 export function handleStorageRequest(
   rt: Runtime,
@@ -14,24 +19,25 @@ export function handleStorageRequest(
   body: ArrayBuffer | null | string,
   cb: IvmCallback
 ) {
-  log.info("storage:", url)
+  log.info("storage:", { url, init })
 
   if (!bridge.blobStore) {
     cb.applyIgnored(null, ["no blob store configured!"])
     return
   }
 
-  if (!url.pathname || url.pathname === "/") {
+  const key = url.href!.substring(scheme.length + 2)
+
+  if (!key || key === "/") {
     cb.applyIgnored(null, [null, makeResponse(422, "Invalid key", url)])
     return
   }
-
-  const key = url.pathname
 
   if (init.method === "GET") {
     bridge.blobStore
       .get(rt.app.id, key)
       .then(res => {
+        log.info("get response", { res })
         const id = streamManager.add(rt, res.stream)
         cb.applyIgnored(null, [
           null,
@@ -63,8 +69,12 @@ export function handleStorageRequest(
 
     const bodyBuf = normalizeBody(body)
 
+    log.info("init:", init)
+
+    const headers = extractHeaders(init.headers || {})
+
     bridge.blobStore
-      .set(rt.app.id, key, bodyBuf)
+      .set(rt.app.id, key, bodyBuf, { headers })
       .then(() => {
         cb.applyIgnored(null, [
           null,
@@ -105,16 +115,20 @@ export function handleStorageRequest(
   return
 }
 
-function normalizeBody(body: string | ArrayBuffer | Buffer): Buffer {
+function normalizeBody(body: string | ArrayBuffer | Buffer): Readable {
   if (typeof body === "string") {
-    return new Buffer(body)
+    return bufferToStream(new Buffer(body))
   }
 
   if (body instanceof ArrayBuffer) {
-    return Buffer.from(body)
+    return bufferToStream(Buffer.from(body))
   }
 
-  return body
+  if (Buffer.isBuffer(body)) {
+    return bufferToStream(body)
+  }
+
+  throw new Error(`Unexpected body type: ${body}`)
 }
 
 // copied from ../fetch, consolidate that
@@ -130,4 +144,23 @@ function makeResponse(status: number, statusText: string, url: string | UrlWithS
     url,
     headers: headers || {}
   }
+}
+
+const ALLOWED_HEADERS = ["content-type", "content-length", "content-encoding"]
+
+function extractHeaders(headers: OutgoingHttpHeaders) {
+  const out: { [name: string]: string } = {}
+  for (const header of ALLOWED_HEADERS) {
+    const val = headers[header]
+    if (val) {
+      if (typeof val === "string") {
+        out[header] = val
+      } else if (Array.isArray(val)) {
+        out[header] = val.join(", ")
+      } else if (typeof val === "number") {
+        out[header] = val.toString()
+      }
+    }
+  }
+  return out
 }

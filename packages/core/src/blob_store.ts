@@ -1,7 +1,5 @@
 import { Readable } from "stream"
-import { Runtime } from "./runtime"
-
-export type Body = Buffer | Uint8Array | string | Readable
+import { createHash } from "crypto"
 
 export interface Headers {
   [key: string]: string
@@ -18,8 +16,9 @@ export interface SetOptions {
 
 export interface BlobStore {
   get(ns: string, key: string): Promise<GetResponse>
-  set(ns: string, key: string, value: Body, opts?: SetOptions): Promise<boolean>
+  set(ns: string, key: string, value: Readable, opts?: SetOptions): Promise<boolean>
   del(ns: string, key: string): Promise<boolean>
+  toString(): string
 }
 
 export class KeyNotFound extends Error {
@@ -29,3 +28,25 @@ export class KeyNotFound extends Error {
 }
 
 export class ServiceError extends Error {}
+
+export function generateKey(ns: string, key: string): string {
+  ns = digest(ns)
+
+  if (key.startsWith("/")) {
+    key = key.substring(1)
+  }
+
+  if (key.length === 0) {
+    throw new Error(`Key cannot be empty`)
+  }
+
+  key = digest(key)
+
+  return `${ns}/${key}`
+}
+
+function digest(key: string): string {
+  return createHash("md5")
+    .update(key)
+    .digest("hex")
+}

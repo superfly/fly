@@ -1,13 +1,8 @@
-import { BlobStore, Body, KeyNotFound, GetResponse, SetOptions } from "./blob_store"
+import { BlobStore, KeyNotFound, GetResponse, SetOptions } from "./blob_store"
 import { Readable } from "stream"
-import { Runtime } from "./runtime"
 import log from "./log"
 import { createHash } from "crypto"
-
 import * as AWS from "aws-sdk"
-import { bufferToStream } from "./utils/buffer"
-import { streamManager } from "./stream_manager"
-import { String } from "aws-sdk/clients/cloudhsm"
 
 export interface Options {
   secretAccessKey?: string
@@ -40,7 +35,7 @@ export class S3BlobStore implements BlobStore {
       Bucket: this.bucket
     }
 
-    log.info("get:", { ns, key, params })
+    log.debug("get:", { ns, key, params })
 
     return new Promise((resolve, reject) => {
       const stream = this.s3
@@ -63,18 +58,17 @@ export class S3BlobStore implements BlobStore {
     })
   }
 
-  public async set(ns: string, key: string, value: Body, opts?: SetOptions): Promise<boolean> {
+  public async set(ns: string, key: string, value: Readable, opts?: SetOptions): Promise<boolean> {
     const reqOpts = {
       Key: getKey(ns, key),
       Bucket: this.bucket,
       Body: value
     }
 
-    log.info("set:", { ns, key, reqOpts })
+    log.debug("set:", { ns, key, reqOpts })
 
     try {
       const resp = await this.s3.putObject(reqOpts).promise()
-      log.info("status", { status: resp.$response.httpResponse.statusCode })
       return true
     } catch (err) {
       console.error(err)
@@ -83,17 +77,20 @@ export class S3BlobStore implements BlobStore {
   }
 
   public async del(ns: string, key: string): Promise<boolean> {
-    log.info("del:", { ns, key })
+    log.debug("del:", { ns, key })
 
     const reqOpts = {
       Key: getKey(ns, key),
       Bucket: this.bucket
     }
 
-    const resp = await this.s3.deleteObject(reqOpts)
-    log.info("resp", { resp })
+    const resp = await this.s3.deleteObject(reqOpts).promise()
 
     return true
+  }
+
+  public toString() {
+    return `S3 [bucket:${this.bucket} endpoint:${this.s3.endpoint}]`
   }
 }
 

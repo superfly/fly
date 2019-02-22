@@ -41,7 +41,10 @@ root
     const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env })
 
     const server = new Server({ appStore, inspect: !!opts.inspect })
-    console.log("Cache Adapter: " + server.bridge.cacheStore.constructor.name)
+    console.log("Memory Cache Adapter: " + server.bridge.cacheStore.constructor.name)
+    if (server.bridge.blobStore) {
+      console.log(`Blob Cache Adapter: ${server.bridge.blobStore}`)
+    }
     if (port === 3000) {
       // auto increment if default port in use
       server.on("error", (e: any) => {

@@ -15,6 +15,8 @@ import { Runtime } from "./runtime"
 import { SQLiteDataStore } from "./sqlite_data_store"
 import { streamManager } from "./stream_manager"
 import { S3BlobStore } from "./s3_blob_store"
+import { FileSystemBlobStore } from "./fs_blob_store"
+import { join } from "path"
 
 const hopHeaders = [
   // From RFC 2616 section 13.5.1
@@ -74,10 +76,13 @@ export class Server extends http.Server {
       new Bridge({
         fileStore: new LocalFileStore(process.cwd(), this.appStore.release),
         dataStore: new SQLiteDataStore(this.appStore.app.name, options.env || "development"),
-        blobStore: new S3BlobStore({
-          bucket: "flytest",
-          endpoint: "https://flytest.sfo2.digitaloceanspaces.com"
+        blobStore: new FileSystemBlobStore({
+          path: join(process.cwd(), ".fly", "blobcache")
         })
+        // blobStore: new  S3BlobStore({
+        //   bucket: "flytest",
+        //   endpoint: "https://flytest.sfo2.digitaloceanspaces.com"
+        // })
       })
     this.runtime = new LocalRuntime(this.appStore.app, this.bridge, {
       inspect: !!options.inspect,
@@ -86,7 +91,11 @@ export class Server extends http.Server {
     this.on("request", this.handleRequest.bind(this))
     this.on("listening", () => {
       const addr = this.address()
-      console.log(`Server listening on ${addr.address}:${addr.port}`)
+      if (typeof addr === "string") {
+        console.log(`Server listening on ${addr}`)
+      } else {
+        console.log(`Server listening on ${addr.address}:${addr.port}`)
+      }
     })
   }
 
