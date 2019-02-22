@@ -4,7 +4,6 @@ fly.http.respondWith(async req => {
   const key = pathAndSearch
 
   const cachedResp = await fetch(`storage://${key}`)
-  console.log("cache response", { cachedResp })
   if (cachedResp.ok) {
     const headers = cachedResp.headers
     headers.set("fly-cache", "hit")

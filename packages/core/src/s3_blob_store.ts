@@ -59,16 +59,30 @@ export class S3BlobStore implements BlobStore {
   }
 
   public async set(ns: string, key: string, value: Readable, opts?: SetOptions): Promise<boolean> {
-    const reqOpts = {
+    const headers = (opts && opts.headers) || {}
+
+    let contentLength
+    if (headers["content-length"]) {
+      try {
+        contentLength = parseInt(headers["content-length"], 10)
+      } catch (_) {
+        // ignore junk
+      }
+    }
+
+    const reqOpts: AWS.S3.PutObjectRequest = {
       Key: getKey(ns, key),
       Bucket: this.bucket,
-      Body: value
+      Body: value,
+      ContentLength: contentLength,
+      ContentType: headers["content-type"],
+      ContentEncoding: headers["content-encoding"]
     }
 
     log.debug("set:", { ns, key, reqOpts })
 
     try {
-      const resp = await this.s3.putObject(reqOpts).promise()
+      const resp = await this.s3.putObject({ ...reqOpts }).promise()
       return true
     } catch (err) {
       console.error(err)
@@ -90,7 +104,7 @@ export class S3BlobStore implements BlobStore {
   }
 
   public toString() {
-    return `S3 [bucket:${this.bucket} endpoint:${this.s3.endpoint}]`
+    return `S3 [bucket:${this.bucket} endpoint:${this.s3.endpoint.href}]`
   }
 }
 

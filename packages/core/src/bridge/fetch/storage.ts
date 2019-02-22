@@ -19,8 +19,6 @@ export function handleStorageRequest(
   body: ArrayBuffer | null | string,
   cb: IvmCallback
 ) {
-  log.info("storage:", { url, init })
-
   if (!bridge.blobStore) {
     cb.applyIgnored(null, ["no blob store configured!"])
     return
@@ -37,7 +35,6 @@ export function handleStorageRequest(
     bridge.blobStore
       .get(rt.app.id, key)
       .then(res => {
-        log.info("get response", { res })
         const id = streamManager.add(rt, res.stream)
         cb.applyIgnored(null, [
           null,
@@ -68,8 +65,6 @@ export function handleStorageRequest(
     }
 
     const bodyBuf = normalizeBody(body)
-
-    log.info("init:", init)
 
     const headers = extractHeaders(init.headers || {})
 
