@@ -1,5 +1,5 @@
 import { Runtime } from "./runtime"
-import { Readable, Writable } from "stream"
+import { Readable, Writable, PassThrough } from "stream"
 import { ivm } from "."
 import { transferInto } from "./utils/buffer"
 import log from "./log"
@@ -25,6 +25,15 @@ const MIN_READ_TIMEOUT = 30 * 1000
 const MAX_READ_TIMEOUT = 2 * 60 * 1000
 
 export const streamManager = {
+  get(rt: Runtime, id: number | string): Readable {
+    const key = streamKey(rt, id)
+    const streamInfo = streams[key]
+    if (!streamInfo) {
+      throw new Error(`stream ${key} not found`)
+    }
+    return streamInfo.stream
+  },
+
   add(rt: Runtime, stream: Readable, opts: StreamOptions = {}): number {
     const id = generateStreamId()
     const key = streamKey(rt, id)
@@ -133,6 +142,25 @@ export const streamManager = {
       throw new Error("stream closed, not found or destroyed")
     }
     info.stream.pipe(dst)
+  },
+
+  tee(rt: Runtime, id: number | string): [number, number] {
+    const key = streamKey(rt, id)
+    const info = streams[key]
+    if (!info) {
+      throw new Error("stream closed, not found or destroyed")
+    }
+
+    const stream1 = new PassThrough()
+    const stream2 = new PassThrough()
+
+    const stream1Id = this.add(rt, stream1)
+    const stream2Id = this.add(rt, stream2)
+
+    info.stream.pipe(stream1)
+    info.stream.pipe(stream2)
+
+    return [stream1Id, stream2Id]
   }
 }
 

@@ -16,7 +16,7 @@ export function handleStorageRequest(
   bridge: Bridge,
   url: UrlWithStringQuery,
   init: any,
-  body: ArrayBuffer | null | string,
+  body: ArrayBuffer | null | string | number,
   cb: IvmCallback
 ) {
   if (!bridge.blobStore) {
@@ -64,7 +64,7 @@ export function handleStorageRequest(
       return
     }
 
-    const bodyBuf = normalizeBody(body)
+    const bodyBuf = normalizeBody(rt, body)
 
     const headers = extractHeaders(init.headers || {})
 
@@ -110,7 +110,7 @@ export function handleStorageRequest(
   return
 }
 
-function normalizeBody(body: string | ArrayBuffer | Buffer): Readable {
+function normalizeBody(rt: Runtime, body: string | number | ArrayBuffer | Buffer): Readable {
   if (typeof body === "string") {
     return bufferToStream(new Buffer(body))
   }
@@ -121,6 +121,10 @@ function normalizeBody(body: string | ArrayBuffer | Buffer): Readable {
 
   if (Buffer.isBuffer(body)) {
     return bufferToStream(body)
+  }
+
+  if (typeof body === "number") {
+    return streamManager.get(rt, body)
   }
 
   throw new Error(`Unexpected body type: ${body}`)

@@ -2,7 +2,7 @@
  * @module fetch
  */
 import { logger } from "./logger"
-import refToStream, { isFlyStream } from "./fly/streams"
+import refToStream, { isFlyStream, isFlyStreamId } from "./fly/streams"
 
 declare var bridge: any
 
@@ -38,6 +38,8 @@ export function fetch(req: RequestInfo, init?: FlyRequestInit): Promise<Response
         bridge.dispatch("fetch", url, init, null, fetchCb)
       } else if (typeof req.bodySource === "string") {
         bridge.dispatch("fetch", url, init, req.bodySource, fetchCb)
+      } else if (isFlyStream(req.bodySource)) {
+        bridge.dispatch("fetch", url, init, req.bodySource.flyStreamId, fetchCb)
       } else {
         req
           .arrayBuffer()
@@ -57,7 +59,12 @@ export function fetch(req: RequestInfo, init?: FlyRequestInit): Promise<Response
       if (err) {
         return reject(new Error(err))
       }
-      resolve(new Response(isFlyStream(nodeBody) ? refToStream(nodeBody) : nodeBody, nodeRes))
+
+      if (isFlyStream(nodeBody) || isFlyStreamId(nodeBody)) {
+        nodeBody = refToStream(nodeBody)
+      }
+
+      resolve(new Response(nodeBody, nodeRes))
     }
   })
 }
