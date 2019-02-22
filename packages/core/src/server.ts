@@ -76,13 +76,7 @@ export class Server extends http.Server {
       new Bridge({
         fileStore: new LocalFileStore(process.cwd(), this.appStore.release),
         dataStore: new SQLiteDataStore(this.appStore.app.name, options.env || "development"),
-        blobStore: new FileSystemBlobStore({
-          path: join(process.cwd(), ".fly", "blobcache")
-        })
-        // blobStore: new  S3BlobStore({
-        //   bucket: "flytest",
-        //   endpoint: "https://flytest.sfo2.digitaloceanspaces.com"
-        // })
+        blobStore: new FileSystemBlobStore()
       })
     this.runtime = new LocalRuntime(this.appStore.app, this.bridge, {
       inspect: !!options.inspect,

@@ -3,16 +3,17 @@ import { Readable } from "stream"
 import log from "./log"
 import * as fs from "fs"
 import { join, dirname } from "path"
+import { tmpdir } from "os"
 
 export interface Options {
-  path: string
+  path?: string
 }
 
 export class FileSystemBlobStore implements BlobStore {
   private path: string
 
-  constructor(options: Options) {
-    this.path = options.path
+  constructor(options?: Options) {
+    this.path = (options && options.path) || join(tmpdir(), "fly-blobcache")
 
     ensurePath(this.path)
   }
