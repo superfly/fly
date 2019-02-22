@@ -191,6 +191,7 @@ registerBridge("fetch", function fetchBridge(
   const startData = (req.connection && req.connection.bytesWritten) || 0
 
   setImmediate(() => {
+    log.info("prep fetch body", { body })
     if (body instanceof ArrayBuffer) {
       req.end(Buffer.from(body))
     } else {
