@@ -194,6 +194,9 @@ registerBridge("fetch", function fetchBridge(
     log.info("prep fetch body", { body })
     if (body instanceof ArrayBuffer) {
       req.end(Buffer.from(body))
+    } else if (typeof body === "number") {
+      const stream = streamManager.get(rt, body)
+      stream.pipe(req)
     } else {
       req.end(!!body ? body : null)
     }
