@@ -97,12 +97,9 @@ export default function refToStream(ref: any) {
 
   return new Proxy(r, {
     get: (target, propKey, receiver) => {
-      console.log("INVOLE READABLE STREAM PROXY", { propKey })
       if (propKey === "tee") {
-        console.log("TEE STREAM FROM READABLESTREAM", { ref })
         return () => {
           const [s1, s2] = bridge.dispatchSync("streamTee", ref)
-          // return [s1, s2]
           return [refToStream(s1), refToStream(s2)]
         }
       } else {
