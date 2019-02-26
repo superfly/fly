@@ -14,9 +14,7 @@ import { LocalRuntime } from "./local_runtime"
 import { Runtime } from "./runtime"
 import { SQLiteDataStore } from "./sqlite_data_store"
 import { streamManager } from "./stream_manager"
-import { S3BlobStore } from "./s3_blob_store"
 import { FileSystemBlobStore } from "./fs_blob_store"
-import { join } from "path"
 
 const hopHeaders = [
   // From RFC 2616 section 13.5.1
