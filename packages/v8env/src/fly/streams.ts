@@ -7,17 +7,35 @@ import { ReadableStream } from "../streams"
 
 declare var bridge: any
 
+export type FlyStreamId = number
+
 /**
  * @hidden
  */
-export function isFlyStream(id) {
-  return typeof id === "number"
+export function isFlyStream(arg: any) {
+  if (typeof arg !== "object" || arg === null) {
+    return false
+  }
+
+  return isFlyStreamId(arg.flyStreamId)
+}
+
+export function isFlyStreamId(arg: any): arg is FlyStreamId {
+  return typeof arg === "number"
 }
 
 /**
  * @hidden
  */
-export default function refToStream(id) {
+export default function refToStream(ref: any) {
+  if (isFlyStream(ref)) {
+    return ref
+  }
+
+  if (!isFlyStreamId(ref)) {
+    throw new Error(`ref is not a fly stream id: {ref}`)
+  }
+
   let closed = false
   const r = new ReadableStream(
     {
@@ -49,14 +67,14 @@ export default function refToStream(id) {
           },
           { release: false }
         )
-        bridge.dispatch("streamSubscribe", id, cb) // no releasing here, we re-use it
+        bridge.dispatch("streamSubscribe", ref, cb) // no releasing here, we re-use it
       },
       pull(controller) {
         if (closed) {
           return Promise.resolve(null)
         }
         return new Promise(function pullPromise(resolve, reject) {
-          bridge.dispatch("streamRead", id, function streamRead(err, data) {
+          bridge.dispatch("streamRead", ref, function streamRead(err, data) {
             if (err) {
               controller.error(new Error(err))
               reject(err)
@@ -68,13 +86,25 @@ export default function refToStream(id) {
         })
       },
       cancel() {
-        logger.info(`stream ${id} was cancelled`)
+        logger.info(`stream ${ref} was cancelled`)
       }
     },
     {
       highWaterMark: 0
     }
   )
-  r.flyStreamId = id
-  return r
+  r.flyStreamId = ref
+
+  return new Proxy(r, {
+    get: (target, propKey, receiver) => {
+      if (propKey === "tee") {
+        return () => {
+          const [s1, s2] = bridge.dispatchSync("streamTee", ref)
+          return [refToStream(s1), refToStream(s2)]
+        }
+      } else {
+        return target[propKey]
+      }
+    }
+  })
 }

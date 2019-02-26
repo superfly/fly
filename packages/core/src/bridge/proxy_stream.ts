@@ -11,3 +11,15 @@ registerBridge("streamSubscribe", (rt: Runtime, bridge: Bridge, id: string, cb: 
 registerBridge("streamRead", (rt: Runtime, bridge: Bridge, id: string, cb: ivm.Reference<() => void>) => {
   streamManager.read(rt, id, cb)
 })
+
+registerBridge("streamTee", (rt: Runtime, bridge: Bridge, id: string) => {
+  try {
+    const teedStreams = streamManager.tee(rt, id)
+
+    const result = new ivm.ExternalCopy(teedStreams).copyInto({ release: true })
+
+    return Promise.resolve(result)
+  } catch (err) {
+    Promise.reject(err)
+  }
+})

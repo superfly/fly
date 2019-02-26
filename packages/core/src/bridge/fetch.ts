@@ -12,6 +12,7 @@ import { Runtime } from "../runtime"
 import { streamManager } from "../stream_manager"
 import { isNumber } from "util"
 import { setTimeout } from "timers"
+import { handleStorageRequest } from "./fetch/storage"
 
 const connectionStats = {
   created: 0,
@@ -84,15 +85,17 @@ function makeResponse(status: number, statusText: string, url: string, headers?:
     headers: headers || {}
   }
 }
+
 registerBridge("fetch", function fetchBridge(
   rt: Runtime,
   bridge: Bridge,
   urlStr: string,
   init: any,
-  body: ArrayBuffer | null | string,
+  body: ArrayBuffer | null | string | number,
   cb: ivm.Reference<() => void>
 ) {
   log.debug("native fetch with url:", urlStr)
+
   if (!init) {
     init = {}
   }
@@ -140,6 +143,10 @@ registerBridge("fetch", function fetchBridge(
     return
   }
 
+  // if (u.protocol === "storage:") {
+  //   return handleStorageRequest(rt, bridge, u, init, body, cb)
+  // }
+
   const httpFn = u.protocol === "http:" ? http.request : https.request
   const httpAgent = u.protocol === "http:" ? fetchAgent : fetchHttpsAgent
 
@@ -186,6 +193,9 @@ registerBridge("fetch", function fetchBridge(
   setImmediate(() => {
     if (body instanceof ArrayBuffer) {
       req.end(Buffer.from(body))
+    } else if (typeof body === "number") {
+      const stream = streamManager.get(rt, body)
+      stream.pipe(req)
     } else {
       req.end(!!body ? body : null)
     }

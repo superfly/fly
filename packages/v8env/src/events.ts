@@ -4,7 +4,7 @@
  */
 import { logger } from "./logger"
 import { EventEmitter2 as EventEmitter } from "eventemitter2"
-import refToStream from "./fly/streams"
+import refToStream, { isFlyStream, isFlyStreamId } from "./fly/streams"
 
 declare var bridge: any
 
@@ -134,7 +134,8 @@ export function fireFetchEvent(url, req, body, callback) {
       }
 
       let b = null
-      if (res.body && res.body.flyStreamId) {
+
+      if (isFlyStream(res.body)) {
         b = res.body.flyStreamId
       } else {
         logger.debug("body source type:", res.bodySource.constructor.name)
