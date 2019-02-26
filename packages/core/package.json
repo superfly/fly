@@ -1,6 +1,6 @@
 {
     "name": "@fly/core",
-    "version": "0.44.10-pre.10",
+    "version": "0.45.0-pre.0",
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
@@ -17,9 +17,9 @@
         "build:watch": "tsc -b -w -v ."
     },
     "dependencies": {
-        "@fly/build": "0.44.10-pre.8",
+        "@fly/build": "0.45.0-pre.0",
         "@fly/examples": "0.44.10-pre.8",
-        "@fly/v8env": "0.44.10-pre.8",
+        "@fly/v8env": "0.45.0-pre.0",
         "ansi-colors": "^1.1.0",
         "aws-sdk": "^2.407.0",
         "axios": "^0.18.0",
