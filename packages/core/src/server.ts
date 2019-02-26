@@ -26,7 +26,7 @@ const hopHeaders = [
   "Proxy-Authorization",
   "TE",
   "Trailers",
-  // "Transfer-Encoding",
+  "Transfer-Encoding",
   "Upgrade",
 
   // We don't want to trigger upstream HTTPS redirect
