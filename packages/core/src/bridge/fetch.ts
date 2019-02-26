@@ -143,9 +143,9 @@ registerBridge("fetch", function fetchBridge(
     return
   }
 
-  if (u.protocol === "storage:") {
-    return handleStorageRequest(rt, bridge, u, init, body, cb)
-  }
+  // if (u.protocol === "storage:") {
+  //   return handleStorageRequest(rt, bridge, u, init, body, cb)
+  // }
 
   const httpFn = u.protocol === "http:" ? http.request : https.request
   const httpAgent = u.protocol === "http:" ? fetchAgent : fetchHttpsAgent
