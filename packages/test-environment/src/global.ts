@@ -4,13 +4,14 @@ declare var env: JestEnvironment
 
 export function install(this: any) {
   process.on("uncaughtException", error => {
-    console.error("Uncaught Exception:", error, error.stack)
-    fail(error)
+    process.stderr.write(`Uncaught Exception: ${error} ${error.stack}`)
+    // fail(error)
   })
 
   process.on("unhandledRejection", error => {
-    console.error("Unhandled Rejection:", error, error.stack)
-    fail(error)
+    process.stderr.write(`Unhandled Rejection: ${error} ${error.stack}`)
+    // console.error("Unhandled Rejection:", error, error.stack)
+    // fail(error)
   })
 
   beforeEach(() => {
