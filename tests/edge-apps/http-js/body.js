@@ -1,13 +1,5 @@
 fly.http.respondWith(async request => {
-  console.log("BODY REQUEST", { request })
   const url = new URL(request.url)
-
-  try {
-    const txt = "hello" //await request.text()
-    return new Response("READ BODY: " + txt, { status: 200 })
-  } catch (err) {
-    return new Response("ERROR: " + err, { status: 500 })
-  }
 
   if (url.pathname.startsWith("/clone")) {
     const req1 = request

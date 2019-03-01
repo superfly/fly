@@ -38,7 +38,7 @@ root
 
     const paths =
       args.paths && args.paths.length
-        ? [].concat.apply([], args.paths.map(f => glob.sync(f).map(gf => path.resolve(cwd, gf))))
+        ? [].concat.apply([], args.paths.map(f => glob.sync(f).map(gf => path.resolve(cwd, gf))) as any)
         : glob.sync("./test/**/*.+(spec|test).[jt]s")
 
     if (paths.length === 0) {

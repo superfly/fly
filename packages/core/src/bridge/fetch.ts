@@ -86,7 +86,7 @@ function makeResponse(status: number, statusText: string, url: string, headers?:
   }
 }
 
-let hostnameAliases = new Map<string, string>()
+const hostnameAliases = new Map<string, string>()
 
 process.on("message", msg => {
   // console.log("received message", { msg })
@@ -105,7 +105,7 @@ registerBridge("fetch", function fetchBridge(
   cb: ivm.Reference<() => void>
 ) {
   log.debug("native fetch with url:", urlStr)
-  log.info("aliases", { hostnameAliases })
+  // log.info("aliases", { hostnameAliases })
 
   if (!init) {
     init = {}
@@ -118,13 +118,13 @@ registerBridge("fetch", function fetchBridge(
   //   mapped: hostnameAliases.get(u.host || "")
   // })
   if (u.host && hostnameAliases.has(u.host)) {
-    console.log("remap fetch request for ", urlStr)
+    // console.log("remap fetch request for ", urlStr)
     const hostname = hostnameAliases.get(u.host)!
     const [host, port] = hostname.split(":")
     u.hostname = host
     u.host = host
     u.port = port
-    console.log("remapped", { u })
+    // console.log("remapped", { u })
   }
 
   // console.info("rewrite")

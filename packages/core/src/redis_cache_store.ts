@@ -176,16 +176,16 @@ class FlyRedis {
     this.redis = redis
 
     const p = promisify
-    this.getBufferAsync = p(redis.get).bind(redis)
-    this.getMultiBufferAsync = p(redis.mget).bind(redis)
-    this.setAsync = p(redis.set).bind(redis)
-    this.expireAsync = p(redis.expire).bind(redis)
+    this.getBufferAsync = p(redis.get).bind(redis) as any
+    this.getMultiBufferAsync = p(redis.mget).bind(redis) as any
+    this.setAsync = p(redis.set).bind(redis) as any
+    this.expireAsync = p(redis.expire).bind(redis) as any
     this.ttlAsync = p(redis.ttl).bind(redis)
-    this.delAsync = p(redis.del).bind(redis)
-    this.saddAsync = p(redis.sadd).bind(redis)
-    this.sismemberAsync = p(redis.sismember).bind(redis)
+    this.delAsync = p(redis.del).bind(redis) as any
+    this.saddAsync = p(redis.sadd).bind(redis) as any
+    this.sismemberAsync = p(redis.sismember).bind(redis) as any
     this.smembersAsync = p(redis.smembers).bind(redis)
-    this.sscanAsync = this.sscanShim.bind(this)
+    this.sscanAsync = this.sscanShim.bind(this) as any
   }
 
   // fake sscan function for mock redis

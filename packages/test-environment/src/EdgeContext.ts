@@ -58,6 +58,7 @@ export class EdgeContext {
     if (!parsedUrl.hostname) {
       return url
     }
+    console.log("rewrite url from test", { url, hostname: parsedUrl.hostname })
     const server = this.servers.find(s => s.alias === parsedUrl.hostname)
     if (!server) {
       return url
@@ -65,6 +66,7 @@ export class EdgeContext {
     parsedUrl.host = this.hostname + ":" + server.port
     parsedUrl.hostname = this.hostname
     parsedUrl.port = server.port.toString()
+    console.log("-> new url", format(parsedUrl))
     return format(parsedUrl)
   }
 
@@ -112,7 +114,10 @@ export class TestServer {
       }
 
       this.child = execa("../../fly", ["server", "-p", this.port.toString(), this.workingDir], {
-        stdio: ["ipc"]
+        stdio: ["ipc"],
+        env: {
+          LOG_LEVEL: "debug"
+        }
       })
       this.child.on("close", (code, signal) => {
         console.log(`child process CLOSE due to receipt of signal ${signal}`, { code })
@@ -131,7 +136,7 @@ export class TestServer {
       // this.child.stdout.pipe(process.stdout)
       // this.child.stderr.pipe(process.stderr)
 
-      waitOn({ resources: [`tcp:localhost:${this.port}`], timeout: 5000 }).then(resolve, reject)
+      waitOn({ resources: [`tcp:${this.context.hostname}:${this.port}`], timeout: 10000 }).then(resolve, reject)
 
       console.log(`${this.alias} running at ${this.hostname}`)
     })
