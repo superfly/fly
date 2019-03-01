@@ -38,7 +38,7 @@ root
     let port = parseInt((opts.port && opts.port[0]) || (process.env.PORT && process.env.PORT) || "3000", 10)
     const env = getEnv(this, "development")
 
-    const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env })
+    const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env, noWatch: env === "test" })
 
     const server = new Server({ appStore, inspect: !!opts.inspect })
     console.log("Memory Cache Adapter: " + server.bridge.cacheStore.constructor.name)

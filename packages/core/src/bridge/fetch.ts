@@ -5,7 +5,7 @@ import log from "../log"
 import * as http from "http"
 import * as https from "https"
 import * as net from "net"
-import { parse as parseURL } from "url"
+import { parse, UrlWithStringQuery } from "url"
 
 import { Bridge } from "./bridge"
 import { Runtime } from "../runtime"
@@ -86,15 +86,7 @@ function makeResponse(status: number, statusText: string, url: string, headers?:
   }
 }
 
-const hostnameAliases = new Map<string, string>()
-
-process.on("message", msg => {
-  // console.log("received message", { msg })
-  if (msg.type === "alias-hostname") {
-    // console.log("alias host", { msg })
-    hostnameAliases.set(msg.alias, msg.hostname)
-  }
-})
+const parseURL = process.env.FLY_ENV === "test" ? parseUrlWithRemapping : parse
 
 registerBridge("fetch", function fetchBridge(
   rt: Runtime,
@@ -105,29 +97,12 @@ registerBridge("fetch", function fetchBridge(
   cb: ivm.Reference<() => void>
 ) {
   log.debug("native fetch with url:", urlStr)
-  // log.info("aliases", { hostnameAliases })
 
   if (!init) {
     init = {}
   }
+
   const u = parseURL(urlStr)
-
-  // console.log("remap?", {
-  //   host: u.host,
-  //   aliases: Array.from(hostnameAliases.keys()),
-  //   mapped: hostnameAliases.get(u.host || "")
-  // })
-  if (u.host && hostnameAliases.has(u.host)) {
-    // console.log("remap fetch request for ", urlStr)
-    const hostname = hostnameAliases.get(u.host)!
-    const [host, port] = hostname.split(":")
-    u.hostname = host
-    u.host = host
-    u.port = port
-    // console.log("remapped", { u })
-  }
-
-  // console.info("rewrite")
 
   if (u.protocol === "file:") {
     if (!bridge.fileStore) {
@@ -299,3 +274,28 @@ registerBridge("fetch", function fetchBridge(
     req.abort()
   }
 })
+
+// Support rewriting fetch urls in e2e tests. This could get replaced with fly-proxy someday
+
+const hostnameAliases = new Map<string, string>()
+
+function parseUrlWithRemapping(val: string): UrlWithStringQuery {
+  const u = parse(val)
+  if (u.host && hostnameAliases.has(u.host)) {
+    const hostname = hostnameAliases.get(u.host)!
+    const [host, port] = hostname.split(":")
+    u.hostname = host
+    u.host = host
+    u.port = port
+  }
+
+  return u
+}
+
+if (process.env.FLY_ENV === "test") {
+  process.on("message", msg => {
+    if (msg.type === "alias-hostname") {
+      hostnameAliases.set(msg.alias, msg.hostname)
+    }
+  })
+}

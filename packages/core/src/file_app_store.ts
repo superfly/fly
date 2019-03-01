@@ -72,7 +72,7 @@ export class FileAppStore {
 
     buildApp(
       cwd,
-      { watch: true, uglify: this.options.uglify },
+      { watch: this.options.noWatch || true, uglify: this.options.uglify },
       (err: Error, code: string, hash: string, sourceMap: string) => {
         if (err) {
           return console.error(err)

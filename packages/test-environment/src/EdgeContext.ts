@@ -1,4 +1,4 @@
-import { Server, FileAppStore, LocalFileStore, Runtime, Bridge, SQLiteDataStore } from "@fly/core"
+import { Server, Runtime, Bridge } from "@fly/core"
 import { parse, format } from "url"
 import { ChildProcess } from "child_process"
 import * as path from "path"
@@ -58,7 +58,7 @@ export class EdgeContext {
     if (!parsedUrl.hostname) {
       return url
     }
-    console.log("rewrite url from test", { url, hostname: parsedUrl.hostname })
+    console.debug("rewrite url from test", { url, hostname: parsedUrl.hostname })
     const server = this.servers.find(s => s.alias === parsedUrl.hostname)
     if (!server) {
       return url
@@ -66,7 +66,7 @@ export class EdgeContext {
     parsedUrl.host = this.hostname + ":" + server.port
     parsedUrl.hostname = this.hostname
     parsedUrl.port = server.port.toString()
-    console.log("-> new url", format(parsedUrl))
+    console.debug("-> new url", format(parsedUrl))
     return format(parsedUrl)
   }
 
@@ -104,33 +104,30 @@ export class TestServer {
         for (const file of fs.readdirSync(this.path)) {
           const src = path.join(this.path, file)
           const dst = path.join(this.workingDir, file)
-          console.log(`Copy file ${src} => ${dst}`)
+          console.debug(`Copy file ${src} => ${dst}`)
           fs.copyFileSync(src, dst)
         }
       } else {
         const dst = path.join(this.workingDir, `index${path.extname(this.path)}`)
-        console.log(`Copy file ${this.path} => ${dst}`)
+        console.debug(`Copy file ${this.path} => ${dst}`)
         fs.copyFileSync(this.path, dst)
       }
 
       this.child = execa("../../fly", ["server", "-p", this.port.toString(), this.workingDir], {
         stdio: ["ipc"],
         env: {
-          LOG_LEVEL: "debug"
+          LOG_LEVEL: process.env.LOG_LEVEL,
+          FLY_ENV: "test"
         }
       })
-      this.child.on("close", (code, signal) => {
-        console.log(`child process CLOSE due to receipt of signal ${signal}`, { code })
-      })
       this.child.on("exit", (code, signal) => {
-        console.log(`child process EXIT due to receipt of signal ${signal}`, { code })
+        console.debug(`[${this.alias}] exit from signal ${signal}`, { code })
       })
       this.child.on("error", err => {
-        console.log(`child process error`, { err })
+        console.warn(`[${this.alias}] process error`, { err })
       })
       this.child.stdout.on("data", chunk => {
-        process.stdout.write(`[${this.alias}] ${chunk}`)
-        // console.log(`[${this.alias}] ${chunk}`, { chunk })
+        console.debug(`[${this.alias}] ${chunk}`)
       })
 
       // this.child.stdout.pipe(process.stdout)
@@ -138,26 +135,21 @@ export class TestServer {
 
       waitOn({ resources: [`tcp:${this.context.hostname}:${this.port}`], timeout: 10000 }).then(resolve, reject)
 
-      console.log(`${this.alias} running at ${this.hostname}`)
+      console.debug(`${this.alias} running at ${this.hostname}`)
     })
   }
 
   public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.child) {
-        // console.log("stopping child")
         try {
-          // console.log("A")
           this.child.kill()
-          // this.child.kill("SIGINT")
-          // console.log("B")
           resolve()
         } catch (error) {
           console.error("err", error)
           reject(error)
         }
       } else {
-        // console.log("no child")
         resolve()
       }
     })
