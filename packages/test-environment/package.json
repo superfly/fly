@@ -19,13 +19,12 @@
     },
     "dependencies": {
         "@fly/core": "0.45.0",
-        "@types/jest": "^23.3.1",
         "@types/node-fetch": "2.1.2",
         "execa": "^1.0.0",
-        "jest": "^23.5.0",
-        "jest-environment-node": "^23.4.0",
+        "jest": "^24.1.0",
+        "jest-environment-node": "^24.0.0",
         "node-fetch": "2.2.0",
-        "ts-jest": "^23.1.4",
+        "ts-jest": "^24.0.0",
         "wait-on": "^3.2.0"
     },
     "devDependencies": {

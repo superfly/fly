@@ -5,21 +5,24 @@ declare var env: JestEnvironment
 export function install(this: any) {
   process.on("uncaughtException", error => {
     process.stderr.write(`Uncaught Exception: ${error} ${error.stack}`)
-    // fail(error)
   })
 
   process.on("unhandledRejection", error => {
     process.stderr.write(`Unhandled Rejection: ${error} ${error.stack}`)
-    // console.error("Unhandled Rejection:", error, error.stack)
-    // fail(error)
   })
 
-  beforeEach(() => {
-    return env.startContext().catch(fail)
-  })
+  beforeEach(done => {
+    env
+      .startContext()
+      .then(done)
+      .catch(done.fail)
+  }, 60000)
 
-  afterEach(() => {
-    return env.stopContext().catch(fail)
+  afterEach(done => {
+    env
+      .stopContext()
+      .then(done)
+      .catch(done.fail)
   })
 
   Object.assign(global, {

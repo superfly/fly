@@ -4,5 +4,10 @@ module.exports = {
     "^.+\\.tsx?$": "ts-jest"
   },
   testMatch: ["**/*.test.ts?(x)", "**/tests/**/*.ts?(x)"],
-  testPathIgnorePatterns: [".+\\.d\\.ts$"]
+  testPathIgnorePatterns: [".+\\.d\\.ts$"],
+  globals: {
+    "ts-jest": {
+      diagnostics: false
+    }
+  }
 }

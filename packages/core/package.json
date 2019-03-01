@@ -65,9 +65,9 @@
         "@types/sharp": "^0.21.2",
         "@types/tar-fs": "^1.16.0",
         "@types/ws": "^4.0.0",
-        "jest": "^23.5.0",
+        "jest": "^24.1.0",
         "promise.prototype.finally": "^3.1.0",
-        "ts-jest": "^23.1.4",
+        "ts-jest": "^24.0.0",
         "ts-node": "^7.0.1",
         "typescript": "3.0.1"
     },

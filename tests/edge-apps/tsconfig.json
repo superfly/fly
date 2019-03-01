@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.common.json",
+  "compilerOptions": {
+    "strict": false,
+    "lib": [
+      "dom",
+      "es2017",
+      "esnext.asynciterable"
+    ]
+  },
+}

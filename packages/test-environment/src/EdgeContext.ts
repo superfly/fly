@@ -1,4 +1,4 @@
-import { Server, Runtime, Bridge } from "@fly/core"
+import { Server } from "@fly/core"
 import { parse, format } from "url"
 import { ChildProcess } from "child_process"
 import * as path from "path"
@@ -159,30 +159,6 @@ export class TestServer {
     return `${this.context.hostname}:${this.port}`
   }
 
-  // this is a hack for accessing the cache directly, not sure we should do this
-  // for long, especially if runtime moves to rust
-  public get cacheStore() {
-    if (!this.server) {
-      throw new Error("Start server before accessing cacheStore")
-    }
-
-    const cacheStore = this.server.bridge.cacheStore
-    const runtime = this.server.runtime
-    const ns = runtime.app.id.toString()
-
-    return {
-      get: (key: string): Promise<Buffer | null> => {
-        return cacheStore.get(ns, key)
-      },
-      set: (key: string, value: any): Promise<boolean> => {
-        return cacheStore.set(ns, key, value)
-      },
-      ttl: (key: string): Promise<number> => {
-        return cacheStore.ttl(ns, key)
-      }
-    }
-  }
-
   public get isRunning(): boolean {
     return this.child !== undefined
   }
@@ -194,16 +170,4 @@ export function isContext(value: any): value is EdgeContext {
 
 function nextPort() {
   return Math.floor(Math.random() * 1000 + 4000)
-}
-
-function configureBridge(bridge: Bridge, context: EdgeContext) {
-  const oldFetch = bridge.get("fetch")
-  if (!oldFetch) {
-    throw new Error("Fetch not registered")
-  }
-  const newFetch = (rt: Runtime, newBridge: Bridge, url: string, ...args: any[]) => {
-    const mappedUrl = context.rewriteUrl(url)
-    return oldFetch.apply(newBridge, [rt, newBridge, ...[mappedUrl].concat(args)])
-  }
-  bridge.set("fetch", newFetch)
 }
