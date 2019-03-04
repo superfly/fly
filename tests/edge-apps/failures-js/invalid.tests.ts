@@ -7,10 +7,10 @@ describe("Invalid Apps", () => {
   for (const appPath of invalidApps) {
     describe.skip(appPath, () => {
       console.log("setup", appPath)
-      setupApps({ "edge.test": path.resolve(__dirname, "invalid", appPath) })
+      setupApps({ "edge.local": path.resolve(__dirname, "invalid", appPath) })
 
       test("returns 500", async () => {
-        const response = await fetch("http://edge.test")
+        const response = await fetch("http://edge.local")
         expect(response.status).toEqual(500)
       })
     })

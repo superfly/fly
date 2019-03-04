@@ -3,12 +3,12 @@
   "version": "0.45.0",
   "private": true,
   "scripts": {
-    "test": "jest"
+    "test": "jest --maxWorkers=2 --verbose"
   },
   "devDependencies": {
     "@fly/test-environment": "0.45.0",
-    "@types/jest": "^23.3.1",
-    "jest": "^23.5.0",
-    "ts-jest": "^23.1.4"
+    "jest": "^24.1.0",
+    "jest-circus": "^24.1.0",
+    "ts-jest": "^24.0.0"
   }
 }

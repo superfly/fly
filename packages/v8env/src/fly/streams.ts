@@ -97,7 +97,7 @@ export default function refToStream(ref: any) {
 
   return new Proxy(r, {
     get: (target, propKey, receiver) => {
-      if (propKey === "tee") {
+      if (propKey === "refTee") {
         return () => {
           const [s1, s2] = bridge.dispatchSync("streamTee", ref)
           return [refToStream(s1), refToStream(s2)]

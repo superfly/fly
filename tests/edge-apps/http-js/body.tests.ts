@@ -1,16 +1,16 @@
 import * as path from "path"
 
 setupApps({
-  "edge.test": path.resolve(__dirname, "proxy.js"),
-  "origin.test": path.resolve(__dirname, "body.js")
+  "edge.local": path.resolve(__dirname, "proxy.js"),
+  "origin.local": path.resolve(__dirname, "body.js")
 })
 
 const methods = ["POST", "PUT", "PATCH", "DELETE"]
 
-describe.each(["edge.test", "origin.test"])("Request body to %s", (host) => {
-  test.each(methods)(`from %s request`, async (method) => {
+describe.each(["edge.local", "origin.local"])("Request body to %s", host => {
+  test.each(methods)(`from %s request`, async method => {
     const response = await fetch(`http://${host}`, {
-      method: method,
+      method,
       body: "this is a body"
     })
     expect(response.status).toEqual(200)

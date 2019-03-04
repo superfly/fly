@@ -1,5 +1,11 @@
-import { Server, FileAppStore, LocalFileStore, Runtime, Bridge, SQLiteDataStore } from "@fly/core"
+import { Server } from "@fly/core"
 import { parse, format } from "url"
+import { ChildProcess } from "child_process"
+import * as path from "path"
+import * as fs from "fs"
+import execa = require("execa")
+import * as waitOn from "wait-on"
+import * as os from "os"
 
 export interface Options {
   servers: { [hostname: string]: string }
@@ -13,14 +19,14 @@ interface ServerOptions {
 
 export class EdgeContext {
   private readonly servers: TestServer[]
-  private readonly hostname: string
+  public readonly hostname: string
 
   constructor(options: Options) {
     this.servers = new Array<TestServer>()
     this.hostname = options.hostname || "127.0.0.1"
 
-    for (const [hostname, path] of Object.entries(options.servers)) {
-      const server = new TestServer(this, { host: hostname, path })
+    for (const [hostname, appPath] of Object.entries(options.servers)) {
+      const server = new TestServer(this, { host: hostname, path: appPath })
       this.servers.push(server)
     }
 
@@ -30,7 +36,9 @@ export class EdgeContext {
   }
 
   public start(): Promise<any> {
-    return Promise.all(this.servers.map(s => s.start()))
+    return Promise.all(this.servers.map(s => s.start())).then(() => {
+      this.registerAliases()
+    })
   }
 
   public stop(): Promise<any> {
@@ -42,7 +50,7 @@ export class EdgeContext {
   }
 
   public getServer(host: string): TestServer | undefined {
-    return this.servers.find(s => s.host === host)
+    return this.servers.find(s => s.alias === host)
   }
 
   public rewriteUrl(url: string): string {
@@ -50,80 +58,95 @@ export class EdgeContext {
     if (!parsedUrl.hostname) {
       return url
     }
-    const server = this.servers.find(s => s.host === parsedUrl.hostname)
+    console.debug("rewrite url from test", { url, hostname: parsedUrl.hostname })
+    const server = this.servers.find(s => s.alias === parsedUrl.hostname)
     if (!server) {
       return url
     }
     parsedUrl.host = this.hostname + ":" + server.port
     parsedUrl.hostname = this.hostname
     parsedUrl.port = server.port.toString()
+    console.debug("-> new url", format(parsedUrl))
     return format(parsedUrl)
+  }
+
+  private registerAliases() {
+    for (const server of this.servers) {
+      for (const other of this.servers) {
+        other.child!.send({ type: "alias-hostname", alias: server.alias, hostname: server.hostname })
+      }
+    }
   }
 }
 
 export class TestServer {
   private server?: Server
   private context: EdgeContext
-  public readonly host: string
+  public readonly alias: string
   public readonly path: string
   public port: number
 
+  public child?: ChildProcess
+  private workingDir?: string
+
   public constructor(context: EdgeContext, options: ServerOptions) {
     this.context = context
-    this.host = options.host
+    this.alias = options.host
     this.path = options.path
     this.port = nextPort()
   }
 
   public start(): Promise<void> {
     return new Promise((resolve, reject) => {
-      try {
-        const appStore = new FileAppStore(this.path, {
-          build: false,
-          uglify: false,
-          env: "test",
-          noReleaseReuse: true,
-          noWatch: true
-        })
-        const bridge = new Bridge({
-          fileStore: new LocalFileStore(this.path, appStore.release),
-          dataStore: new SQLiteDataStore(appStore.app.name, "test")
-        })
-        this.server = new Server({ appStore, bridge, inspect: false, monitorFrequency: 0 })
-        this.server.on("error", (e: Error | any) => {
-          if (e.code === "EADDRINUSE") {
-            this.port = this.port + 1
-            console.log("Port in use, trying:", this.port)
-            setTimeout(() => {
-              if (this.server) {
-                this.server.close()
-                this.server.listen(this.port)
-              }
-            }, 1000)
-          } else {
-            throw e
-          }
-        })
-        configureBridge(this.server.bridge, this.context)
+      this.workingDir = fs.mkdtempSync(path.join(os.tmpdir(), "e2e-app"))
 
-        this.server.listen({ port: this.port }, () => {
-          resolve()
-        })
-      } catch (error) {
-        console.error("Error starting server", error)
-        reject(error)
+      if (fs.statSync(this.path).isDirectory()) {
+        for (const file of fs.readdirSync(this.path)) {
+          const src = path.join(this.path, file)
+          const dst = path.join(this.workingDir, file)
+          console.debug(`Copy file ${src} => ${dst}`)
+          fs.copyFileSync(src, dst)
+        }
+      } else {
+        const dst = path.join(this.workingDir, `index${path.extname(this.path)}`)
+        console.debug(`Copy file ${this.path} => ${dst}`)
+        fs.copyFileSync(this.path, dst)
       }
+
+      this.child = execa("../../fly", ["server", "-p", this.port.toString(), this.workingDir], {
+        stdio: ["ipc"],
+        env: {
+          LOG_LEVEL: process.env.LOG_LEVEL,
+          FLY_ENV: "test"
+        }
+      })
+      this.child.on("exit", (code, signal) => {
+        console.debug(`[${this.alias}] exit from signal ${signal}`, { code })
+      })
+      this.child.on("error", err => {
+        console.warn(`[${this.alias}] process error`, { err })
+      })
+      this.child.stdout.on("data", chunk => {
+        console.debug(`[${this.alias}] ${chunk}`)
+      })
+
+      // this.child.stdout.pipe(process.stdout)
+      // this.child.stderr.pipe(process.stderr)
+
+      waitOn({ resources: [`tcp:${this.context.hostname}:${this.port}`], timeout: 10000 }).then(resolve, reject)
+
+      console.debug(`${this.alias} running at ${this.hostname}`)
     })
   }
 
   public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.server && this.isRunning) {
+      if (this.child) {
         try {
-          this.server.close(() => {
-            resolve()
-          })
+          this.child.kill()
+          resolve()
         } catch (error) {
+          console.error("err", error)
           reject(error)
         }
       } else {
@@ -132,32 +155,12 @@ export class TestServer {
     })
   }
 
-  // this is a hack for accessing the cache directly, not sure we should do this
-  // for long, especially if runtime moves to rust
-  public get cacheStore() {
-    if (!this.server) {
-      throw new Error("Start server before accessing cacheStore")
-    }
-
-    const cacheStore = this.server.bridge.cacheStore
-    const runtime = this.server.runtime
-    const ns = runtime.app.id.toString()
-
-    return {
-      get: (key: string): Promise<Buffer | null> => {
-        return cacheStore.get(ns, key)
-      },
-      set: (key: string, value: any): Promise<boolean> => {
-        return cacheStore.set(ns, key, value)
-      },
-      ttl: (key: string): Promise<number> => {
-        return cacheStore.ttl(ns, key)
-      }
-    }
+  public get hostname() {
+    return `${this.context.hostname}:${this.port}`
   }
 
   public get isRunning(): boolean {
-    return (this.server && this.server.listening) || false
+    return this.child !== undefined
   }
 }
 
@@ -167,16 +170,4 @@ export function isContext(value: any): value is EdgeContext {
 
 function nextPort() {
   return Math.floor(Math.random() * 1000 + 4000)
-}
-
-function configureBridge(bridge: Bridge, context: EdgeContext) {
-  const oldFetch = bridge.get("fetch")
-  if (!oldFetch) {
-    throw new Error("Fetch not registered")
-  }
-  const newFetch = (rt: Runtime, newBridge: Bridge, url: string, ...args: any[]) => {
-    const mappedUrl = context.rewriteUrl(url)
-    return oldFetch.apply(newBridge, [rt, newBridge, ...[mappedUrl].concat(args)])
-  }
-  bridge.set("fetch", newFetch)
 }

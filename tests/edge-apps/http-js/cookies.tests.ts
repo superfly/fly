@@ -1,13 +1,12 @@
 import * as path from "path"
 
 setupApps({
-  "edge.test": path.resolve(__dirname, "proxy.js"),
-  "origin.test": path.resolve(__dirname, "cookies.js")
+  "edge.local": path.resolve(__dirname, "proxy.js"),
+  "origin.local": path.resolve(__dirname, "cookies.js")
 })
 
-describe.each(["edge.test", "origin.test"])("Cookies to %s", (host) => {
+describe.each(["edge.local", "origin.local"])("Cookies to %s", host => {
   test(`returns the cookie value`, async () => {
-
     const response = await fetch(`http://${host}`, {
       headers: {
         cookie: "foo=bar;hello=world"

@@ -1,20 +1,23 @@
-fly.http.respondWith(async function (req) {
+fly.http.respondWith(async function(req) {
   const opts = {
     timeout: parseInt(req.headers.get("timeout")),
     readTimeout: parseInt(req.headers.get("read-timeout"))
   }
 
   const readDelay = parseInt(req.headers.get("delay")) || 0
-  const origin = req.headers.get("origin") || "http://origin.test"
+  const origin = req.headers.get("origin") || "http://origin.local"
 
   try {
+    console.log("FETCHING", { origin })
     const resp = await fetch(origin, opts)
+    console.log("RESP", { resp })
     if (readDelay > 0) {
       await new Promise(res => setTimeout(res, readDelay))
     }
     const txt = await resp.text()
     return new Response(`Size: ${txt.length}`, resp)
   } catch (err) {
+    console.log("WE GOT AN ERROR", { err })
     if (err instanceof TimeoutError) {
       return new Response("fetch timeout", { status: 502 })
     } else if (err.message.includes("stream closed")) {

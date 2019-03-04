@@ -1,6 +1,6 @@
-fly.http.respondWith(async (request) => {
+fly.http.respondWith(async request => {
   const url = new URL(request.url)
-  let req = new Request("http://origin.test" + url.pathname)
+  let req = new Request("http://origin.local" + url.pathname)
   let req2 = req.clone()
   await cache.add(req) // will fetch
   const matchResult = await cache.match(req2)

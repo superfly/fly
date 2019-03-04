@@ -1,11 +1,11 @@
 import * as path from "path"
 
 setupApps({
-  "edge.test": path.resolve(__dirname, "proxy.js"),
-  "origin.test": path.resolve(__dirname, "headers.js")
+  "edge.local": path.resolve(__dirname, "proxy.js"),
+  "origin.local": path.resolve(__dirname, "headers.js")
 })
 
-describe.each(["edge.test", "origin.test"])("Headers to %s", (host) => {
+describe.each(["edge.local", "origin.local"])("Headers to %s", host => {
   test(`custom header in request`, async () => {
     const response = await fetch(`http://${host}`, {
       headers: {

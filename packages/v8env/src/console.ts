@@ -13,8 +13,8 @@ export const console: Console = {
   // TODO: adding junk to conform to merged Console interface from node & lib.dom
   memory: undefined,
   markTimeline: undefined,
-  msIsIndependentlyComposed: undefined,
-  select: undefined,
+  // msIsIndependentlyComposed: undefined,
+  // select: undefined,
   timeStamp: undefined,
   timeline: undefined,
   timelineEnd: undefined,

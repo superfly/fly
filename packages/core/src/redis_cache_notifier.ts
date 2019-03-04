@@ -45,7 +45,7 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
   public async start(handler: ReceiveHandler) {
     this._handler = handler
 
-    const configAsync = promisify(this.subscriber.config).bind(this.subscriber)
+    const configAsync = promisify(this.subscriber.config).bind(this.subscriber) as any
     const zrangebyscore = promisify(this.reader.zrangebyscore).bind(this.reader)
 
     let [, conf] = await configAsync("get", "notify-keyspace-events")
@@ -64,7 +64,7 @@ export class RedisCacheNotifier implements CacheNotifierAdapter {
       if (message === "zadd") {
         const start = this._lastEventTime
         this._lastEventTime = Date.now()
-        const changes = await zrangebyscore(notifierKey, start, "+inf")
+        const changes = (await zrangebyscore(notifierKey, start, "+inf")) as any
         log.debug("redis cache notification changes:", start, changes.length)
         for (const raw of changes) {
           try {

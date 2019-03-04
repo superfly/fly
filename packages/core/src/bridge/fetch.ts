@@ -5,7 +5,7 @@ import log from "../log"
 import * as http from "http"
 import * as https from "https"
 import * as net from "net"
-import { parse as parseURL } from "url"
+import { parse, UrlWithStringQuery } from "url"
 
 import { Bridge } from "./bridge"
 import { Runtime } from "../runtime"
@@ -86,6 +86,8 @@ function makeResponse(status: number, statusText: string, url: string, headers?:
   }
 }
 
+const parseURL = process.env.FLY_ENV === "test" ? parseUrlWithRemapping : parse
+
 registerBridge("fetch", function fetchBridge(
   rt: Runtime,
   bridge: Bridge,
@@ -99,6 +101,7 @@ registerBridge("fetch", function fetchBridge(
   if (!init) {
     init = {}
   }
+
   const u = parseURL(urlStr)
 
   if (u.protocol === "file:") {
@@ -271,3 +274,28 @@ registerBridge("fetch", function fetchBridge(
     req.abort()
   }
 })
+
+// Support rewriting fetch urls in e2e tests. This could get replaced with fly-proxy someday
+
+const hostnameAliases = new Map<string, string>()
+
+function parseUrlWithRemapping(val: string): UrlWithStringQuery {
+  const u = parse(val)
+  if (u.host && hostnameAliases.has(u.host)) {
+    const hostname = hostnameAliases.get(u.host)!
+    const [host, port] = hostname.split(":")
+    u.hostname = host
+    u.host = host
+    u.port = port
+  }
+
+  return u
+}
+
+if (process.env.FLY_ENV === "test") {
+  process.on("message", msg => {
+    if (msg.type === "alias-hostname") {
+      hostnameAliases.set(msg.alias, msg.hostname)
+    }
+  })
+}

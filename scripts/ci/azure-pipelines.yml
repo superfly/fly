@@ -49,7 +49,7 @@ jobs:
           node_check_latest: true
     variables:
       CI: true
-    timeoutInMinutes: 10
+    timeoutInMinutes: 15
     steps:
       - task: NodeTool@0
         inputs:
@@ -82,7 +82,7 @@ jobs:
           node_check_latest: true
     variables:
       CI: true
-    timeoutInMinutes: 10
+    timeoutInMinutes: 15
     steps:
       - task: NodeTool@0
         inputs:
@@ -106,7 +106,6 @@ jobs:
         inputs:
           testResultsFiles: "**/*junit.xml"
           searchFolder: $(Build.SourcesDirectory)/artifacts
-
   # - job: Windows
   #   pool:
   #     vmImage: vs2017-win2016

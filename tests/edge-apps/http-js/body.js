@@ -1,4 +1,4 @@
-fly.http.respondWith(async (request) => {
+fly.http.respondWith(async request => {
   const url = new URL(request.url)
 
   if (url.pathname.startsWith("/clone")) {

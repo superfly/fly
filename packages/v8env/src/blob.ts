@@ -4,7 +4,7 @@
  */
 
 /** @hidden */
-export type BlobPart = BufferSource | USVString | Blob
+export type BlobPart = BufferSource | string | Blob
 
 /** @hidden */
 export default class Blob {
@@ -39,7 +39,7 @@ export default class Blob {
             parts.push(new Uint8Array(part as ArrayBuffer))
             break
           case String:
-            parts.push(encoder.encode(part as USVString))
+            parts.push(encoder.encode(part as string))
             break
           case Blob:
             parts.push((part as Blob).bytes)
