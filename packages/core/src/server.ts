@@ -147,7 +147,12 @@ export class Server extends http.Server {
 
 type V8ResponseBody = null | string | number | ArrayBuffer | Buffer
 
-export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.ServerResponse): Promise<number> {
+export function handleRequest(
+  rt: Runtime,
+  req: http.IncomingMessage,
+  res: http.ServerResponse,
+  remoteAddr?: string
+): Promise<number> {
   const startBytes = req.connection.bytesWritten
   const flyRecurseHeader = req.headers["fly-allow-recursion"]
   if (!flyRecurseHeader || !flyRecurseHeader[0]) {
@@ -171,7 +176,7 @@ export function handleRequest(rt: Runtime, req: http.IncomingMessage, res: http.
     const reqForV8 = {
       method: req.method,
       headers: req.headers,
-      remoteAddr: req.connection.remoteAddress
+      remoteAddr: remoteAddr ? remoteAddr : req.connection.remoteAddress
     }
 
     const fetchCallback = (err: any, v8res: any, resBody: V8ResponseBody) => {
