@@ -9,9 +9,9 @@ import { Readable } from "stream"
 import { bufferToStream } from "../../utils/buffer"
 import { OutgoingHttpHeaders } from "http"
 
-const scheme = "storage:"
+export const cacheScheme = "cache:"
 
-export function handleStorageRequest(
+export function handleCacheRequest(
   rt: Runtime,
   bridge: Bridge,
   url: UrlWithStringQuery,
@@ -25,9 +25,7 @@ export function handleStorageRequest(
   }
 
   const ns = rt.app.id.toString()
-  const key = url.href!.substring(scheme.length + 2)
-
-  log.info("KEY", { key })
+  const key = url.href!.substring(cacheScheme.length + 2)
 
   if (!key || key === "/") {
     cb.applyIgnored(null, [null, makeResponse(422, "Invalid key", url)])
@@ -35,6 +33,8 @@ export function handleStorageRequest(
   }
 
   if (init.method === "GET") {
+    log.debug("[blobcache] get", { key })
+
     bridge.blobStore
       .get(ns, key)
       .then(res => {
@@ -63,6 +63,8 @@ export function handleStorageRequest(
         ])
       })
   } else if (init.method === "PUT") {
+    log.debug("[blobcache] put", { key })
+
     if (body === null) {
       cb.applyIgnored(null, [null, makeResponse(422, "Body is required", url)])
       return
@@ -91,6 +93,8 @@ export function handleStorageRequest(
         ])
       })
   } else if (init.method === "DELETE") {
+    log.debug("[blobcache] delete", { key })
+
     bridge.blobStore
       .del(ns, key)
       .then(() => {

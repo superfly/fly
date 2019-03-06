@@ -12,7 +12,7 @@ import { Runtime } from "../runtime"
 import { streamManager } from "../stream_manager"
 import { isNumber } from "util"
 import { setTimeout } from "timers"
-import { handleStorageRequest } from "./fetch/storage"
+import { handleCacheRequest, cacheScheme } from "./fetch/storage"
 
 const connectionStats = {
   created: 0,
@@ -146,9 +146,9 @@ registerBridge("fetch", function fetchBridge(
     return
   }
 
-  // if (u.protocol === "storage:") {
-  //   return handleStorageRequest(rt, bridge, u, init, body, cb)
-  // }
+  if (u.protocol === cacheScheme) {
+    return handleCacheRequest(rt, bridge, u, init, body, cb)
+  }
 
   const httpFn = u.protocol === "http:" ? http.request : https.request
   const httpAgent = u.protocol === "http:" ? fetchAgent : fetchHttpsAgent

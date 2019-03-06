@@ -3,7 +3,7 @@ fly.http.respondWith(async req => {
   const pathAndSearch = `${url.pathname}${url.search}`
   const key = pathAndSearch
 
-  const cachedResp = await fetch(`storage://${key}`)
+  const cachedResp = await fetch(`cache://${key}`)
   if (cachedResp.ok) {
     const headers = cachedResp.headers
     headers.set("fly-cache", "hit")
@@ -13,7 +13,7 @@ fly.http.respondWith(async req => {
   const originResp = await fetch(`https://picsum.photos${pathAndSearch}`)
   const [respBody, cacheBody] = originResp.body.tee()
   if (originResp.ok) {
-    fetch(`storage://${key}`, { body: cacheBody, method: "PUT", headers: originResp.headers })
+    fetch(`cache://${key}`, { body: cacheBody, method: "PUT", headers: originResp.headers })
       .then(ok => console.log(`cached ${key}`))
       .catch(err => console.warn(`failed to cache ${key}: ${e}`))
 
