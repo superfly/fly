@@ -24,7 +24,10 @@ export function handleStorageRequest(
     return
   }
 
+  const ns = rt.app.id.toString()
   const key = url.href!.substring(scheme.length + 2)
+
+  log.info("KEY", { key })
 
   if (!key || key === "/") {
     cb.applyIgnored(null, [null, makeResponse(422, "Invalid key", url)])
@@ -33,7 +36,7 @@ export function handleStorageRequest(
 
   if (init.method === "GET") {
     bridge.blobStore
-      .get(rt.app.id, key)
+      .get(ns, key)
       .then(res => {
         const id = streamManager.add(rt, res.stream)
         cb.applyIgnored(null, [
@@ -43,6 +46,7 @@ export function handleStorageRequest(
         ])
       })
       .catch(err => {
+        log.error("blobstore adapter error", err)
         let res
         if (err instanceof KeyNotFound) {
           res = makeResponse(404, "Not Found", url)
@@ -69,7 +73,7 @@ export function handleStorageRequest(
     const headers = extractHeaders(init.headers || {})
 
     bridge.blobStore
-      .set(rt.app.id, key, bodyBuf, { headers })
+      .set(ns, key, bodyBuf, { headers })
       .then(() => {
         cb.applyIgnored(null, [
           null,
@@ -88,7 +92,7 @@ export function handleStorageRequest(
       })
   } else if (init.method === "DELETE") {
     bridge.blobStore
-      .del(rt.app.id, key)
+      .del(ns, key)
       .then(() => {
         cb.applyIgnored(null, [
           null,
