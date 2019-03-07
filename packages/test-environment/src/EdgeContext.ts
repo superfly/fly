@@ -29,19 +29,23 @@ export class EdgeContext {
       const server = new TestServer(this, { host: hostname, path: appPath })
       this.servers.push(server)
     }
-
-    if (this.servers.length === 0) {
-      throw new Error("No servers specified")
-    }
   }
 
   public start(): Promise<any> {
+    if (!this.servers) {
+      return Promise.resolve()
+    }
+
     return Promise.all(this.servers.map(s => s.start())).then(() => {
       this.registerAliases()
     })
   }
 
   public stop(): Promise<any> {
+    if (!this.servers) {
+      return Promise.resolve()
+    }
+
     return Promise.all(this.servers.map(s => s.stop()))
   }
 
@@ -58,7 +62,7 @@ export class EdgeContext {
     if (!parsedUrl.hostname) {
       return url
     }
-    console.debug("rewrite url from test", { url, hostname: parsedUrl.hostname })
+    console.trace("rewrite url from test", { url, hostname: parsedUrl.hostname })
     const server = this.servers.find(s => s.alias === parsedUrl.hostname)
     if (!server) {
       return url
@@ -66,7 +70,7 @@ export class EdgeContext {
     parsedUrl.host = this.hostname + ":" + server.port
     parsedUrl.hostname = this.hostname
     parsedUrl.port = server.port.toString()
-    console.debug("-> new url", format(parsedUrl))
+    console.trace("-> new url", format(parsedUrl))
     return format(parsedUrl)
   }
 
@@ -100,17 +104,22 @@ export class TestServer {
     return new Promise((resolve, reject) => {
       this.workingDir = fs.mkdtempSync(path.join(os.tmpdir(), "e2e-app"))
 
-      if (fs.statSync(this.path).isDirectory()) {
-        for (const file of fs.readdirSync(this.path)) {
-          const src = path.join(this.path, file)
-          const dst = path.join(this.workingDir, file)
-          console.debug(`Copy file ${src} => ${dst}`)
-          fs.copyFileSync(src, dst)
+      try {
+        if (fs.statSync(this.path).isDirectory()) {
+          for (const file of fs.readdirSync(this.path)) {
+            const src = path.join(this.path, file)
+            const dst = path.join(this.workingDir, file)
+            console.trace(`Copy file ${src} => ${dst}`)
+            fs.copyFileSync(src, dst)
+          }
+        } else {
+          const dst = path.join(this.workingDir, `index${path.extname(this.path)}`)
+          console.trace(`Copy file ${this.path} => ${dst}`)
+          fs.copyFileSync(this.path, dst)
         }
-      } else {
-        const dst = path.join(this.workingDir, `index${path.extname(this.path)}`)
-        console.debug(`Copy file ${this.path} => ${dst}`)
-        fs.copyFileSync(this.path, dst)
+      } catch (err) {
+        console.warn(err)
+        reject(new Error("Error copying test app: " + err.toString()))
       }
 
       this.child = execa("../../fly", ["server", "-p", this.port.toString(), this.workingDir], {
@@ -121,7 +130,7 @@ export class TestServer {
         }
       })
       this.child.on("exit", (code, signal) => {
-        console.debug(`[${this.alias}] exit from signal ${signal}`, { code })
+        console.trace(`[${this.alias}] exit from signal ${signal}`, { code })
       })
       this.child.on("error", err => {
         console.warn(`[${this.alias}] process error`, { err })
@@ -129,9 +138,6 @@ export class TestServer {
       this.child.stdout.on("data", chunk => {
         console.debug(`[${this.alias}] ${chunk}`)
       })
-
-      // this.child.stdout.pipe(process.stdout)
-      // this.child.stderr.pipe(process.stderr)
 
       waitOn({ resources: [`tcp:${this.context.hostname}:${this.port}`], timeout: 10000 }).then(resolve, reject)
 
