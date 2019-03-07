@@ -62,7 +62,7 @@ export class EdgeContext {
     if (!parsedUrl.hostname) {
       return url
     }
-    console.trace("rewrite url from test", { url, hostname: parsedUrl.hostname })
+    console.debug("rewrite url from test", { url, hostname: parsedUrl.hostname })
     const server = this.servers.find(s => s.alias === parsedUrl.hostname)
     if (!server) {
       return url
@@ -70,7 +70,7 @@ export class EdgeContext {
     parsedUrl.host = this.hostname + ":" + server.port
     parsedUrl.hostname = this.hostname
     parsedUrl.port = server.port.toString()
-    console.trace("-> new url", format(parsedUrl))
+    console.debug("-> new url", format(parsedUrl))
     return format(parsedUrl)
   }
 
@@ -109,12 +109,12 @@ export class TestServer {
           for (const file of fs.readdirSync(this.path)) {
             const src = path.join(this.path, file)
             const dst = path.join(this.workingDir, file)
-            console.trace(`Copy file ${src} => ${dst}`)
+            console.debug(`Copy file ${src} => ${dst}`)
             fs.copyFileSync(src, dst)
           }
         } else {
           const dst = path.join(this.workingDir, `index${path.extname(this.path)}`)
-          console.trace(`Copy file ${this.path} => ${dst}`)
+          console.debug(`Copy file ${this.path} => ${dst}`)
           fs.copyFileSync(this.path, dst)
         }
       } catch (err) {
@@ -130,7 +130,7 @@ export class TestServer {
         }
       })
       this.child.on("exit", (code, signal) => {
-        console.trace(`[${this.alias}] exit from signal ${signal}`, { code })
+        console.debug(`[${this.alias}] exit from signal ${signal}`, { code })
       })
       this.child.on("error", err => {
         console.warn(`[${this.alias}] process error`, { err })
