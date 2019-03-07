@@ -9,9 +9,9 @@ import { Readable } from "stream"
 import { bufferToStream } from "../../utils/buffer"
 import { OutgoingHttpHeaders } from "http"
 
-const scheme = "storage:"
+export const scheme = "cache:"
 
-export function handleStorageRequest(
+export function handleRequest(
   rt: Runtime,
   bridge: Bridge,
   url: UrlWithStringQuery,
@@ -24,6 +24,7 @@ export function handleStorageRequest(
     return
   }
 
+  const ns = rt.app.id.toString()
   const key = url.href!.substring(scheme.length + 2)
 
   if (!key || key === "/") {
@@ -32,8 +33,10 @@ export function handleStorageRequest(
   }
 
   if (init.method === "GET") {
+    log.debug("[blobcache] get", { key })
+
     bridge.blobStore
-      .get(rt.app.id, key)
+      .get(ns, key)
       .then(res => {
         const id = streamManager.add(rt, res.stream)
         cb.applyIgnored(null, [
@@ -43,6 +46,7 @@ export function handleStorageRequest(
         ])
       })
       .catch(err => {
+        log.error("blobstore adapter error", err)
         let res
         if (err instanceof KeyNotFound) {
           res = makeResponse(404, "Not Found", url)
@@ -59,6 +63,8 @@ export function handleStorageRequest(
         ])
       })
   } else if (init.method === "PUT") {
+    log.debug("[blobcache] put", { key })
+
     if (body === null) {
       cb.applyIgnored(null, [null, makeResponse(422, "Body is required", url)])
       return
@@ -69,7 +75,7 @@ export function handleStorageRequest(
     const headers = extractHeaders(init.headers || {})
 
     bridge.blobStore
-      .set(rt.app.id, key, bodyBuf, { headers })
+      .set(ns, key, bodyBuf, { headers })
       .then(() => {
         cb.applyIgnored(null, [
           null,
@@ -87,8 +93,10 @@ export function handleStorageRequest(
         ])
       })
   } else if (init.method === "DELETE") {
+    log.debug("[blobcache] delete", { key })
+
     bridge.blobStore
-      .del(rt.app.id, key)
+      .del(ns, key)
       .then(() => {
         cb.applyIgnored(null, [
           null,

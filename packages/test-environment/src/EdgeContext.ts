@@ -29,19 +29,23 @@ export class EdgeContext {
       const server = new TestServer(this, { host: hostname, path: appPath })
       this.servers.push(server)
     }
-
-    if (this.servers.length === 0) {
-      throw new Error("No servers specified")
-    }
   }
 
   public start(): Promise<any> {
+    if (!this.servers) {
+      return Promise.resolve()
+    }
+
     return Promise.all(this.servers.map(s => s.start())).then(() => {
       this.registerAliases()
     })
   }
 
   public stop(): Promise<any> {
+    if (!this.servers) {
+      return Promise.resolve()
+    }
+
     return Promise.all(this.servers.map(s => s.stop()))
   }
 
@@ -100,17 +104,22 @@ export class TestServer {
     return new Promise((resolve, reject) => {
       this.workingDir = fs.mkdtempSync(path.join(os.tmpdir(), "e2e-app"))
 
-      if (fs.statSync(this.path).isDirectory()) {
-        for (const file of fs.readdirSync(this.path)) {
-          const src = path.join(this.path, file)
-          const dst = path.join(this.workingDir, file)
-          console.debug(`Copy file ${src} => ${dst}`)
-          fs.copyFileSync(src, dst)
+      try {
+        if (fs.statSync(this.path).isDirectory()) {
+          for (const file of fs.readdirSync(this.path)) {
+            const src = path.join(this.path, file)
+            const dst = path.join(this.workingDir, file)
+            console.debug(`Copy file ${src} => ${dst}`)
+            fs.copyFileSync(src, dst)
+          }
+        } else {
+          const dst = path.join(this.workingDir, `index${path.extname(this.path)}`)
+          console.debug(`Copy file ${this.path} => ${dst}`)
+          fs.copyFileSync(this.path, dst)
         }
-      } else {
-        const dst = path.join(this.workingDir, `index${path.extname(this.path)}`)
-        console.debug(`Copy file ${this.path} => ${dst}`)
-        fs.copyFileSync(this.path, dst)
+      } catch (err) {
+        console.warn(err)
+        reject(new Error("Error copying test app: " + err.toString()))
       }
 
       this.child = execa("../../fly", ["server", "-p", this.port.toString(), this.workingDir], {
@@ -129,9 +138,6 @@ export class TestServer {
       this.child.stdout.on("data", chunk => {
         console.debug(`[${this.alias}] ${chunk}`)
       })
-
-      // this.child.stdout.pipe(process.stdout)
-      // this.child.stderr.pipe(process.stderr)
 
       waitOn({ resources: [`tcp:${this.context.hostname}:${this.port}`], timeout: 10000 }).then(resolve, reject)
 

@@ -1,6 +1,6 @@
 {
     "name": "@fly/core",
-    "version": "0.45.2",
+    "version": "0.46.0-pre.0",
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
@@ -21,7 +21,6 @@
         "@fly/examples": "0.45.0",
         "@fly/v8env": "0.45.1",
         "ansi-colors": "^1.1.0",
-        "aws-sdk": "^2.407.0",
         "axios": "^0.18.0",
         "better-sqlite3": "^4.1.4",
         "bluebird": "^3.5.1",

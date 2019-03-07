@@ -1,3 +1,4 @@
 app: files
 files:
   - alice.txt
+  - big.jpg
