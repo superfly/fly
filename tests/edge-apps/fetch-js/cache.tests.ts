@@ -23,3 +23,17 @@ test("second request is a hit", async () => {
   expect(response2.headers.get("fly-cache")).toEqual("hit")
   expect(await response.text()).toEqual(await response2.text())
 })
+
+test("delete", async () => {
+  const response = await fetch("http://edge.local/big.jpg")
+  expect(response.status).toEqual(200)
+  expect(response.headers.get("fly-cache")).toEqual("miss")
+
+  const response2 = await fetch("http://edge.local/big.jpg", { method: "DELETE" })
+  expect(response2.status).toEqual(204)
+
+  const response3 = await fetch("http://edge.local/big.jpg")
+  expect(response3.status).toEqual(200)
+  expect(response3.headers.get("fly-cache")).toEqual("miss")
+  expect(await response.text()).toEqual(await response3.text())
+})

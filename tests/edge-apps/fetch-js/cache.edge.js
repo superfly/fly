@@ -1,9 +1,13 @@
 fly.http.respondWith(async req => {
   const url = new URL(req.url)
   const pathAndSearch = `${url.pathname}${url.search}`
-  const key = pathAndSearch
 
-  const cachedResp = await fetch(`cache://${key}`)
+  if (req.method === "DELETE") {
+    await fetch(`cache://${pathAndSearch}`, { method: "DELETE" })
+    return new Response("", { status: 204 })
+  }
+
+  const cachedResp = await fetch(`cache://${pathAndSearch}`)
   if (cachedResp.ok) {
     const headers = cachedResp.headers
     headers.set("fly-cache", "hit")
@@ -13,9 +17,9 @@ fly.http.respondWith(async req => {
   const originResp = await fetch(new URL(pathAndSearch, "http://origin.local").href)
   const [respBody, cacheBody] = originResp.body.tee()
   if (originResp.ok) {
-    fetch(`cache://${key}`, { body: cacheBody, method: "PUT", headers: originResp.headers })
-      .then(ok => console.log(`cached ${key}`))
-      .catch(err => console.warn(`failed to cache ${key}: ${e}`))
+    fetch(`cache://${pathAndSearch}`, { body: cacheBody, method: "PUT", headers: originResp.headers })
+      .then(ok => console.log(`cached ${pathAndSearch}`))
+      .catch(err => console.warn(`failed to cache ${pathAndSearch}: ${e}`))
 
     const headers = originResp.headers
     headers.set("fly-cache", "miss")
