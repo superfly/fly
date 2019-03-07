@@ -9,9 +9,9 @@ import { Readable } from "stream"
 import { bufferToStream } from "../../utils/buffer"
 import { OutgoingHttpHeaders } from "http"
 
-export const cacheScheme = "cache:"
+export const scheme = "cache:"
 
-export function handleCacheRequest(
+export function handleRequest(
   rt: Runtime,
   bridge: Bridge,
   url: UrlWithStringQuery,
@@ -25,7 +25,7 @@ export function handleCacheRequest(
   }
 
   const ns = rt.app.id.toString()
-  const key = url.href!.substring(cacheScheme.length + 2)
+  const key = url.href!.substring(scheme.length + 2)
 
   if (!key || key === "/") {
     cb.applyIgnored(null, [null, makeResponse(422, "Invalid key", url)])
