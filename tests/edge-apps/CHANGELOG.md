@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.46.0](https://github.com/superfly/fly/compare/v0.45.2...v0.46.0) (2019-03-07)
+
+
+### Features
+
+* large object cache ([#220](https://github.com/superfly/fly/issues/220)) ([f2560f2](https://github.com/superfly/fly/commit/f2560f2))
+
+
+
+
+
 # [0.46.0-pre.0](https://github.com/superfly/fly/compare/v0.45.2...v0.46.0-pre.0) (2019-03-07)
 
 **Note:** Version bump only for package @fly-test/edge-apps
