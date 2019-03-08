@@ -1,31 +1,23 @@
 import { ivm, IvmCallback } from "../../ivm"
 import { Bridge } from "../bridge"
 import { Runtime } from "../../runtime"
-import { UrlWithStringQuery } from "url"
+import { URL } from "url"
 import log from "../../log"
 import { streamManager } from "../../stream_manager"
-import { KeyNotFound } from "../../blob_store"
-import { Readable } from "stream"
-import { bufferToStream } from "../../utils/buffer"
+import { KeyNotFound, BlobStore } from "../../blob_store"
 import { OutgoingHttpHeaders } from "http"
+import { makeResponse, FetchBody, normalizeBody, getPathKey } from "./util"
 
 export const scheme = "cache:"
 
-export function handleRequest(
-  rt: Runtime,
-  bridge: Bridge,
-  url: UrlWithStringQuery,
-  init: any,
-  body: ArrayBuffer | null | string | number,
-  cb: IvmCallback
-) {
+export function handleRequest(rt: Runtime, bridge: Bridge, url: URL, init: any, body: FetchBody, cb: IvmCallback) {
   if (!bridge.blobStore) {
     cb.applyIgnored(null, ["no blob store configured!"])
     return
   }
 
   const ns = rt.app.id.toString()
-  const key = url.href!.substring(scheme.length + 2)
+  const key = getPathKey(url)
 
   if (!key || key === "/") {
     cb.applyIgnored(null, [null, makeResponse(422, "Invalid key", url)])
@@ -118,40 +110,41 @@ export function handleRequest(
   return
 }
 
-function normalizeBody(rt: Runtime, body: string | number | ArrayBuffer | Buffer): Readable {
-  if (typeof body === "string") {
-    return bufferToStream(new Buffer(body))
-  }
+// async function get(store: BlobStore, ns: string, key: string): Promise<void> {
+//   log.debug("[blobcache] get", { key })
 
-  if (body instanceof ArrayBuffer) {
-    return bufferToStream(Buffer.from(body))
-  }
+//   try {
+//     const resp = await store.get(ns, key)
+//   } catch (err) {}
 
-  if (Buffer.isBuffer(body)) {
-    return bufferToStream(body)
-  }
+//   store
+//     .get(ns, key)
+//     .then(res => {
+//       const id = streamManager.add(rt, res.stream)
+//       cb.applyIgnored(null, [
+//         null,
+//         new ivm.ExternalCopy(makeResponse(200, "OK", url, res.headers)).copyInto({ release: true }),
+//         id
+//       ])
+//     })
+//     .catch(err => {
+//       log.error("blobstore adapter error", err)
+//       let res
+//       if (err instanceof KeyNotFound) {
+//         res = makeResponse(404, "Not Found", url)
+//       } else {
+//         res = makeResponse(500, `Service error: ${err}`, url)
+//       }
 
-  if (typeof body === "number") {
-    return streamManager.get(rt, body)
-  }
-
-  throw new Error(`Unexpected body type: ${body}`)
-}
-
-// copied from ../fetch, consolidate that
-function makeResponse(status: number, statusText: string, url: string | UrlWithStringQuery, headers?: any) {
-  if (typeof url !== "string") {
-    url = url.href!
-  }
-
-  return {
-    status,
-    statusText,
-    ok: status >= 200 && status < 300,
-    url,
-    headers: headers || {}
-  }
-}
+//       cb.applyIgnored(null, [
+//         null,
+//         new ivm.ExternalCopy(res).copyInto({
+//           release: true
+//         }),
+//         ""
+//       ])
+//     })
+// }
 
 const ALLOWED_HEADERS = ["content-type", "content-length", "content-encoding"]
 
