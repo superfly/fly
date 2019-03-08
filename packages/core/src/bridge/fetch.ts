@@ -1,4 +1,4 @@
-import { registerBridge } from "../"
+import { registerBridge } from "./"
 import log from "../log"
 import { Bridge } from "./bridge"
 import { Runtime } from "../runtime"
