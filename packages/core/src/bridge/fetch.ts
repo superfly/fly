@@ -13,7 +13,7 @@ import { setTimeout } from "timers"
 import * as cacheHandler from "./fetch/cache"
 import * as fileHandler from "./fetch/file"
 import * as httpHandler from "./fetch/http"
-import { FetchBody } from "./fetch/util"
+import { FetchBody, dispatchError } from "./fetch/util"
 
 const parseURL = process.env.FLY_ENV === "test" ? parseUrlWithRemapping : parseUrl
 
@@ -43,7 +43,7 @@ registerBridge("fetch", function fetchBridge(
       return cacheHandler.handleRequest(rt, bridge, u, init, body, cb)
   }
 
-  cb.applyIgnored(null, [`Unsupported protocol: ${u.protocol}`])
+  dispatchError(cb, `Unsupported protocol: ${u.protocol}`)
 })
 
 // Support rewriting fetch urls in e2e tests. This could get replaced with fly-proxy someday

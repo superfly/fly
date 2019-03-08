@@ -2,7 +2,7 @@ import { Runtime } from "../../runtime"
 import { Bridge } from "../bridge"
 import { ivm, IvmCallback } from "../../ivm"
 import { URL } from "url"
-import { makeResponse, FetchBody } from "./util"
+import { FetchBody, dispatchError, dispatchFetchResponse, ResponseInit } from "./util"
 import { streamManager } from "../../stream_manager"
 import log from "../../log"
 import * as http from "http"
@@ -96,25 +96,24 @@ export function handleRequest(rt: Runtime, bridge: Bridge, url: URL, init: any, 
 
     req.removeAllListeners()
 
-    const retInit = new ivm.ExternalCopy({
+    const respInit: ResponseInit = {
       status: res.statusCode,
-      statusText: res.statusMessage,
-      ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 400,
-      url: url.href,
-      headers: res.headers
-    }).copyInto({ release: true })
-
-    if (res.method === "GET" || res.method === "HEAD") {
-      return cb.applyIgnored(null, [null, retInit])
+      url,
+      headers: res.headers as any, // normalize headers into Record<string, string>
+      statusText: res.statusMessage
     }
 
-    cb.applyIgnored(null, [null, retInit, streamManager.add(rt, res, { readTimeout: init.readTimeout })])
+    if (!(res.method === "GET" || res.method === "HEAD")) {
+      respInit.body = streamManager.add(rt, res, { readTimeout: init.readTimeout })
+    }
+
+    dispatchFetchResponse(cb, respInit)
   }
 
   function handleError(err: Error) {
     clearFetchTimeout()
     log.error("error requesting http resource", err)
-    cb.applyIgnored(null, [(err && err.toString()) || "unknown error"])
+    dispatchError(cb, err)
     req.removeAllListeners()
     if (!req.aborted) {
       try {
@@ -128,7 +127,7 @@ export function handleRequest(rt: Runtime, bridge: Bridge, url: URL, init: any, 
   function handleUserTimeout() {
     clearFetchTimeout()
     log.error("fetch timeout")
-    cb.applyIgnored(null, ["http request timeout"])
+    dispatchError(cb, "http request timeout")
     req.removeAllListeners()
     req.once("error", err => log.debug("error after fetch timeout:", err)) // swallow next errors
     req.once("timeout", () => log.debug("timeout after fetch timeout")) // swallow next errors
@@ -137,7 +136,7 @@ export function handleRequest(rt: Runtime, bridge: Bridge, url: URL, init: any, 
 
   function handleTimeout() {
     clearFetchTimeout()
-    cb.applyIgnored(null, ["http request timeout"])
+    dispatchError(cb, "http request timeout")
     req.removeAllListeners()
     req.once("error", err => log.debug("error after timeout:", err)) // swallow possible error before abort
     req.abort()
