@@ -1,14 +1,12 @@
 import { Runtime } from "../../runtime"
 import { Bridge } from "../bridge"
-import { ivm, IvmCallback } from "../../ivm"
-import { URL } from "url"
-import { FetchBody, dispatchError, dispatchFetchResponse, ResponseInit } from "./util"
 import { streamManager } from "../../stream_manager"
 import log from "../../log"
 import * as http from "http"
 import * as https from "https"
 import * as net from "net"
 import { isNumber } from "util"
+import { RequestInit, URL, FetchBody, ResponseInit } from "./types"
 
 export const httpProtocol = "http:"
 export const httpsProtocol = "https:"
@@ -20,127 +18,136 @@ const connectionStats = {
   keptAlive: 0
 }
 
-export function handleRequest(rt: Runtime, bridge: Bridge, url: URL, init: any, body: FetchBody, cb: IvmCallback) {
-  const httpFn = url.protocol === "http:" ? http.request : https.request
-  const httpAgent = url.protocol === "http:" ? fetchAgent : fetchHttpsAgent
+export function handleRequest(
+  rt: Runtime,
+  bridge: Bridge,
+  url: URL,
+  init: RequestInit,
+  body: FetchBody
+): Promise<ResponseInit> {
+  return new Promise((resolve, reject) => {
+    try {
+      const httpFn = url.protocol === httpProtocol ? http.request : https.request
+      const httpAgent = url.protocol === httpProtocol ? fetchAgent : fetchHttpsAgent
 
-  const method = init.method || "GET"
-  const headers = init.headers || {}
+      let req: http.ClientRequest
+      let timeout: NodeJS.Timer | undefined
 
-  let req: http.ClientRequest
+      if (isNumber(init.timeout) && init.timeout > 0) {
+        timeout = setTimeout(handleUserTimeout, init.timeout)
+      }
 
-  let timeout: NodeJS.Timer | undefined
-  if (init.timeout && isNumber(init.timeout) && init.timeout > 0) {
-    timeout = setTimeout(handleUserTimeout, init.timeout)
-  }
-  const reqOptions: https.RequestOptions = {
-    agent: httpAgent,
-    protocol: url.protocol,
-    path: url.pathname + url.search, // should this include the hash fragment?
-    hostname: url.hostname,
-    host: url.host,
-    port: url.port,
-    method,
-    headers,
-    timeout: 60 * 1000
-  }
+      const reqOptions: https.RequestOptions = {
+        agent: httpAgent,
+        protocol: url.protocol,
+        path: url.pathname + url.search, // should this include the hash fragment?
+        hostname: url.hostname,
+        host: url.host,
+        port: url.port,
+        method: init.method,
+        headers: init.headers,
+        timeout: 60 * 1000
+      }
 
-  if (httpFn === https.request) {
-    reqOptions.servername = reqOptions.hostname
-  }
-  req = httpFn(reqOptions)
-  req.setNoDelay(true)
+      if (httpFn === https.request) {
+        reqOptions.servername = reqOptions.hostname
+      }
 
-  req.setHeader("fly-app", rt.app.name)
+      req = httpFn(reqOptions)
+      req.setNoDelay(true)
+      req.setHeader("fly-app", rt.app.name)
 
-  req.once("error", handleError)
-  req.once("timeout", handleTimeout)
-  req.once("response", handleResponse)
+      req.once("error", handleError)
+      req.once("timeout", handleTimeout)
+      req.once("response", handleResponse)
 
-  const start = process.hrtime()
-  const startData = (req.connection && req.connection.bytesWritten) || 0
+      const start = process.hrtime()
+      const startData = (req.connection && req.connection.bytesWritten) || 0
 
-  setImmediate(() => {
-    if (body instanceof ArrayBuffer) {
-      req.end(Buffer.from(body))
-    } else if (typeof body === "number") {
-      const stream = streamManager.get(rt, body)
-      stream.pipe(req)
-    } else {
-      req.end(!!body ? body : null)
+      setImmediate(() => {
+        if (body instanceof ArrayBuffer) {
+          req.end(Buffer.from(body))
+        } else if (typeof body === "number") {
+          const stream = streamManager.get(rt, body)
+          stream.pipe(req)
+        } else {
+          req.end(!!body ? body : null)
+        }
+      })
+
+      return
+
+      function clearFetchTimeout() {
+        if (timeout) {
+          clearInterval(timeout)
+        }
+      }
+
+      function handleResponse(res: http.IncomingMessage) {
+        res.once("error", handleError)
+        const dataOut = req.connection.bytesWritten - startData
+        clearFetchTimeout()
+        rt.reportUsage("fetch", {
+          data_out: dataOut,
+          method: init.method,
+          host: url.host,
+          path: url.pathname + url.search,
+          remote_addr: res.socket.remoteAddress,
+          status: res.statusCode,
+          response_time: process.hrtime(start),
+          globalConnectionStats: connectionStats
+        })
+
+        req.removeAllListeners()
+
+        const respInit: ResponseInit = {
+          status: res.statusCode,
+          headers: res.headers as any, // normalize headers into Record<string, string>
+          statusText: res.statusMessage
+        }
+
+        if (!(res.method === "GET" || res.method === "HEAD")) {
+          respInit.body = streamManager.add(rt, res, { readTimeout: init.readTimeout })
+        }
+
+        resolve(respInit)
+      }
+
+      function handleError(err: Error) {
+        clearFetchTimeout()
+        log.error("error requesting http resource", err)
+        reject(err)
+        req.removeAllListeners()
+        if (!req.aborted) {
+          try {
+            req.abort()
+          } catch (e) {
+            // ignore
+          }
+        }
+      }
+
+      function handleUserTimeout() {
+        clearFetchTimeout()
+        log.error("fetch timeout")
+        reject("http request timeout")
+        req.removeAllListeners()
+        req.once("error", err => log.debug("error after fetch timeout:", err)) // swallow next errors
+        req.once("timeout", () => log.debug("timeout after fetch timeout")) // swallow next errors
+        req.abort()
+      }
+
+      function handleTimeout() {
+        clearFetchTimeout()
+        reject("http request timeout")
+        req.removeAllListeners()
+        req.once("error", err => log.debug("error after timeout:", err)) // swallow possible error before abort
+        req.abort()
+      }
+    } catch (err) {
+      reject(err)
     }
   })
-
-  return
-
-  function clearFetchTimeout() {
-    if (timeout) {
-      clearInterval(timeout)
-    }
-  }
-
-  function handleResponse(res: http.IncomingMessage) {
-    res.once("error", handleError)
-    const dataOut = req.connection.bytesWritten - startData
-    clearFetchTimeout()
-    rt.reportUsage("fetch", {
-      data_out: dataOut,
-      method,
-      host: url.host,
-      path: url.pathname + url.search,
-      remote_addr: res.socket.remoteAddress,
-      status: res.statusCode,
-      response_time: process.hrtime(start),
-      globalConnectionStats: connectionStats
-    })
-
-    req.removeAllListeners()
-
-    const respInit: ResponseInit = {
-      status: res.statusCode,
-      url,
-      headers: res.headers as any, // normalize headers into Record<string, string>
-      statusText: res.statusMessage
-    }
-
-    if (!(res.method === "GET" || res.method === "HEAD")) {
-      respInit.body = streamManager.add(rt, res, { readTimeout: init.readTimeout })
-    }
-
-    dispatchFetchResponse(cb, respInit)
-  }
-
-  function handleError(err: Error) {
-    clearFetchTimeout()
-    log.error("error requesting http resource", err)
-    dispatchError(cb, err)
-    req.removeAllListeners()
-    if (!req.aborted) {
-      try {
-        req.abort()
-      } catch (e) {
-        // ignore
-      }
-    }
-  }
-
-  function handleUserTimeout() {
-    clearFetchTimeout()
-    log.error("fetch timeout")
-    dispatchError(cb, "http request timeout")
-    req.removeAllListeners()
-    req.once("error", err => log.debug("error after fetch timeout:", err)) // swallow next errors
-    req.once("timeout", () => log.debug("timeout after fetch timeout")) // swallow next errors
-    req.abort()
-  }
-
-  function handleTimeout() {
-    clearFetchTimeout()
-    dispatchError(cb, "http request timeout")
-    req.removeAllListeners()
-    req.once("error", err => log.debug("error after timeout:", err)) // swallow possible error before abort
-    req.abort()
-  }
 }
 
 // this keeps track of connection counts for the fetch agent

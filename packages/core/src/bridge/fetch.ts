@@ -1,50 +1,77 @@
-import { registerBridge } from "./"
-import { ivm } from "../"
+import { registerBridge } from "../"
 import log from "../log"
-import * as http from "http"
-import * as https from "https"
-import * as net from "net"
-import { URL } from "url"
 import { Bridge } from "./bridge"
 import { Runtime } from "../runtime"
-import { streamManager } from "../stream_manager"
-import { isNumber } from "util"
-import { setTimeout } from "timers"
 import * as cacheHandler from "./fetch/cache"
 import * as fileHandler from "./fetch/file"
 import * as httpHandler from "./fetch/http"
-import { FetchBody, dispatchError } from "./fetch/util"
+import { ivm, dispatchError, IvmCallback } from "../ivm"
+import { RequestInit, FetchBody, URL, ResponseInit } from "./fetch/types"
+import { STATUS_CODES } from "http"
 
 const parseURL = process.env.FLY_ENV === "test" ? parseUrlWithRemapping : parseUrl
 
 registerBridge("fetch", function fetchBridge(
   rt: Runtime,
   bridge: Bridge,
-  urlStr: string,
-  init: any,
+  url: string,
+  init: RequestInit,
   body: FetchBody,
   cb: ivm.Reference<() => void>
 ) {
-  log.debug("native fetch with url:", urlStr)
+  log.debug("native fetch with url:", url)
+
+  const parsedUrl = parseURL(url)
+  const handler = getRequestHandler(parsedUrl)
+
+  if (!handler) {
+    dispatchError(cb, `Unsupported protocol: ${parsedUrl.protocol}`)
+    return
+  }
 
   if (!init) {
     init = {}
   }
-
-  const u = parseURL(urlStr)
-
-  switch (u.protocol) {
-    case httpHandler.httpsProtocol:
-    case httpHandler.httpProtocol:
-      return httpHandler.handleRequest(rt, bridge, u, init, body, cb)
-    case fileHandler.protocol:
-      return fileHandler.handleRequest(rt, bridge, u, init, body, cb)
-    case cacheHandler.scheme:
-      return cacheHandler.handleRequest(rt, bridge, u, init, body, cb)
+  if (!init.method) {
+    init.method = "GET"
+  }
+  if (!init.headers) {
+    init.headers = {}
   }
 
-  dispatchError(cb, `Unsupported protocol: ${u.protocol}`)
+  handler(rt, bridge, parsedUrl, init, body)
+    .then(resp => {
+      dispatchFetchResponse(cb, { url, ...resp })
+    })
+    .catch(err => {
+      dispatchError(cb, err)
+    })
 })
+
+function getRequestHandler(url: URL) {
+  switch (url.protocol) {
+    case httpHandler.httpsProtocol:
+    case httpHandler.httpProtocol:
+      return httpHandler.handleRequest
+    case fileHandler.protocol:
+      return fileHandler.handleRequest
+    case cacheHandler.scheme:
+      return cacheHandler.handleRequest
+  }
+}
+
+export function dispatchFetchResponse(cb: IvmCallback, response: ResponseInit & { url: string }) {
+  const { body = "", ...init } = response
+
+  if (!init.status) {
+    init.status = 200
+  }
+  if (!init.statusText) {
+    init.statusText = STATUS_CODES[init.status] || ""
+  }
+
+  cb.applyIgnored(null, [null, new ivm.ExternalCopy(init).copyInto({ release: true }), body])
+}
 
 // Support rewriting fetch urls in e2e tests. This could get replaced with fly-proxy someday
 

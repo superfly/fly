@@ -22,8 +22,6 @@ export class FileSystemBlobStore implements BlobStore {
     return new Promise((resolve, reject) => {
       const [, dataPath, metaPath] = this.getPaths(ns, key)
 
-      log.info("get", { ns, key, dataPath, metaPath })
-
       if (!fs.existsSync(dataPath) || !fs.existsSync(metaPath)) {
         reject(new KeyNotFound(key))
         return
@@ -34,16 +32,20 @@ export class FileSystemBlobStore implements BlobStore {
       try {
         headers = JSON.parse(fs.readFileSync(metaPath, "utf8"))
       } catch (err) {
-        log.warn("Error reading blobcache meta", { ns, key }, err)
+        log.warn("[FileSystemBlobStore] error reading meta", { ns, key }, err)
         reject(err)
       }
 
-      const stream = fs.createReadStream(dataPath)
+      try {
+        const stream = fs.createReadStream(dataPath)
 
-      resolve({
-        headers,
-        stream
-      })
+        resolve({
+          headers,
+          stream
+        })
+      } catch (err) {
+        log.warn("[FileSystemBlobStore] error reading file", { ns, key }, err)
+      }
     })
   }
 
@@ -51,8 +53,6 @@ export class FileSystemBlobStore implements BlobStore {
     return new Promise((resolve, reject) => {
       try {
         const [nsPath, dataPath, metaPath] = this.getPaths(ns, key)
-
-        log.info("set", { ns, key, nsPath, dataPath, metaPath })
 
         ensurePath(nsPath)
 
@@ -68,7 +68,7 @@ export class FileSystemBlobStore implements BlobStore {
 
         resolve(true)
       } catch (err) {
-        log.info("set err", err)
+        log.warn("[FileSystemBlobStore] set error", err)
         reject(err)
       }
     })
@@ -84,6 +84,7 @@ export class FileSystemBlobStore implements BlobStore {
 
         resolve(true)
       } catch (err) {
+        log.warn("[FileSystemBlobStore] del error", err)
         reject(err)
       }
     })

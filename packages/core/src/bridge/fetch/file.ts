@@ -1,37 +1,33 @@
 import { Runtime } from "../../runtime"
 import { Bridge } from "../bridge"
-import { ivm, IvmCallback } from "../../ivm"
-import { URL } from "url"
-import { FetchBody, getPathKey, dispatchError, dispatchFetchResponse } from "./util"
+import { getPathKey } from "./util"
 import { streamManager } from "../../stream_manager"
+import { RequestInit, FetchBody, ResponseInit, URL } from "./types"
 
 export const protocol = "file:"
 
-export function handleRequest(rt: Runtime, bridge: Bridge, url: URL, init: any, body: FetchBody, cb: IvmCallback) {
+export async function handleRequest(
+  rt: Runtime,
+  bridge: Bridge,
+  url: URL,
+  init: RequestInit,
+  body: FetchBody
+): Promise<ResponseInit> {
   if (!bridge.fileStore) {
-    dispatchError(cb, "no file store configured")
-    return
+    throw new Error("no file store configured")
   }
 
   if (init.method && init.method !== "GET") {
-    dispatchFetchResponse(cb, { status: 405, url })
-    return
+    return { status: 405 }
   }
 
-  const key = getPathKey(url)
-
   try {
-    bridge.fileStore
-      .createReadStream(rt, key)
-      .then(stream => {
-        const id = streamManager.add(rt, stream)
-        dispatchFetchResponse(cb, { status: 200, url: url.href, body: id })
-      })
-      .catch(err => {
-        dispatchFetchResponse(cb, { status: 404, url })
-      })
+    const key = getPathKey(url)
+
+    const stream = await bridge.fileStore.createReadStream(rt, key)
+    return { status: 200, body: streamManager.add(rt, stream) }
   } catch (e) {
     // Might throw FileNotFound
-    dispatchFetchResponse(cb, { status: 404, url })
+    return { status: 404 }
   }
 }
