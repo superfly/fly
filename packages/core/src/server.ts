@@ -15,6 +15,7 @@ import { Runtime } from "./runtime"
 import { SQLiteDataStore } from "./sqlite_data_store"
 import { streamManager } from "./stream_manager"
 import { FileSystemBlobStore } from "./fs_blob_store"
+import { formatDuration } from "./utils/formatting"
 
 const hopHeaders = [
   // From RFC 2616 section 13.5.1
@@ -133,13 +134,11 @@ export class Server extends http.Server {
       log.error("error handling request:", err.stack)
       handleCriticalError(err, request, response)
     } finally {
-      const end = process.hrtime(start)
       this.runtime.log(
         "info",
-        `${request.connection.remoteAddress} ${request.method} ${request.url} ${response.statusCode} ${(
-          (end[0] * 1e9 + end[1]) /
-          1e6
-        ).toFixed(2)}ms`
+        `${request.connection.remoteAddress} ${request.method} ${request.url} ${response.statusCode} ${formatDuration(
+          start
+        )}`
       )
     }
   }

@@ -5,6 +5,7 @@ import { streamManager } from "../../stream_manager"
 import { OutgoingHttpHeaders } from "http"
 import { normalizeBody, getPathKey } from "./util"
 import { URL, RequestInit, FetchBody, ResponseInit } from "./types"
+import { KeyNotFound } from "../../blob_store"
 
 export const scheme = "cache:"
 
@@ -60,7 +61,9 @@ export async function handleRequest(
 
     return { status: 405 }
   } catch (err) {
-    console.warn("[blobcache] error", err)
+    if (!(err instanceof KeyNotFound)) {
+      console.warn("[blobcache] error", err)
+    }
     return { status: 404 }
   }
 }
