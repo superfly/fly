@@ -1,5 +1,4 @@
 import * as path from "path"
-import * as fs from "fs"
 
 setupApps({
   "edge.local": path.resolve(__dirname, "client-certs.edge.js")
