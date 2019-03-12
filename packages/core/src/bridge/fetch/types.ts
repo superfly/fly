@@ -20,7 +20,8 @@ export interface ResponseInit {
 }
 
 export interface Certificate {
-  key: string | Buffer
-  cert: string | Buffer
+  key?: string | Buffer
+  cert?: string | Buffer
   ca?: Array<string | Buffer>
+  passphrase?: string
 }
