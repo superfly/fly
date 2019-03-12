@@ -11,13 +11,6 @@ import { RequestInit, URL, FetchBody, ResponseInit } from "./types"
 export const httpProtocol = "http:"
 export const httpsProtocol = "https:"
 
-const connectionStats = {
-  created: 0,
-  current: 0,
-  reused: 0,
-  keptAlive: 0
-}
-
 export function handleRequest(
   rt: Runtime,
   bridge: Bridge,
@@ -28,7 +21,7 @@ export function handleRequest(
   return new Promise((resolve, reject) => {
     try {
       const httpFn = url.protocol === httpProtocol ? http.request : https.request
-      const httpAgent = url.protocol === httpProtocol ? fetchAgent : fetchHttpsAgent
+      const httpAgent = getAgent(rt, url.protocol)
 
       let req: http.ClientRequest
       let timeout: NodeJS.Timer | undefined
@@ -46,7 +39,8 @@ export function handleRequest(
         port: url.port,
         method: init.method,
         headers: init.headers,
-        timeout: 60 * 1000
+        timeout: 60 * 1000,
+        ...init.certificate
       }
 
       if (httpFn === https.request) {
@@ -150,6 +144,13 @@ export function handleRequest(
   })
 }
 
+const connectionStats = {
+  created: 0,
+  current: 0,
+  reused: 0,
+  keptAlive: 0
+}
+
 // this keeps track of connection counts for the fetch agent
 function createMonitoredAgent<T extends http.Agent>(agent: T) {
   const a: any = agent
@@ -175,33 +176,64 @@ function createMonitoredAgent<T extends http.Agent>(agent: T) {
   })
 }
 
-// tslint:disable-next-line
-let maxSockets = parseInt(process.env.MAX_FETCH_SOCKETS || "")
+let maxSockets = parseInt(process.env.MAX_FETCH_SOCKETS || "", 10)
 if (isNaN(maxSockets) || maxSockets < 1) {
   maxSockets = 1024 // maybe sane limit
 }
-// tslint:disable-next-line
-let maxFreeSockets = parseInt(process.env.MAX_FETCH_FREE_SOCKETS || "")
+
+let maxFreeSockets = parseInt(process.env.MAX_FETCH_FREE_SOCKETS || "", 10)
 if (isNaN(maxFreeSockets) || maxFreeSockets < 1) {
   maxFreeSockets = 256 // default
 }
 
 log.debug("Fetch connection pool:", { maxSockets, maxFreeSockets })
 
-const fetchAgent = createMonitoredAgent(
-  new http.Agent({
-    keepAlive: true,
-    keepAliveMsecs: 5 * 1000,
-    maxSockets,
-    maxFreeSockets
-  })
-)
-const fetchHttpsAgent = createMonitoredAgent(
-  new https.Agent({
-    keepAlive: true,
-    keepAliveMsecs: 1000,
-    rejectUnauthorized: false, // for simplicity
-    maxSockets,
-    maxFreeSockets
-  })
-)
+const runtimeAgents = new Map<string, http.Agent>()
+
+function getAgent(rt: Runtime, protocol: string): http.Agent {
+  const key = `${rt.app.id}:${protocol}`
+  let agent = runtimeAgents.get(key)
+
+  if (!agent) {
+    if (protocol === "http:") {
+      agent = createMonitoredAgent(
+        new http.Agent({
+          keepAlive: true,
+          keepAliveMsecs: 1000,
+          maxSockets,
+          maxFreeSockets
+        })
+      )
+    } else if (protocol === "https:") {
+      agent = createMonitoredAgent(
+        new https.Agent({
+          keepAlive: true,
+          keepAliveMsecs: 1000,
+          rejectUnauthorized: false,
+          maxSockets,
+          maxFreeSockets
+        })
+      )
+    } else {
+      throw new Error("Unsupported protocol " + protocol)
+    }
+
+    runtimeAgents.set(key, agent)
+  }
+
+  return agent
+}
+
+function destroyIdleAgents() {
+  for (const [name, agent] of runtimeAgents) {
+    const sockets = Object.keys(agent.sockets).length
+    const requests = Object.keys(agent.requests).length
+    if (sockets === 0 && requests === 0) {
+      log.debug("destroying http agent pool", name)
+      agent.destroy()
+      runtimeAgents.delete(name)
+    }
+  }
+}
+
+setInterval(destroyIdleAgents, 30000)

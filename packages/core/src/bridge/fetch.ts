@@ -15,7 +15,7 @@ const parseURL = process.env.FLY_ENV === "test" ? parseUrlWithRemapping : parseU
 registerBridge(
   "fetch",
   (rt: Runtime, bridge: Bridge, url: string, init: RequestInit, body: FetchBody, cb: IvmCallback) => {
-    log.debug("native fetch with url:", url)
+    log.debug("native fetch", { url })
 
     const parsedUrl = parseURL(url)
     const handler = getRequestHandler(parsedUrl)

@@ -7,6 +7,7 @@ export interface RequestInit {
   timeout?: number
   readTimeout?: number
   headers?: Record<string, string>
+  certificate?: Certificate
 }
 
 export type FetchBody = string | number | ArrayBuffer | Buffer | null
@@ -16,4 +17,10 @@ export interface ResponseInit {
   statusText?: string
   headers?: Record<string, string>
   body?: number | string
+}
+
+export interface Certificate {
+  key: string | Buffer
+  cert: string | Buffer
+  ca?: Array<string | Buffer>
 }
