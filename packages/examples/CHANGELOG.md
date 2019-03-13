@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.47.0](https://github.com/superfly/fly/compare/v0.46.1...v0.47.0) (2019-03-13)
+
+**Note:** Version bump only for package @fly/examples
+
+
+
+
+
 # [0.46.0](https://github.com/superfly/fly/compare/v0.45.2...v0.46.0) (2019-03-07)
 
 **Note:** Version bump only for package @fly/examples
