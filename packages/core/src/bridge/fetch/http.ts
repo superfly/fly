@@ -176,14 +176,12 @@ function createMonitoredAgent<T extends http.Agent>(agent: T) {
   })
 }
 
-// tslint:disable-next-line
-let maxSockets = parseInt(process.env.MAX_FETCH_SOCKETS || "")
+let maxSockets = parseInt(process.env.MAX_FETCH_SOCKETS || "", 10)
 if (isNaN(maxSockets) || maxSockets < 1) {
   maxSockets = 1024 // maybe sane limit
 }
 
-// tslint:disable-next-line
-let maxFreeSockets = parseInt(process.env.MAX_FETCH_FREE_SOCKETS || "")
+let maxFreeSockets = parseInt(process.env.MAX_FETCH_FREE_SOCKETS || "", 10)
 if (isNaN(maxFreeSockets) || maxFreeSockets < 1) {
   maxFreeSockets = 256 // default
 }
