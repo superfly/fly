@@ -9,6 +9,13 @@ declare var bridge: any
 export interface FlyRequestInit extends RequestInit {
   timeout?: number
   readTimeout?: number
+  certificate?: {
+    key?: string | Buffer | Array<string | Buffer>
+    cert?: string | Buffer | Array<string | Buffer>
+    ca?: string | Buffer | Array<string | Buffer>
+    pfx?: string | Buffer | Array<string | Buffer>
+    passphrase?: string
+  }
 }
 
 /**
@@ -32,7 +39,8 @@ export function fetch(req: RequestInfo, init?: FlyRequestInit): Promise<Response
         method: req.method,
         headers: (req.headers && req.headers.toJSON()) || {},
         timeout: init && init.timeout,
-        readTimeout: (init && init.readTimeout) || 30 * 1000
+        readTimeout: (init && init.readTimeout) || 30 * 1000,
+        certificate: init && init.certificate
       }
       if (!req.bodySource) {
         bridge.dispatch("fetch", url, init, null, fetchCb)
