@@ -33,14 +33,21 @@ export function handleRequest(
       const reqOptions: https.RequestOptions = {
         agent: httpAgent,
         protocol: url.protocol,
-        path: url.pathname + url.search, // should this include the hash fragment?
+        path: url.pathname + url.search,
         hostname: url.hostname,
         host: url.host,
         port: url.port,
         method: init.method,
         headers: init.headers,
-        timeout: 60 * 1000,
-        ...init.certificate
+        timeout: 60 * 1000
+      }
+
+      if (init.certificate) {
+        reqOptions.key = init.certificate.key
+        reqOptions.cert = init.certificate.cert
+        reqOptions.pfx = init.certificate.pfx
+        reqOptions.ca = init.certificate.ca
+        reqOptions.passphrase = init.certificate.passphrase
       }
 
       if (httpFn === https.request) {
