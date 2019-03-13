@@ -18,7 +18,7 @@
     "lint:fix": "yarn lint --fix",
     "format": "prettier --parser typescript -l --write '{packages,tests}/*/{src,tests}/**/*.{ts,tsx,js,jsx,json}'",
     "test": "yarn test:packages && yarn test:e2e",
-    "test:packages": "jest --forceExit",
+    "test:packages": "jest",
     "test:e2e": "lerna exec --concurrency 1 yarn test --scope \"@fly-test/edge-apps\"",
     "test:v8env": "lerna exec --concurrency 1 yarn test --scope \"@fly-test/v8env\"",
     "test:format": "prettier --parser typescript -l '{packages,tests}/*/{src,tests}/**/*.{ts,tsx,js,jsx,json}'",
