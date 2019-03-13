@@ -1,6 +1,6 @@
 {
     "name": "@fly/core",
-    "version": "0.47.0",
+    "version": "0.47.1",
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
@@ -17,9 +17,9 @@
         "build:watch": "tsc -b -w -v ."
     },
     "dependencies": {
-        "@fly/build": "0.47.0",
-        "@fly/examples": "0.47.0",
-        "@fly/v8env": "0.47.0",
+        "@fly/build": "0.47.1",
+        "@fly/examples": "0.47.1",
+        "@fly/v8env": "0.47.1",
         "ansi-colors": "^1.1.0",
         "axios": "^0.18.0",
         "better-sqlite3": "^4.1.4",
