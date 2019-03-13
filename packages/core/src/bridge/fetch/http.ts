@@ -238,4 +238,6 @@ function destroyIdleAgents() {
   }
 }
 
+export function destroyAgents() {}
+
 setInterval(destroyIdleAgents, 30000)
