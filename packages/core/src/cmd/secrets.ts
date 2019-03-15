@@ -5,7 +5,7 @@ import { processResponse } from "../utils/cli"
 import { Command } from "commandpost"
 
 export interface SecretSetOptions extends CommonOptions {
-  filename?: string[]
+  fromFile?: string[]
 }
 export interface SecretSetArgs {
   key: string
@@ -24,7 +24,7 @@ const secretsSet = secrets
     try {
       const appName = getAppName(this)
 
-      const value = opts.filename ? fs.readFileSync(opts.filename[0]).toString() : args.value && args.value
+      const value = opts.fromFile ? fs.readFileSync(opts.fromFile[0]).toString() : args.value && args.value
 
       if (!value) {
         throw new Error("Either a value or --from-file needs to be provided.")
