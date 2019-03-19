@@ -23,8 +23,8 @@ const secretsSet = secrets
     const API = apiClient(this)
     try {
       const appName = getAppName(this)
-
-      const value = opts.fromFile ? fs.readFileSync(opts.fromFile[0]).toString() : args.value && args.value
+      const value =
+        opts.fromFile && opts.fromFile[0] ? fs.readFileSync(opts.fromFile[0]).toString() : args.value && args.value
 
       if (!value) {
         throw new Error("Either a value or --from-file needs to be provided.")
