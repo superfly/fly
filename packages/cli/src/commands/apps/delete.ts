@@ -1,6 +1,5 @@
 import { FlyCommand } from "../../base-command"
-import { apiClient } from "../../api"
-import { processResponse } from "../../api"
+import { apiClient, processResponse } from "../../api"
 import { getAppName } from "../../util"
 import { app, env } from "../../flags"
 import { cli } from "cli-ux"

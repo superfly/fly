@@ -1,6 +1,5 @@
 import { FlyCommand } from "../../base-command"
-import { apiClient } from "../../api"
-import { processResponse } from "cli/src/api"
+import { apiClient, processResponse } from "../../api"
 import { isValidAppName, fullAppMatch } from "../../util"
 import { existsSync, writeFileSync } from "fs"
 

@@ -2406,7 +2406,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-ux@^5.2.0:
+cli-ux@^5.2.0, cli-ux@^5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.2.1.tgz#6e677c90d18ed3efd84745da46221c7d1b1fada5"
   integrity sha512-zG1012o7U4ZsCuIST1t2yrHPADv16J81RAGYjY9X1yABEFK40oyjRchD5ffVZaG44BjizmLvu677zbVIypRuxw==
@@ -9575,11 +9575,6 @@ typescript@3.3.3333:
 typescript@^3.2.2:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.2.2.tgz#fe8101c46aa123f8353523ebdcf5730c2ae493e5"
-
-typescript@^3.3:
-  version "3.3.4000"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.4000.tgz#76b0f89cfdbf97827e1112d64f283f1151d6adf0"
-  integrity sha512-jjOcCZvpkl2+z7JFn0yBOoLQyLoIkNZAs/fYJkUG6VKy6zLPHJGfQJYFHzibB6GJaF/8QrcECtlQ5cpvRHSMEA==
 
 uglify-es@^3.3.4:
   version "3.3.9"
