@@ -69,5 +69,8 @@
     "macos": {
       "identifier": "com.superfly.fly"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
