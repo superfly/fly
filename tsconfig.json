@@ -11,11 +11,14 @@
       "path": "./packages/core"
     },
     {
+      "path": "./packages/cli"
+    },
+    {
       "path": "./packages/v8env"
     },
     {
       "path": "./packages/examples"
     }
   ],
-  "include": []
+  "include": [],
 }

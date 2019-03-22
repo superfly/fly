@@ -16,6 +16,7 @@
       "allow-pascal-case", // remove this once no-var-requires is enabled
       "allow-leading-underscore"
     ],
+    "member-access": false,
     // revisit later, too much change at once
     "ordered-imports": false,
     "member-ordering": false,
