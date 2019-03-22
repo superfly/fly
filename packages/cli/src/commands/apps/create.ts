@@ -1,9 +1,7 @@
-// tslint:disable:no-shadowed-variable
-
 import { FlyCommand } from "../../base-command"
 import { apiClient } from "../../api"
 import { processResponse } from "cli/src/api"
-import { isValidAppName, fullAppMatch } from "cli/src/util"
+import { isValidAppName, fullAppMatch } from "../../util"
 import { existsSync, writeFileSync } from "fs"
 
 export default class Create extends FlyCommand {
@@ -18,7 +16,7 @@ export default class Create extends FlyCommand {
   ]
 
   public async run() {
-    const { flags, argv } = this.parse(this.ctor)
+    const { flags, argv } = this.parse(Create)
 
     const API = apiClient(this)
 

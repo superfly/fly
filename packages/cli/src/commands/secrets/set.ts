@@ -1,10 +1,9 @@
 import { FlyCommand } from "../../base-command"
-import { apiClient } from "../../api"
-import { processResponse } from "cli/src/api"
+import { apiClient, processResponse } from "../../api"
 import * as sharedFlags from "../../flags"
-import { getAppName } from "cli/src/util"
+import { getAppName } from "../../util"
 import { flags as oclifFlags } from "@oclif/command"
-import { readFileSync, existsSync } from "fs"
+import { readFileSync } from "fs"
 
 export default class SecretsSet extends FlyCommand {
   public static description = "add secrets to an app"

@@ -1,7 +1,5 @@
 import { FlyCommand } from "../base-command"
 import { apiClient } from "../api"
-import { processResponse } from "cli/src/api"
-import { cli } from "cli-ux"
 import * as sharedFlags from "../flags"
 import { getAppName } from "../util"
 import { AxiosInstance } from "axios"
@@ -16,7 +14,7 @@ export default class Logs extends FlyCommand {
   }
 
   public async run() {
-    const { flags } = this.parse(this.ctor)
+    const { flags } = this.parse(Logs)
 
     const API = apiClient(this)
     const appName = getAppName(flags)

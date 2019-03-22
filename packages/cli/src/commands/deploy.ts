@@ -1,5 +1,3 @@
-// tslint:disable:no-shadowed-variable
-
 import { apiClient, processResponse } from "../api"
 import { getLocalRelease } from "@fly/core/lib/utils/local"
 import log from "@fly/core/lib/log"
@@ -11,7 +9,6 @@ import * as pako from "pako"
 import { AxiosResponse } from "axios"
 import { resolve as pathResolve } from "path"
 import { FlyCommand } from "../base-command"
-import { flags } from "@oclif/command"
 import { getAppName, fullAppMatch } from "../util"
 import { buildApp } from "@fly/core/lib/utils/build"
 import * as sharedFlags from "../flags"
@@ -27,7 +24,7 @@ export default class Deploy extends FlyCommand {
   }
 
   async run() {
-    const { args, flags } = this.parse(this.ctor)
+    const { args, flags } = this.parse(Deploy)
     const API = apiClient(this)
     const env = flags.env!
     const cwd = args.path || process.cwd()

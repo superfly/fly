@@ -1,8 +1,7 @@
 import { FlyCommand } from "../../base-command"
-import { apiClient } from "../../api"
-import { processResponse } from "cli/src/api"
+import { apiClient, processResponse } from "../../api"
 import * as sharedFlags from "../../flags"
-import { getAppName } from "cli/src/util"
+import { getAppName } from "../../util"
 
 export default class HostnamesAdd extends FlyCommand {
   public static description = "add hostnames to an app"
@@ -21,7 +20,7 @@ export default class HostnamesAdd extends FlyCommand {
   ]
 
   public async run() {
-    const { args, flags } = this.parse(this.ctor)
+    const { args, flags } = this.parse(HostnamesAdd)
     const appName = getAppName(flags)
     const API = apiClient(this)
     const hostname = args.hostname

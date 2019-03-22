@@ -1,12 +1,8 @@
-// tslint:disable:no-shadowed-variable
-
 import { FlyCommand } from "../../base-command"
 import { apiClient } from "../../api"
-import { processResponse } from "cli/src/api"
-import { getAppName } from "cli/src/util"
-import { flags } from "@oclif/command"
-import { app, env } from "cli/src/flags"
-import * as inquirer from "inquirer"
+import { processResponse } from "../../api"
+import { getAppName } from "../../util"
+import { app, env } from "../../flags"
 import { cli } from "cli-ux"
 
 export default class Delete extends FlyCommand {
@@ -20,7 +16,7 @@ export default class Delete extends FlyCommand {
   static args = []
 
   public async run() {
-    const { flags } = this.parse(this.ctor)
+    const { flags } = this.parse(Delete)
 
     const API = apiClient(this)
     const appName = getAppName(flags)

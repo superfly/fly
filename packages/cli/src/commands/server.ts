@@ -1,6 +1,4 @@
-// tslint:disable:no-shadowed-variable
-
-import Command, { flags } from "@oclif/command"
+import Command, { flags as cmdFlags } from "@oclif/command"
 import * as path from "path"
 import * as fs from "fs"
 import { spawn } from "child_process"
@@ -15,17 +13,17 @@ export default class ServerCmd extends FlyCommand {
 
   public static flags = {
     env: sharedFlags.env(),
-    port: flags.integer({
+    port: cmdFlags.integer({
       char: "p",
       description: "Port to bind to",
       env: "PORT",
       default: 3000
     }),
-    inspect: flags.boolean({
+    inspect: cmdFlags.boolean({
       description: "use the v8 inspector on your fly app",
       default: false
     }),
-    uglify: flags.boolean({
+    uglify: cmdFlags.boolean({
       description: "uglify your code like we'll use in production (warning: slow!)",
       default: false
     })
@@ -34,7 +32,7 @@ export default class ServerCmd extends FlyCommand {
   static args = [{ name: "path", description: "path to app", default: "." }]
 
   public async run() {
-    const { args, flags } = this.parse(this.ctor)
+    const { args, flags } = this.parse(ServerCmd)
     let cwd = args.path || process.cwd()
 
     if (!fs.existsSync(cwd)) {

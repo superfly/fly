@@ -1,6 +1,5 @@
 import { FlyCommand } from "../base-command"
-import { apiClient } from "../api"
-import { processResponse } from "cli/src/api"
+import { apiClient, processResponse } from "../api"
 import { cli } from "cli-ux"
 import * as sharedFlags from "../flags"
 import { getAppName } from "../util"
@@ -14,7 +13,7 @@ export default class Releases extends FlyCommand {
   }
 
   public async run() {
-    const { flags } = this.parse(this.ctor)
+    const { flags } = this.parse(Releases)
 
     const API = apiClient(this)
     const appName = getAppName(flags)

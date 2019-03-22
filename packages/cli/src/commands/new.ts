@@ -1,8 +1,5 @@
-// tslint:disable:no-shadowed-variable
-
-import Command, { flags } from "@oclif/command"
+import Command, { flags as cmdFlags } from "@oclif/command"
 import { FlyCommand } from "../base-command"
-import * as sharedFlags from "../flags"
 import * as path from "path"
 import * as fs from "fs"
 import { sync as glob } from "glob"
@@ -15,7 +12,7 @@ export default class New extends FlyCommand {
   public static description = "create a new app"
 
   public static flags = {
-    template: flags.string({
+    template: cmdFlags.string({
       char: "t",
       description: "the template to use"
     })

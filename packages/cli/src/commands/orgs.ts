@@ -1,6 +1,5 @@
 import { FlyCommand } from "../base-command"
-import { apiClient } from "../api"
-import { processResponse } from "cli/src/api"
+import { apiClient, processResponse } from "../api"
 
 export default class Orgs extends FlyCommand {
   public static description = "list your organizations"

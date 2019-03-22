@@ -1,11 +1,7 @@
-// tslint:disable:no-shadowed-variable
-
 import { FlyCommand } from "../../base-command"
-import { apiClient } from "../../api"
-import { processResponse } from "cli/src/api"
-import { getAppName } from "cli/src/util"
-import { flags } from "@oclif/command"
-import { app, env } from "cli/src/flags"
+import { apiClient, processResponse } from "../../api"
+import { getAppName } from "../../util"
+import { app, env } from "../../flags"
 import * as inquirer from "inquirer"
 import { cli } from "cli-ux"
 
@@ -20,14 +16,14 @@ export default class Move extends FlyCommand {
   static args = []
 
   public async run() {
-    const { flags } = this.parse(this.ctor)
+    const { flags } = this.parse(Move)
     console.log(flags)
     const API = apiClient(this)
     const appName = getAppName(flags)
 
     const res = await API.get(`/api/v1/orgs`)
     processResponse(this, res, async () => {
-      const choices = res.data.data.map((org: any) => org.id)
+      const choices = res.data.data.map((o: any) => o.id)
 
       const org: any = await inquirer.prompt([
         {

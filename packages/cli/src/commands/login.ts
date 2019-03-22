@@ -1,12 +1,5 @@
-// tslint:disable:no-shadowed-variable
-
 import { FlyCommand } from "../base-command"
-import { apiClient } from "../api"
-import { processResponse } from "cli/src/api"
-import { getAppName } from "cli/src/util"
-import { flags } from "@oclif/command"
-import { app, env } from "cli/src/flags"
-import * as inquirer from "inquirer"
+import { processResponse } from "../api"
 import { cli } from "cli-ux"
 import axios from "axios"
 import { storeCredentials, credentialsPath } from "../credentials"

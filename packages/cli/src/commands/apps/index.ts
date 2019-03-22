@@ -1,15 +1,11 @@
 import { FlyCommand } from "../../base-command"
-import { apiClient } from "../../api"
-import { processResponse } from "cli/src/api"
+import { apiClient, processResponse } from "../../api"
 import { cli } from "cli-ux"
 
 export default class AppsList extends FlyCommand {
   public static description = "list your apps"
 
   public async run() {
-    // tslint:disable-next-line:no-shadowed-variable
-    // const { args, flags } = this.parse(ServerCmd)
-
     const API = apiClient(this)
 
     const res = await API.get("/api/v1/apps")
