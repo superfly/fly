@@ -66,10 +66,10 @@ jobs:
       #   inputs:
       #     testResultsFiles: "**/*junit.xml"
       #     searchFolder: $(Build.SourcesDirectory)/artifacts
-      - script: ./scripts/cli/pack
+      - script: ./scripts/release/pack
         name: Pack CLI
-      - script: ./scripts/cli/upload-builds $(Build.ArtifactStagingDirectory)
-        name: Upload CLI Builds
+      # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts
+      #   name: Upload CLI Builds
   # - job: Linux
   #   pool:
   #     vmImage: ubuntu-16.04
