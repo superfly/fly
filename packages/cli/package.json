@@ -59,6 +59,7 @@
     "@types/node": "^10",
     "@types/pako": "^1.0.0",
     "@types/tar-fs": "^1.16.0",
+    "aws-sdk": "^2.428.0",
     "globby": "^8",
     "ts-node": "^8",
     "tslint": "^5"

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -ex
+
+TARGET=$1
+
+echo "Packing CLI for $TARGET"
+
+cp ./yarn.lock ./packages/cli
+cd ./packages/cli
+
+oclif-dev pack -t $TARGET
+
+find . -name "*-$TARGET.tar.gz" -exec mv {} './artifacts/dist/' \;

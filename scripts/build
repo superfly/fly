@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -ex
+
+yarn build
+yarn bundle
+cp ./yarn.lock ./packages/cli/
