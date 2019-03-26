@@ -47,6 +47,7 @@ jobs:
         node-latest:
           node_version: ">=10"
           node_check_latest: true
+          build_cli_bundle: true
     variables:
       CI: true
     timeoutInMinutes: 15
@@ -67,6 +68,7 @@ jobs:
       #     testResultsFiles: "**/*junit.xml"
       #     searchFolder: $(Build.SourcesDirectory)/artifacts
       - script: ./scripts/release/pack darwin-x64
+        condition: eq(variables['build_cli_bundle'], 'true')
         name: PackCLI
       # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts
       #   name: Upload CLI Builds
