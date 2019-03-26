@@ -86,16 +86,16 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: 11.10.1
-      # - checkout: none #skip checking out the default repository resource
-      # - task: DownloadPipelineArtifact@0
-      #   displayName: "Download Build Artifacts"
-      #   inputs:
-      #     artifactName: "working-dir"
-      #     downloadPath: $(System.SourcesDirectory)
-      - script: yarn install --no-progress && yarn bootstrap
-        name: Install
-      - script: yarn build && yarn bundle
-        name: Build
+      - checkout: none #skip checking out the default repository resource
+      - task: DownloadPipelineArtifact@0
+        displayName: "Download Build Artifacts"
+        inputs:
+          artifactName: "working-dir"
+          downloadPath: $(System.SourcesDirectory)
+      # - script: yarn install --no-progress && yarn bootstrap
+      #   name: Install
+      # - script: yarn build && yarn bundle
+      #   name: Build
       - script: $(Build.SourcesDirectory)/scripts/release/pack darwin-x64 $(Build.SourcesDirectory)/artifacts/dist
         name: pack_cli
       # - task: PublishPipelineArtifact@0
