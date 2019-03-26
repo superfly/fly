@@ -94,6 +94,7 @@ jobs:
       vmImage: xcode9-macos10.13
     variables:
       a: b
+      cli_version: 0.48.0-pre.1
     steps:
       - task: NodeTool@0
         inputs:
@@ -114,13 +115,13 @@ jobs:
         name: Build
       - script: echo "##vso[task.setvariable variable=version;isOutput=true] ./scripts/version"
         name: set_package_version
-
+      - script: echo fly-$(cli_version)-darwin-x64.tar.gz
       - script: ./scripts/release/pack darwin-x64 $(Build.SourcesDirectory)/artifacts/dist
         name: pack_cli
       - task: PublishPipelineArtifact@0
         inputs:
-          artifactName: fly-$(set_package_version.version)-darwin-x64.tar.gz
-          targetPath: $(Build.SourcesDirectory)/artifacts/dist/fly-$(set_package_version.version)-darwin-x64.tar.gz
+          artifactName: fly-$(cli_version)-darwin-x64.tar.gz
+          targetPath: $(Build.SourcesDirectory)/artifacts/dist/fly-$(cli_version)-darwin-x64.tar.gz
       # - task: PublishPipelineArtifact@0
       #   inputs:
       #     artifactName: "fly-"
