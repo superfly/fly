@@ -138,7 +138,7 @@ jobs:
     pool:
       vmImage: ubuntu-16.04
     steps:
-      - task: DownloadPipelineArtifact@0
+      - task: DownloadPipelineArtifact@1
         inputs:
           targetPath: $(System.DefaultWorkingDirectory)
       - bash: ls -lah
