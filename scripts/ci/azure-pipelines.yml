@@ -76,32 +76,38 @@ jobs:
         inputs:
           artifactName: "working-dir"
           targetPath: $(Build.SourcesDirectory)
-  # - job: macos_cli
-  #   # dependsOn: macos
-  #   pool:
-  #     vmImage: xcode9-macos10.13
-  #   variables:
-  #     a: b
-  #   steps:
-  #     - task: NodeTool@0
-  #       inputs:
-  #         versionSpec: 11.10.1
-  #     - script: yarn install --no-progress && yarn bootstrap
-  #       name: Install
-  #     - script: yarn build && yarn bundle
-  #       name: Build
-  #     - script: ./scripts/release/pack darwin-x64 $(Build.SourcesDirectory)/artifacts/dist
-  #       name: pack_cli
-  #     - task: PublishPipelineArtifact@0
-  #       inputs:
-  #         artifactName: "artifactName"
-  #         targetPath: "src/MyWebApp/bin/Release/netcoreapp2.0/linux-x64/publish"
-  #     # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
-  #     #   name: upload_cli_builds
-  #     #   env:
-  #     #     RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
-  #     #     RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
-  #     #     RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
+  - job: macos_cli
+    dependsOn: macos
+    pool:
+      vmImage: xcode9-macos10.13
+    variables:
+      a: b
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: 11.10.1
+      - checkout: none #skip checking out the default repository resource
+      - task: DownloadBuildArtifacts@0
+        displayName: "Download Build Artifacts"
+        inputs:
+          artifactName: "working-dir"
+          downloadPath: $(System.SourcesDirectory)
+      # - script: yarn install --no-progress && yarn bootstrap
+      #   name: Install
+      # - script: yarn build && yarn bundle
+      #   name: Build
+      - script: ./scripts/release/pack darwin-x64 $(Build.SourcesDirectory)/artifacts/dist
+        name: pack_cli
+      # - task: PublishPipelineArtifact@0
+      #   inputs:
+      #     artifactName: "fly-"
+      #     targetPath: "src/MyWebApp/bin/Release/netcoreapp2.0/linux-x64/publish"
+      # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
+      #   name: upload_cli_builds
+      #   env:
+      #     RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
+      #     RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
+      #     RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
   # - job: Linux
   #   pool:
   #     vmImage: ubuntu-16.04
