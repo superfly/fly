@@ -171,12 +171,12 @@ jobs:
       #   inputs:
       #     artifactName: "fly-"
       #     targetPath: "src/MyWebApp/bin/Release/netcoreapp2.0/linux-x64/publish"
-      # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
-      #   name: upload_cli_builds
-      #   env:
-      #     RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
-      #     RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
-      #     RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
+      - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
+        name: upload_cli_builds
+        env:
+          RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
+          RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
+          RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
 
   - job: linux_cli
     dependsOn: linux
@@ -213,12 +213,12 @@ jobs:
       #   inputs:
       #     artifactName: "fly-"
       #     targetPath: "src/MyWebApp/bin/Release/netcoreapp2.0/linux-x64/publish"
-      # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
-      #   name: upload_cli_builds
-      #   env:
-      #     RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
-      #     RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
-      #     RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
+      - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
+        name: upload_cli_builds
+        env:
+          RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
+          RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
+          RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
 
   - job: publish_cli
     dependsOn: macos_cli
