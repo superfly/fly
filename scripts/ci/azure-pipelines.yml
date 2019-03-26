@@ -131,6 +131,17 @@ jobs:
       #     RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
       #     RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
       #     RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
+
+  - job: publish_cli
+    dependsOn: macos_cli
+    pool:
+      vmImage: ubuntu-16.04
+    steps:
+      - task: DownloadPipelineArtifact@0
+        inputs:
+          targetPath: $(System.DefaultWorkingDirectory)
+      - bash: ls -lah
+      - bash: ls -lah $(System.DefaultWorkingDirectory)
   # - job: Linux
   #   pool:
   #     vmImage: ubuntu-16.04
