@@ -87,7 +87,7 @@ jobs:
         inputs:
           versionSpec: 11.10.1
       - checkout: none #skip checking out the default repository resource
-      - task: DownloadBuildArtifacts@0
+      - task: DownloadPipelineArtifact@0
         displayName: "Download Build Artifacts"
         inputs:
           artifactName: "working-dir"
