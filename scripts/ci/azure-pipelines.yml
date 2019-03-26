@@ -133,6 +133,60 @@ jobs:
       #     RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
       #     RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
 
+  - job: linux_cli
+    # dependsOn: macos
+    pool:
+      vmImage: ubuntu-16.04
+    variables:
+      a: b
+      cli_version: 0.48.0-pre.1
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: 11.10.1
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "2.7"
+          architecture: "x64"
+      - script: |
+          sudo apt-get update && sudo apt-get install -y nasm
+          npm install -g yarn
+          yarn install --no-progress && yarn bootstrap
+        name: Install
+      # - checkout: none #skip checking out the default repository resource
+      # - task: DownloadPipelineArtifact@0
+      #   inputs:
+      #     artifactName: "working-dir"
+      #     downloadPath: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
+      # - task: ExtractFiles@1
+      #   inputs:
+      #     archiveFilePatterns: '*.zip'
+      #     destinationFolder: "$(Build.ArtifactStagingDirectory)/working_dir"
+      # - bash: ls -lah
+      - script: yarn install --no-progress && yarn bootstrap
+        name: Install
+      - script: yarn build && yarn bundle
+        name: Build
+      - script: echo "##vso[task.setvariable variable=version;isOutput=true] ./scripts/version"
+        name: set_package_version
+      - script: echo fly-$(cli_version)-linux-x64.tar.gz
+      - script: ./scripts/release/pack linux-x64 $(Build.SourcesDirectory)/artifacts/dist
+        name: pack_cli
+      - task: PublishPipelineArtifact@0
+        inputs:
+          artifactName: fly-v$(cli_version)-linux-x64.tar.gz
+          targetPath: $(Build.SourcesDirectory)/artifacts/dist/fly-v$(cli_version)-linux-x64.tar.gz
+      # - task: PublishPipelineArtifact@0
+      #   inputs:
+      #     artifactName: "fly-"
+      #     targetPath: "src/MyWebApp/bin/Release/netcoreapp2.0/linux-x64/publish"
+      # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
+      #   name: upload_cli_builds
+      #   env:
+      #     RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
+      #     RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
+      #     RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
+
   - job: publish_cli
     dependsOn: macos_cli
     pool:
