@@ -1,0 +1,4 @@
+#!/bin/bash
+
+VERSION=$(version)
+echo -n "v$VERSION"
