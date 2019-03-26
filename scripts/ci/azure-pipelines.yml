@@ -4,18 +4,18 @@
 # https://docs.microsoft.com/vsts/pipelines/languages/javascript
 
 jobs:
-  - job: BuildInfo
+  - job: build_info
     pool:
       vmImage: ubuntu-16.04
     steps:
-      - script: echo ./scripts/version
+      - script: ./scripts/version
         name: version
-  - job: TestBuildInfo
+  - job: test_build_info
     pool:
       vmImage: ubuntu-16.04
     steps:
       - script: echo $(BuildInfo.version)
-        name: echo build version
+        name: echo_build_version
 
   # - job: lint
   #   pool:
