@@ -9,6 +9,6 @@ echo "Packing CLI for $TARGET"
 cp ./yarn.lock ./packages/cli
 cd ./packages/cli
 
-oclif-dev pack -t $TARGET
+./node_modules/.bin/oclif-dev pack -t $TARGET
 
 find . -name "*-$TARGET.tar.gz" -exec mv {} './artifacts/dist/' \;
