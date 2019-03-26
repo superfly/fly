@@ -1,5 +1,7 @@
 variables:
-  System.Debug: true
+  - group: cli_release_credentials
+  - name: System.Debug
+    value: true
 
 jobs:
   # - job: build_info
@@ -95,8 +97,12 @@ jobs:
       - script: mkdir -p $(Build.SourcesDirectory)/artifacts/dist
       - script: ./scripts/release/pack darwin-x64
         name: pack_cli
-      - script: ./scripts/upload-builds $(Build.SourcesDirectory)/artifacts/dist
+      - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
         name: upload_cli_builds
+        env:
+          RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
+          RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
+          RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
   # - job: Linux
   #   pool:
   #     vmImage: ubuntu-16.04
