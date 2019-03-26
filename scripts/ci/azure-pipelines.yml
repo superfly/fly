@@ -41,47 +41,42 @@ jobs:
   #         testResultsFiles: "**/*junit.xml"
   #         searchFolder: $(Build.SourcesDirectory)/artifacts
 
-  - job: macOS
-    pool:
-      vmImage: xcode9-macos10.13
-    strategy:
-      maxParallel: 3
-      matrix:
-        # node-8:
-        #   node_version: 8
-        # node-10-3:
-        #   node_version: 10.3
-        node-latest:
-          node_version: ">=10"
-          node_check_latest: true
-          build_cli_bundle: true
-    variables:
-      CI: true
-    timeoutInMinutes: 15
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(node_version)
-          checkLatest: $(node_check_latest)
-      - script: yarn install --no-progress && yarn bootstrap
-        name: Install
-      - script: yarn build && yarn bundle
-        name: Build
-      # - script: yarn test
-      #   name: Test
-      # - task: PublishTestResults@2
-      #   condition: always()
-      #   inputs:
-      #     testResultsFiles: "**/*junit.xml"
-      #     searchFolder: $(Build.SourcesDirectory)/artifacts
-      # - script: ./scripts/release/pack darwin-x64
-      #   condition: eq(variables['build_cli_bundle'], 'true')
-      #   name: PackCLI
-      # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts
-      #   name: Upload CLI Builds
+  # - job: macOS
+  #   pool:
+  #     vmImage: xcode9-macos10.13
+  #   strategy:
+  #     maxParallel: 3
+  #     matrix:
+  #       # node-8:
+  #       #   node_version: 8
+  #       # node-10-3:
+  #       #   node_version: 10.3
+  #       node-latest:
+  #         node_version: ">=10"
+  #         node_check_latest: true
+  #         build_cli_bundle: true
+  #   variables:
+  #     CI: true
+  #   timeoutInMinutes: 15
+  #   steps:
+  #     - task: NodeTool@0
+  #       inputs:
+  #         versionSpec: $(node_version)
+  #         checkLatest: $(node_check_latest)
+  #     - script: yarn install --no-progress && yarn bootstrap
+  #       name: Install
+  #     - script: yarn build && yarn bundle
+  #       name: Build
+  #     - script: yarn test
+  #       name: Test
+  #     - task: PublishTestResults@2
+  #       condition: always()
+  #       inputs:
+  #         testResultsFiles: "**/*junit.xml"
+  #         searchFolder: $(Build.SourcesDirectory)/artifacts
 
   - job: macos_cli
-    dependsOn: macos
+    # dependsOn: macos
     pool:
       vmImage: xcode9-macos10.13
     variables:
@@ -94,8 +89,7 @@ jobs:
         name: Install
       - script: yarn build && yarn bundle
         name: Build
-      - script: mkdir -p $(Build.SourcesDirectory)/artifacts/dist
-      - script: ./scripts/release/pack darwin-x64
+      - script: ./scripts/release/pack darwin-x64 $(Build.SourcesDirectory)/artifacts/dist
         name: pack_cli
       - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
         name: upload_cli_builds
