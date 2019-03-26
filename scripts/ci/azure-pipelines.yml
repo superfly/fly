@@ -91,7 +91,7 @@ jobs:
         displayName: "Download Build Artifacts"
         inputs:
           artifactName: "working-dir"
-          downloadPath: $(System.SourcesDirectory)
+          downloadPath: $(Build.SourcesDirectory)
       - bash: ls -lah
       # - script: yarn install --no-progress && yarn bootstrap
       #   name: Install
