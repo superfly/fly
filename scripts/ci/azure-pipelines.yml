@@ -72,10 +72,22 @@ jobs:
       #   inputs:
       #     testResultsFiles: "**/*junit.xml"
       #     searchFolder: $(Build.SourcesDirectory)/artifacts
-      - task: PublishPipelineArtifact@0
-        inputs:
-          artifactName: "working-dir"
-          targetPath: $(Build.SourcesDirectory)
+      # - task: ArchiveFiles@2
+      #   inputs:
+      #     rootFolderOrFile: "$(Build.SourcesDirectory)"
+      #     includeRootFolder: true
+      #     replaceExistingArchive: true
+      #     #verbose: # Optional
+      #     #quiet: # Optional
+      #     archiveFile: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
+      # - task: PublishPipelineArtifact@0
+      #   inputs:
+      #     artifactName: "working-dir"
+      #     targetPath: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
+      # - task: PublishPipelineArtifact@0
+      #   inputs:
+      #     artifactName: "working-dir"
+      #     targetPath: $(Build.SourcesDirectory)
   - job: macos_cli
     dependsOn: macos
     pool:
@@ -87,16 +99,19 @@ jobs:
         inputs:
           versionSpec: 11.10.1
       - checkout: none #skip checking out the default repository resource
-      - task: DownloadPipelineArtifact@0
-        displayName: "Download Build Artifacts"
-        inputs:
-          artifactName: "working-dir"
-          downloadPath: $(Build.SourcesDirectory)
-      - bash: ls -lah
-      # - script: yarn install --no-progress && yarn bootstrap
-      #   name: Install
-      # - script: yarn build && yarn bundle
-      #   name: Build
+      # - task: DownloadPipelineArtifact@0
+      #   inputs:
+      #     artifactName: "working-dir"
+      #     downloadPath: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
+      # - task: ExtractFiles@1
+      #   inputs:
+      #     archiveFilePatterns: '*.zip'
+      #     destinationFolder: "$(Build.ArtifactStagingDirectory)/working_dir"
+      # - bash: ls -lah
+      - script: yarn install --no-progress && yarn bootstrap
+        name: Install
+      - script: yarn build && yarn bundle
+        name: Build
       - script: $(Build.SourcesDirectory)/scripts/release/pack darwin-x64 $(Build.SourcesDirectory)/artifacts/dist
         name: pack_cli
       # - task: PublishPipelineArtifact@0
