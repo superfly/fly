@@ -79,8 +79,10 @@ jobs:
         name: Build
       - script: yarn test
         name: Test
+        enabled: false
       - task: PublishTestResults@2
         condition: always()
+        enabled: false
         inputs:
           testResultsFiles: "**/*junit.xml"
           searchFolder: $(Build.SourcesDirectory)/artifacts
