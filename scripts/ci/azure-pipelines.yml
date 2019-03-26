@@ -119,8 +119,8 @@ jobs:
         name: pack_cli
       - task: PublishPipelineArtifact@0
         inputs:
-          artifactName: "fly-$(version)-darwin-x64.tar.gz"
-          targetPath: "$(Build.SourcesDirectory)/artifacts/dist/fly-$(version)-darwin-x64.tar.gz"
+          artifactName: fly-$(set_package_version.version)-darwin-x64.tar.gz
+          targetPath: $(Build.SourcesDirectory)/artifacts/dist/fly-$(set_package_version.version)-darwin-x64.tar.gz
       # - task: PublishPipelineArtifact@0
       #   inputs:
       #     artifactName: "fly-"
