@@ -2,6 +2,8 @@ variables:
   - group: cli_release_credentials
   - name: System.Debug
     value: true
+  - name: cli_node_version
+    value: 11.10.1
 
 jobs:
   # - job: build_info
@@ -47,13 +49,15 @@ jobs:
     strategy:
       maxParallel: 3
       matrix:
-        node-8:
-          node_version: 8
-        node-10-3:
-          node_version: 10.3
-        node-latest:
-          node_version: ">=10"
-          node_check_latest: true
+        # node-8:
+        #   node_version: 8
+        # node-10-3:
+        #   node_version: 10.3
+        node-cli-version:
+          node_version: $(cli_node_version)
+        # node-latest:
+        #   node_version: ">=10"
+        #   node_check_latest: true
     variables:
       CI: true
     timeoutInMinutes: 15
@@ -91,10 +95,12 @@ jobs:
         #   node_version: 8
         # node-10-3:
         #   node_version: 10.3
-        node-latest:
-          node_version: ">=10"
-          node_check_latest: true
-          build_cli_bundle: true
+        node-cli-version:
+          node_version: $(cli_node_version)
+        # node-latest:
+        #   node_version: ">=10"
+        #   node_check_latest: true
+        #   build_cli_bundle: true
     variables:
       CI: true
     timeoutInMinutes: 15
@@ -143,7 +149,7 @@ jobs:
     steps:
       - task: NodeTool@0
         inputs:
-          versionSpec: 11.10.1
+          versionSpec: $(cli_node_version)
       # - checkout: none #skip checking out the default repository resource
       # - task: DownloadPipelineArtifact@0
       #   inputs:
@@ -188,7 +194,7 @@ jobs:
     steps:
       - task: NodeTool@0
         inputs:
-          versionSpec: 11.10.1
+          versionSpec: $(cli_node_version)
       - task: UsePythonVersion@0
         inputs:
           versionSpec: "2.7"
