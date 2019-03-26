@@ -40,10 +40,10 @@ jobs:
     strategy:
       maxParallel: 3
       matrix:
-        node-8:
-          node_version: 8
-        node-10-3:
-          node_version: 10.3
+        # node-8:
+        #   node_version: 8
+        # node-10-3:
+        #   node_version: 10.3
         node-latest:
           node_version: ">=10"
           node_check_latest: true
