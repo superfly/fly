@@ -14,7 +14,7 @@ jobs:
     pool:
       vmImage: ubuntu-16.04
     steps:
-      - script: echo $(BuildInfo.version)
+      - script: echo $(build_info.version)
         name: echo_build_version
 
   # - job: lint
