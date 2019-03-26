@@ -66,8 +66,8 @@ jobs:
       #   inputs:
       #     testResultsFiles: "**/*junit.xml"
       #     searchFolder: $(Build.SourcesDirectory)/artifacts
-      - script: ./scripts/release/pack
-        name: Pack CLI
+      - script: ./scripts/release/pack darwin-x64
+        name: "Pack CLI"
       # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts
       #   name: Upload CLI Builds
   # - job: Linux
