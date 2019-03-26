@@ -290,7 +290,7 @@ function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerRespon
     res.on("error", err => {
       reject(err)
     })
-    dst.end(src) // string or Buffer
+    setImmediate(() => dst.end(src)); // string or Buffer
   })
 }
 
