@@ -84,6 +84,7 @@ jobs:
     pool:
       vmImage: xcode9-macos10.13
     variables:
+      a: b
     steps:
       - task: NodeTool@0
         inputs:
