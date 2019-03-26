@@ -40,7 +40,6 @@ jobs:
   #         searchFolder: $(Build.SourcesDirectory)/artifacts
 
   - job: macOS
-    dependsOn: build_info
     pool:
       vmImage: xcode9-macos10.13
     strategy:
