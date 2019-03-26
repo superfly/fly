@@ -122,24 +122,6 @@ jobs:
         inputs:
           artifactName: fly-v$(cli_version)-darwin-x64.tar.gz
           targetPath: $(Build.SourcesDirectory)/artifacts/dist/fly-v$(cli_version)-darwin-x64.tar.gz
-      - task: GitHubRelease@0
-        inputs:
-          gitHubConnection: superfly
-          repositoryName: superfly/fly
-          action: create
-          #action: 'create' # Options: create, edit, delete
-          #target: '$(Build.SourceVersion)' # Required when action == Create || Action == Edit
-          #tagSource: 'auto' # Required when action == Create# Options: auto, manual
-          #tag: # Required when action == Edit || Action == Delete || TagSource == Manual
-          #title: # Optional
-          #releaseNotesSource: 'file' # Optional. Options: file, input
-          #releaseNotesFile: # Optional
-          #releaseNotes: # Optional
-          #assets: '$(Build.ArtifactStagingDirectory)/*' # Optional
-          #assetUploadMode: 'delete' # Optional. Options: delete, replace
-          #isDraft: false # Optional
-          #isPreRelease: false # Optional
-          #addChangeLog: true # Optional
       # - task: PublishPipelineArtifact@0
       #   inputs:
       #     artifactName: "fly-"
