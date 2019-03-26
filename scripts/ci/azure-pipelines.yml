@@ -1,22 +1,13 @@
-# Node.js
-# Build a general Node.js application with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/vsts/pipelines/languages/javascript
+variables:
+  System.Debug: true
 
 jobs:
-  - job: build_info
-    pool:
-      vmImage: ubuntu-16.04
-    steps:
-      - script: ./scripts/version
-        name: version
-  - job: test_build_info
-    dependsOn: build_info
-    pool:
-      vmImage: ubuntu-16.04
-    steps:
-      - script: echo $(build_info.version)
-        name: echo_build_version
+  # - job: build_info
+  #   pool:
+  #     vmImage: ubuntu-16.04
+  #   steps:
+  #     - script: echo "##vso[task.setvariable variable=version;isOutput=true] ./scripts/version"
+  #       name: set_package_version
 
   # - job: lint
   #   pool:
@@ -49,6 +40,7 @@ jobs:
   #         searchFolder: $(Build.SourcesDirectory)/artifacts
 
   - job: macOS
+    dependsOn: build_info
     pool:
       vmImage: xcode9-macos10.13
     strategy:
@@ -81,11 +73,30 @@ jobs:
       #   inputs:
       #     testResultsFiles: "**/*junit.xml"
       #     searchFolder: $(Build.SourcesDirectory)/artifacts
-      - script: ./scripts/release/pack darwin-x64
-        condition: eq(variables['build_cli_bundle'], 'true')
-        name: PackCLI
+      # - script: ./scripts/release/pack darwin-x64
+      #   condition: eq(variables['build_cli_bundle'], 'true')
+      #   name: PackCLI
       # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts
       #   name: Upload CLI Builds
+
+  - job: macos_cli
+    dependsOn: macos
+    pool:
+      vmImage: xcode9-macos10.13
+    variables:
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: 11.10.1
+      - script: yarn install --no-progress && yarn bootstrap
+        name: Install
+      - script: yarn build && yarn bundle
+        name: Build
+      - script: mkdir -p $(Build.SourcesDirectory)/artifacts/dist
+      - script: ./scripts/release/pack darwin-x64
+        name: pack_cli
+      - script: ./scripts/upload-builds $(Build.SourcesDirectory)/artifacts/dist
+        name: upload_cli_builds
   # - job: Linux
   #   pool:
   #     vmImage: ubuntu-16.04
