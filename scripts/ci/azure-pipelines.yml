@@ -237,9 +237,10 @@ jobs:
     steps:
       - task: DownloadPipelineArtifact@1
         inputs:
+          itemPattern: cli-*/**
           downloadPath: $(Build.StagingDirectory)/cli-dist
       - bash: mkdir -p $(Build.SourcesDirectory)/packages/cli/dist
-      - bash: find '$(Build.StagingDirectory)/cli-dist/cli-*' -d 1 -execdir cp -rfv '{}' '$(Build.SourcesDirectory)/packages/cli/dist' \;
+      - bash: find '$(Build.StagingDirectory)/cli-dist/' -d 1 -execdir cp -rfv '{}' '$(Build.SourcesDirectory)/packages/cli/dist' \;
       - bash: find $(Build.SourcesDirectory)
       - bash: find $(Build.ArtifactsDirectory)
       - bash: yarn oclif-dev publish
