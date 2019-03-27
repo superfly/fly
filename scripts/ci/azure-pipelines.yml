@@ -235,6 +235,21 @@ jobs:
     pool:
       vmImage: ubuntu-16.04
     steps:
+      - task: DownloadPipelineArtifact@1
+        inputs:
+          itemPattern: cli-*/**
+          downloadPath: $(Build.StagingDirectory)/dist
+      - bash: mkdir -p $(Build.SourcesDirectory)/packages/cli/dist
+      - bash: find $(Build.ArtifactStagingDirectory)
+        displayName: Build.ArtifactStagingDirectory
+      - bash: find $(Build.StagingDirectory)
+        displayName: System.StagingDirectory
+      - bash: find $(Build.SourcesDirectory)
+        displayName: SourcesDirectory
+      - bash: find $(Build.ArtifactsDirectory)
+        displayName: ArtifactsDirectory
+      - bash: find $(System.StagingDirectory)/dist -name 'cli-*'
+      - bash: find $(System.StagingDirectory)/dist -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/packages/cli/dist/ \;
       - task: NodeTool@0
         inputs:
           versionSpec: $(cli_node_version)
@@ -247,15 +262,6 @@ jobs:
           npm install -g yarn
           yarn install --no-progress && yarn bootstrap
         name: Install
-      - task: DownloadPipelineArtifact@1
-        inputs:
-          itemPattern: cli-*/**
-      - bash: mkdir -p $(Build.SourcesDirectory)/packages/cli/dist
-      - bash: find $(System.ArtifactsDirectory)
-      - bash: find $(System.ArtifactsDirectory) -name 'cli-*'
-      - bash: find $(System.ArtifactsDirectory) -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/packages/cli/dist/ \;
-      - bash: find $(Build.SourcesDirectory)
-      - bash: find $(Build.ArtifactsDirectory)
       - bash: yarn oclif-dev publish
         workingDirectory: $(Build.SourcesDirectory)/packages/cli
   # - job: Windows
