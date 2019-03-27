@@ -237,13 +237,13 @@ jobs:
     steps:
       - task: DownloadPipelineArtifact@1
         inputs:
-          targetPath: $(Build.SourcesDirectory)
+          downloadPath: $(Build.SourcesDirectory)/packages/cli/dist
       - bash: find $(Build.SourcesDirectory)
       - bash: find $(Build.ArtifactsDirectory)
-      - bash: find $(Build.StagingDirectory)
-      - bash: find $(Build.ArtifactStagingDirectory)
-      - bash: find $(Build.BinariesDirectory)
-      - bash: find $(Agent.BuildDirectory)
+      # - bash: find $(Build.StagingDirectory)
+      # - bash: find $(Build.ArtifactStagingDirectory)
+      # - bash: find $(Build.BinariesDirectory)
+      # - bash: find $(Agent.BuildDirectory)
       # - bash: find $(Build.SourcesDirectory)/packages/cli/dist
       # - job: Windows
   #   pool:
