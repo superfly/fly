@@ -173,7 +173,7 @@ jobs:
         name: pack_cli
       - task: PublishPipelineArtifact@0
         inputs:
-          artifactName: dist
+          artifactName: cli-darwin-x64
           targetPath: $(Build.SourcesDirectory)/packages/cli/dist
       # - task: PublishPipelineArtifact@0
       #   inputs:
@@ -215,7 +215,7 @@ jobs:
         name: pack_cli
       - task: PublishPipelineArtifact@0
         inputs:
-          artifactName: dist
+          artifactName: cli-linux-x64
           targetPath: $(Build.SourcesDirectory)/packages/cli/dist
       # - task: PublishPipelineArtifact@0
       #   inputs:
@@ -237,15 +237,12 @@ jobs:
     steps:
       - task: DownloadPipelineArtifact@1
         inputs:
-          downloadPath: $(Build.SourcesDirectory)/packages/cli
+          downloadPath: $(Build.StagingDirectory)/cli-dist
+      - bash: mkdir -p $(Build.SourcesDirectory)/packages/cli/dist
+      - bash: find $(Build.StagingDirectory)/cli-dist/cli-* -d 1 -execdir cp -rfv '{}' '$(Build.SourcesDirectory)/packages/cli/dist'  \;
       - bash: find $(Build.SourcesDirectory)
       - bash: find $(Build.ArtifactsDirectory)
-      # - bash: find $(Build.StagingDirectory)
-      # - bash: find $(Build.ArtifactStagingDirectory)
-      # - bash: find $(Build.BinariesDirectory)
-      # - bash: find $(Agent.BuildDirectory)
-      # - bash: find $(Build.SourcesDirectory)/packages/cli/dist
-      # - job: Windows
+  # - job: Windows
   #   pool:
   #     vmImage: vs2017-win2016
   #   strategy:
