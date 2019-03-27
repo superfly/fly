@@ -239,7 +239,7 @@ jobs:
         inputs:
           downloadPath: $(Build.StagingDirectory)/cli-dist
       - bash: mkdir -p $(Build.SourcesDirectory)/packages/cli/dist
-      - bash: find $(Build.StagingDirectory)/cli-dist/cli-* -d 1 -execdir cp -rfv '{}' '$(Build.SourcesDirectory)/packages/cli/dist'  \;
+      - bash: find '$(Build.StagingDirectory)/cli-dist/cli-*' -d 1 -execdir cp -rfv '{}' '$(Build.SourcesDirectory)/packages/cli/dist' \;
       - bash: find $(Build.SourcesDirectory)
       - bash: find $(Build.ArtifactsDirectory)
   # - job: Windows
