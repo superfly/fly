@@ -9,4 +9,4 @@ echo "Packing CLI for $TARGET"
 cp ./yarn.lock ./packages/cli
 cd ./packages/cli
 
-./node_modules/.bin/oclif-dev pack -t $TARGET
+yarn oclif-dev pack -t $TARGET

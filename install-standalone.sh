@@ -45,13 +45,10 @@
   cd /usr/local/lib
   rm -rf fly
   rm -rf ~/.local/share/fly/client
-  if [ \$(command -v xz) ]; then
-    URL=https://flytest.sfo2.digitaloceanspaces.com/fly-\$OS-\$ARCH.tar.xz
-    TAR_ARGS="xJ"
-  else
-    URL=https://flytest.sfo2.digitaloceanspaces.com/fly-\$OS-\$ARCH.tar.gz
-    TAR_ARGS="xz"
-  fi
+
+  URL=https://flytest.sfo2.digitaloceanspaces.com/fly-\$OS-\$ARCH.tar.gz
+  TAR_ARGS="xz"
+
   echo "Installing CLI from \$URL"
   if [ \$(command -v curl) ]; then
     curl "\$URL" | tar "\$TAR_ARGS"
