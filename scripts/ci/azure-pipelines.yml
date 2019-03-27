@@ -242,6 +242,8 @@ jobs:
       - bash: find '$(Build.StagingDirectory)/cli-dist/cli-*' -d 1 -execdir cp -rfv '{}' '$(Build.SourcesDirectory)/packages/cli/dist' \;
       - bash: find $(Build.SourcesDirectory)
       - bash: find $(Build.ArtifactsDirectory)
+      - bash: yarn oclif-dev publish
+        workingDirectory: $(Build.SourcesDirectory)/packages/cli
   # - job: Windows
   #   pool:
   #     vmImage: vs2017-win2016
