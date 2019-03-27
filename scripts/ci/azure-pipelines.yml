@@ -173,7 +173,7 @@ jobs:
         name: pack_cli
       - task: PublishPipelineArtifact@0
         inputs:
-          artifactName: cli-darwin-x64
+          artifactName: dist
           targetPath: $(Build.SourcesDirectory)/packages/cli/dist
       # - task: PublishPipelineArtifact@0
       #   inputs:
@@ -215,7 +215,7 @@ jobs:
         name: pack_cli
       - task: PublishPipelineArtifact@0
         inputs:
-          artifactName: cli-linux-x64
+          artifactName: dist
           targetPath: $(Build.SourcesDirectory)/packages/cli/dist
       # - task: PublishPipelineArtifact@0
       #   inputs:
@@ -237,7 +237,7 @@ jobs:
     steps:
       - task: DownloadPipelineArtifact@1
         inputs:
-          downloadPath: $(Build.SourcesDirectory)/packages/cli/dist
+          downloadPath: $(Build.SourcesDirectory)/packages/cli
       - bash: find $(Build.SourcesDirectory)
       - bash: find $(Build.ArtifactsDirectory)
       # - bash: find $(Build.StagingDirectory)
