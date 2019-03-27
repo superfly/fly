@@ -237,7 +237,6 @@ jobs:
     steps:
       - task: DownloadPipelineArtifact@1
         inputs:
-          itemPattern: cli-*/**
           downloadPath: $(Build.StagingDirectory)/dist
       - bash: mkdir -p $(Build.SourcesDirectory)/packages/cli/dist
       - bash: find $(Build.ArtifactStagingDirectory)
