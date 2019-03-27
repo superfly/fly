@@ -248,7 +248,7 @@ jobs:
       - bash: find $(Build.ArtifactsDirectory)
         displayName: ArtifactsDirectory
       - bash: find $(Build.StagingDirectory)/dist -name 'cli-*'
-      - bash: find $(Build.StagingDirectory)/dist-name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/packages/cli/dist/ \;
+      - bash: find $(Build.StagingDirectory)/dist -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/packages/cli/dist/ \;
       - task: NodeTool@0
         inputs:
           versionSpec: $(cli_node_version)
