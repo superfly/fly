@@ -240,7 +240,8 @@ jobs:
           itemPattern: cli-*/**
           downloadPath: $(Build.StagingDirectory)/cli-dist
       - bash: mkdir -p $(Build.SourcesDirectory)/packages/cli/dist
-      - bash: find '$(Build.StagingDirectory)/cli-dist/' -name 'cli-*' -execdir cp -rfv '{}' '$(Build.SourcesDirectory)/packages/cli/dist' \;
+      - bash: find $(Build.StagingDirectory)/cli-dist -mindepth 1 -name 'cli-*'
+      - bash: find $(Build.StagingDirectory)/cli-dist -mindepth 1 -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/packages/cli/dist/ \;
       - bash: find $(Build.SourcesDirectory)
       - bash: find $(Build.ArtifactsDirectory)
       - bash: yarn oclif-dev publish
