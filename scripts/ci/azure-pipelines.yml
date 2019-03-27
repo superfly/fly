@@ -235,12 +235,25 @@ jobs:
     pool:
       vmImage: ubuntu-16.04
     steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(cli_node_version)
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "2.7"
+          architecture: "x64"
+      - script: |
+          sudo apt-get update && sudo apt-get install -y nasm
+          npm install -g yarn
+          yarn install --no-progress && yarn bootstrap
+        name: Install
       - task: DownloadPipelineArtifact@1
         inputs:
           itemPattern: cli-*/**
       - bash: mkdir -p $(Build.SourcesDirectory)/packages/cli/dist
-      - bash: find $(Build.StagingDirectory) -name 'cli-*'
-      - bash: find $(Build.StagingDirectory) -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/packages/cli/dist/ \;
+      - bash: find $(System.ArtifactsDirectory)
+      - bash: find $(System.ArtifactsDirectory) -name 'cli-*'
+      - bash: find $(System.ArtifactsDirectory) -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/packages/cli/dist/ \;
       - bash: find $(Build.SourcesDirectory)
       - bash: find $(Build.ArtifactsDirectory)
       - bash: yarn oclif-dev publish
