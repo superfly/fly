@@ -813,8 +813,9 @@
     debug "^4.1.1"
     tslib "^1.9.3"
 
-"@oclif/dev-cli@file:../../michaeldwan/dev-cli":
+"@oclif/dev-cli@https://flytest.sfo2.digitaloceanspaces.com/oclif-dev-cli-1.21.3.tgz":
   version "1.21.3"
+  resolved "https://flytest.sfo2.digitaloceanspaces.com/oclif-dev-cli-1.21.3.tgz#a01f31d15b926a08f5001a0d0cf10a5e781871b3"
   dependencies:
     "@oclif/command" "^1.5.10"
     "@oclif/config" "^1.12.8"

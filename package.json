@@ -28,7 +28,7 @@
     "publish:pre": "lerna publish prerelease --npm-tag pre --force-publish='*'"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "michaeldwan/dev-cli",
+    "@oclif/dev-cli": "https://flytest.sfo2.digitaloceanspaces.com/oclif-dev-cli-1.21.3.tgz",
     "@types/jest": "^23.3.1",
     "jest": "^24.1.0",
     "jest-junit": "^5.1.0",
