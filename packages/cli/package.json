@@ -24,8 +24,7 @@
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "prepack": "oclif-dev manifest && oclif-dev readme",
     "version": "oclif-dev readme && git add README.md",
     "clean": "rm -rf ./lib ./dist ./tmp"
   },
@@ -51,7 +50,6 @@
     "tslib": "^1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1",
     "@oclif/test": "^1",
     "@oclif/tslint": "^3",
     "@types/execa": "^0.7.0",
@@ -72,9 +70,21 @@
     ],
     "macos": {
       "identifier": "com.superfly.fly"
+    },
+    "update": {
+      "s3": {
+        "host": "https://flytest.sfo2.digitaloceanspaces.com",
+        "bucket": "flytest"
+      },
+      "node": {
+        "version": "11.10.1"
+      }
     }
   },
   "publishConfig": {
     "access": "public"
+  },
+  "engines": {
+    "node": ">=8.10.0"
   }
 }

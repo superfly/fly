@@ -3,15 +3,10 @@
 set -ex
 
 TARGET=$1
-DEST=$2
 
-echo "Packing CLI for $TARGET into $DEST"
+echo "Packing CLI for $TARGET"
 
 cp ./yarn.lock ./packages/cli
 cd ./packages/cli
 
 ./node_modules/.bin/oclif-dev pack -t $TARGET
-
-mkdir -p $DEST
-
-find . -name "*-$TARGET.tar.gz" -exec mv {} "$DEST" \;

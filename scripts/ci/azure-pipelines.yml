@@ -169,22 +169,22 @@ jobs:
       - script: echo "##vso[task.setvariable variable=version;isOutput=true] ./scripts/version"
         name: set_package_version
       - script: echo fly-$(cli_version)-darwin-x64.tar.gz
-      - script: ./scripts/release/pack darwin-x64 $(Build.SourcesDirectory)/artifacts/dist
+      - script: ./scripts/release/pack darwin-x64
         name: pack_cli
       - task: PublishPipelineArtifact@0
         inputs:
-          artifactName: fly-v$(cli_version)-darwin-x64.tar.gz
-          targetPath: $(Build.SourcesDirectory)/artifacts/dist/fly-v$(cli_version)-darwin-x64.tar.gz
+          artifactName: cli-darwin-x64
+          targetPath: $(Build.SourcesDirectory)/packages/cli/dist
       # - task: PublishPipelineArtifact@0
       #   inputs:
       #     artifactName: "fly-"
       #     targetPath: "src/MyWebApp/bin/Release/netcoreapp2.0/linux-x64/publish"
-      - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
-        name: upload_cli_builds
-        env:
-          RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
-          RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
-          RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
+      # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
+      #   name: upload_cli_builds
+      #   env:
+      #     RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
+      #     RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
+      #     RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
 
   - job: linux_cli
     dependsOn: linux
@@ -211,34 +211,37 @@ jobs:
       - script: echo "##vso[task.setvariable variable=version;isOutput=true] ./scripts/version"
         name: set_package_version
       - script: echo fly-$(cli_version)-linux-x64.tar.gz
-      - script: ./scripts/release/pack linux-x64 $(Build.SourcesDirectory)/artifacts/dist
+      - script: ./scripts/release/pack linux-x64
         name: pack_cli
       - task: PublishPipelineArtifact@0
         inputs:
-          artifactName: fly-v$(cli_version)-linux-x64.tar.gz
-          targetPath: $(Build.SourcesDirectory)/artifacts/dist/fly-v$(cli_version)-linux-x64.tar.gz
+          artifactName: cli-linux-x64
+          targetPath: $(Build.SourcesDirectory)/packages/cli/dist
       # - task: PublishPipelineArtifact@0
       #   inputs:
       #     artifactName: "fly-"
       #     targetPath: "src/MyWebApp/bin/Release/netcoreapp2.0/linux-x64/publish"
-      - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
-        name: upload_cli_builds
-        env:
-          RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
-          RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
-          RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
+      # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
+      #   name: upload_cli_builds
+      #   env:
+      #     RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
+      #     RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
+      #     RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
 
   - job: publish_cli
-    dependsOn: macos_cli
+    dependsOn:
+      - macos_cli
+      - linux_cli
     pool:
       vmImage: ubuntu-16.04
     steps:
       - task: DownloadPipelineArtifact@1
         inputs:
-          targetPath: $(System.DefaultWorkingDirectory)
-      - bash: ls -lah
-      - bash: ls -lah $(System.DefaultWorkingDirectory)
-  # - job: Windows
+          targetPath: $(Build.SourcesDirectory)/packages/cli/dist
+      - bash: ls -lah $(Build.SourcesDirectory)
+      - bash: find $(Build.ArtifactsDirectory)
+      - bash: find $(Build.SourcesDirectory)/packages/cli/dist
+      # - job: Windows
   #   pool:
   #     vmImage: vs2017-win2016
   #   strategy:
