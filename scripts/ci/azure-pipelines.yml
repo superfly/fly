@@ -76,7 +76,7 @@ jobs:
           versionSpec: $(yarn_version)
       - script: ./scripts/release/pack $(target)
         workingDirectory: $(Build.SourcesDirectory)/working-dir-$(Agent.JobName)
-        display: Pack CLI Bundle
+        displayName: Pack CLI Bundle
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: cli-$(target)
