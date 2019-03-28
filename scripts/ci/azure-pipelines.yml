@@ -4,6 +4,8 @@ variables:
     value: true
   - name: cli_node_version
     value: 11.10.1
+  - name: yarn_version
+    value: 1.15.2
 
 jobs:
   - job: test_matrix
@@ -165,6 +167,9 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(cli_node_version)
+      - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+        inputs:
+          versionSpec: $(yarn_version)
       # - checkout: none #skip checking out the default repository resource
       # - task: DownloadPipelineArtifact@0
       #   inputs:
@@ -210,6 +215,9 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: $(cli_node_version)
+      - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+        inputs:
+          versionSpec: $(yarn_version)
       - script: yarn install --no-progress && yarn bootstrap
         name: Install
       # - task: UsePythonVersion@0
@@ -232,16 +240,6 @@ jobs:
         inputs:
           artifactName: cli-linux-x64
           targetPath: $(Build.SourcesDirectory)/packages/cli/dist
-      # - task: PublishPipelineArtifact@0
-      #   inputs:
-      #     artifactName: "fly-"
-      #     targetPath: "src/MyWebApp/bin/Release/netcoreapp2.0/linux-x64/publish"
-      # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
-      #   name: upload_cli_builds
-      #   env:
-      #     RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
-      #     RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
-      #     RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
 
   - job: publish_cli
     dependsOn:
