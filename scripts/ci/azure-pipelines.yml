@@ -31,11 +31,11 @@ jobs:
       - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
         inputs:
           versionSpec: $(yarn_version)
-      - script: yarn install --no-progress && yarn bootstrap
+      - bash: yarn install --no-progress && yarn bootstrap
         displayName: Setup Dependencies
-      - script: yarn build && yarn bundle
+      - bash: yarn build && yarn bundle
         displayName: Build
-      - script: yarn test
+      - bash: yarn test
         displayName: Test
         enabled: false
       - task: PublishTestResults@2
@@ -74,7 +74,7 @@ jobs:
       - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
         inputs:
           versionSpec: $(yarn_version)
-      - script: ./scripts/release/pack $(target)
+      - bash: ./scripts/release/pack $(target)
         workingDirectory: $(Build.SourcesDirectory)/working-dir-$(Agent.JobName)
         displayName: Pack CLI Bundle
       - task: PublishPipelineArtifact@0
