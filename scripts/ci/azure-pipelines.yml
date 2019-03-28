@@ -6,6 +6,19 @@ variables:
     value: 11.10.1
 
 jobs:
+  - job: test_matrix
+    strategy:
+      maxParallel: 2
+      matrix:
+        mac:
+          vm: xcode9-macos10.13
+        linux:
+          vm: ubuntu-16.04
+    pool:
+      vmImage: $(vm)
+    steps:
+      - script: echo "$(uname) $(uname -m)"
+
   # - job: build_info
   #   pool:
   #     vmImage: ubuntu-16.04
