@@ -77,8 +77,16 @@
     },
     "update": {
       "s3": {
-        "host": "https://flytest.sfo2.digitaloceanspaces.com",
-        "bucket": "flytest"
+        "host": "https://get-flyio.edgeapp.net",
+        "bucket": "flyio-builds",
+        "templates": {
+          "target": {
+            "baseDir": "cli/targets"
+          },
+          "vanilla": {
+            "baseDir": "cli/vanilla"
+          }
+        }
       },
       "node": {
         "version": "11.10.1",
@@ -87,6 +95,10 @@
           "linux-x64"
         ]
       }
+    },
+    "warn-if-update-available": {
+      "timeoutInDays": 7,
+      "message": "fly update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>."
     }
   },
   "publishConfig": {
