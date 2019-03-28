@@ -4,11 +4,13 @@ variables:
     value: true
   - name: cli_node_version
     value: 11.10.1
+  - name: node_version
+    value: 11.10.1
   - name: yarn_version
     value: 1.15.2
 
 jobs:
-  - job: test_matrix
+  - job: test
     strategy:
       maxParallel: 2
       matrix:
@@ -19,45 +21,102 @@ jobs:
     pool:
       vmImage: $(vm)
     steps:
-      - script: echo "$(uname) $(uname -m)"
-
-  # - job: build_info
+      - bash: echo $(Agent.JobName)
+      # - task: NodeTool@0
+      #   inputs:
+      #     versionSpec: $(node_version)
+      # - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+      #   inputs:
+      #     versionSpec: $(yarn_version)
+      # - script: yarn install --no-progress && yarn bootstrap
+      #   displayName: Setup Dependencies
+      # - script: yarn build && yarn bundle
+      #   displayName: Build & Bundle
+      # - script: yarn test
+      #   displayName: Test
+      #   enabled: false
+      # - task: PublishTestResults@2
+      #   condition: always()
+      #   enabled: false
+      #   inputs:
+      #     testResultsFiles: "**/*junit.xml"
+      #     searchFolder: $(Build.SourcesDirectory)/artifacts
+      #
+      # - task: ArchiveFiles@2
+      #   inputs:
+      #     rootFolderOrFile: "$(Build.SourcesDirectory)"
+      #     includeRootFolder: true
+      #     replaceExistingArchive: true
+      #     #verbose: # Optional
+      #     #quiet: # Optional
+      #     archiveFile: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
+      # - task: PublishPipelineArtifact@0
+      #   inputs:
+      #     artifactName: "working-dir"
+      #     targetPath: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
+      # - task: PublishPipelineArtifact@0
+      #   inputs:
+      #     artifactName: "working-dir"
+      #     targetPath: $(Build.SourcesDirectory)
+  # - job: build_cli
+  #   strategy:
+  #     maxParallel: 2
+  #     matrix:
+  #       mac:
+  #         vm: xcode9-macos10.13
+  #         target: darwin-x64
+  #       linux:
+  #         vm: ubuntu-16.04
+  #         target: linux-x64
+  #   pool:
+  #     vmImage: $(vm)
+  #   steps:
+  #     - task: NodeTool@0
+  #       inputs:
+  #         versionSpec: $(node_version)
+  #     - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+  #       inputs:
+  #         versionSpec: $(yarn_version)
+  #     - script: yarn install --no-progress && yarn bootstrap
+  #       displayName: Setup
+  #     - script: yarn build && yarn bundle
+  #       displayName: Build
+  #     - script: ./scripts/release/pack $(target)
+  #       display: Pack CLI Bundle
+  #     - task: PublishPipelineArtifact@0
+  #       inputs:
+  #         artifactName: cli-$(target)
+  #         targetPath: $(Build.SourcesDirectory)/packages/cli/dist
+  # - job: lint
+  #   condition: eq(variables['Build.Reason'], 'PullRequest')
   #   pool:
   #     vmImage: ubuntu-16.04
+  #   variables:
+  #     CI: true
+  #   timeoutInMinutes: 10
   #   steps:
-  #     - script: echo "##vso[task.setvariable variable=version;isOutput=true] ./scripts/version"
-  #       name: set_package_version
-  - job: lint
-    condition: eq(variables['Build.Reason'], 'PullRequest')
-    pool:
-      vmImage: ubuntu-16.04
-    variables:
-      CI: true
-    timeoutInMinutes: 10
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: 10
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: "2.7"
-          architecture: "x64"
-      - script: |
-          sudo apt-get update && sudo apt-get install -y nasm
-          npm install -g yarn
-          yarn install --no-progress && yarn bootstrap
-          mkdir ./artifacts
-        name: Install
-      - script: yarn test:lint
-        name: Lint
-      - script: yarn test:format
-        name: Format
-      - task: PublishTestResults@2
-        condition: always()
-        inputs:
-          testResultsFiles: "**/*junit.xml"
-          searchFolder: $(Build.SourcesDirectory)/artifacts
-
+  #     - task: NodeTool@0
+  #       inputs:
+  #         versionSpec: 10
+  #     - task: UsePythonVersion@0
+  #       inputs:
+  #         versionSpec: "2.7"
+  #         architecture: "x64"
+  #     - script: |
+  #         sudo apt-get update && sudo apt-get install -y nasm
+  #         npm install -g yarn
+  #         yarn install --no-progress && yarn bootstrap
+  #         mkdir ./artifacts
+  #       name: Install
+  #     - script: yarn test:lint
+  #       name: Lint
+  #     - script: yarn test:format
+  #       name: Format
+  #     - task: PublishTestResults@2
+  #       condition: always()
+  #       inputs:
+  #         testResultsFiles: "**/*junit.xml"
+  #         searchFolder: $(Build.SourcesDirectory)/artifacts
   # - job: linux
   #   pool:
   #     vmImage: ubuntu-16.04
@@ -101,7 +160,6 @@ jobs:
   #       inputs:
   #         testResultsFiles: "**/*junit.xml"
   #         searchFolder: $(Build.SourcesDirectory)/artifacts
-
   # - job: macOS
   #   pool:
   #     vmImage: xcode9-macos10.13
@@ -155,131 +213,120 @@ jobs:
   #     #   inputs:
   #     #     artifactName: "working-dir"
   #     #     targetPath: $(Build.SourcesDirectory)
-
-  - job: macos_cli
-    # dependsOn: macos
-    pool:
-      vmImage: xcode9-macos10.13
-    variables:
-      a: b
-      cli_version: 0.48.0-pre.1
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(cli_node_version)
-      - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
-        inputs:
-          versionSpec: $(yarn_version)
-      # - checkout: none #skip checking out the default repository resource
-      # - task: DownloadPipelineArtifact@0
-      #   inputs:
-      #     artifactName: "working-dir"
-      #     downloadPath: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
-      # - task: ExtractFiles@1
-      #   inputs:
-      #     archiveFilePatterns: '*.zip'
-      #     destinationFolder: "$(Build.ArtifactStagingDirectory)/working_dir"
-      # - bash: ls -lah
-      - script: yarn install --no-progress && yarn bootstrap
-        name: Install
-      - script: yarn build && yarn bundle
-        name: Build
-      - script: echo "##vso[task.setvariable variable=version;isOutput=true] ./scripts/version"
-        name: set_package_version
-      - script: echo fly-$(cli_version)-darwin-x64.tar.gz
-      - script: ./scripts/release/pack darwin-x64
-        name: pack_cli
-      - task: PublishPipelineArtifact@0
-        inputs:
-          artifactName: cli-darwin-x64
-          targetPath: $(Build.SourcesDirectory)/packages/cli/dist
-      # - task: PublishPipelineArtifact@0
-      #   inputs:
-      #     artifactName: "fly-"
-      #     targetPath: "src/MyWebApp/bin/Release/netcoreapp2.0/linux-x64/publish"
-      # - script: ./scripts/release/upload-builds $(Build.SourcesDirectory)/artifacts/dist
-      #   name: upload_cli_builds
-      #   env:
-      #     RELEASE_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
-      #     RELEASE_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
-      #     RELEASE_ENDPOINT: $(RELEASE_ENDPOINT)
-
-  - job: linux_cli
-    # dependsOn: linux
-    pool:
-      vmImage: ubuntu-16.04
-    variables:
-      a: b
-      cli_version: 0.48.0-pre.1
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(cli_node_version)
-      - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
-        inputs:
-          versionSpec: $(yarn_version)
-      - script: yarn install --no-progress && yarn bootstrap
-        name: Install
-      # - task: UsePythonVersion@0
-      #   inputs:
-      #     versionSpec: "2.7"
-      #     architecture: "x64"
-      # - script: |
-      #     sudo apt-get update && sudo apt-get install -y nasm
-      #     npm install -g yarn
-      #     yarn install --no-progress && yarn bootstrap
-      #   name: Install
-      - script: yarn build && yarn bundle
-        name: Build
-      # - script: echo "##vso[task.setvariable variable=version;isOutput=true] ./scripts/version"
-      #   name: set_package_version
-      # - script: echo fly-$(cli_version)-linux-x64.tar.gz
-      - script: ./scripts/release/pack linux-x64
-        name: pack_cli
-      - task: PublishPipelineArtifact@0
-        inputs:
-          artifactName: cli-linux-x64
-          targetPath: $(Build.SourcesDirectory)/packages/cli/dist
-
-  - job: publish_cli
-    dependsOn:
-      - macos_cli
-      - linux_cli
-    pool:
-      vmImage: ubuntu-16.04
-    steps:
-      - task: DownloadPipelineArtifact@1
-        inputs:
-          downloadPath: $(Build.StagingDirectory)/dist
-      - bash: mkdir -p $(Build.SourcesDirectory)/packages/cli/dist
-      - bash: find $(Build.ArtifactStagingDirectory)
-        displayName: Build.ArtifactStagingDirectory
-      - bash: find $(Build.StagingDirectory)
-        displayName: System.StagingDirectory
-      - bash: find $(Build.SourcesDirectory)
-        displayName: SourcesDirectory
-      - bash: find $(Build.ArtifactsDirectory)
-        displayName: ArtifactsDirectory
-      - bash: find $(Build.StagingDirectory)/dist -name 'cli-*'
-      - bash: find $(Build.StagingDirectory)/dist -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/packages/cli/dist/ \;
-      - task: NodeTool@0
-        inputs:
-          versionSpec: $(cli_node_version)
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: "2.7"
-          architecture: "x64"
-      - script: |
-          sudo apt-get update && sudo apt-get install -y nasm
-          npm install -g yarn
-          yarn install --no-progress && yarn bootstrap
-        name: Install
-      - bash: yarn oclif-dev publish
-        workingDirectory: $(Build.SourcesDirectory)/packages/cli
-        env:
-          AWS_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
-          AWS_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
-          AWS_S3_ENDPOINT: $(RELEASE_ENDPOINT)
+  # - job: macos_cli
+  #   # dependsOn: macos
+  #   pool:
+  #     vmImage: xcode9-macos10.13
+  #   variables:
+  #     a: b
+  #     cli_version: 0.48.0-pre.1
+  #   steps:
+  #     - task: NodeTool@0
+  #       inputs:
+  #         versionSpec: $(cli_node_version)
+  #     - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+  #       inputs:
+  #         versionSpec: $(yarn_version)
+  #     # - checkout: none #skip checking out the default repository resource
+  #     # - task: DownloadPipelineArtifact@0
+  #     #   inputs:
+  #     #     artifactName: "working-dir"
+  #     #     downloadPath: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
+  #     # - task: ExtractFiles@1
+  #     #   inputs:
+  #     #     archiveFilePatterns: '*.zip'
+  #     #     destinationFolder: "$(Build.ArtifactStagingDirectory)/working_dir"
+  #     # - bash: ls -lah
+  #     - script: yarn install --no-progress && yarn bootstrap
+  #       name: Install
+  #     - script: yarn build && yarn bundle
+  #       name: Build
+  #     - script: echo "##vso[task.setvariable variable=version;isOutput=true] ./scripts/version"
+  #       name: set_package_version
+  #     - script: echo fly-$(cli_version)-darwin-x64.tar.gz
+  #     - script: ./scripts/release/pack darwin-x64
+  #       name: pack_cli
+  #     - task: PublishPipelineArtifact@0
+  #       inputs:
+  #         artifactName: cli-darwin-x64
+  #         targetPath: $(Build.SourcesDirectory)/packages/cli/dist
+  # - job: linux_cli
+  #   # dependsOn: linux
+  #   pool:
+  #     vmImage: ubuntu-16.04
+  #   variables:
+  #     a: b
+  #     cli_version: 0.48.0-pre.1
+  #   steps:
+  #     - task: NodeTool@0
+  #       inputs:
+  #         versionSpec: $(cli_node_version)
+  #     - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+  #       inputs:
+  #         versionSpec: $(yarn_version)
+  #     - script: yarn install --no-progress && yarn bootstrap
+  #       name: Install
+  #     # - task: UsePythonVersion@0
+  #     #   inputs:
+  #     #     versionSpec: "2.7"
+  #     #     architecture: "x64"
+  #     # - script: |
+  #     #     sudo apt-get update && sudo apt-get install -y nasm
+  #     #     npm install -g yarn
+  #     #     yarn install --no-progress && yarn bootstrap
+  #     #   name: Install
+  #     - script: yarn build && yarn bundle
+  #       name: Build
+  #     # - script: echo "##vso[task.setvariable variable=version;isOutput=true] ./scripts/version"
+  #     #   name: set_package_version
+  #     # - script: echo fly-$(cli_version)-linux-x64.tar.gz
+  #     - script: ./scripts/release/pack linux-x64
+  #       name: pack_cli
+  #     - task: PublishPipelineArtifact@0
+  #       inputs:
+  #         artifactName: cli-linux-x64
+  #         targetPath: $(Build.SourcesDirectory)/packages/cli/dist
+  #
+  # - job: publish_cli
+  #   dependsOn:
+  #     - macos_cli
+  #     - linux_cli
+  #   pool:
+  #     vmImage: ubuntu-16.04
+  #   steps:
+  #     - task: DownloadPipelineArtifact@1
+  #       inputs:
+  #         downloadPath: $(Build.StagingDirectory)/dist
+  #     - bash: mkdir -p $(Build.SourcesDirectory)/packages/cli/dist
+  #     - bash: find $(Build.ArtifactStagingDirectory)
+  #       displayName: Build.ArtifactStagingDirectory
+  #     - bash: find $(Build.StagingDirectory)
+  #       displayName: System.StagingDirectory
+  #     - bash: find $(Build.SourcesDirectory)
+  #       displayName: SourcesDirectory
+  #     - bash: find $(Build.ArtifactsDirectory)
+  #       displayName: ArtifactsDirectory
+  #     - bash: find $(Build.StagingDirectory)/dist -name 'cli-*'
+  #     - bash: find $(Build.StagingDirectory)/dist -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/packages/cli/dist/ \;
+  #     - task: NodeTool@0
+  #       inputs:
+  #         versionSpec: $(cli_node_version)
+  #     - task: UsePythonVersion@0
+  #       inputs:
+  #         versionSpec: "2.7"
+  #         architecture: "x64"
+  #     - script: |
+  #         sudo apt-get update && sudo apt-get install -y nasm
+  #         npm install -g yarn
+  #         yarn install --no-progress && yarn bootstrap
+  #       name: Install
+  #     - bash: yarn oclif-dev publish
+  #       workingDirectory: $(Build.SourcesDirectory)/packages/cli
+  #       env:
+  #         AWS_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
+  #         AWS_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
+  #         AWS_S3_ENDPOINT: $(RELEASE_ENDPOINT)
+  #
   # - job: Windows
   #   pool:
   #     vmImage: vs2017-win2016
