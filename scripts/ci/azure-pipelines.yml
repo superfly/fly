@@ -31,14 +31,8 @@ jobs:
       - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
         inputs:
           versionSpec: $(yarn_version)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreAndSaveCacheV1.RestoreAndSaveCache@1
-        inputs:
-          keyfile: "**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock"
-          targetfolder: "**/node_modules, !**/node_modules/**/node_modules"
-          vstsFeed: "$(ArtifactFeed)"
       - bash: yarn install --no-progress && yarn bootstrap
         displayName: Setup Dependencies
-        condition: ne(variables['CacheRestored'], 'true')
       - bash: yarn build && yarn bundle
         displayName: Build
       - bash: yarn test
@@ -71,14 +65,10 @@ jobs:
       - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
         inputs:
           versionSpec: $(yarn_version)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreAndSaveCacheV1.RestoreAndSaveCache@1
-        inputs:
-          keyfile: "**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock"
-          targetfolder: "**/node_modules, !**/node_modules/**/node_modules"
-          vstsFeed: "$(ArtifactFeed)"
       - bash: yarn install --no-progress && yarn bootstrap
         displayName: Setup Dependencies
-        condition: ne(variables['CacheRestored'], 'true')
+      - bash: yarn build && yarn bundle
+        displayName: Build
       - bash: ./scripts/release/pack $(target)
         displayName: Pack CLI Bundle
       - task: PublishPipelineArtifact@0
@@ -97,14 +87,8 @@ jobs:
       - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
         inputs:
           versionSpec: $(yarn_version)
-      - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreAndSaveCacheV1.RestoreAndSaveCache@1
-        inputs:
-          keyfile: "**/yarn.lock, !**/node_modules/**/yarn.lock, !**/.*/**/yarn.lock"
-          targetfolder: "**/node_modules, !**/node_modules/**/node_modules"
-          vstsFeed: "$(ArtifactFeed)"
       - bash: yarn install --no-progress && yarn bootstrap
         displayName: Setup Dependencies
-        condition: ne(variables['CacheRestored'], 'true')
       - task: DownloadPipelineArtifact@1
         displayName: Download builds
         inputs:
