@@ -77,7 +77,11 @@
         "bucket": "flytest"
       },
       "node": {
-        "version": "11.10.1"
+        "version": "11.10.1",
+        "targets": [
+          "darwin-x64",
+          "linux-x64"
+        ]
       }
     }
   },
