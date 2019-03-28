@@ -15,108 +15,90 @@ jobs:
       maxParallel: 2
       matrix:
         mac:
-          vm: xcode9-macos10.13
+          vm: macOS-10.13
         linux:
           vm: ubuntu-16.04
     pool:
       vmImage: $(vm)
     steps:
       - bash: echo $(Agent.JobName)
-      # - task: NodeTool@0
-      #   inputs:
-      #     versionSpec: $(node_version)
-      # - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
-      #   inputs:
-      #     versionSpec: $(yarn_version)
-      # - script: yarn install --no-progress && yarn bootstrap
-      #   displayName: Setup Dependencies
-      # - script: yarn build && yarn bundle
-      #   displayName: Build & Bundle
-      # - script: yarn test
-      #   displayName: Test
-      #   enabled: false
-      # - task: PublishTestResults@2
-      #   condition: always()
-      #   enabled: false
-      #   inputs:
-      #     testResultsFiles: "**/*junit.xml"
-      #     searchFolder: $(Build.SourcesDirectory)/artifacts
-      #
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+      - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+        inputs:
+          versionSpec: $(yarn_version)
+      - script: yarn install --no-progress && yarn bootstrap
+        displayName: Setup Dependencies
+      - script: yarn build && yarn bundle
+        displayName: Build
+      - script: yarn test
+        displayName: Test
+        enabled: false
+      - task: PublishTestResults@2
+        condition: always()
+        enabled: false
+        inputs:
+          testResultsFiles: "**/*junit.xml"
+          searchFolder: $(Build.SourcesDirectory)/artifacts
       # - task: ArchiveFiles@2
       #   inputs:
       #     rootFolderOrFile: "$(Build.SourcesDirectory)"
-      #     includeRootFolder: true
-      #     replaceExistingArchive: true
-      #     #verbose: # Optional
-      #     #quiet: # Optional
-      #     archiveFile: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
+      #     includeRootFolder: false
+      #     verbose: true
+      #     archiveFile: "$(Build.StagingDirectory)/working_dir.zip"
       # - task: PublishPipelineArtifact@0
       #   inputs:
-      #     artifactName: "working-dir"
-      #     targetPath: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
+      #     artifactName: "working-dir-$(Agent.JobName)"
+      #     targetPath: "$(Build.StagingDirectory)/working_dir.zip"
+      - task: PublishPipelineArtifact@0
+        inputs:
+          artifactName: "working-dir-$(Agent.JobName)"
+          targetPath: $(Build.SourcesDirectory)
+  - job: build_cli
+    dependsOn: test
+    strategy:
+      maxParallel: 2
+      matrix:
+        mac:
+          vm: xcode9-macos10.13
+          target: darwin-x64
+        linux:
+          vm: ubuntu-16.04
+          target: linux-x64
+    pool:
+      vmImage: $(vm)
+    steps:
+      - checkout: none
+      - task: DownloadPipelineArtifact@1
+        inputs:
+          artifactName: "working-dir-$(Agent.JobName)"
+          downloadPath: $(Build.SourcesDirectory)
+      - bash: find $(Build.SourcesDirectory)
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+      - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+        inputs:
+          versionSpec: $(yarn_version)
+      # - task: DownloadPipelineArtifact@1
+      #   inputs:
+      #     artifactName: "working-dir-$(Agent.JobName)"
+      #     downloadPath: "$(Build.StagingDirectory)/working_dir.zip"
+      # - task: ExtractFiles@1
+      #   inputs:
+      #     archiveFilePatterns: "*.zip"
+      #     destinationFolder: "$(Build.ArtifactStagingDirectory)/working_dir"
+      # - script: yarn install --no-progress && yarn bootstrap
+      #   displayName: Setup
+      # - script: yarn build && yarn bundle
+      #   displayName: Build
+      # - script: ./scripts/release/pack $(target)
+      #   display: Pack CLI Bundle
       # - task: PublishPipelineArtifact@0
       #   inputs:
-      #     artifactName: "working-dir"
-      #     targetPath: $(Build.SourcesDirectory)
-  # - job: build_cli
-  #   strategy:
-  #     maxParallel: 2
-  #     matrix:
-  #       mac:
-  #         vm: xcode9-macos10.13
-  #         target: darwin-x64
-  #       linux:
-  #         vm: ubuntu-16.04
-  #         target: linux-x64
-  #   pool:
-  #     vmImage: $(vm)
-  #   steps:
-  #     - task: NodeTool@0
-  #       inputs:
-  #         versionSpec: $(node_version)
-  #     - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
-  #       inputs:
-  #         versionSpec: $(yarn_version)
-  #     - script: yarn install --no-progress && yarn bootstrap
-  #       displayName: Setup
-  #     - script: yarn build && yarn bundle
-  #       displayName: Build
-  #     - script: ./scripts/release/pack $(target)
-  #       display: Pack CLI Bundle
-  #     - task: PublishPipelineArtifact@0
-  #       inputs:
-  #         artifactName: cli-$(target)
-  #         targetPath: $(Build.SourcesDirectory)/packages/cli/dist
-  # - job: lint
-  #   condition: eq(variables['Build.Reason'], 'PullRequest')
-  #   pool:
-  #     vmImage: ubuntu-16.04
-  #   variables:
-  #     CI: true
-  #   timeoutInMinutes: 10
-  #   steps:
-  #     - task: NodeTool@0
-  #       inputs:
-  #         versionSpec: 10
-  #     - task: UsePythonVersion@0
-  #       inputs:
-  #         versionSpec: "2.7"
-  #         architecture: "x64"
-  #     - script: |
-  #         sudo apt-get update && sudo apt-get install -y nasm
-  #         npm install -g yarn
-  #         yarn install --no-progress && yarn bootstrap
-  #         mkdir ./artifacts
-  #       name: Install
-  #     - script: yarn test:lint
-  #       name: Lint
-  #     - script: yarn test:format
-  #       name: Format
-  #     - task: PublishTestResults@2
-  #       condition: always()
-  #       inputs:
-  #         testResultsFiles: "**/*junit.xml"
-  #         searchFolder: $(Build.SourcesDirectory)/artifacts
+      #     artifactName: cli-$(target)
+      #     targetPath: $(Build.SourcesDirectory)/packages/cli/dist
   # - job: linux
   #   pool:
   #     vmImage: ubuntu-16.04
