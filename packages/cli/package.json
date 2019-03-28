@@ -79,12 +79,17 @@
       "s3": {
         "host": "https://get-flyio.edgeapp.net",
         "bucket": "flyio-builds",
+        "xz": false,
         "templates": {
           "target": {
-            "baseDir": "cli/targets"
+            "unversioned": "cli/target/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %>-<%- platform %>-<%- arch %><%- ext %>",
+            "versioned": "cli/target/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %>-v<%- version %>/<%- bin %>-v<%- version %>-<%- platform %>-<%- arch %><%- ext %>",
+            "manifest": "cli/target/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- platform %>-<%- arch %>"
           },
           "vanilla": {
-            "baseDir": "cli/vanilla"
+            "unversioned": "cli/vanilla/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %><%- ext %>",
+            "versioned": "cli/vanilla/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %>-v<%- version %>/<%- bin %>-v<%- version %><%- ext %>",
+            "manifest": "cli/vanilla/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %>version"
           }
         }
       },
