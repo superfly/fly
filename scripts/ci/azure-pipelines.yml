@@ -44,10 +44,16 @@ jobs:
         inputs:
           testResultsFiles: "**/*junit.xml"
           searchFolder: $(Build.SourcesDirectory)/artifacts
+      - bash: tar -zcvf $(Build.StagingDirectory)/working-dir.tgz $(Build.SourcesDirectory)
+        displayName: Compressing working directory
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: "working-dir-$(Agent.JobName)"
-          targetPath: $(Build.SourcesDirectory)
+          targetPath: $(Build.StagingDirectory)/working-dir.tgz
+      # - task: PublishPipelineArtifact@0
+      #   inputs:
+      #     artifactName: "working-dir-$(Agent.JobName)"
+      #     targetPath: $(Build.SourcesDirectory)
   - job: build_cli
     dependsOn: test
     strategy:
@@ -63,27 +69,24 @@ jobs:
       vmImage: $(vm)
     steps:
       - checkout: none
-      - task: DownloadPipelineArtifact@1
-        inputs:
-          artifactName: "working-dir-$(Agent.JobName)"
-          downloadPath: $(Build.SourcesDirectory)
-      - bash: find $(Build.SourcesDirectory)
       - task: NodeTool@0
         inputs:
           versionSpec: $(node_version)
       - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
         inputs:
           versionSpec: $(yarn_version)
-      - bash: find .
-        workingDirectory: $(Build.SourcesDirectory)/working-dir-$(Agent.JobName)
-        displayName: wtf
-      - bash: sh ./scripts/release/pack $(target)
-        workingDirectory: $(Build.SourcesDirectory)/working-dir-$(Agent.JobName)
+      - task: DownloadPipelineArtifact@1
+        inputs:
+          artifactName: "working-dir-$(Agent.JobName)"
+          downloadPath: $(Build.StagingDirectory)/working-dir.tgz
+      - bash: tar -zxf $(Build.StagingDirectory)/working-dir.tgz -C $(Build.SourcesDirectory)
+      - bash: find $(Build.SourcesDirectory)
+      - bash: ./scripts/release/pack $(target)
         displayName: Pack CLI Bundle
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: cli-$(target)
-          targetPath: $(Build.SourcesDirectory)/working-dir-$(Agent.JobName)/packages/cli/dist
+          targetPath: $(Build.SourcesDirectory)/packages/cli/dist
 
   - job: publish_cli
     dependsOn: build_cli
@@ -98,18 +101,18 @@ jobs:
         inputs:
           versionSpec: $(yarn_version)
       - task: DownloadPipelineArtifact@1
-        displayName: Download working directory
         inputs:
-          artifactName: "working-dir-linux"
-          downloadPath: $(Build.SourcesDirectory)
+          artifactName: "working-dir-$(Agent.JobName)"
+          downloadPath: $(Build.StagingDirectory)/working-dir.tgz
+      - bash: tar -zxf $(Build.StagingDirectory)/working-dir.tgz -C $(Build.SourcesDirectory)
       - task: DownloadPipelineArtifact@1
         displayName: Download builds
         inputs:
           downloadPath: $(Build.StagingDirectory)/dist
-      - bash: find $(Build.StagingDirectory)/dist -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/working-dir-linux/packages/cli/dist/ \;
+      - bash: find $(Build.StagingDirectory)/dist -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/packages/cli/dist/ \;
         displayName: Move builds to dist
       - bash: yarn oclif-dev publish
-        workingDirectory: $(Build.SourcesDirectory)/working-dir-linux/packages/cli
+        workingDirectory: $(Build.SourcesDirectory)/packages/cli
         env:
           AWS_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
