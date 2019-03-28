@@ -20,6 +20,9 @@ jobs:
           vm: ubuntu-16.04
     pool:
       vmImage: $(vm)
+    variables:
+      CI: true
+    timeoutInMinutes: 20
     steps:
       - bash: echo $(Agent.JobName)
       - task: NodeTool@0
@@ -41,16 +44,6 @@ jobs:
         inputs:
           testResultsFiles: "**/*junit.xml"
           searchFolder: $(Build.SourcesDirectory)/artifacts
-      # - task: ArchiveFiles@2
-      #   inputs:
-      #     rootFolderOrFile: "$(Build.SourcesDirectory)"
-      #     includeRootFolder: false
-      #     verbose: true
-      #     archiveFile: "$(Build.StagingDirectory)/working_dir.zip"
-      # - task: PublishPipelineArtifact@0
-      #   inputs:
-      #     artifactName: "working-dir-$(Agent.JobName)"
-      #     targetPath: "$(Build.StagingDirectory)/working_dir.zip"
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: "working-dir-$(Agent.JobName)"
@@ -81,120 +74,72 @@ jobs:
       - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
         inputs:
           versionSpec: $(yarn_version)
-      # - task: DownloadPipelineArtifact@1
+      - script: ./scripts/release/pack $(target)
+        workingDirectory: $(Build.SourcesDirectory)/working-dir-$(Agent.JobName)
+        display: Pack CLI Bundle
+      - task: PublishPipelineArtifact@0
+        inputs:
+          artifactName: cli-$(target)
+          targetPath: $(Build.SourcesDirectory)/working-dir-$(Agent.JobName)/packages/cli/dist
+
+  - job: publish_cli
+    dependsOn: build_cli
+    pool:
+      vmImage: ubuntu-16.04
+    steps:
+      - checkout: none
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+      - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+        inputs:
+          versionSpec: $(yarn_version)
+      - task: DownloadPipelineArtifact@1
+        displayName: Download working directory
+        inputs:
+          artifactName: "working-dir-linux"
+          downloadPath: $(Build.SourcesDirectory)
+      - task: DownloadPipelineArtifact@1
+        displayName: Download builds
+        inputs:
+          downloadPath: $(Build.StagingDirectory)/dist
+      - bash: find $(Build.StagingDirectory)/dist -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/working-dir-linux/packages/cli/dist/ \;
+        displayName: Move builds to dist
+      - bash: yarn oclif-dev publish
+        workingDirectory: $(Build.SourcesDirectory)/working-dir-linux/packages/cli
+        env:
+          AWS_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
+          AWS_S3_ENDPOINT: $(RELEASE_ENDPOINT)
+      # - bash: mkdir -p $(Build.SourcesDirectory)/packages/cli/dist
+      # - bash: find $(Build.ArtifactStagingDirectory)
+      #   displayName: Build.ArtifactStagingDirectory
+      # - bash: find $(Build.StagingDirectory)
+      #   displayName: System.StagingDirectory
+      # - bash: find $(Build.SourcesDirectory)
+      #   displayName: SourcesDirectory
+      # - bash: find $(Build.ArtifactsDirectory)
+      #   displayName: ArtifactsDirectory
+      # - bash: find $(Build.StagingDirectory)/dist -name 'cli-*'
+      # - bash: find $(Build.StagingDirectory)/dist -name 'cli-*' -exec rsync -rv '{}/' $(Build.SourcesDirectory)/packages/cli/dist/ \;
+      # - task: NodeTool@0
       #   inputs:
-      #     artifactName: "working-dir-$(Agent.JobName)"
-      #     downloadPath: "$(Build.StagingDirectory)/working_dir.zip"
-      # - task: ExtractFiles@1
+      #     versionSpec: $(cli_node_version)
+      # - task: UsePythonVersion@0
       #   inputs:
-      #     archiveFilePatterns: "*.zip"
-      #     destinationFolder: "$(Build.ArtifactStagingDirectory)/working_dir"
-      # - script: yarn install --no-progress && yarn bootstrap
-      #   displayName: Setup
-      # - script: yarn build && yarn bundle
-      #   displayName: Build
-      # - script: ./scripts/release/pack $(target)
-      #   display: Pack CLI Bundle
-      # - task: PublishPipelineArtifact@0
-      #   inputs:
-      #     artifactName: cli-$(target)
-      #     targetPath: $(Build.SourcesDirectory)/packages/cli/dist
-  # - job: linux
-  #   pool:
-  #     vmImage: ubuntu-16.04
-  #   strategy:
-  #     maxParallel: 3
-  #     matrix:
-  #       # node-8:
-  #       #   node_version: 8
-  #       # node-10-3:
-  #       #   node_version: 10.3
-  #       node-cli-version:
-  #         node_version: $(cli_node_version)
-  #       # node-latest:
-  #       #   node_version: ">=10"
-  #       #   node_check_latest: true
-  #   variables:
-  #     CI: true
-  #   timeoutInMinutes: 15
-  #   steps:
-  #     - task: NodeTool@0
-  #       inputs:
-  #         versionSpec: $(node_version)
-  #         checkLatest: $(node_check_latest)
-  #     - task: UsePythonVersion@0
-  #       inputs:
-  #         versionSpec: "2.7"
-  #         architecture: "x64"
-  #     - script: |
-  #         sudo apt-get update && sudo apt-get install -y nasm
-  #         npm install -g yarn
-  #         yarn install --no-progress && yarn bootstrap
-  #       name: Install
-  #     - script: yarn build && yarn bundle
-  #       name: Build
-  #     - script: yarn test
-  #       name: Test
-  #       enabled: false
-  #     - task: PublishTestResults@2
-  #       condition: always()
-  #       enabled: false
-  #       inputs:
-  #         testResultsFiles: "**/*junit.xml"
-  #         searchFolder: $(Build.SourcesDirectory)/artifacts
-  # - job: macOS
-  #   pool:
-  #     vmImage: xcode9-macos10.13
-  #   strategy:
-  #     maxParallel: 3
-  #     matrix:
-  #       # node-8:
-  #       #   node_version: 8
-  #       # node-10-3:
-  #       #   node_version: 10.3
-  #       node-cli-version:
-  #         node_version: $(cli_node_version)
-  #       # node-latest:
-  #       #   node_version: ">=10"
-  #       #   node_check_latest: true
-  #       #   build_cli_bundle: true
-  #   variables:
-  #     CI: true
-  #   timeoutInMinutes: 15
-  #   steps:
-  #     - task: NodeTool@0
-  #       inputs:
-  #         versionSpec: $(node_version)
-  #         checkLatest: $(node_check_latest)
-  #     - script: yarn install --no-progress && yarn bootstrap
-  #       name: Install
-  #     - script: yarn build && yarn bundle
-  #       name: Build
-  #     - script: yarn test
-  #       name: Test
-  #       enabled: false
-  #     - task: PublishTestResults@2
-  #       condition: always()
-  #       enabled: false
-  #       inputs:
-  #         testResultsFiles: "**/*junit.xml"
-  #         searchFolder: $(Build.SourcesDirectory)/artifacts
-  #     # - task: ArchiveFiles@2
-  #     #   inputs:
-  #     #     rootFolderOrFile: "$(Build.SourcesDirectory)"
-  #     #     includeRootFolder: true
-  #     #     replaceExistingArchive: true
-  #     #     #verbose: # Optional
-  #     #     #quiet: # Optional
-  #     #     archiveFile: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
-  #     # - task: PublishPipelineArtifact@0
-  #     #   inputs:
-  #     #     artifactName: "working-dir"
-  #     #     targetPath: "$(Build.ArtifactStagingDirectory)/working_dir.zip"
-  #     # - task: PublishPipelineArtifact@0
-  #     #   inputs:
-  #     #     artifactName: "working-dir"
-  #     #     targetPath: $(Build.SourcesDirectory)
+      #     versionSpec: "2.7"
+      #     architecture: "x64"
+      # - script: |
+      #     sudo apt-get update && sudo apt-get install -y nasm
+      #     npm install -g yarn
+      #     yarn install --no-progress && yarn bootstrap
+      #   name: Install
+      # - bash: yarn oclif-dev publish
+      #   workingDirectory: $(Build.SourcesDirectory)/packages/cli
+      #   env:
+      #     AWS_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
+      #     AWS_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
+      #     AWS_S3_ENDPOINT: $(RELEASE_ENDPOINT)
   # - job: macos_cli
   #   # dependsOn: macos
   #   pool:
