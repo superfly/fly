@@ -74,7 +74,10 @@ jobs:
       - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
         inputs:
           versionSpec: $(yarn_version)
-      - bash: ./scripts/release/pack $(target)
+      - bash: find .
+        workingDirectory: $(Build.SourcesDirectory)/working-dir-$(Agent.JobName)
+        displayName: wtf
+      - bash: sh ./scripts/release/pack $(target)
         workingDirectory: $(Build.SourcesDirectory)/working-dir-$(Agent.JobName)
         displayName: Pack CLI Bundle
       - task: PublishPipelineArtifact@0
