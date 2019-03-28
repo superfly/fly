@@ -263,6 +263,10 @@ jobs:
         name: Install
       - bash: yarn oclif-dev publish
         workingDirectory: $(Build.SourcesDirectory)/packages/cli
+        env:
+          AWS_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
+          AWS_S3_ENDPOINT: $(RELEASE_ENDPOINT)
   # - job: Windows
   #   pool:
   #     vmImage: vs2017-win2016
