@@ -10,43 +10,41 @@ variables:
     value: 1.15.2
 
 jobs:
-  # - job: test
-  #   strategy:
-  #     maxParallel: 2
-  #     matrix:
-  #       mac:
-  #         vm: macOS-10.13
-  #       linux:
-  #         vm: ubuntu-16.04
-  #   pool:
-  #     vmImage: $(vm)
-  #   variables:
-  #     CI: true
-  #   timeoutInMinutes: 20
-  #   steps:
-  #     - bash: echo $(Agent.JobName)
-  #     - task: NodeTool@0
-  #       inputs:
-  #         versionSpec: $(node_version)
-  #     - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
-  #       inputs:
-  #         versionSpec: $(yarn_version)
-  #     - bash: yarn install --no-progress && yarn bootstrap
-  #       displayName: Setup Dependencies
-  #     - bash: yarn build && yarn bundle
-  #       displayName: Build
-  #     - bash: yarn test
-  #       displayName: Test
-  #       enabled: false
-  #     - task: PublishTestResults@2
-  #       condition: always()
-  #       enabled: false
-  #       inputs:
-  #         testResultsFiles: "**/*junit.xml"
-  #         searchFolder: $(Build.SourcesDirectory)/artifacts
+  - job: test
+    strategy:
+      maxParallel: 2
+      matrix:
+        mac:
+          vm: macOS-10.13
+        linux:
+          vm: ubuntu-16.04
+    pool:
+      vmImage: $(vm)
+    variables:
+      CI: true
+    timeoutInMinutes: 20
+    steps:
+      - bash: echo $(Agent.JobName)
+      - task: NodeTool@0
+        inputs:
+          versionSpec: $(node_version)
+      - task: geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2
+        inputs:
+          versionSpec: $(yarn_version)
+      - bash: yarn install --no-progress && yarn bootstrap
+        displayName: Setup Dependencies
+      - bash: yarn build && yarn bundle
+        displayName: Build
+      - bash: yarn test
+        displayName: Test
+      - task: PublishTestResults@2
+        condition: always()
+        inputs:
+          testResultsFiles: "**/*junit.xml"
+          searchFolder: $(Build.SourcesDirectory)/artifacts
 
   - job: publish_npm
-    # dependsOn: test
+    dependsOn: test
     pool:
       vmImage: ubuntu-16.04
     steps:
@@ -123,7 +121,7 @@ jobs:
           AWS_S3_ENDPOINT: $(RELEASE_ENDPOINT)
 
   - job: publish_homebrew
-    # dependsOn: publish_cli
+    dependsOn: publish_cli
     # condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     pool:
       vmImage: ubuntu-16.04
