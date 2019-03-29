@@ -164,6 +164,55 @@
     reflect-metadata "^0.1.12"
     tslib "^1.8.1"
 
+"@fly/cli@0.48.0-pre.1":
+  version "0.48.0-pre.1"
+  resolved "https://registry.yarnpkg.com/@fly/cli/-/cli-0.48.0-pre.1.tgz#a941a6c1c9bf1e46be3aab4a4e3b72d3317055d9"
+  integrity sha512-jAsLMSa7VCaiJIUK54e7/P1ZvUPXOU0OSZTN04Vm+2xqpJ3YpYoMIMahVzW/VmTHc/8B5ty1ydiVzMHEB0yR1A==
+  dependencies:
+    "@fly/build" "0.47.1"
+    "@fly/core" "0.48.0-pre.0"
+    "@fly/examples" "0.47.1"
+    "@fly/v8env" "0.47.1"
+    "@oclif/command" "^1"
+    "@oclif/config" "^1"
+    "@oclif/plugin-help" "^2"
+    axios "^0.18.0"
+    chalk "^2.4.2"
+    cli-ux "^5.2.1"
+    execa "^0.7.0"
+    inquirer "^6.2.2"
+    js-yaml "^3.13.0"
+    pako "1.0.6"
+    tar-fs "^1.16.0"
+    tslib "^1"
+
+"@fly/core@0.48.0-pre.0":
+  version "0.48.0-pre.0"
+  resolved "https://registry.yarnpkg.com/@fly/core/-/core-0.48.0-pre.0.tgz#229c568ad39c585295ae06b36bc5efde4e33743f"
+  integrity sha512-yt/rDL+3nTn1l6Vy9CQyDPa5HuUNvJwfI0IVnF/Tr/kb3B6Us3/xY6D9/Gw3xnFNlDtyA4NXxzqHEEMHj5sEYQ==
+  dependencies:
+    "@fly/build" "0.47.1"
+    "@fly/examples" "0.47.1"
+    "@fly/v8env" "0.47.1"
+    better-sqlite3 "^4.1.4"
+    bluebird "^3.5.1"
+    chokidar "^2.0.4"
+    console-log-level "^1.4.0"
+    execa "^0.7.0"
+    fs-extra "^5.0.0"
+    glob "^7.1.2"
+    ioredis "^3.2.2"
+    ioredis-mock "^3.10.2"
+    isolated-vm "1.7.9"
+    js-yaml "^3.10.0"
+    mocha "^4.0.1"
+    redis "^2.8.0"
+    segfault-handler "^1.0.1"
+    semver "^5.5.0"
+    sharp "^0.21.3"
+    source-map "^0.6.1"
+    ws "^4.0.0"
+
 "@lerna/add@3.13.1":
   version "3.13.1"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-3.13.1.tgz#2cd7838857edb3b43ed73e3c21f69a20beb9b702"
