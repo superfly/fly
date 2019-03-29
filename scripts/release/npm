@@ -25,8 +25,8 @@ git diff
 
 if [[ $CHANNEL == "stable" ]]; then
   echo "release stable"
-  yarn lerna publish from-package -y --git-head $(Build.SourceVersion)
+  yarn lerna publish from-package -y --git-head $BUILD_SOURCEVERSION
 else
   echo "release $CHANNEL"
-  yarn lerna publish from-package --dist-tag "$CHANNEL" -y --git-head $(Build.SourceVersion)
+  yarn lerna publish from-package --dist-tag "$CHANNEL" -y --git-head $BUILD_SOURCEVERSION
 fi
