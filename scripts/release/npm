@@ -9,6 +9,7 @@ CHANNEL="${CHANNEL:-stable}"
 echo "$VERSION $CHANNEL"
 
 git status
+git diff
 
 if [[ $CHANNEL == "stable" ]]; then
   echo "release stable"
