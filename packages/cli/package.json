@@ -82,14 +82,14 @@
         "xz": false,
         "templates": {
           "target": {
-            "unversioned": "cli/target/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %>-<%- platform %>-<%- arch %><%- ext %>",
-            "versioned": "cli/target/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %>-v<%- version %>/<%- bin %>-v<%- version %>-<%- platform %>-<%- arch %><%- ext %>",
-            "manifest": "cli/target/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- platform %>-<%- arch %>"
+            "unversioned": "cli/target/channels/<%- channel %>/<%- bin %>-<%- platform %>-<%- arch %><%- ext %>",
+            "versioned": "cli/target/channels/<%- channel %>/<%- bin %>-v<%- version %>/<%- bin %>-v<%- version %>-<%- platform %>-<%- arch %><%- ext %>",
+            "manifest": "cli/target/channels/<%- channel %>/<%- platform %>-<%- arch %>"
           },
           "vanilla": {
-            "unversioned": "cli/vanilla/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %><%- ext %>",
-            "versioned": "cli/vanilla/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %><%- bin %>-v<%- version %>/<%- bin %>-v<%- version %><%- ext %>",
-            "manifest": "cli/vanilla/<%- channel === 'stable' ? '' : 'channels/' + channel + '/' %>version"
+            "unversioned": "cli/vanilla/channels/<%- channel %>/<%- bin %><%- ext %>",
+            "versioned": "cli/vanilla/channels/<%- channel %>/<%- bin %>-v<%- version %>/<%- bin %>-v<%- version %><%- ext %>",
+            "manifest": "cli/vanilla/channels/<%- channel %>/version"
           }
         }
       },
