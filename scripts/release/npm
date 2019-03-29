@@ -7,6 +7,8 @@ if [ -z "$NPM_TOKEN" ]; then
   exit 1
 fi
 
+echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+
 VERSION=$(node -p "require('./lerna.json').version")
 CHANNEL=$(echo $VERSION | awk -F'[.-]' '{print $4}')
 CHANNEL="${CHANNEL:-stable}"

@@ -9,3 +9,4 @@ coverage
 artifacts
 docs
 tmp
+.npmrc
