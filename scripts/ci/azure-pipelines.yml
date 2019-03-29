@@ -9,6 +9,8 @@ variables:
   - name: yarn_version
     value: 1.15.2
 
+# if master, bump pre-release version,
+
 jobs:
   - job: test
     strategy:
@@ -44,6 +46,13 @@ jobs:
         inputs:
           testResultsFiles: "**/*junit.xml"
           searchFolder: $(Build.SourcesDirectory)/artifacts
+
+  - job: publish_npm
+    dependsOn: test
+    pool:
+      vmImage: ubuntu-16.04
+    steps:
+      - if version is not published, publish now!
 
   - job: build_cli
     dependsOn: test
@@ -101,6 +110,12 @@ jobs:
           AWS_ACCESS_KEY_ID: $(RELEASE_ACCESS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
           AWS_S3_ENDPOINT: $(RELEASE_ENDPOINT)
+  - job: release_homebrew
+    dependsOn: publish_cli
+    pool:
+      vmImage: ubuntu-16.04
+    steps:
+      - bash: ./scripts/release/homebrew
   #
   # - job: Windows
   #   pool:
