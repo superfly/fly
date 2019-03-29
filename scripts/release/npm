@@ -13,6 +13,8 @@ VERSION=$(node -p "require('./lerna.json').version")
 CHANNEL=$(echo $VERSION | awk -F'[.-]' '{print $4}')
 CHANNEL="${CHANNEL:-stable}"
 
+env
+
 echo "$VERSION $CHANNEL"
 
 # lerna publish doesn't like a detached head
