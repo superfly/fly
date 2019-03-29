@@ -15,13 +15,16 @@ CHANNEL="${CHANNEL:-stable}"
 
 echo "$VERSION $CHANNEL"
 
+# lerna publish doesn't like a detached head
+# git checkout $(Build.SourceVersion)
+
 git status
 git diff
 
 if [[ $CHANNEL == "stable" ]]; then
   echo "release stable"
-  yarn lerna publish from-package -y
+  yarn lerna publish from-package -y --git-head $(Build.SourceVersion)
 else
   echo "release $CHANNEL"
-  yarn lerna publish from-package --dist-tag "$CHANNEL" -y
+  yarn lerna publish from-package --dist-tag "$CHANNEL" -y --git-head $(Build.SourceVersion)
 fi
