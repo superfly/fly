@@ -8,6 +8,8 @@ CHANNEL="${CHANNEL:-stable}"
 
 echo "$VERSION $CHANNEL"
 
+git status
+
 if [[ $CHANNEL == "stable" ]]; then
   echo "release stable"
   yarn lerna publish from-package -y
