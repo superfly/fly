@@ -10,8 +10,8 @@ echo "$VERSION $CHANNEL"
 
 if [[ $CHANNEL == "stable" ]]; then
   echo "release stable"
-  # yarn lerna publish from-package -y
+  yarn lerna publish from-package -y
 else
   echo "release $CHANNEL"
-  # yarn lerna publish from-package --dist-tag "$CHANNEL" -y
+  yarn lerna publish from-package --dist-tag "$CHANNEL" -y
 fi
