@@ -46,7 +46,7 @@ jobs:
           searchFolder: $(Build.SourcesDirectory)/artifacts
 
   - job: publish_npm
-    dependsOn: test
+    # dependsOn: test
     pool:
       vmImage: ubuntu-16.04
     steps:
