@@ -62,6 +62,8 @@ jobs:
         displayName: Build
       - bash: ./scripts/release/npm
         displayName: Release updated packages to NPM
+        env:
+          NPM_TOKEN: $(NPM_TOKEN)
 
   - job: build_cli
     dependsOn: publish_npm
