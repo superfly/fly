@@ -2,6 +2,11 @@
 
 set -e
 
+if [ -z "$NPM_TOKEN" ]; then
+  echo "missing NPM_TOKEN"
+  exit 1
+fi
+
 VERSION=$(node -p "require('./lerna.json').version")
 CHANNEL=$(echo $VERSION | awk -F'[.-]' '{print $4}')
 CHANNEL="${CHANNEL:-stable}"
