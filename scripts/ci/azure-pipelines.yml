@@ -122,13 +122,16 @@ jobs:
           AWS_SECRET_ACCESS_KEY: $(RELEASE_SECRET_ACCESS_KEY)
           AWS_S3_ENDPOINT: $(RELEASE_ENDPOINT)
 
-  - job: release_homebrew
-    dependsOn: publish_cli
+  - job: publish_homebrew
+    # dependsOn: publish_cli
+    # condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     pool:
       vmImage: ubuntu-16.04
     steps:
       - bash: ./scripts/release/homebrew
         displayName: Update homebrew
+        env:
+          GITHUB_AUTH: $(GITHUB_AUTH)
   #
   # - job: Windows
   #   pool:

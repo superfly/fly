@@ -2,32 +2,11 @@
 
 set -e
 
-VERSION=$(node -p "require('./lerna.json').version")
-CHANNEL=$(echo $VERSION | awk -F'[.-]' '{print $4}')
-CHANNEL="${CHANNEL:-stable}"
+# trigger action in superfly/homebrew-brew
 
-echo $VERSION
-echo $CHANNEL
-
-mkdir -p ./tmp
-
-git clone "git@github.com:superfly/homebrew-brew.git" tmp/homebrew-brew
-
-TARBALL=./tmp/tarball
-URL="https://get-flyio.edgeapp.net/channels/$CHANNEL/fly-v$VERSION/fly-v$VERSION-darwin-x64.tar.gz"
-
-curl $URL > $TARBALL
-
-SHASUM=$(sha256sum $TARBALL | awk \{'print $1'\})
-# SHASUM=$(shasum --algorithm 256 $TARBALL | awk \{'print $1'\})
-
-cd tmp/homebrew-brew
-
-sed -i "s/url \".*\"/url \"${URL}\"/" "Formula/fly.rb"
-sed -i "s/sha256 \".*\"/sha256 \"${SHASUM}\"/" "Formula/fly.rb"
-
-git add Formula/fly.rb
-
-git commit "fly v$VERSION"
-git push origin master
-
+curl \
+  -XPOST -u "$GITHUB_AUTH" \
+  -H "Accept: application/vnd.github.everest-preview+json" \
+  -H "Content-Type: application/json" \
+  https://api.github.com/repos/superfly/homebrew-brew/dispatches \
+  --data '{"event_type": "release"}'
