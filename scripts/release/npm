@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 VERSION=$(node -p "require('./lerna.json').version")
 CHANNEL=$(echo $VERSION | awk -F'[.-]' '{print $4}')
 CHANNEL="${CHANNEL:-stable}"
@@ -8,8 +10,8 @@ echo "$VERSION $CHANNEL"
 
 if [[ $CHANNEL == "stable" ]]; then
   echo "release stable"
-  lerna publish from-package -y
+  # yarn lerna publish from-package -y
 else
   echo "release $CHANNEL"
-  lerna publish from-package --npm-tag "$CHANNEL" -y
+  # yarn lerna publish from-package --dist-tag "$CHANNEL" -y
 fi
