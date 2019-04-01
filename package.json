@@ -23,9 +23,7 @@
     "test:v8env": "lerna exec --concurrency 1 yarn test --scope \"@fly-test/v8env\"",
     "test:format": "prettier --parser typescript -l '{packages,tests}/*/{src,tests}/**/*.{ts,tsx,js,jsx,json}'",
     "test:lint": "yarn lint --test --format junit --out ./artifacts/lint.junit.xml",
-    "doc": "lerna run doc",
-    "publish": "lerna publish",
-    "publish:pre": "lerna publish prerelease --npm-tag pre --force-publish='*'"
+    "doc": "lerna run doc"
   },
   "devDependencies": {
     "@oclif/dev-cli": "https://flytest.sfo2.digitaloceanspaces.com/oclif-dev-cli-1.21.3.tgz",
