@@ -1,5 +1,1 @@
-#!/bin/bash
-
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-exec "$DIR"/packages/cli/bin/run "$@"
+packages/cli/bin/run

@@ -36,9 +36,9 @@ export class EdgeContext {
       return Promise.resolve()
     }
 
-    return Promise.all(this.servers.map(s => s.start())).then(() => {
-      this.registerAliases()
-    })
+    const aliasMap = this.servers.map(s => [s.alias, s.hostname]) as Array<[string, string]>
+
+    return Promise.all(this.servers.map(s => s.start(aliasMap)))
   }
 
   public stop(): Promise<any> {
@@ -62,7 +62,6 @@ export class EdgeContext {
     if (!parsedUrl.hostname) {
       return url
     }
-    console.debug("rewrite url from test", { url, hostname: parsedUrl.hostname })
     const server = this.servers.find(s => s.alias === parsedUrl.hostname)
     if (!server) {
       return url
@@ -70,16 +69,7 @@ export class EdgeContext {
     parsedUrl.host = this.hostname + ":" + server.port
     parsedUrl.hostname = this.hostname
     parsedUrl.port = server.port.toString()
-    console.debug("-> new url", format(parsedUrl))
     return format(parsedUrl)
-  }
-
-  private registerAliases() {
-    for (const server of this.servers) {
-      for (const other of this.servers) {
-        other.child!.send({ type: "alias-hostname", alias: server.alias, hostname: server.hostname })
-      }
-    }
   }
 }
 
@@ -100,7 +90,7 @@ export class TestServer {
     this.port = nextPort()
   }
 
-  public start(): Promise<void> {
+  public start(aliasMap: Array<[string, string]>): Promise<void> {
     return new Promise((resolve, reject) => {
       this.workingDir = fs.mkdtempSync(path.join(os.tmpdir(), "e2e-app"))
 
@@ -123,15 +113,15 @@ export class TestServer {
       }
 
       this.child = execa("../../fly", ["server", "-p", this.port.toString(), this.workingDir], {
-        stdio: ["ipc"],
         env: {
           LOG_LEVEL: process.env.LOG_LEVEL,
-          FLY_ENV: "test"
+          FLY_ENV: "test",
+          HOST_ALIASES: JSON.stringify(aliasMap)
         }
       })
-      this.child.on("exit", (code, signal) => {
-        console.debug(`[${this.alias}] exit from signal ${signal}`, { code })
-      })
+      // this.child.on("exit", (code, signal) => {
+      //   console.debug(`[${this.alias}] exit from signal ${signal}`, { code })
+      // })
       this.child.on("error", err => {
         console.warn(`[${this.alias}] process error`, { err })
       })
@@ -140,8 +130,6 @@ export class TestServer {
       })
 
       waitOn({ resources: [`tcp:${this.context.hostname}:${this.port}`], timeout: 10000 }).then(resolve, reject)
-
-      console.debug(`${this.alias} running at ${this.hostname}`)
     })
   }
 
