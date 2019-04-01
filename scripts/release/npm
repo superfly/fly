@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 if [ -z "$NPM_TOKEN" ]; then
   echo "missing NPM_TOKEN"
