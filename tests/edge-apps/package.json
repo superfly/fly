@@ -3,7 +3,7 @@
   "version": "0.48.0",
   "private": true,
   "scripts": {
-    "test": "jest --maxWorkers=2 --verbose"
+    "test": "jest --maxWorkers=1 --verbose"
   },
   "devDependencies": {
     "@fly/test-environment": "0.48.0",
