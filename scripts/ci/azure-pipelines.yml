@@ -44,6 +44,7 @@ jobs:
           searchFolder: $(Build.SourcesDirectory)/artifacts
 
   - job: publish_npm
+    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     dependsOn: test
     pool:
       vmImage: ubuntu-16.04
@@ -122,7 +123,6 @@ jobs:
 
   - job: publish_homebrew
     dependsOn: publish_cli
-    # condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     pool:
       vmImage: ubuntu-16.04
     steps:
