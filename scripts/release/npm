@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -ex
+
+if [ -z "$NPM_TOKEN" ]; then
+  echo "missing NPM_TOKEN"
+  exit 1
+fi
+
+echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+
+VERSION=$(node -p "require('./lerna.json').version")
+CHANNEL=$(echo $VERSION | awk -F'[.-]' '{print $4}')
+CHANNEL="${CHANNEL:-stable}"
+
+env
+
+echo "$VERSION $CHANNEL"
+
+# lerna publish doesn't like a detached head
+# git checkout $(Build.SourceVersion)
+
+git status
+git diff
+
+if [[ $CHANNEL == "stable" ]]; then
+  echo "release stable"
+  yarn lerna publish from-package -y --git-head $BUILD_SOURCEVERSION
+else
+  echo "release $CHANNEL"
+  yarn lerna publish from-package --dist-tag "$CHANNEL" -y --git-head $BUILD_SOURCEVERSION
+fi

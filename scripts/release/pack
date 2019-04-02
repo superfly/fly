@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -ex
+
+TARGET=$1
+
+echo "Linking workspace packages"
+# lerna exec --no-private yarn link
+
+echo "Packing CLI for $TARGET"
+
+cp ./yarn.lock ./packages/cli
+cd ./packages/cli
+
+yarn oclif-dev pack -t $TARGET

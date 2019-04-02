@@ -1,46 +1,57 @@
-import { root, CommonOptions, getEnv } from "./root"
-import { Command } from "commandpost/lib"
+import Command, { flags as cmdFlags } from "@oclif/command"
 import * as path from "path"
 import * as fs from "fs"
 import { spawn } from "child_process"
-import { FileAppStore } from "../file_app_store"
-import { Server } from "../server"
-import { RedisCacheNotifier } from "../redis_cache_notifier"
+import { FileAppStore } from "@fly/core/lib/file_app_store"
+import { Server } from "@fly/core/lib/server"
 import { examplesPath } from "@fly/examples"
+import { FlyCommand } from "../base-command"
+import * as sharedFlags from "../flags"
 
-interface ServerOptions extends CommonOptions {
-  port?: string
-  inspect?: boolean
-  uglify: boolean
-}
+export default class ServerCmd extends FlyCommand {
+  public static description = "run the local fly development server"
 
-interface ServerArguments {
-  path?: string
-}
+  public static flags = {
+    env: sharedFlags.env(),
+    port: cmdFlags.integer({
+      char: "p",
+      description: "Port to bind to",
+      env: "PORT",
+      default: 3000
+    }),
+    inspect: cmdFlags.boolean({
+      description: "use the v8 inspector on your fly app",
+      default: false
+    }),
+    uglify: cmdFlags.boolean({
+      description: "uglify your code like we'll use in production (warning: slow!)",
+      default: false
+    })
+  }
 
-root
-  .subCommand<ServerOptions, ServerArguments>("server [path]")
-  .description("Run the local Fly development server")
-  .option("-p, --port <port>", "Port to bind to")
-  .option("--inspect", "use the v8 inspector on your fly app")
-  .option("--uglify", "uglify your code like we'll use in production (warning: slow!)")
-  .action(async function(this: Command<ServerOptions, ServerArguments>, opts, args, rest) {
-    // const { FileAppStore } = require('../file_app_store')
-    // const { Server } = require('../server')
+  static args = [{ name: "path", description: "path to app", default: process.cwd() }]
 
+  public async run() {
+    const { args, flags } = this.parse(ServerCmd)
     let cwd = args.path || process.cwd()
+
     if (!fs.existsSync(cwd)) {
       cwd = (await getExamplePath(cwd)) || cwd
     }
     console.log(`Using ${cwd} as working directory.`)
     process.chdir(cwd)
 
-    let port = parseInt((opts.port && opts.port[0]) || (process.env.PORT && process.env.PORT) || "3000", 10)
-    const env = getEnv(this, "development")
+    let port = flags.port!
+    const env = flags.env!
 
-    const appStore = new FileAppStore(cwd, { build: true, uglify: opts.uglify, env, noWatch: env === "test" })
+    const appStore = new FileAppStore(cwd, {
+      build: true,
+      uglify: flags.uglify,
+      env,
+      noWatch: env === "test"
+    })
 
-    const server = new Server({ appStore, inspect: !!opts.inspect })
+    const server = new Server({ appStore, inspect: !!flags.inspect })
     console.log("Memory Cache Adapter: " + server.bridge.cacheStore.constructor.name)
     if (server.bridge.blobStore) {
       console.log(`Blob Cache Adapter: ${server.bridge.blobStore}`)
@@ -59,7 +70,8 @@ root
       })
     }
     server.listen(port)
-  })
+  }
+}
 
 async function getExamplePath(name: string) {
   const p = path.resolve(examplesPath, name)

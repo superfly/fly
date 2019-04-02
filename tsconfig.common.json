@@ -14,6 +14,7 @@
         "./*/src"
       ]
     },
+    "skipLibCheck": true,
     // not sure we need these yet...
     // "esModuleInterop": true,
     // "allowSyntheticDefaultImports": true,

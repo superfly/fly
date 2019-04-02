@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require('@fly/core/lib/cmd');
+require("@fly/cli/bin/run")

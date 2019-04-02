@@ -94,14 +94,15 @@ function parseUrlWithRemapping(val: string): URL {
     url.host = host
     url.port = port
   }
-
   return url
 }
 
-if (process.env.FLY_ENV === "test") {
-  process.on("message", msg => {
-    if (msg.type === "alias-hostname") {
-      hostnameAliases.set(msg.alias, msg.hostname)
+if (process.env.FLY_ENV === "test" && process.env.HOST_ALIASES) {
+  try {
+    for (const [alias, hostname] of JSON.parse(process.env.HOST_ALIASES)) {
+      hostnameAliases.set(alias, hostname)
     }
-  })
+  } catch (err) {
+    console.error("Error registering hostname aliases:", { err })
+  }
 }

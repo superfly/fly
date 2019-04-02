@@ -11,27 +11,22 @@ export function install(this: any) {
     process.stderr.write(`Unhandled Rejection: ${error} ${error.stack}`)
   })
 
-  beforeEach(done => {
-    env
-      .startContext()
-      .then(done)
-      .catch(done.fail)
-  }, 60000)
-
-  afterEach(done => {
-    env
-      .stopContext()
-      .then(done)
-      .catch(done.fail)
-  })
-
   Object.assign(global, {
     setupApps: (apps: { [hostname: string]: string }) => {
-      beforeAll(() => {
-        env.pushApps(apps)
-      })
-      afterAll(() => {
-        env.popApps(apps)
+      env.pushApps(apps)
+
+      beforeAll(done => {
+        env
+          .startContext()
+          .then(done)
+          .catch(done.fail)
+      }, 60000)
+
+      afterAll(done => {
+        env
+          .stopContext()
+          .then(done)
+          .catch(done.fail)
       })
     }
   })

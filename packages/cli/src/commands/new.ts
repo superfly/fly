@@ -1,38 +1,61 @@
-import { root, CommonOptions, addCommonOptions, getAppName } from "./root"
+import Command, { flags as cmdFlags } from "@oclif/command"
+import { FlyCommand } from "../base-command"
 import * as path from "path"
 import * as fs from "fs"
 import { sync as glob } from "glob"
 import * as execa from "execa"
 import { examplesPath } from "@fly/examples"
+import { cli } from "cli-ux"
+import * as inquirer from "inquirer"
 
-export interface NewOptions {
-  template: string[]
-  list: boolean
-}
-export interface NewArgs {
-  name: string
-}
+export default class New extends FlyCommand {
+  public static description = "create a new app"
 
-const newCommand = root
-  .subCommand<NewOptions, NewArgs>("new [name]")
-  .description("Create a new Fly app.")
-  .option("-t, --template [template]", "Name of the template to use. default: getting-started", "getting-started")
-  .option("-l, --list", "List available templates.")
-  .action(async (options, args) => {
+  public static flags = {
+    template: cmdFlags.string({
+      char: "t",
+      description: "the template to use"
+    })
+  }
+
+  static args = [
+    {
+      name: "name",
+      description: "app-name",
+      required: true
+    }
+  ]
+
+  public async run() {
+    const { args, flags } = this.parse(New)
+    const cwd = args.path || process.cwd()
+
     const templateIndex = new TemplateIndex([examplesPath])
 
-    if (args.name === undefined || options.list) {
-      listTemplates(templateIndex)
-      return
+    let templateName = flags.template
+
+    if (!templateName) {
+      const selectedTemplate: any = await inquirer.prompt([
+        {
+          name: "name",
+          message: "select a template",
+          type: "list",
+          choices: templateIndex.templates,
+          pageSize: 25
+        }
+      ])
+
+      templateName = selectedTemplate.name
     }
 
-    const template = templateIndex.getTemplate(options.template[0])
+    if (!templateName) {
+      throw new Error("no template selected")
+    }
 
-    if (template == null) {
-      console.warn(`The template '${options.template[0]}' could not be found`)
-      console.log()
-      listTemplates(templateIndex)
-      return
+    const template = templateIndex.getTemplate(templateName)
+
+    if (!template) {
+      throw new Error(`The template '${flags.template}' could not be found`)
     }
 
     const generator = new Generator({
@@ -41,37 +64,21 @@ const newCommand = root
     })
 
     console.log(`Using template ${generator.template.name}`)
-    console.log(`Creating project in ${generator.rootDir}...`)
 
-    try {
-      generator.create()
-    } catch (error) {
-      console.warn("Failed to create app directory:")
-      console.error(error)
-      return
-    }
+    cli.action.start(`Creating project in ${generator.rootDir}`)
 
-    try {
-      generator.copy()
-    } catch (error) {
-      console.warn("Failed to copy to app directory:")
-      console.error(error)
-      return
-    }
+    generator.create()
+    generator.copy()
+    await generator.configure()
 
-    try {
-      await generator.configure()
-    } catch (error) {
-      console.warn("Failed to configure:")
-      console.error(error)
-      return
-    }
+    cli.action.stop()
 
     console.log(`Successfully created project ${generator.appName}`)
     console.log(`Get started with the following commands:`)
     console.log(`  $ cd ${generator.relativePath()}`)
     console.log(`  $ fly server`)
-  })
+  }
+}
 
 interface GeneratorOptions {
   appName: string
@@ -110,16 +117,6 @@ class TemplateIndex {
   public getTemplate(name: string): TemplateInfo | undefined {
     return this.templates.find(ti => ti.name === name)
   }
-}
-
-function listTemplates(index: TemplateIndex) {
-  console.log("Start a new project with one of the following templates:")
-
-  index.templates.forEach(template => {
-    console.log(`  ${template.name}`)
-  })
-
-  console.log("Browse template source at https://github.com/superfly/fly/tree/master/examples")
 }
 
 export class GeneratorError extends Error {}
