@@ -46,7 +46,7 @@
   rm -rf fly
   rm -rf ~/.local/share/fly/client
 
-  URL=https://flytest.sfo2.digitaloceanspaces.com/fly-\$OS-\$ARCH.tar.gz
+  URL=https://fly.io/cli/releases/pre/fly-\$OS-\$ARCH.tar.gz
   TAR_ARGS="xz"
 
   echo "Installing CLI from \$URL"
