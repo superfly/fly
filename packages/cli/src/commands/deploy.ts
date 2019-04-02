@@ -16,7 +16,7 @@ import * as sharedFlags from "../flags"
 export default class Deploy extends FlyCommand {
   static description = "Deploy your local Fly app"
 
-  static args = [{ name: "path", description: "path to app", default: "." }]
+  static args = [{ name: "path", description: "path to app", default: process.cwd() }]
 
   public static flags = {
     env: sharedFlags.env(),

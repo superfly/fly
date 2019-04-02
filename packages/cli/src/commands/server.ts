@@ -29,7 +29,7 @@ export default class ServerCmd extends FlyCommand {
     })
   }
 
-  static args = [{ name: "path", description: "path to app", default: "." }]
+  static args = [{ name: "path", description: "path to app", default: process.cwd() }]
 
   public async run() {
     const { args, flags } = this.parse(ServerCmd)

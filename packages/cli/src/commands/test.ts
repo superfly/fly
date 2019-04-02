@@ -22,8 +22,6 @@ export default class Test extends FlyCommand {
   public async run() {
     const { argv } = this.parse(Test)
 
-    console.log({ argv })
-
     const runner = new TestRunner({ paths: argv })
 
     const success = await runner.run()
