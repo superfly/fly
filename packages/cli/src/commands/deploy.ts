@@ -19,7 +19,7 @@ export default class Deploy extends FlyCommand {
   static args = [{ name: "path", description: "path to app", default: process.cwd() }]
 
   public static flags = {
-    env: sharedFlags.env(),
+    env: sharedFlags.env({ default: "production" }),
     app: sharedFlags.app()
   }
 
