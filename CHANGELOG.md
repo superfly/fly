@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.48.0](https://github.com/superfly/fly/compare/v0.47.1...v0.48.0) (2019-04-02)
+
+
+### Bug Fixes
+
+* fly secrets set <key> --from-file <path> broken ([5a2b6c7](https://github.com/superfly/fly/commit/5a2b6c7))
+
+
+### Features
+
+* new cli + prebuilt bundles ([#223](https://github.com/superfly/fly/issues/223)) ([5dd8123](https://github.com/superfly/fly/commit/5dd8123))
+
+
+
+
+
 # [0.48.0-pre.4](https://github.com/superfly/fly/compare/v0.48.0-pre.2...v0.48.0-pre.4) (2019-04-01)
 
 **Note:** Version bump only for package fly-root
