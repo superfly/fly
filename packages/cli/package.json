@@ -77,7 +77,7 @@
     },
     "update": {
       "s3": {
-        "host": "https://get-flyio.edgeapp.net",
+        "host": "https://fly.io",
         "bucket": "flyio-builds",
         "xz": false,
         "templates": {
