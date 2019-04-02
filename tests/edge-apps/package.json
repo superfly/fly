@@ -1,6 +1,6 @@
 {
   "name": "@fly-test/edge-apps",
-  "version": "0.48.0",
+  "version": "0.48.1",
   "private": true,
   "scripts": {
     "test": "jest --maxWorkers=1 --verbose"

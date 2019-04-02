@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.48.1](https://github.com/superfly/fly/compare/v0.48.0...v0.48.1) (2019-04-02)
+
+
+### Bug Fixes
+
+* default deploy env to production ([9cc8c84](https://github.com/superfly/fly/commit/9cc8c84))
+
+
+
+
+
 # [0.48.0](https://github.com/superfly/fly/compare/v0.47.1...v0.48.0) (2019-04-02)
 
 
