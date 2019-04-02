@@ -1,3 +1,7 @@
+The ISC License (ISC)
+
+Copyright © Heroku 2017
+
 #!/bin/bash
 {
     set -e
