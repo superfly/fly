@@ -1,6 +1,6 @@
 {
   "name": "@fly/fly",
-  "version": "0.48.1",
+  "version": "0.48.2",
   "description": "Open source Edge Application runtime",
   "license": "Apache-2.0",
   "repository": {
