@@ -20,7 +20,6 @@ export class TestRunner {
   testFiles: string[] = []
 
   public constructor(options: TestRunnerOptions) {
-    console.log({ options })
     this.cwd = options.cwd || process.cwd()
     if (options.paths) {
       this.addTestFiles(options.paths)
