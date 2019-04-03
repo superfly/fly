@@ -77,19 +77,19 @@
     },
     "update": {
       "s3": {
-        "host": "https://fly.io",
-        "bucket": "flyio-builds",
+        "host": "https://flyio-cli-assets.sfo2.digitaloceanspaces.com",
+        "bucket": "flyio-cli-assets",
         "xz": false,
         "templates": {
           "target": {
-            "unversioned": "cli/target/channels/<%- channel %>/<%- bin %>-<%- platform %>-<%- arch %><%- ext %>",
-            "versioned": "cli/target/channels/<%- channel %>/<%- bin %>-v<%- version %>/<%- bin %>-v<%- version %>-<%- platform %>-<%- arch %><%- ext %>",
-            "manifest": "cli/target/channels/<%- channel %>/<%- platform %>-<%- arch %>"
+            "unversioned": "tarballs/<%- channel %>/<%- bin %>-<%- platform %>-<%- arch %><%- ext %>",
+            "versioned": "tarballs/<%- channel %>/<%- bin %>-v<%- version %>/<%- bin %>-v<%- version %>-<%- platform %>-<%- arch %><%- ext %>",
+            "manifest": "tarballs/<%- channel %>/<%- platform %>-<%- arch %>"
           },
           "vanilla": {
-            "unversioned": "cli/vanilla/channels/<%- channel %>/<%- bin %><%- ext %>",
-            "versioned": "cli/vanilla/channels/<%- channel %>/<%- bin %>-v<%- version %>/<%- bin %>-v<%- version %><%- ext %>",
-            "manifest": "cli/vanilla/channels/<%- channel %>/version"
+            "unversioned": "tarballs/x/<%- channel %>/<%- bin %><%- ext %>",
+            "versioned": "tarballs/x/<%- channel %>/<%- bin %>-v<%- version %>/<%- bin %>-v<%- version %><%- ext %>",
+            "manifest": "tarballs/x/<%- channel %>/version"
           }
         }
       },
@@ -110,6 +110,6 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=8.10.0"
+    "node": ">=11.10.0"
   }
 }

@@ -50,7 +50,7 @@ Copyright © Heroku 2017
   rm -rf fly
   rm -rf ~/.local/share/fly/client
 
-  URL=https://fly.io/cli/releases/stable/fly-\$OS-\$ARCH.tar.gz
+  URL=https://flyio-cli-assets.sfo2.digitaloceanspaces.com/tarballs/stable/fly-\$OS-\$ARCH.tar.gz
   TAR_ARGS="xz"
 
   echo "Installing CLI from \$URL"
