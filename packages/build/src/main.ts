@@ -76,22 +76,34 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
   let conf
   const defaultPathToWebpackConfig = path.join(cwd, webpackConfPath)
   if (fs.existsSync(defaultPathToWebpackConfig)) {
-    console.info(`Using Webpack config ${webpackConfPath}`)
+    console.info(`Using Webpack config ${defaultPathToWebpackConfig}`)
     conf = require(defaultPathToWebpackConfig)
   } else {
     console.info("Generating Webpack config...")
-    conf = {
-      entry: `${cwd}/index.js`,
-      resolve: {
-        extensions: [".js"]
-      }
-    }
+    conf = {}
   }
-  conf.entry = conf.entry || `${cwd}/index.js`
-  conf.resolve = conf.resolve || {
-    extensions: [".js"]
+
+  const v8EnvPath = path.dirname(require.resolve("@fly/v8env"))
+
+  conf = {
+    entry: `${cwd}/index.js`,
+    resolve: {
+      extensions: [],
+      alias: {},
+      modules: []
+    },
+    devtool: "source-map",
+    plugins: [],
+    module: {
+      rules: []
+    },
+    ...conf
   }
-  conf.devtool = "source-map"
+
+  conf.resolve.extensions = [...conf.resolve.extensions, ".js", ".ts", ".tsx"]
+
+  conf.module.rules = conf.module.rules || []
+
   conf.output = {
     filename: "bundle.js",
     path: path.resolve(cwd, ".fly/build"),
@@ -100,25 +112,34 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     sourceMapFilename: "bundle.map.json"
   }
 
-  const v8EnvPath = path.dirname(require.resolve("@fly/v8env"))
+  conf.resolve.alias = {
+    ...conf.resolve.alias,
+    "@fly/image": v8EnvPath + "/fly/image",
+    "@fly/proxy": v8EnvPath + "/fly/proxy",
+    "@fly/data": v8EnvPath + "/fly/data",
+    "@fly/cache": v8EnvPath + "/fly/cache",
+    "@fly/static": v8EnvPath + "/fly/static",
+    "@fly/fetch": v8EnvPath + "/fly/fetch",
+    "@fly/v8env$": v8EnvPath,
+    "@fly/v8env/lib": v8EnvPath
+  }
 
-  conf.resolve = Object.assign(
-    {
-      alias: Object.assign({}, conf.resolve.alias, {
-        "@fly/image": v8EnvPath + "/fly/image",
-        "@fly/proxy": v8EnvPath + "/fly/proxy",
-        "@fly/data": v8EnvPath + "/fly/data",
-        "@fly/cache": v8EnvPath + "/fly/cache",
-        "@fly/static": v8EnvPath + "/fly/static",
-        "@fly/fetch": v8EnvPath + "/fly/fetch"
-      })
-    },
-    conf.resolve
-  )
+  conf.module.rules.push({
+    test: /\.tsx?$/,
+    loader: "ts-loader",
+    options: {
+      compilerOptions: {
+        paths: {
+          "@fly/v8env": [v8EnvPath],
+          "@fly/v8env/lib/*": [path.join(v8EnvPath, "*")]
+        }
+      }
+    }
+  })
 
   if (opts && opts.uglify) {
-    conf.plugins = conf.plugins || []
-    conf.plugins.push(
+    conf.plugins = [
+      ...conf.plugins,
       new UglifyJsPlugin({
         parallel: true,
         sourceMap: true,
@@ -127,7 +148,8 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
           mangle: false
         }
       })
-    )
+    ]
   }
+
   return conf
 }
