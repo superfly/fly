@@ -100,8 +100,8 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     ...conf
   }
 
-  conf.resolve.extensions = [...conf.resolve.extensions, ".js", ".ts", ".tsx"]
-  conf.resolve.modules = [...conf.resolve.modules, "node_modules"]
+  conf.resolve.extensions = [...(conf.resolve.extensions || []), ".js", ".ts", ".tsx"]
+  conf.resolve.modules = [...(conf.resolve.modules || []), "node_modules"]
 
   conf.module.rules = conf.module.rules || []
 
@@ -114,7 +114,7 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
   }
 
   conf.resolve.alias = {
-    ...conf.resolve.alias,
+    ...(conf.resolve.alias || {}),
     "@fly/image": v8EnvPath + "/fly/image",
     "@fly/proxy": v8EnvPath + "/fly/proxy",
     "@fly/data": v8EnvPath + "/fly/data",
