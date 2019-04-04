@@ -152,7 +152,5 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     ]
   }
 
-  console.debug("Webpack Config", conf)
-
   return conf
 }

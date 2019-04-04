@@ -29,9 +29,7 @@ export class TestRunner {
   public addTestFiles(pathPatterns: string | string[]) {
     for (let pathPattern of Array.from(pathPatterns)) {
       pathPattern = path.resolve(this.cwd, pathPattern)
-      console.log("scanning", { pathPattern })
       const paths = glob.sync(pathPattern).map(matchPath => path.resolve(this.cwd, matchPath))
-      console.log("paths", { paths })
       if (paths) {
         this.testFiles.push(...paths)
       }
