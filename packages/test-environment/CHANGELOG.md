@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.49.0-pre.0](https://github.com/superfly/fly/compare/v0.48.2...v0.49.0-pre.0) (2019-04-04)
+
+**Note:** Version bump only for package @fly/test-environment
+
+
+
+
+
 # [0.48.0](https://github.com/superfly/fly/compare/v0.47.1...v0.48.0) (2019-04-02)
 
 
