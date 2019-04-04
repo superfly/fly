@@ -14,6 +14,7 @@
       sudo -k
     fi
 
+    CHANNEL="${1:-stable}"
 
     # run inside sudo
     $SUDO bash <<SCRIPT
@@ -50,7 +51,7 @@
   rm -rf fly
   rm -rf ~/.local/share/fly/client
 
-  URL=https://flyio-cli-assets.sfo2.digitaloceanspaces.com/tarballs/stable/fly-\$OS-\$ARCH.tar.gz
+  URL=https://flyio-cli-assets.sfo2.digitaloceanspaces.com/tarballs/$CHANNEL/fly-\$OS-\$ARCH.tar.gz
   TAR_ARGS="xz"
 
   echo "Installing CLI from \$URL"
