@@ -24,11 +24,9 @@
         "jest": "^24.1.0",
         "jest-environment-node": "^24.0.0",
         "node-fetch": "2.2.0",
-        "ts-jest": "^24.0.0",
-        "wait-on": "^3.2.0"
+        "ts-jest": "^24.0.0"
     },
     "devDependencies": {
-        "@types/wait-on": "^3.2.0",
-        "typescript": "3.0.1"
+
     }
 }
