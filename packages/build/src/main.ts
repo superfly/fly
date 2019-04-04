@@ -101,6 +101,7 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
   }
 
   conf.resolve.extensions = [...conf.resolve.extensions, ".js", ".ts", ".tsx"]
+  conf.resolve.modules = [...conf.resolve.modules, "node_modules"]
 
   conf.module.rules = conf.module.rules || []
 
@@ -150,6 +151,8 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
       })
     ]
   }
+
+  console.debug("Webpack Config", conf)
 
   return conf
 }
