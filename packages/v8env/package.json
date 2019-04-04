@@ -1,6 +1,6 @@
 {
     "name": "@fly/v8env",
-    "version": "0.49.0-pre.0",
+    "version": "0.49.0",
     "description": "Open source Edge Application runtime",
     "license": "Apache-2.0",
     "repository": {
