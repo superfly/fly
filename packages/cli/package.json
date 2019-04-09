@@ -1,6 +1,6 @@
 {
   "name": "@fly/cli",
-  "version": "0.49.1",
+  "version": "0.49.2",
   "description": "fly cli",
   "homepage": "https://github.com/superfly/fly#readme",
   "license": "Apache-2.0",
@@ -32,8 +32,8 @@
     "url": "https://github.com/superfly/fly/issues"
   },
   "dependencies": {
-    "@fly/build": "0.49.1",
-    "@fly/core": "0.49.1",
+    "@fly/build": "0.49.2",
+    "@fly/core": "0.49.2",
     "@fly/examples": "0.47.1",
     "@fly/v8env": "0.49.0",
     "@oclif/command": "^1",
