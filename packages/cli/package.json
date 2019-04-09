@@ -69,7 +69,6 @@
     "bin": "fly",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-update",
       "@oclif/plugin-warn-if-update-available"
     ],
     "macos": {

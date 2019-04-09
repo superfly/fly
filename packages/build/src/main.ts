@@ -129,11 +129,13 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     test: /\.tsx?$/,
     loader: "ts-loader",
     options: {
+      transpileOnly: true,
       compilerOptions: {
         paths: {
           "@fly/v8env": [v8EnvPath],
           "@fly/v8env/lib/*": [path.join(v8EnvPath, "*")]
-        }
+        },
+        baseUrl: "."
       }
     }
   })
