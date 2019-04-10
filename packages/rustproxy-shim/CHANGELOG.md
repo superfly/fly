@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.50.0](https://github.com/superfly/fly/compare/v0.49.2...v0.50.0) (2019-04-10)
+
+**Note:** Version bump only for package @fly/rustproxy-shim
+
+
+
+
+
 ## [0.47.1](https://github.com/superfly/fly/compare/v0.47.0...v0.47.1) (2019-03-13)
 
 **Note:** Version bump only for package @fly/rustproxy-shim
