@@ -51,7 +51,11 @@ export function handleRequest(
       }
 
       if (httpFn === https.request) {
-        reqOptions.servername = reqOptions.hostname
+        if (init.tls && init.tls.servername) {
+          reqOptions.servername = init.tls.servername
+        } else {
+          reqOptions.servername = reqOptions.hostname
+        }
       }
 
       req = httpFn(reqOptions)

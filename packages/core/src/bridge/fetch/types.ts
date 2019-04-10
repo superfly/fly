@@ -8,6 +8,9 @@ export interface RequestInit {
   readTimeout?: number
   headers?: Record<string, string>
   certificate?: Certificate
+  tls?: {
+    servername?: string
+  }
 }
 
 export type FetchBody = string | number | ArrayBuffer | Buffer | null

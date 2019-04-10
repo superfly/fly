@@ -16,6 +16,9 @@ export interface FlyRequestInit extends RequestInit {
     pfx?: string | Buffer | Array<string | Buffer>
     passphrase?: string
   }
+  tls?: {
+    servername?: string
+  }
 }
 
 /**
@@ -40,7 +43,8 @@ export function fetch(req: RequestInfo, init?: FlyRequestInit): Promise<Response
         headers: (req.headers && req.headers.toJSON()) || {},
         timeout: init && init.timeout,
         readTimeout: (init && init.readTimeout) || 30 * 1000,
-        certificate: init && init.certificate
+        certificate: init && init.certificate,
+        tls: init && init.tls
       }
       if (!req.bodySource) {
         bridge.dispatch("fetch", url, init, null, fetchCb)
