@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.50.1-pre.0](https://github.com/superfly/fly/compare/v0.50.0...v0.50.1-pre.0) (2019-04-11)
+
+
+### Bug Fixes
+
+* don't combine headers if we don't have to ([33e6989](https://github.com/superfly/fly/commit/33e6989))
+
+
+
+
+
 # [0.50.0](https://github.com/superfly/fly/compare/v0.49.2...v0.50.0) (2019-04-10)
 
 
