@@ -105,7 +105,7 @@ export function handleRequest(
           globalConnectionStats: connectionStats
         })
 
-        req.removeAllListeners()
+        //req.removeAllListeners()
 
         const respInit: ResponseInit = {
           status: res.statusCode,
