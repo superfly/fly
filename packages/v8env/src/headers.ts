@@ -12,8 +12,11 @@ export class FlyHeaders implements Headers {
 
   constructor(init?: HeadersInit) {
     if (init instanceof FlyHeaders) {
-      for (const [key, val] of init) {
-        this.append(key, val)
+      const raw = init.toJSON()
+      for (const name of Object.getOwnPropertyNames(raw)) {
+        for (const value of raw[name]) {
+          this.append(name, value)
+        }
       }
     } else if (Array.isArray(init)) {
       init.forEach(header => {
