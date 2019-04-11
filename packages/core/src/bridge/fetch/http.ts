@@ -56,8 +56,10 @@ export function handleRequest(
         } else {
           reqOptions.servername = reqOptions.hostname
         }
+        log.debug("Sending servername:", reqOptions.servername)
       }
 
+      log.debug("Sending headers:", reqOptions.headers)
       req = httpFn(reqOptions)
       req.setNoDelay(true)
       req.setHeader("fly-app", rt.app.name)

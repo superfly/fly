@@ -110,11 +110,7 @@ export class FlyHeaders implements Headers {
   public toJSON(): { [key: string]: string[] } {
     const payload = {}
     for (const [name, value] of [...this.headerMap]) {
-      if (name === "host") {
-        payload[name] = value[0]
-      } else {
-        payload[name] = value
-      }
+      payload[name] = value
     }
     return payload
   }
