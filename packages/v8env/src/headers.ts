@@ -14,8 +14,12 @@ export class FlyHeaders implements Headers {
     if (init instanceof FlyHeaders) {
       const raw = init.toJSON()
       for (const name of Object.getOwnPropertyNames(raw)) {
-        for (const value of raw[name]) {
-          this.append(name, value)
+        if (typeof raw[name] === "string") {
+          this.append(name, raw[name] as any)
+        } else {
+          for (const value of raw[name]) {
+            this.append(name, value)
+          }
         }
       }
     } else if (Array.isArray(init)) {
@@ -110,7 +114,11 @@ export class FlyHeaders implements Headers {
   public toJSON(): { [key: string]: string[] } {
     const payload = {}
     for (const [name, value] of [...this.headerMap]) {
-      payload[name] = value
+      if (name === "host") {
+        payload[name] = value[0]
+      } else {
+        payload[name] = value
+      }
     }
     return payload
   }
