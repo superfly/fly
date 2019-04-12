@@ -17,4 +17,10 @@ if [ "\$(expr substr \$(uname -s) 1 5)" == "Linux" ]; then
   export LDFLAGS='-static-libgcc -static-libstdc++'
 fi
 
+echo "env variables"
+env
+
 yarn oclif-dev pack -t $TARGET
+
+echo "ldd"
+# ldd
