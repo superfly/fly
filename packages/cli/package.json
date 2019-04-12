@@ -26,7 +26,9 @@
     "posttest": "tslint -p test -t stylish",
     "prepack": "yarn oclif-dev manifest && yarn oclif-dev readme",
     "version": "yarn oclif-dev readme && git add README.md",
-    "clean": "rm -rf ./lib ./dist ./tmp"
+    "clean": "rm -rf ./lib ./dist ./tmp",
+    "preinstall": "echo 'PREINSTALL' && env",
+    "install": "echo 'POSTINSTALL' && env"
   },
   "bugs": {
     "url": "https://github.com/superfly/fly/issues"

@@ -12,15 +12,13 @@ echo "Packing CLI for $TARGET"
 cp ./yarn.lock ./packages/cli
 cd ./packages/cli
 
+LDFLAGS=""
 if [ "\$(expr substr \$(uname -s) 1 5)" == "Linux" ]; then
-  # statically link libstdc++ & libgcc
-  export LDFLAGS='-static-libgcc -static-libstdc++'
+  # statically link libstdc++ & libgcc on linux
+  LDFLAGS='-static-libgcc -static-libstdc++'
 fi
 
-echo "env variables"
-env
-
-yarn oclif-dev pack -t $TARGET
+LDFLAGS=$LDFLAGS yarn oclif-dev pack -t $TARGET
 
 echo "ldd"
 # ldd
