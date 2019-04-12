@@ -52,7 +52,7 @@ brew tap superfly/brew && brew install superfly/brew/fly
 
 The standalone install is a tarball containing the Fly CLI, precompiled native extensions, and a nodejs binary. This is useful in containers or hosts with restricted access.
 
-To quickly setup into /usr/local/lib/fly and /usr/local/bin/fly, run this script (script requires sudo and not Windows compatible):
+To quickly install into `/usr/local/lib/fly` and `/usr/local/bin/fly`, run this [script](https://github.com/superfly/fly/blob/master/install-standalone.sh) (requires sudo and not Windows compatible):
 
 ```bash
 curl https://fly.io/cli/install.sh | sh
@@ -95,13 +95,13 @@ fly.http.respondWith((request) => {
 
 Start the fly server:
 
-```
+```bash
 fly server
 ```
 
 Visit your app:
 
-```
+```bash
 open http://localhost:3000
 ```
 
@@ -257,7 +257,7 @@ Using `fly deploy`, here's what happens:
 
 ## Logs
 
-Tail production logs with
+Tail production logs with:
 
 ```bash
 fly logs
@@ -267,7 +267,7 @@ fly logs
 
 - [Getting Started](https://fly.io/docs/apps/)
 - [API Reference](https://fly.io/docs/apps/api/index.html)
-- [Examples](https://github.com/superfly/cdn/)
+- [Examples](https://github.com/superfly/edge/)
 
 ## Open source
 
