@@ -1,5 +1,5 @@
+# Originally based on https://github.com/heroku/cli/blob/master/install-standalone.sh
 # The ISC License (ISC)
-
 # Copyright © Heroku 2017
 
 #!/bin/bash
@@ -51,7 +51,7 @@
   rm -rf fly
   rm -rf ~/.local/share/fly/client
 
-  URL=https://flyio-cli-assets.sfo2.digitaloceanspaces.com/tarballs/$CHANNEL/fly-\$OS-\$ARCH.tar.gz
+  URL=https://get.fly.io/tarballs/$CHANNEL/fly-\$OS-\$ARCH.tar.gz
   TAR_ARGS="xz"
 
   echo "Installing CLI from \$URL"

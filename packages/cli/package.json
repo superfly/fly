@@ -76,7 +76,7 @@
     },
     "update": {
       "s3": {
-        "host": "https://flyio-cli-assets.sfo2.digitaloceanspaces.com",
+        "host": "https://get.fly.io",
         "bucket": "flyio-cli-assets",
         "xz": false,
         "templates": {
@@ -101,7 +101,7 @@
       }
     },
     "warn-if-update-available": {
-      "timeoutInDays": 7,
+      "timeoutInDays": 1,
       "message": "fly update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>."
     }
   },
