@@ -14,8 +14,12 @@ export class FlyHeaders implements Headers {
     if (init instanceof FlyHeaders) {
       const raw = init.toJSON()
       for (const name of Object.getOwnPropertyNames(raw)) {
-        for (const value of raw[name]) {
-          this.append(name, value)
+        if (typeof raw[name] === "string") {
+          this.append(name, raw[name] as any)
+        } else {
+          for (const value of raw[name]) {
+            this.append(name, value)
+          }
         }
       }
     } else if (Array.isArray(init)) {
