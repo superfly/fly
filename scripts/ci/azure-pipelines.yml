@@ -66,6 +66,11 @@ jobs:
 
   - job: build_cli
     dependsOn: publish_npm
+    condition: |
+      or(
+        eq(variables['build.sourceBranch'], 'refs/heads/master'),
+        startsWith(variables['build.sourceBranch'], 'refs/heads/cli')
+      )
     strategy:
       maxParallel: 2
       matrix:
