@@ -36,29 +36,57 @@ This in-between is a great place to solve certain categories of problems. If you
 
 ### Installation
 
+The easiest way to install the Fly CLI is using one of the installers. Use one of the other methods if your platform isn't supported.
+
+#### macOS
+
+```bash
+brew tap superfly/brew && brew install superfly/brew/fly
+```
+
+*Windows and Linux coming soon*
+
+#### Other installation methods
+
+**Standalone Install**
+
+The standalone install is a tarball containing the Fly CLI, precompiled native extensions, and a nodejs binary. This is useful in containers or hosts with restricted access.
+
+To quickly setup into /usr/local/lib/fly and /usr/local/bin/fly, run this script (script requires sudo and not Windows compatible):
+
+```bash
+curl https://fly.io/cli/install.sh | sh
+```
+
+Otherwise, download one of the tarballs below and extract it yourself.
+
+**Tarballs**
+
+* [macOS](https://get.fly.io/tarballs/stable/fly-darwin-x64.tar.gz)
+* [Linux (x64)](https://get.fly.io/tarballs/stable/fly-linux-x64.tar.gz)
+
+**npm**
+
+The Fly CLI and runtime is built on Node.js with native extensions. As a result, installing from npm requires a proper C/C++ compiler toolchain and takes significantly longer than the other methods. If you're on Windows or don't have XCode/gcc installed, follow the [node-gyp instructions](https://github.com/nodejs/node-gyp#installation) before continuing.
+
 Install globally:
 
-```
+```bash
 npm install -g @fly/fly
 ```
 
-or as a `devDependency` in your project:
+or as a devDependency in your project:
 
-```
+```bash
 npm install --save-dev @fly/fly
 ```
-
-#### Windows Users
-
-Follow the node-gyp instructions from here: [node-gyp](https://github.com/nodejs/node-gyp)
-
 
 ### Hello World!
 
 Write javascript code to a file (`index.js`):
 
 ```js
-fly.http.respondWith(function(request){
+fly.http.respondWith((request) => {
   return new Response("Hello! We support whirled peas.", { status: 200})
 })
 // if you'd prefer to be service worker compatibility, this is also supported:
@@ -83,8 +111,8 @@ Change code and configuration, it's reloaded seamlessly.
 
 Simply put:
 
-- Uses webpack to bundle your javascript
-- Assumes the presence of `index.js` and a basic webpack configuration
+- Uses a basic webpack configuration to bundle your javascript
+- Assumes the presence of `index.js` or `index.ts`
 - You can customize everything by creating a `webpack.fly.config.js` which will be loaded for you
 - Use npm packages compatible with the v8 javascript engine, you don't have access to node.js-specific concepts or packages.
 
@@ -125,7 +153,7 @@ In your code, you can seamlessly use this value like:
 app.config.secretThing
 ```
 
-When deployed on fly.io, secrets are fetched from an encrypted store. You need to pre-define your secrets via `fly secrets set <key> <value>`.
+When deployed on fly.io, secrets are fetched from an encrypted store. You need to pre-define your secrets via `fly secrets:set <key> <value>`.
 
 Locally, you need to define them in a `.fly.secrets.yml` file, make sure you add it to your `.gitignore` as it can contain sensitive data. Example file.
 
@@ -215,7 +243,7 @@ Use `fly login` to log into your fly.io account, if you don't have one, go creat
 
 ### 2. Create an app
 
-Make sure you've created your fly app for your account with `fly apps create [name]` (name is optional)
+Make sure you've created your fly app for your account with `fly apps:create [name]` (name is optional)
 
 Set your `app` property in your `.fly.yml`
 
@@ -224,9 +252,16 @@ Set your `app` property in your `.fly.yml`
 Using `fly deploy`, here's what happens:
 - Your code is bundled via webpack, it's also uglified to save space
 - Your code, source map and `files` are added to a simple tarball, gzipped and uploaded to the fly.io API using your token
-- We create a "release" for your app, those are immutable, changing anything (by using `fly deploy` or `fly secrets set`) will trigger a new release which will be deployed automatically
+- We create a "release" for your app, those are immutable, changing anything (by using `fly deploy` or `fly secrets:set`) will trigger a new release which will be deployed automatically
 - Your code is distributed instantly(-ish) across our global fleet of servers
 
+## Logs
+
+Tail production logs with
+
+```bash
+fly logs
+```
 
 ## Documentation
 
