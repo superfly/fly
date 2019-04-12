@@ -32,23 +32,27 @@ This in-between is a great place to solve certain categories of problems. If you
 * Load balancers across cloud storage providers
 * Per user rate limiting (for APIs or apps)
 
-## Usage
-
-### Installation
-
-The easiest way to install the Fly CLI is using one of the installers. Use one of the other methods if your platform isn't supported.
+## Installation
 
 #### macOS
+
+Homebrew is the quickest way to get started on macOS:
 
 ```bash
 brew tap superfly/brew && brew install superfly/brew/fly
 ```
 
-*Windows and Linux coming soon*
+#### Linux
 
-#### Other installation methods
+Use the [standalone installer](#standalone-install)
 
-**Standalone Install**
+#### Windows
+
+Use [npm](#npm)
+
+### Other installation methods
+
+#### Standalone Install
 
 The standalone install is a tarball containing the Fly CLI, precompiled native extensions, and a nodejs binary. This is useful in containers or hosts with restricted access.
 
@@ -60,12 +64,12 @@ curl https://fly.io/cli/install.sh | sh
 
 Otherwise, download one of the tarballs below and extract it yourself.
 
-**Tarballs**
+#### Tarballs
 
 * [macOS](https://get.fly.io/tarballs/stable/fly-darwin-x64.tar.gz)
 * [Linux (x64)](https://get.fly.io/tarballs/stable/fly-linux-x64.tar.gz)
 
-**npm**
+#### npm
 
 The Fly CLI and runtime is built on Node.js with native extensions. As a result, installing from npm requires a proper C/C++ compiler toolchain and takes significantly longer than the other methods. If you're on Windows or don't have XCode/gcc installed, follow the [node-gyp instructions](https://github.com/nodejs/node-gyp#installation) before continuing.
 
@@ -80,6 +84,8 @@ or as a devDependency in your project:
 ```bash
 npm install --save-dev @fly/fly
 ```
+
+## Usage
 
 ### Hello World!
 
