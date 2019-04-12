@@ -13,7 +13,11 @@ cp ./yarn.lock ./packages/cli
 cd ./packages/cli
 
 LDFLAGS=""
+
+echo $(uname -s)
+
 if [ "\$(expr substr \$(uname -s) 1 5)" == "Linux" ]; then
+  echo "LINUX"
   # statically link libstdc++ & libgcc on linux
   LDFLAGS='-static-libgcc -static-libstdc++'
 fi
