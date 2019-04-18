@@ -80,7 +80,7 @@ export class LocalRelease extends EventEmitter implements Release {
     const builtConfigPath = path.join(this.cwd, ".fly", configFile)
     let config: any = {}
     if (fs.existsSync(localConfigPath)) {
-      config = YAML.load(fs.readFileSync(localConfigPath).toString())
+      config = YAML.load(fs.readFileSync(localConfigPath).toString()) || {}
       if (this.expandFiles(config)) {
         // write generated config if it was dirty
         fs.mkdirpSync(path.join(this.cwd, ".fly"))
