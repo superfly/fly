@@ -86,7 +86,7 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
   const v8EnvPath = path.dirname(require.resolve("@fly/v8env"))
 
   conf = {
-    entry: `${cwd}/index.js`,
+    entry: getEntryFile(cwd),
     resolve: {
       extensions: [],
       alias: {},
@@ -125,6 +125,10 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     "@fly/v8env/lib": v8EnvPath
   }
 
+  conf.resolveLoader = {
+    modules: ["node_modules", ...module.paths]
+  }
+
   conf.module.rules.push({
     test: /\.tsx?$/,
     loader: "ts-loader",
@@ -155,4 +159,30 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
   }
 
   return conf
+}
+
+const entryFiles = ["index.ts", "index.js"]
+
+function getEntryFile(cwd: string): string {
+  return getEntryFileFromPackageFile(cwd) || getDefaultEntryFile(cwd)
+}
+
+function getDefaultEntryFile(cwd: string) {
+  for (const entryFile of entryFiles) {
+    const entryFilePath = path.join(cwd, entryFile)
+    if (fs.existsSync(entryFilePath)) {
+      return entryFilePath
+    }
+  }
+}
+
+function getEntryFileFromPackageFile(cwd: string) {
+  const packageFilePath = path.join(cwd, "package.json")
+  try {
+    if (fs.existsSync(packageFilePath)) {
+      return require(packageFilePath).main
+    }
+  } catch (err) {
+    console.warn("error reading entry file from package.json", err)
+  }
 }
