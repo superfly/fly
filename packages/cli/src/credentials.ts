@@ -45,7 +45,9 @@ export function storeCredentials(data: any) {
 
 export function storeNetrcCredentials(host: string, token: string) {
   netrc.loadSync()
-  netrc.machines[host].login = token
+  netrc.machines[host] = {
+    login: token
+  }
   netrc.saveSync()
 }
 
