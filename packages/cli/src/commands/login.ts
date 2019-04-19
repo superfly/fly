@@ -2,7 +2,7 @@ import { FlyCommand } from "../base-command"
 import { processResponse } from "../api"
 import { cli } from "cli-ux"
 import axios from "axios"
-import { storeCredentials, credentialsPath } from "../credentials"
+import { storeCredentials, credentialsPath, storeNetrcCredentials } from "../credentials"
 
 const baseURL = process.env.FLY_BASE_URL || "https://fly.io"
 
@@ -22,7 +22,9 @@ export default class Login extends FlyCommand {
     })
 
     processResponse(this, res, () => {
-      storeCredentials({ access_token: res.data.data.attributes.access_token })
+      const access_token = res.data.data.attributes.access_token
+      storeCredentials({ access_token })
+      storeNetrcCredentials("git.fly.io", access_token)
       console.log("Wrote credentials at:", credentialsPath())
     })
   }

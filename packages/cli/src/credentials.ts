@@ -2,6 +2,7 @@ import { FlyCommand } from "./base-command"
 import * as path from "path"
 import * as fs from "fs"
 import YAML = require("js-yaml")
+import netrc from "netrc-parser"
 
 export function getToken(cmd: FlyCommand) {
   const token = null // recursivelyGetOption(cmd, "token") || process.env.FLY_ACCESS_TOKEN
@@ -40,6 +41,12 @@ export function credentialsPath() {
 
 export function storeCredentials(data: any) {
   fs.writeFileSync(credentialsPath(), YAML.dump(data))
+}
+
+export function storeNetrcCredentials(host: string, token: string) {
+  netrc.loadSync()
+  netrc.machines[host].login = token
+  netrc.saveSync()
 }
 
 function getUserHome() {

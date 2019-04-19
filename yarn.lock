@@ -7089,6 +7089,14 @@ neo-async@^2.5.0:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.5.2.tgz#489105ce7bc54e709d736b195f82135048c50fcc"
 
+netrc-parser@^3.1.6:
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.6.tgz#7243c9ec850b8e805b9bdc7eae7b1450d4a96e72"
+  integrity sha512-lY+fmkqSwntAAjfP63jB4z5p5WbuZwyMCD3pInT7dpHU/Gc6Vv90SAC6A0aNiqaRGHiuZFBtiwu+pu8W/Eyotw==
+  dependencies:
+    debug "^3.1.0"
+    execa "^0.10.0"
+
 next-tick@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
