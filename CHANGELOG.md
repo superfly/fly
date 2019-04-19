@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.52.0-pre.0](https://github.com/superfly/fly/compare/v0.51.2...v0.52.0-pre.0) (2019-04-19)
+
+
+### Bug Fixes
+
+* add Typescript build dependency ([#232](https://github.com/superfly/fly/issues/232)) ([de5ccde](https://github.com/superfly/fly/commit/de5ccde))
+
+
+
+
+
 ## [0.51.2](https://github.com/superfly/fly/compare/v0.51.1...v0.51.2) (2019-04-18)
 
 
