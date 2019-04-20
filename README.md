@@ -59,7 +59,7 @@ The standalone install is a tarball containing the Fly CLI, precompiled native e
 To quickly install into `/usr/local/lib/fly` and `/usr/local/bin/fly`, run this [script](https://github.com/superfly/fly/blob/master/install-standalone.sh) (requires sudo and not Windows compatible):
 
 ```bash
-curl https://fly.io/cli/install.sh | sh
+curl https://get.fly.io/install.sh | sh
 ```
 
 Otherwise, download one of the tarballs below and extract it yourself.
