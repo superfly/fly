@@ -7,7 +7,7 @@ export default class Git extends FlyCommand {
 
   public static flags = { env: sharedFlags.env(), app: sharedFlags.app() }
 
-  static hidden = false
+  static hidden = true
 
   public async run() {
     const { flags } = this.parse(Git)

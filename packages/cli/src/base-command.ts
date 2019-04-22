@@ -1,4 +1,6 @@
 import Command, { flags } from "@oclif/command"
+import Help from "@oclif/plugin-help"
+import * as Config from "@oclif/config"
 
 export abstract class FlyCommand extends Command {
   // static flags = {
@@ -28,4 +30,13 @@ export abstract class FlyCommand extends Command {
   // async finally(err) {
   //   // called after run and catch regardless of whether or not the command errored
   // }
+
+  /**
+   * atm oclif-help doesn't list subcommands when calling command._help()
+   * this works around the limitation until it's fixed upstream
+   */
+  protected showMoreDetailedHelp() {
+    const x = new Help(this.config, { all: true })
+    x.showCommandHelp(Config.Command.toCached((this.ctor as any) as Config.Command.Class), this.config.topics)
+  }
 }

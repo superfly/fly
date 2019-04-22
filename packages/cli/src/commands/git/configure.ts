@@ -13,7 +13,7 @@ export default class Configure extends FlyCommand {
 
   static args = [{ name: "name", description: "name of the remote", default: "fly" }]
 
-  static hidden = false
+  static hidden = true
 
   public async run() {
     const { args, flags } = this.parse(Configure)
