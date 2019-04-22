@@ -164,7 +164,7 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
 const entryFiles = ["index.ts", "index.js"]
 
 function getEntryFile(cwd: string): string {
-  return getEntryFileFromPackageFile(cwd) || getDefaultEntryFile(cwd)
+  return getEntryFileFromPackageFile(cwd) || getDefaultEntryFile(cwd) || "index.js"
 }
 
 function getDefaultEntryFile(cwd: string) {
@@ -180,7 +180,10 @@ function getEntryFileFromPackageFile(cwd: string) {
   const packageFilePath = path.join(cwd, "package.json")
   try {
     if (fs.existsSync(packageFilePath)) {
-      return require(packageFilePath).main
+      const packageJson = require(packageFilePath)
+      if (packageJson.main) {
+        return path.resolve(cwd, packageJson.main)
+      }
     }
   } catch (err) {
     console.warn("error reading entry file from package.json", err)
