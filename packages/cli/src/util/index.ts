@@ -1,4 +1,4 @@
-import { getLocalRelease } from "@fly/core/lib/utils/local"
+import { LocalRelease } from "@fly/core/lib/utils/local"
 
 export const fullAppMatch = /^([a-z0-9_-]+)$/i
 
@@ -20,7 +20,7 @@ export function getAppName(flags: { app?: string; cwd?: string; env?: string }) 
     if (!flags.env) {
       throw new Error("--env option or FLY_ENV variable needs to be set.")
     }
-    const release = getLocalRelease(cwd, flags.env, { noWatch: true })
+    const release = new LocalRelease(cwd, flags.env, { noWatch: true })
     app = release.getConfig().app
   }
 

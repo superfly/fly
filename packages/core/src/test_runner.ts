@@ -21,6 +21,8 @@ export class TestRunner {
 
   public constructor(options: TestRunnerOptions) {
     this.cwd = options.cwd || process.cwd()
+
+    console.log("TestRunner", { cwd: this.cwd })
     if (options.paths) {
       this.addTestFiles(options.paths)
     }
@@ -36,79 +38,133 @@ export class TestRunner {
     }
   }
 
-  public async run() {
+  public async run(): Promise<boolean> {
     if (this.testFiles.length === 0) {
       throw new Error("no test files found")
     }
 
     const { ivm } = require("./ivm")
-    const { getWebpackConfig, buildAppWithConfig } = require("./utils/build")
 
-    const conf = getWebpackConfig(this.cwd)
-    conf.entry = this.testFiles
-
-    const appStore = new FileAppStore(this.cwd, { noWatch: true, noSource: true, env: "test" })
-
-    return new Promise<boolean>((resolve, reject) => {
-      buildAppWithConfig(
-        this.cwd,
-        conf,
-        { watch: false },
-        async (err: Error, code: string, hash: string, sourceMap: string) => {
-          if (err) {
-            throw err
-          }
-
-          try {
-            const app = appStore.app
-            const rt = new LocalRuntime(
-              new App({
-                app: app.name,
-                version: app.version,
-                source: "",
-                sourceHash: "",
-                config: {},
-                secrets: {},
-                env: "test"
-              }),
-              new Bridge({
-                dataStore: new SQLiteDataStore(app.name, "test")
-              })
-            )
-
-            await rt.set(
-              "_mocha_done",
-              new ivm.Reference((failures: number) => {
-                resolve(failures === 0)
-              })
-            )
-
-            for (const script of testScripts()) {
-              const compiled = await rt.isolate.compileScript(script.code, script)
-              await compiled.run(rt.context)
-            }
-
-            await rt.setApp(app)
-
-            const bundleName = `bundle-${hash}`
-            const sourceFilename = `${bundleName}.js`
-            const sourceMapFilename = `${bundleName}.map.json`
-            const bundleScript = await rt.isolate.compileScript(code, { filename: sourceFilename })
-            await bundleScript.run(rt.context)
-
-            const runPath = runScriptPath()
-
-            const runScript = await rt.isolate.compileScript(fs.readFileSync(runPath).toString(), {
-              filename: runPath
-            })
-            console.log("Running tests...")
-            await runScript.run(rt.context)
-          } catch (err) {
-            reject(err)
-          }
+    return new Promise<boolean>(async (resolve, reject) => {
+      const appStore = new FileAppStore({
+        path: this.cwd,
+        env: "test",
+        build: false,
+        buildOptions: {
+          entry: this.testFiles
         }
-      )
+      })
+
+      const buildInfo = await appStore.build()
+      // console.log("buildInfo", { buildInfo })
+
+      try {
+        const app = appStore.app
+        const rt = new LocalRuntime(
+          new App({
+            app: app.name,
+            version: app.version,
+            source: "",
+            sourceHash: "",
+            config: {},
+            secrets: {},
+            env: "test"
+          }),
+          new Bridge({ dataStore: new SQLiteDataStore(app.name, "test") })
+        )
+
+        await rt.set(
+          "_mocha_done",
+          new ivm.Reference((failures: number) => {
+            resolve(failures === 0)
+          })
+        )
+
+        for (const script of testScripts()) {
+          const compiled = await rt.isolate.compileScript(script.code, script)
+          await compiled.run(rt.context)
+        }
+
+        await rt.setApp(app)
+
+        const bundleName = `bundle-${app.hash}`
+        const sourceFilename = `${bundleName}.js`
+        const sourceMapFilename = `${bundleName}.map.json`
+        const bundleScript = await rt.isolate.compileScript(buildInfo.source.text, { filename: sourceFilename })
+        await bundleScript.run(rt.context)
+
+        const runPath = runScriptPath()
+
+        const runScript = await rt.isolate.compileScript(fs.readFileSync(runPath).toString(), {
+          filename: runPath
+        })
+        console.log("Running tests...")
+        await runScript.run(rt.context)
+      } catch (err) {
+        reject(err)
+      }
     })
+
+    // return new Promise<boolean>((resolve, reject) => {
+    //   buildAppWithConfig(
+    //     this.cwd,
+    //     conf,
+    //     { watch: false },
+    //     async (err: Error, code: string, hash: string, sourceMap: string) => {
+    //       if (err) {
+    //         throw err
+    //       }
+
+    //       try {
+    //         const app = appStore.app
+    //         const rt = new LocalRuntime(
+    //           new App({
+    //             app: app.name,
+    //             version: app.version,
+    //             source: "",
+    //             sourceHash: "",
+    //             config: {},
+    //             secrets: {},
+    //             env: "test"
+    //           }),
+    //           new Bridge({
+    //             dataStore: new SQLiteDataStore(app.name, "test")
+    //           })
+    //         )
+
+    //         await rt.set(
+    //           "_mocha_done",
+    //           new ivm.Reference((failures: number) => {
+    //             resolve(failures === 0)
+    //           })
+    //         )
+
+    //         for (const script of testScripts()) {
+    //           const compiled = await rt.isolate.compileScript(script.code, script)
+    //           await compiled.run(rt.context)
+    //         }
+
+    //         await rt.setApp(app)
+
+    //         const bundleName = `bundle-${hash}`
+    //         const sourceFilename = `${bundleName}.js`
+    //         const sourceMapFilename = `${bundleName}.map.json`
+    //         const bundleScript = await rt.isolate.compileScript(code, { filename: sourceFilename })
+    //         await bundleScript.run(rt.context)
+
+    //         const runPath = runScriptPath()
+
+    //         const runScript = await rt.isolate.compileScript(fs.readFileSync(runPath).toString(), {
+    //           filename: runPath
+    //         })
+    //         console.log("Running tests...")
+    //         await runScript.run(rt.context)
+    //       } catch (err) {
+    //         reject(err)
+    //       }
+    //     }
+    //   )
+    // })
   }
 }
 

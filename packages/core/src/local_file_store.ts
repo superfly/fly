@@ -1,7 +1,7 @@
 import { Readable } from "stream"
 import { createReadStream } from "fs"
 import { resolve } from "path"
-import { getLocalRelease, getEnv, LocalRelease } from "./utils/local"
+import { getEnv, LocalRelease } from "./utils/local"
 import { Release } from "."
 import { FileStore, FileNotFound } from "./file_store"
 import { Runtime } from "./runtime"

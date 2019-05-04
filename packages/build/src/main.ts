@@ -1,80 +1,123 @@
 import * as fs from "fs"
+// import * as glob from "glob"
 import * as path from "path"
+// import * as tar from "tar-fs"
 import * as webpack from "webpack"
 
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 
 const webpackConfPath = "./webpack.fly.config.js"
 
-export interface AppBuilderOptions {
-  watch: boolean
+export interface BuildOptions {
+  inputPath: string
+  outputPath?: string
   uglify?: boolean
+  entry?: string | string[]
+  // webpackConfig?: webpack.Configuration
 }
 
-export function buildApp(cwd: string, opts: AppBuilderOptions, callback: (...args: any[]) => void) {
-  buildAppWithConfig(cwd, getWebpackConfig(cwd, opts), opts, callback)
+export interface BuildInfo {
+  time: number
+  configFilePath: string
+  source: {
+    text: string
+    path: string
+    digest: string
+    byteLength: number
+  }
+  sourceMap: {
+    text: string
+    path: string
+    // digest: string
+    byteLength: number
+  }
+  bundle?: {
+    path: string
+    byteLength: number
+  }
 }
 
-export function buildAppWithConfig(
-  cwd: string,
-  config: webpack.Configuration,
-  opts: AppBuilderOptions,
-  callback: () => void
+export function buildApp(options: BuildOptions): Promise<BuildInfo> {
+  const webpackConfig = getWebpackConfig(options)
+
+  if (!options.outputPath) {
+    options.outputPath = path.resolve(options.inputPath, ".fly/build")
+  }
+
+  console.info("Compiling app w/ options:", options)
+  const compiler = webpack(webpackConfig)
+
+  return new Promise((resolve, reject) => {
+    compiler.run((err, stats) => {
+      handleWebpackCallback(err, stats, resolve, reject)
+    })
+  })
+}
+
+export function buildAndWatchApp(
+  options: BuildOptions,
+  onSuccess: (info: BuildInfo) => void,
+  onError: (err: Error) => void
 ) {
-  console.info("Compiling app w/ options:", opts)
-  const compiler = webpack(config)
+  const webpackConfig = getWebpackConfig(options)
 
-  const cb = compileCallback(cwd, compiler, callback)
-
-  if (opts.watch) {
-    return compiler.watch({}, cb)
+  if (!options.outputPath) {
+    options.outputPath = path.resolve(options.inputPath, ".fly/build")
   }
 
-  compiler.run(cb)
+  console.info("Compiling app w/ options:", options)
+  const compiler = webpack(webpackConfig)
+
+  compiler.watch({}, (err, stats) => {
+    handleWebpackCallback(err, stats, onSuccess, onError)
+  })
 }
 
-function compileCallback(cwd: string, compiler: webpack.Compiler, callback: (...args: any[]) => void) {
-  let codeHash: string
-  return (err: Error, stats: any) => {
-    if (err) {
-      callback(err)
-      return
-    }
-    if (stats.hasErrors()) {
-      callback(
-        new Error(
-          stats.toString({
-            errorDetails: true,
-            warnings: true
-          })
-        )
-      )
-      return
-    }
-
-    if (stats.hash !== codeHash) {
-      console.info(`Compiled app bundle (hash: ${stats.hash})`)
-      const source = fs.readFileSync(path.resolve(cwd, ".fly/build/bundle.js"))
-      const sourceMap = fs.readFileSync(path.resolve(cwd, ".fly/build/bundle.map.json"))
-      codeHash = stats.hash
-      console.info("Compiled size: ", source.byteLength / (1024 * 1024), "MB")
-      console.info("Compiled sourcemap size: ", sourceMap.byteLength / (1024 * 1024), "MB")
-
-      const sanitizedSourceMap = sourceMap
-        .toString("utf8")
-        .replace("\u2028", "\\u2028") // ugh.
-        .replace("\u2029", "\\u2029")
-
-      fs.writeFileSync(path.resolve(cwd, ".fly/build/bundle.map.json"), sanitizedSourceMap)
-
-      callback(null, source.toString("utf8"), codeHash, sanitizedSourceMap)
-    }
+function handleWebpackCallback(
+  err: Error,
+  stats: webpack.Stats,
+  onSuccess: (info: BuildInfo) => void,
+  onError: (err: Error) => void
+) {
+  if (err) {
+    return onError(err)
   }
+  if (stats.hasErrors()) {
+    return onError(new Error(stats.toString({ errorDetails: true, warnings: true })))
+  }
+
+  const compilation = (stats as any).compilation
+  const outputOptions = compilation.outputOptions
+  const outputPath = outputOptions.path
+  const sourcePath = path.join(outputPath, outputOptions.filename)
+  const sourceMapPath = path.join(outputPath, outputOptions.sourceMapFilename!)
+  const configFilePath = fs.existsSync(path.resolve(".fly", ".fly.yml")) ? ".fly/.fly.yml" : ".fly.yml"
+  sanitizeSourceMapOutput(sourceMapPath) // why do we need this!?!?
+  const source = fs.readFileSync(sourcePath)
+  const sourceMap = fs.readFileSync(sourceMapPath)
+
+  onSuccess({
+    time: (stats as any).endTime - (stats as any).startTime,
+    configFilePath,
+    source: {
+      text: source.toString("utf8"),
+      path: sourcePath,
+      digest: (stats as any).hash,
+      byteLength: source.byteLength
+    },
+    sourceMap: {
+      text: sourceMap.toString("utf8"),
+      path: sourceMapPath,
+      byteLength: sourceMap.byteLength
+    }
+  })
 }
 
-export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack.Configuration {
+export function getWebpackConfig(options: BuildOptions): webpack.Configuration {
+  const { inputPath, outputPath } = options
+  console.log("getWebpackConfig", { inputPath, webpackConfPath })
   let conf
-  const defaultPathToWebpackConfig = path.join(cwd, webpackConfPath)
+  const defaultPathToWebpackConfig = path.join(inputPath, webpackConfPath)
   if (fs.existsSync(defaultPathToWebpackConfig)) {
     console.info(`Using Webpack config ${defaultPathToWebpackConfig}`)
     conf = require(defaultPathToWebpackConfig)
@@ -86,7 +129,7 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
   const v8EnvPath = path.dirname(require.resolve("@fly/v8env"))
 
   conf = {
-    entry: getEntryFile(cwd),
+    entry: options.entry || getEntryFile(inputPath),
     resolve: {
       extensions: [],
       alias: {},
@@ -107,7 +150,7 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
 
   conf.output = {
     filename: "bundle.js",
-    path: path.resolve(cwd, ".fly/build"),
+    path: outputPath,
     hashFunction: "sha1",
     hashDigestLength: 40,
     sourceMapFilename: "bundle.map.json"
@@ -144,7 +187,7 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     }
   })
 
-  if (opts && opts.uglify) {
+  if (options.uglify) {
     conf.plugins = [
       ...conf.plugins,
       new UglifyJsPlugin({
@@ -158,18 +201,20 @@ export function getWebpackConfig(cwd: string, opts?: AppBuilderOptions): webpack
     ]
   }
 
+  console.log("webpack config", { conf })
+
   return conf
 }
 
 const entryFiles = ["index.ts", "index.js"]
 
-function getEntryFile(cwd: string): string {
-  return getEntryFileFromPackageFile(cwd) || getDefaultEntryFile(cwd) || "index.js"
+function getEntryFile(inputPath: string): string {
+  return getEntryFileFromPackageFile(inputPath) || getDefaultEntryFile(inputPath) || "index.js"
 }
 
-function getDefaultEntryFile(cwd: string) {
+function getDefaultEntryFile(inputPath: string) {
   for (const entryFile of entryFiles) {
-    const entryFilePath = path.join(cwd, entryFile)
+    const entryFilePath = path.join(inputPath, entryFile)
     if (fs.existsSync(entryFilePath)) {
       return entryFilePath
     }
@@ -188,4 +233,14 @@ function getEntryFileFromPackageFile(cwd: string) {
   } catch (err) {
     console.warn("error reading entry file from package.json", err)
   }
+}
+
+function sanitizeSourceMapOutput(sourceMapPath: string) {
+  const sanitizedSourceMap = fs
+    .readFileSync(sourceMapPath)
+    .toString("utf8")
+    .replace("\u2028", "\\u2028") // ugh.
+    .replace("\u2029", "\\u2029")
+
+  fs.writeFileSync(sourceMapPath, sanitizedSourceMap)
 }

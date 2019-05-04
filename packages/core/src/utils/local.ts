@@ -18,20 +18,6 @@ export interface LocalReleaseOptions {
   noWatch?: boolean
 }
 
-export function getLocalRelease(
-  cwd: string = process.cwd(),
-  env: string = getEnv(),
-  options: LocalReleaseOptions = {}
-) {
-  const key = `${cwd}:${env}:${JSON.stringify(options)}`
-  if (releases[key]) {
-    return releases[key]
-  }
-  const release = new LocalRelease(cwd, env, options)
-  releases[key] = release
-  return release
-}
-
 export interface FlyConfig {
   app?: string
   app_id?: string // legacy
