@@ -13,7 +13,6 @@
         "lib"
     ],
     "scripts": {
-        "clean": "rm -rf ./lib/*",
         "build": "tsc -b .",
         "build:watch": "tsc -b -w -v ."
     },

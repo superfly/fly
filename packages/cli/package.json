@@ -25,8 +25,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "yarn oclif-dev manifest && yarn oclif-dev readme",
-    "version": "yarn oclif-dev readme && git add README.md",
-    "clean": "rm -rf ./lib ./dist ./tmp"
+    "version": "yarn oclif-dev readme && git add README.md"
   },
   "bugs": {
     "url": "https://github.com/superfly/fly/issues"

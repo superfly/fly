@@ -14,8 +14,7 @@
     ],
     "scripts": {
         "build": "tsc -b .",
-        "build:watch": "tsc -b -w -v .",
-        "clean": "rm -rf ./lib ./dist"
+        "build:watch": "tsc -b -w -v ."
     },
     "dependencies": {
         "@fly/core": "0.52.0-pre.1",

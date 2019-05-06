@@ -16,7 +16,6 @@
         "vendor/whatwg-streams/reference-implementation/lib/"
     ],
     "scripts": {
-        "clean": "rm -rf ./lib ./dist",
         "build": "tsc -b .",
         "build:watch": "tsc -b -w -v .",
         "bundle": "webpack",
