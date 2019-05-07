@@ -149,11 +149,11 @@ export function getWebpackConfig(options: BuildOptions): webpack.Configuration {
   conf.module.rules = conf.module.rules || []
 
   conf.output = {
-    filename: "bundle.js",
+    filename: "fly-bundle.js",
     path: outputPath,
     hashFunction: "sha1",
     hashDigestLength: 40,
-    sourceMapFilename: "bundle.map.json"
+    sourceMapFilename: "fly-bundle.map.json"
   }
 
   conf.resolve.alias = {

@@ -10,8 +10,11 @@ import { AxiosResponse } from "axios"
 import { resolve as pathResolve } from "path"
 import { FlyCommand } from "../base-command"
 import { getAppName, fullAppMatch } from "../util"
-import { buildApp } from "@fly/core/lib/utils/build"
 import * as sharedFlags from "../flags"
+import { FileAppStore } from "@fly/core"
+import { createReleaseTarball } from "@fly/build"
+import * as path from "path"
+import * as fs from "fs"
 
 export default class Deploy extends FlyCommand {
   static description = "Deploy your local Fly app"
@@ -32,71 +35,32 @@ export default class Deploy extends FlyCommand {
 
     this.log("Deploying", appName, `(env: ${env})`)
 
-    // const release = getLocalRelease(cwd, env, { noWatch: true })
+    const appStore = new FileAppStore({ path: cwd, env, build: false })
+    await appStore.build()
 
-    // buildApp(
-    //   cwd,
-    //   { watch: false, uglify: true },
-    //   async (err: Error, source: string, hash: string, sourceMap: string) => {
-    //     if (err) {
-    //       return this.error(err, { exit: 1 })
-    //     }
-    //     // look for generated config
-    //     const configPath = existsSync(pathResolve(".fly", ".fly.yml")) ? ".fly/.fly.yml" : ".fly.yml"
+    const outFile = path.resolve(cwd, ".fly/release.tar.gz")
+    const tarball = await createReleaseTarball(outFile, appStore.manifest())
 
-    //     const entries = [
-    //       configPath, // processed .fly.yml
-    //       ...glob.sync(".fly/*/**.{js,json}", { cwd }),
-    //       ...release.files
-    //     ].filter(f => existsSync(pathResolve(cwd, f)))
+    const gz = fs.createReadStream(tarball.path)
 
-    //     const res = await new Promise<AxiosResponse<any>>((resolve, reject) => {
-    //       tar
-    //         .pack(cwd, {
-    //           entries,
-    //           map: header => {
-    //             if (header.name === ".fly/.fly.yml") {
-    //               // use generated .fly.yml as config (for globbing)
-    //               header.name = ".fly.yml"
-    //             }
-    //             return header
-    //           },
-    //           dereference: true,
-    //           finish() {
-    //             log.debug("Finished packing.")
-    //             const buf = readFileSync(pathResolve(cwd, ".fly/bundle.tar"))
-    //             console.log(`Bundle size: ${buf.byteLength / (1024 * 1024)}MB`)
-    //             const gz = pako.gzip(buf)
-    //             console.log(`Bundle compressed size: ${gz.byteLength / (1024 * 1024)}MB`)
-    //             const bundleHash = createHash("sha1") // we need to verify the upload is :+1:
-    //             bundleHash.update(buf)
+    const res = await API.post(`/api/v1/apps/${appName}/releases`, gz, {
+      params: {
+        sha1: tarball.digest,
+        env
+      },
+      headers: {
+        "Content-Type": "application/x-tar",
+        "Content-Length": tarball.byteLength,
+        "Content-Encoding": "gzip"
+      },
+      maxContentLength: 100 * 1024 * 1024,
+      timeout: 120 * 1000
+    })
 
-    //             API.post(`/api/v1/apps/${appName}/releases`, gz, {
-    //               params: {
-    //                 sha1: bundleHash.digest("hex"),
-    //                 env
-    //               },
-    //               headers: {
-    //                 "Content-Type": "application/x-tar",
-    //                 "Content-Length": gz.byteLength,
-    //                 "Content-Encoding": "gzip"
-    //               },
-    //               maxContentLength: 100 * 1024 * 1024,
-    //               timeout: 120 * 1000
-    //             })
-    //               .then(resolve)
-    //               .catch(reject)
-    //           }
-    //         })
-    //         .pipe(createWriteStream(pathResolve(cwd, ".fly/bundle.tar")))
-    //     })
-
-    //     processResponse(this, res, () => {
-    //       this.log(`Deploying v${res.data.data.attributes.version} globally @ https://${appName}.edgeapp.net`)
-    //       this.log(`App should be updated in a few seconds.`)
-    //     })
-    //   }
-    // )
+    processResponse(this, res, () => {
+      this.log(`Deploying v${res.data.data.attributes.version} globally @ https://${appName}.edgeapp.net`)
+      this.log(`App should be updated in a few seconds.`)
+    })
   }
 }
 
