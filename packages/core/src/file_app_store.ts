@@ -3,6 +3,7 @@ import * as path from "path"
 import * as fs from "fs-extra"
 import * as YAML from "js-yaml"
 import * as glob from "glob"
+import * as chokidar from "chokidar"
 
 import { buildApp, buildAndWatchApp, BuildInfo, BuildOptions } from "@fly/build"
 // import { getEnv, LocalRelease } from "./utils/local"
@@ -133,6 +134,7 @@ export class FileAppStore {
 
   public watch() {
     const buildOptions = { ...this.options.buildOptions, inputPath: this.cwd }
+    this.watchConfigFiles()
     buildAndWatchApp(buildOptions, this.onBuildSuccess.bind(this), this.onBuildError.bind(this))
   }
 
@@ -147,6 +149,23 @@ export class FileAppStore {
     console.info(
       `Compiled app in ${info.time}ms size:${sourceSize} sourceMap:${sourceMapSize} hash: ${info.source.digest}`
     )
+  }
+
+  private watchConfigFiles() {
+    const watcher = chokidar.watch([configFile, secretsFile, webpackFile], {
+      cwd: this.cwd
+    })
+    watcher.on("add", this.onConfigFileUpdate.bind(this, "add"))
+    watcher.on("change", this.onConfigFileUpdate.bind(this, "change"))
+  }
+
+  public onConfigFileUpdate(event: string, appPath: string) {
+    console.log(`Config watch (${event}: ${appPath})`)
+    if (appPath.endsWith(configFile)) {
+      this.buildConfig()
+    } else if (appPath.endsWith(secretsFile)) {
+      this.loadSecrets()
+    }
   }
 
   private onBuildError(err: Error) {
