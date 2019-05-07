@@ -1,7 +1,5 @@
 import * as fs from "fs"
-// import * as glob from "glob"
 import * as path from "path"
-// import * as tar from "tar-fs"
 import * as webpack from "webpack"
 
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
