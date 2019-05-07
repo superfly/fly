@@ -213,7 +213,14 @@ export function handleRequest(
       }
 
       let dst: Writable = res
-      const contentEncoding = res.getHeader("content-encoding")
+      let contentEncoding = res.getHeader("content-encoding")
+      if (contentEncoding && contentEncoding instanceof Array) {
+        contentEncoding = contentEncoding.join(",")
+      }
+      if (typeof contentEncoding === "string" && contentEncoding.includes("skip")) {
+        // skip is a magical content-encoding header that both skips gzip, and clears the header
+        res.removeHeader("content-encoding")
+      }
       let contentType = res.getHeader("content-type")
       let acceptEncoding = req.headers["accept-encoding"]
       if (acceptEncoding && acceptEncoding instanceof Array) {

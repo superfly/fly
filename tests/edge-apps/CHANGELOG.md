@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.52.1-pre.0](https://github.com/superfly/fly/compare/v0.52.0...v0.52.1-pre.0) (2019-05-06)
+
+
+### Features
+
+* content-encoding=skip header bypasses gzip, clears header ([4bf7db3](https://github.com/superfly/fly/commit/4bf7db3))
+
+
+
+
+
 # [0.52.0-pre.1](https://github.com/superfly/fly/compare/v0.52.0-pre.0...v0.52.0-pre.1) (2019-04-22)
 
 **Note:** Version bump only for package @fly-test/edge-apps

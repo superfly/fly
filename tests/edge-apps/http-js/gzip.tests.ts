@@ -42,6 +42,16 @@ describe.each(["edge.local", "origin.local"])("gzip to %s", host => {
         expect(response.headers.get("content-encoding")).toEqual("gzip")
         expect(await response.text()).toEqual(contentType)
       })
+
+      test("do not recompress, remove content-encoding: skip header", async () => {
+        const response = await fetch(`http://${host}/${contentType}?skip`, {
+          headers: { "accept-Encoding": "gzip,deflate" }
+        })
+        expect(response.status).toEqual(200)
+        expect(response.headers.get("content-type")).toEqual(contentType)
+        expect(response.headers.get("content-encoding")).toEqual(null)
+        expect(await response.text()).toEqual(contentType)
+      })
     })
   }
 
