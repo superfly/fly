@@ -49,14 +49,12 @@ export class TestRunner {
       const appStore = new FileAppStore({
         path: this.cwd,
         env: "test",
-        build: false,
         buildOptions: {
           entry: this.testFiles
         }
       })
 
       const buildInfo = await appStore.build()
-      // console.log("buildInfo", { buildInfo })
 
       try {
         const app = appStore.app
@@ -90,81 +88,19 @@ export class TestRunner {
         const bundleName = `bundle-${app.hash}`
         const sourceFilename = `${bundleName}.js`
         const sourceMapFilename = `${bundleName}.map.json`
-        const bundleScript = await rt.isolate.compileScript(buildInfo.source.text, { filename: sourceFilename })
-        await bundleScript.run(rt.context)
+        await rt.isolate.compileScript(buildInfo.source.text, { filename: sourceFilename })
 
         const runPath = runScriptPath()
 
         const runScript = await rt.isolate.compileScript(fs.readFileSync(runPath).toString(), {
           filename: runPath
         })
-        console.log("Running tests...")
+
         await runScript.run(rt.context)
       } catch (err) {
         reject(err)
       }
     })
-
-    // return new Promise<boolean>((resolve, reject) => {
-    //   buildAppWithConfig(
-    //     this.cwd,
-    //     conf,
-    //     { watch: false },
-    //     async (err: Error, code: string, hash: string, sourceMap: string) => {
-    //       if (err) {
-    //         throw err
-    //       }
-
-    //       try {
-    //         const app = appStore.app
-    //         const rt = new LocalRuntime(
-    //           new App({
-    //             app: app.name,
-    //             version: app.version,
-    //             source: "",
-    //             sourceHash: "",
-    //             config: {},
-    //             secrets: {},
-    //             env: "test"
-    //           }),
-    //           new Bridge({
-    //             dataStore: new SQLiteDataStore(app.name, "test")
-    //           })
-    //         )
-
-    //         await rt.set(
-    //           "_mocha_done",
-    //           new ivm.Reference((failures: number) => {
-    //             resolve(failures === 0)
-    //           })
-    //         )
-
-    //         for (const script of testScripts()) {
-    //           const compiled = await rt.isolate.compileScript(script.code, script)
-    //           await compiled.run(rt.context)
-    //         }
-
-    //         await rt.setApp(app)
-
-    //         const bundleName = `bundle-${hash}`
-    //         const sourceFilename = `${bundleName}.js`
-    //         const sourceMapFilename = `${bundleName}.map.json`
-    //         const bundleScript = await rt.isolate.compileScript(code, { filename: sourceFilename })
-    //         await bundleScript.run(rt.context)
-
-    //         const runPath = runScriptPath()
-
-    //         const runScript = await rt.isolate.compileScript(fs.readFileSync(runPath).toString(), {
-    //           filename: runPath
-    //         })
-    //         console.log("Running tests...")
-    //         await runScript.run(rt.context)
-    //       } catch (err) {
-    //         reject(err)
-    //       }
-    //     }
-    //   )
-    // })
   }
 }
 
@@ -182,24 +118,3 @@ function testScripts() {
 function runScriptPath() {
   return require.resolve(path.join(v8envModulePath, "testing", "run"))
 }
-
-// interface TestArgs {
-//   paths?: string[]
-// }
-
-// root
-//   .subCommand<any, TestArgs>("test [paths...]")
-//   .description("Run unit tests, defaults to {test,spec}/**/*.{test,spec}.{js,ts}")
-//   .action((opts, args, rest) => {
-//     const { ivm } = require("../")
-//     const { getWebpackConfig, buildAppWithConfig } = require("../utils/build")
-
-//     // const cwd = process.cwd()
-
-//     const paths =
-//       args.paths && args.paths.length
-//         ? [].concat.apply([], args.paths.map(f => glob.sync(f).map(gf => path.resolve(cwd, gf))) as any)
-//         : glob.sync("./test/**/*.+(spec|test).[jt]s")
-
-//     )
-//   })
