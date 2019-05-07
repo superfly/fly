@@ -9,7 +9,7 @@ import { v8envModulePath } from "./v8env"
 import { FileAppStore } from "./file_app_store"
 
 interface TestRunnerOptions {
-  cwd?: string
+  cwd: string
   paths?: string[]
 }
 
@@ -20,7 +20,7 @@ export class TestRunner {
   testFiles: string[] = []
 
   public constructor(options: TestRunnerOptions) {
-    this.cwd = options.cwd || process.cwd()
+    this.cwd = options.cwd
 
     if (options.paths) {
       this.addTestFiles(options.paths)
@@ -62,9 +62,9 @@ export class TestRunner {
             sourceHash: "",
             config: {},
             secrets: {},
-            env: "test"
+            env: appStore.env
           }),
-          new Bridge({ dataStore: new SQLiteDataStore(app.name, "test") })
+          new Bridge({ dataStore: new SQLiteDataStore(app.name, appStore.env) })
         )
 
         await rt.set(

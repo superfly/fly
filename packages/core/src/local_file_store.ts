@@ -9,7 +9,7 @@ import { Runtime } from "./runtime"
 export class LocalFileStore implements FileStore {
   public cwd: string
 
-  constructor(cwd: string = process.cwd(), release: Release) {
+  constructor(cwd: string) {
     this.cwd = cwd
   }
 

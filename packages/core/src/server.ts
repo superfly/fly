@@ -73,7 +73,7 @@ export class Server extends http.Server {
     this.bridge =
       options.bridge ||
       new Bridge({
-        fileStore: new LocalFileStore(process.cwd(), this.appStore.release),
+        fileStore: new LocalFileStore(this.appStore.appDir),
         dataStore: new SQLiteDataStore(this.appStore.app.name, options.env),
         blobStore: new FileSystemBlobStore()
       })

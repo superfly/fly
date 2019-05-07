@@ -22,7 +22,7 @@ export class FileAppStore {
   public readonly env: string
 
   constructor(options: FileAppStoreOptions) {
-    this.appDir = options.appDir || process.cwd()
+    this.appDir = options.appDir
     if (!fs.existsSync(this.appDir)) {
       throw new Error("Could not find path: " + this.appDir)
     }
