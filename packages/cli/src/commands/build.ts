@@ -37,7 +37,7 @@ export default class Build extends FlyCommand {
 
     this.log("Building", appName, `(env: ${env})`)
 
-    const appStore = new FileAppStore({ path: cwd, env, build: false })
+    const appStore = new FileAppStore({ path: cwd, env })
     await appStore.build()
     const tarball = await createReleaseTarball(outFile, appStore.manifest())
 

@@ -8,15 +8,13 @@ const webpackConfPath = "./webpack.fly.config.js"
 
 export interface BuildOptions {
   inputPath: string
-  outputPath?: string
+  outputPath: string
   uglify?: boolean
   entry?: string | string[]
-  // webpackConfig?: webpack.Configuration
 }
 
 export interface BuildInfo {
   time: number
-  configFilePath: string
   source: {
     text: string
     path: string
@@ -26,23 +24,12 @@ export interface BuildInfo {
   sourceMap: {
     text: string
     path: string
-    // digest: string
-    byteLength: number
-  }
-  bundle?: {
-    path: string
     byteLength: number
   }
 }
 
 export function buildApp(options: BuildOptions): Promise<BuildInfo> {
   const webpackConfig = getWebpackConfig(options)
-
-  if (!options.outputPath) {
-    options.outputPath = path.resolve(options.inputPath, ".fly/build")
-  }
-
-  console.info("Compiling app w/ options:", options)
   const compiler = webpack(webpackConfig)
 
   return new Promise((resolve, reject) => {
@@ -58,12 +45,6 @@ export function buildAndWatchApp(
   onError: (err: Error) => void
 ) {
   const webpackConfig = getWebpackConfig(options)
-
-  if (!options.outputPath) {
-    options.outputPath = path.resolve(options.inputPath, ".fly/build")
-  }
-
-  console.info("Compiling app w/ options:", options)
   const compiler = webpack(webpackConfig)
 
   compiler.watch({}, (err, stats) => {
@@ -89,14 +70,12 @@ function handleWebpackCallback(
   const outputPath = outputOptions.path
   const sourcePath = path.join(outputPath, outputOptions.filename)
   const sourceMapPath = path.join(outputPath, outputOptions.sourceMapFilename!)
-  const configFilePath = fs.existsSync(path.resolve(".fly", ".fly.yml")) ? ".fly/.fly.yml" : ".fly.yml"
   sanitizeSourceMapOutput(sourceMapPath) // why do we need this!?!?
   const source = fs.readFileSync(sourcePath)
   const sourceMap = fs.readFileSync(sourceMapPath)
 
   onSuccess({
     time: (stats as any).endTime - (stats as any).startTime,
-    configFilePath,
     source: {
       text: source.toString("utf8"),
       path: sourcePath,
@@ -113,7 +92,6 @@ function handleWebpackCallback(
 
 export function getWebpackConfig(options: BuildOptions): webpack.Configuration {
   const { inputPath, outputPath } = options
-  console.log("getWebpackConfig", { inputPath, webpackConfPath })
   let conf
   const defaultPathToWebpackConfig = path.join(inputPath, webpackConfPath)
   if (fs.existsSync(defaultPathToWebpackConfig)) {
@@ -199,7 +177,7 @@ export function getWebpackConfig(options: BuildOptions): webpack.Configuration {
     ]
   }
 
-  console.log("webpack config", { conf })
+  // console.debug("webpack config", { conf })
 
   return conf
 }

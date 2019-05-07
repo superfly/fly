@@ -26,7 +26,7 @@ export default class Deploy extends FlyCommand {
 
     this.log("Deploying", appName, `(env: ${env})`)
 
-    const appStore = new FileAppStore({ path: cwd, env, build: false })
+    const appStore = new FileAppStore({ path: cwd, env })
     await appStore.build()
 
     const outFile = path.resolve(cwd, ".fly/release.tar.gz")

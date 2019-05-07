@@ -4,69 +4,42 @@ import * as fs from "fs-extra"
 import * as YAML from "js-yaml"
 import * as glob from "glob"
 import * as chokidar from "chokidar"
-
 import { buildApp, buildAndWatchApp, BuildInfo, BuildOptions } from "@fly/build"
-// import { getEnv, LocalRelease } from "./utils/local"
+import { formatByteLength } from "./utils/formatting"
 
 export interface FileAppStoreOptions {
-  path: string
+  appDir: string
   env: string
   app_name?: string
-
-  build?: boolean
-  watch?: boolean
-  noSource?: boolean
-  config?: any
-  secrets?: any
-  uglify?: boolean
-  // noReleaseReuse?: boolean
-  buildOptions?: {
-    entry?: string | string[]
-  }
-  outDir?: string
+  buildDir?: string
 }
-
-// export enum BuildMode {
-//   None,
-//   Build,
-//   Watch
-// }
 
 export class FileAppStore {
   public readonly app: App
-  public readonly cwd: string
+  public readonly appDir: string
   public release: Release
-  public options: FileAppStoreOptions
-
-  public readonly outDir: string
+  public readonly buildDir: string
   public readonly env: string
 
   constructor(options: FileAppStoreOptions) {
-    this.options = options
-
-    this.cwd = options.path || process.cwd()
-    if (!fs.existsSync(this.cwd)) {
-      throw new Error("Could not find path: " + this.cwd)
-    }
-
-    this.env = this.options.env
-
-    this.outDir = options.outDir || path.join(this.cwd, ".fly", "build", this.env)
-    if (!fs.existsSync(this.outDir)) {
-      fs.mkdirpSync(this.outDir)
-    }
-
-    const stat = fs.statSync(this.cwd)
+    this.appDir = options.appDir || process.cwd()
+    const stat = fs.statSync(this.appDir)
     if (!stat.isDirectory()) {
-      this.cwd = path.dirname(this.cwd)
+      this.appDir = path.dirname(this.appDir)
+    }
+    if (!fs.existsSync(this.appDir)) {
+      throw new Error("Could not find path: " + this.appDir)
     }
 
-    // this.
+    this.env = options.env
 
-    // const env = options.env || getEnv()
+    this.buildDir = options.buildDir || path.join(this.appDir, ".fly", "build", this.env)
+    if (!fs.existsSync(this.buildDir)) {
+      fs.mkdirpSync(this.buildDir)
+    }
 
     this.release = {
-      app: options.app_name || this.cwd,
+      app: options.app_name || this.appDir,
       env: this.env,
       version: 0,
       source: "",
@@ -74,68 +47,36 @@ export class FileAppStore {
       config: {},
       secrets: {}
     }
-    // new LocalRelease(this.cwd, env, { noWatch: options.watch === false })()
 
     this.app = new App(this.release)
 
-    if (this.options.config) {
-      this.release.config = this.options.config
-    }
-
-    if (this.options.secrets) {
-      this.release.secrets = this.options.secrets
-    }
-
-    if (options.noSource) {
-      return
-    }
-
-    // if (!options.build) {
-    //   let fullPath = cwd
-    //   if (stat.isDirectory()) {
-    //     fullPath = path.resolve(cwd, "./index.js")
-    //   }
-    //   if (!fs.existsSync(fullPath)) {
-    //     throw new Error("no code to use")
-    //   }
-    //   this.release.source = fs.readFileSync(fullPath).toString()
-    //   return
-    // }
-
     this.buildConfig()
     this.loadSecrets()
-
-    if (this.options.watch === true) {
-      this.watch()
-    } else if (this.options.build !== false) {
-      this.build()
-    }
   }
 
-  public async build() {
-    const buildOptions = { ...this.options.buildOptions, inputPath: this.cwd, outputPath: this.outDir }
-
+  public async build(options: Partial<BuildOptions> = {}) {
+    const buildOptions = { ...options, inputPath: this.appDir, outputPath: this.buildDir }
     const info = await buildApp(buildOptions)
     this.onBuildSuccess(info)
     return info
   }
 
-  public buildConfig() {
-    const config = buildConfig(this.cwd, this.outDir, this.env)
-    console.log("BUILT CONFIG", { config })
+  public watch(options: Partial<BuildOptions> = {}) {
+    const buildOptions = { ...options, inputPath: this.appDir, outputPath: this.buildDir }
+    this.watchConfigFiles()
+    buildAndWatchApp(buildOptions, this.onBuildSuccess.bind(this), this.onBuildError.bind(this))
+  }
+
+  private buildConfig() {
+    const config = buildConfig(this.appDir, this.buildDir, this.env)
+    // console.debug("Loading Config", { config })
     this.release.app = config.app
     this.release.config = config.config
     this.release.files = config.files
   }
 
-  public loadSecrets() {
-    this.release.secrets = getSecrets(this.cwd)
-  }
-
-  public watch() {
-    const buildOptions = { ...this.options.buildOptions, inputPath: this.cwd }
-    this.watchConfigFiles()
-    buildAndWatchApp(buildOptions, this.onBuildSuccess.bind(this), this.onBuildError.bind(this))
+  private loadSecrets() {
+    this.release.secrets = getSecrets(this.appDir)
   }
 
   private onBuildSuccess(info: BuildInfo) {
@@ -143,17 +84,24 @@ export class FileAppStore {
     this.release.sourceHash = info.source.digest
     this.release.sourceMap = info.sourceMap.text
 
-    const sourceSize = info.source.byteLength / (1024 * 1024)
-    const sourceMapSize = info.source.byteLength / (1024 * 1024)
+    const sourceSize = info.source.byteLength
+    const sourceMapSize = info.sourceMap.byteLength
 
     console.info(
-      `Compiled app in ${info.time}ms size:${sourceSize} sourceMap:${sourceMapSize} hash: ${info.source.digest}`
+      `Compiled app in ${info.time}ms (source: ${formatByteLength(sourceSize)} sourceMap: ${formatByteLength(
+        sourceMapSize
+      )} hash: ${info.source.digest})`
     )
+  }
+
+  private onBuildError(err: Error) {
+    console.error(err)
   }
 
   private watchConfigFiles() {
     const watcher = chokidar.watch([configFile, secretsFile, webpackFile], {
-      cwd: this.cwd
+      cwd: this.appDir,
+      ignoreInitial: true
     })
     watcher.on("add", this.onConfigFileUpdate.bind(this, "add"))
     watcher.on("change", this.onConfigFileUpdate.bind(this, "change"))
@@ -168,18 +116,14 @@ export class FileAppStore {
     }
   }
 
-  private onBuildError(err: Error) {
-    console.error(err)
-  }
-
   public manifest() {
     return [
       {
-        rootDir: this.outDir,
-        files: glob.sync(path.join(this.outDir, "**"), { cwd: this.cwd })
+        rootDir: this.buildDir,
+        files: glob.sync(path.join(this.buildDir, "**"), { cwd: this.appDir })
       },
       {
-        rootDir: this.cwd,
+        rootDir: this.appDir,
         files: this.release.files || []
       }
     ]

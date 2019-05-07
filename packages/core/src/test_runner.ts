@@ -22,7 +22,6 @@ export class TestRunner {
   public constructor(options: TestRunnerOptions) {
     this.cwd = options.cwd || process.cwd()
 
-    console.log("TestRunner", { cwd: this.cwd })
     if (options.paths) {
       this.addTestFiles(options.paths)
     }
@@ -47,14 +46,11 @@ export class TestRunner {
 
     return new Promise<boolean>(async (resolve, reject) => {
       const appStore = new FileAppStore({
-        path: this.cwd,
-        env: "test",
-        buildOptions: {
-          entry: this.testFiles
-        }
+        appDir: this.cwd,
+        env: "test"
       })
 
-      const buildInfo = await appStore.build()
+      const buildInfo = await appStore.build({ entry: this.testFiles })
 
       try {
         const app = appStore.app
