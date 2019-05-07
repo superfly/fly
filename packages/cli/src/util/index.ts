@@ -20,7 +20,8 @@ export function getAppName(flags: { app?: string; cwd?: string; env?: string }) 
     if (!flags.env) {
       throw new Error("--env option or FLY_ENV variable needs to be set.")
     }
-    const appStore = new FileAppStore({ path: cwd, env: flags.env, build: false, watch: false })
+
+    const appStore = new FileAppStore({ appDir: cwd, env: flags.env })
     app = appStore.app.name
   }
 

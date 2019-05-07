@@ -50,6 +50,7 @@ export class FileAppStore {
 
     this.app = new App(this.release)
 
+    // some callers expect config to be loaded after constructor returns
     this.buildConfig()
     this.loadSecrets()
   }
