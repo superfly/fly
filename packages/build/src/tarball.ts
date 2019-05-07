@@ -32,8 +32,8 @@ export async function createReleaseTarball(
     const gzip = zlib.createGzip()
     const outStream = fs.createWriteStream(outFile)
     const bundleHash = createHash("sha1").setEncoding("hex")
+    pack.pipe(bundleHash)
     const gzStream = pack.pipe(gzip)
-    gzStream.pipe(bundleHash)
     gzStream.pipe(outStream)
 
     gzStream.on("end", () => {

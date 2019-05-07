@@ -1,14 +1,6 @@
 import { apiClient, processResponse } from "../api"
-import log from "@fly/core/lib/log"
-import * as tar from "tar-fs"
-import * as glob from "glob"
-import { createWriteStream, readFileSync, existsSync } from "fs"
-import { createHash } from "crypto"
-import * as pako from "pako"
-import { AxiosResponse } from "axios"
-import { resolve as pathResolve } from "path"
 import { FlyCommand } from "../base-command"
-import { getAppName, fullAppMatch } from "../util"
+import { getAppName } from "../util"
 import * as sharedFlags from "../flags"
 import { FileAppStore } from "@fly/core"
 import { createReleaseTarball } from "@fly/build"
@@ -39,10 +31,9 @@ export default class Deploy extends FlyCommand {
 
     const outFile = path.resolve(cwd, ".fly/release.tar.gz")
     const tarball = await createReleaseTarball(outFile, appStore.manifest())
+    const stream = fs.createReadStream(tarball.path)
 
-    const gz = fs.createReadStream(tarball.path)
-
-    const res = await API.post(`/api/v1/apps/${appName}/releases`, gz, {
+    const res = await API.post(`/api/v1/apps/${appName}/releases`, stream, {
       params: {
         sha1: tarball.digest,
         env
