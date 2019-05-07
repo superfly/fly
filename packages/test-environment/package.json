@@ -1,7 +1,7 @@
 {
     "name": "@fly/test-environment",
     "private": true,
-    "version": "0.52.1-pre.0",
+    "version": "0.53.0-pre.0",
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
@@ -14,11 +14,10 @@
     ],
     "scripts": {
         "build": "tsc -b .",
-        "build:watch": "tsc -b -w -v .",
-        "clean": "rm -rf ./lib ./dist"
+        "build:watch": "tsc -b -w -v ."
     },
     "dependencies": {
-        "@fly/core": "0.52.1-pre.0",
+        "@fly/core": "0.53.0-pre.0",
         "@types/node-fetch": "2.1.2",
         "execa": "^1.0.0",
         "jest": "^24.1.0",

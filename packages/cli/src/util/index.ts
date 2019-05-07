@@ -1,4 +1,4 @@
-import { getLocalRelease } from "@fly/core/lib/utils/local"
+import { FileAppStore } from "@fly/core"
 
 export const fullAppMatch = /^([a-z0-9_-]+)$/i
 
@@ -20,8 +20,9 @@ export function getAppName(flags: { app?: string; cwd?: string; env?: string }) 
     if (!flags.env) {
       throw new Error("--env option or FLY_ENV variable needs to be set.")
     }
-    const release = getLocalRelease(cwd, flags.env, { noWatch: true })
-    app = release.getConfig().app
+
+    const appStore = new FileAppStore({ appDir: cwd, env: flags.env })
+    app = appStore.app.name
   }
 
   if (!app) {

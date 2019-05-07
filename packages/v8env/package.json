@@ -1,6 +1,6 @@
 {
     "name": "@fly/v8env",
-    "version": "0.51.0",
+    "version": "0.53.0-pre.0",
     "description": "Open source Edge Application runtime",
     "license": "Apache-2.0",
     "repository": {
@@ -16,7 +16,6 @@
         "vendor/whatwg-streams/reference-implementation/lib/"
     ],
     "scripts": {
-        "clean": "rm -rf ./lib ./dist",
         "build": "tsc -b .",
         "build:watch": "tsc -b -w -v .",
         "bundle": "webpack",

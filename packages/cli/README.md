@@ -5,6 +5,7 @@
 * [`fly apps:create APP-NAME`](#fly-appscreate-app-name)
 * [`fly apps:delete`](#fly-appsdelete)
 * [`fly apps:move`](#fly-appsmove)
+* [`fly build [PATH] [OUTFILE]`](#fly-build-path-outfile)
 * [`fly deploy [PATH]`](#fly-deploy-path)
 * [`fly help [COMMAND]`](#fly-help-command)
 * [`fly hostnames`](#fly-hostnames)
@@ -28,8 +29,6 @@ USAGE
   $ fly apps
 ```
 
-_See code: [lib/commands/apps/index.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/apps/index.js)_
-
 ## `fly apps:create APP-NAME`
 
 create a new app
@@ -41,8 +40,6 @@ USAGE
 ARGUMENTS
   APP-NAME  Unique name for the new app. Allowed characters are [a-z0-9-_.], will be lowercased
 ```
-
-_See code: [lib/commands/apps/create.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/apps/create.js)_
 
 ## `fly apps:delete`
 
@@ -57,8 +54,6 @@ OPTIONS
   --env=env      [default: development] environment to use for commands
 ```
 
-_See code: [lib/commands/apps/delete.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/apps/delete.js)_
-
 ## `fly apps:move`
 
 move an new app to another organization
@@ -72,7 +67,24 @@ OPTIONS
   --env=env      [default: development] environment to use for commands
 ```
 
-_See code: [lib/commands/apps/move.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/apps/move.js)_
+## `fly build [PATH] [OUTFILE]`
+
+Build your local Fly app
+
+```
+USAGE
+  $ fly build [PATH] [OUTFILE]
+
+ARGUMENTS
+  PATH     [default: /Users/md/src/superfly/fly/packages/cli] path to app
+  OUTFILE  [default: .fly/release.tar.gz] path to output file
+
+OPTIONS
+  -a, --app=app  the app to run commands against
+  --env=env      [default: production] environment to use for commands
+```
+
+_See code: [lib/commands/build.js](https://github.com/superfly/fly/blob/v0.53.0-pre.0/lib/commands/build.js)_
 
 ## `fly deploy [PATH]`
 
@@ -83,14 +95,14 @@ USAGE
   $ fly deploy [PATH]
 
 ARGUMENTS
-  PATH  [default: /Users/kurt/code/fly.io/core/packages/cli] path to app
+  PATH  [default: /Users/md/src/superfly/fly/packages/cli] path to app
 
 OPTIONS
   -a, --app=app  the app to run commands against
   --env=env      [default: production] environment to use for commands
 ```
 
-_See code: [lib/commands/deploy.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/deploy.js)_
+_See code: [lib/commands/deploy.js](https://github.com/superfly/fly/blob/v0.53.0-pre.0/lib/commands/deploy.js)_
 
 ## `fly help [COMMAND]`
 
@@ -122,8 +134,6 @@ OPTIONS
   --env=env      [default: development] environment to use for commands
 ```
 
-_See code: [lib/commands/hostnames/index.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/hostnames/index.js)_
-
 ## `fly hostnames:add HOSTNAME`
 
 add hostnames to an app
@@ -140,8 +150,6 @@ OPTIONS
   --env=env      [default: development] environment to use for commands
 ```
 
-_See code: [lib/commands/hostnames/add.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/hostnames/add.js)_
-
 ## `fly login`
 
 login to fly
@@ -150,8 +158,6 @@ login to fly
 USAGE
   $ fly login
 ```
-
-_See code: [lib/commands/login.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/login.js)_
 
 ## `fly logs`
 
@@ -165,8 +171,6 @@ OPTIONS
   -a, --app=app  the app to run commands against
   --env=env      [default: development] environment to use for commands
 ```
-
-_See code: [lib/commands/logs.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/logs.js)_
 
 ## `fly new NAME`
 
@@ -183,8 +187,6 @@ OPTIONS
   -t, --template=template  the template to use
 ```
 
-_See code: [lib/commands/new.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/new.js)_
-
 ## `fly orgs`
 
 list your organizations
@@ -193,8 +195,6 @@ list your organizations
 USAGE
   $ fly orgs
 ```
-
-_See code: [lib/commands/orgs.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/orgs.js)_
 
 ## `fly releases`
 
@@ -209,8 +209,6 @@ OPTIONS
   --env=env      [default: development] environment to use for commands
 ```
 
-_See code: [lib/commands/releases.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/releases.js)_
-
 ## `fly secrets`
 
 manage app secrets
@@ -219,8 +217,6 @@ manage app secrets
 USAGE
   $ fly secrets
 ```
-
-_See code: [lib/commands/secrets/index.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/secrets/index.js)_
 
 ## `fly secrets:set KEY [VALUE]`
 
@@ -240,8 +236,6 @@ OPTIONS
   --from-file=from-file  use a file's contents as the secret value
 ```
 
-_See code: [lib/commands/secrets/set.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/secrets/set.js)_
-
 ## `fly server [PATH]`
 
 run the local fly development server
@@ -251,16 +245,17 @@ USAGE
   $ fly server [PATH]
 
 ARGUMENTS
-  PATH  [default: /Users/kurt/code/fly.io/core/packages/cli] path to app
+  PATH  [default: /Users/md/src/superfly/fly/packages/cli] path to app
 
 OPTIONS
   -p, --port=port  [default: 3000] Port to bind to
   --env=env        [default: development] environment to use for commands
   --inspect        use the v8 inspector on your fly app
   --uglify         uglify your code like we'll use in production (warning: slow!)
+  --[no-]watch     reload when source or configs change
 ```
 
-_See code: [lib/commands/server.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/server.js)_
+_See code: [lib/commands/server.js](https://github.com/superfly/fly/blob/v0.53.0-pre.0/lib/commands/server.js)_
 
 ## `fly test [PATTERN]`
 
@@ -280,5 +275,5 @@ EXAMPLES
   fly test test/these/** !but_not_this.js
 ```
 
-_See code: [lib/commands/test.js](https://github.com/superfly/fly/blob/v0.52.1-pre.0/lib/commands/test.js)_
+_See code: [lib/commands/test.js](https://github.com/superfly/fly/blob/v0.53.0-pre.0/lib/commands/test.js)_
 <!-- commandsstop -->

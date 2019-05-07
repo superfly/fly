@@ -1,7 +1,7 @@
 import { Readable } from "stream"
 import { createReadStream } from "fs"
 import { resolve } from "path"
-import { getLocalRelease, getEnv, LocalRelease } from "./utils/local"
+// import { getEnv, LocalRelease } from "./utils/local"
 import { Release } from "."
 import { FileStore, FileNotFound } from "./file_store"
 import { Runtime } from "./runtime"
@@ -9,7 +9,7 @@ import { Runtime } from "./runtime"
 export class LocalFileStore implements FileStore {
   public cwd: string
 
-  constructor(cwd: string = process.cwd(), release: LocalRelease) {
+  constructor(cwd: string) {
     this.cwd = cwd
   }
 

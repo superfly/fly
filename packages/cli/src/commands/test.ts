@@ -22,7 +22,7 @@ export default class Test extends FlyCommand {
   public async run() {
     const { argv } = this.parse(Test)
 
-    const runner = new TestRunner({ paths: argv })
+    const runner = new TestRunner({ cwd: process.cwd(), paths: argv })
 
     const success = await runner.run()
 

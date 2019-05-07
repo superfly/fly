@@ -47,8 +47,8 @@ declare module "http" {
 }
 
 export interface ServerOptions {
-  env?: string
-  appStore?: FileAppStore
+  env: string
+  appStore: FileAppStore
   bridge?: Bridge
   inspect?: boolean
   monitorFrequency?: number
@@ -66,15 +66,15 @@ export class Server extends http.Server {
   public runtime: LocalRuntime
   public appStore: FileAppStore
 
-  constructor(options: ServerOptions = {}) {
+  constructor(options: ServerOptions) {
     super()
     this.options = options
-    this.appStore = options.appStore || new FileAppStore(process.cwd())
+    this.appStore = options.appStore
     this.bridge =
       options.bridge ||
       new Bridge({
-        fileStore: new LocalFileStore(process.cwd(), this.appStore.release),
-        dataStore: new SQLiteDataStore(this.appStore.app.name, options.env || "development"),
+        fileStore: new LocalFileStore(this.appStore.appDir),
+        dataStore: new SQLiteDataStore(this.appStore.app.name, options.env),
         blobStore: new FileSystemBlobStore()
       })
     this.runtime = new LocalRuntime(this.appStore.app, this.bridge, {

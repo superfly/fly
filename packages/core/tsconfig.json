@@ -15,6 +15,9 @@
   "references": [
     {
       "path": "../examples"
+    },
+    {
+      "path": "../build"
     }
   ]
 }

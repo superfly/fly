@@ -26,6 +26,11 @@ export default class ServerCmd extends FlyCommand {
     uglify: cmdFlags.boolean({
       description: "uglify your code like we'll use in production (warning: slow!)",
       default: false
+    }),
+    watch: cmdFlags.boolean({
+      description: "reload when source or configs change",
+      default: true,
+      allowNo: true
     })
   }
 
@@ -33,25 +38,28 @@ export default class ServerCmd extends FlyCommand {
 
   public async run() {
     const { args, flags } = this.parse(ServerCmd)
-    let cwd = args.path || process.cwd()
+    let appDir = args.path || process.cwd()
 
-    if (!fs.existsSync(cwd)) {
-      cwd = (await getExamplePath(cwd)) || cwd
+    if (!fs.existsSync(appDir)) {
+      appDir = (await getExamplePath(appDir)) || appDir
     }
-    console.log(`Using ${cwd} as working directory.`)
-    process.chdir(cwd)
+    console.log(`Using ${appDir} as working directory.`)
 
     let port = flags.port!
     const env = flags.env!
 
-    const appStore = new FileAppStore(cwd, {
-      build: true,
-      uglify: flags.uglify,
-      env,
-      noWatch: env === "test"
+    const appStore = new FileAppStore({
+      appDir,
+      env
     })
 
-    const server = new Server({ appStore, inspect: !!flags.inspect })
+    if (flags.watch) {
+      appStore.watch({ uglify: flags.uglify })
+    } else {
+      appStore.build({ uglify: flags.uglify })
+    }
+
+    const server = new Server({ appStore, env, inspect: !!flags.inspect })
     console.log("Memory Cache Adapter: " + server.bridge.cacheStore.constructor.name)
     if (server.bridge.blobStore) {
       console.log(`Blob Cache Adapter: ${server.bridge.blobStore}`)

@@ -112,7 +112,7 @@ export class TestServer {
         reject(new Error("Error copying test app: " + err.toString()))
       }
 
-      this.child = execa("../../fly", ["server", "-p", this.port.toString(), this.workingDir], {
+      this.child = execa("../../fly", ["server", "-p", this.port.toString(), "--no-watch", this.workingDir], {
         env: {
           LOG_LEVEL: process.env.LOG_LEVEL,
           FLY_ENV: "test",

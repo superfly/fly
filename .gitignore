@@ -10,3 +10,4 @@ artifacts
 docs
 tmp
 .npmrc
+*.tsbuildinfo
