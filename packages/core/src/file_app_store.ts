@@ -23,12 +23,12 @@ export class FileAppStore {
 
   constructor(options: FileAppStoreOptions) {
     this.appDir = options.appDir || process.cwd()
+    if (!fs.existsSync(this.appDir)) {
+      throw new Error("Could not find path: " + this.appDir)
+    }
     const stat = fs.statSync(this.appDir)
     if (!stat.isDirectory()) {
       this.appDir = path.dirname(this.appDir)
-    }
-    if (!fs.existsSync(this.appDir)) {
-      throw new Error("Could not find path: " + this.appDir)
     }
 
     this.env = options.env
