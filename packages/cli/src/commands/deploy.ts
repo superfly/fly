@@ -40,7 +40,6 @@ export default class Deploy extends FlyCommand {
       },
       headers: {
         "Content-Type": "application/x-tar",
-        "Content-Length": tarball.byteLength,
         "Content-Encoding": "gzip"
       },
       maxContentLength: 100 * 1024 * 1024,
