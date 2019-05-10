@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.53.0-pre.1](https://github.com/superfly/fly/compare/v0.52.1-pre.0...v0.53.0-pre.1) (2019-05-10)
+
+
+### Features
+
+* build cli command ([746df45](https://github.com/superfly/fly/commit/746df45))
+
+
+
+
+
 # [0.53.0-pre.0](https://github.com/superfly/fly/compare/v0.52.1-pre.0...v0.53.0-pre.0) (2019-05-07)
 
 **Note:** Version bump only for package @fly-test/v8env
