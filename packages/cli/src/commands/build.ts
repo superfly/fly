@@ -6,6 +6,7 @@ import * as sharedFlags from "../flags"
 import { FileAppStore } from "@fly/core"
 import * as path from "path"
 import { createReleaseTarball } from "@fly/build"
+import Command, { flags as cmdFlags } from "@oclif/command"
 
 export default class Build extends FlyCommand {
   static description = "Build your local Fly app"
@@ -14,28 +15,29 @@ export default class Build extends FlyCommand {
     {
       name: "path",
       description: "path to app",
-      default: process.cwd()
-    },
-    {
-      name: "outFile",
-      description: "path to output file",
-      default: ".fly/release.tar.gz"
+      default: "."
     }
   ]
 
   public static flags = {
     env: sharedFlags.env({ default: "production" }),
-    app: sharedFlags.app()
+    app: sharedFlags.app(),
+    output: cmdFlags.string({
+      description: "Path to output file",
+      char: "o",
+      default: ".fly/release.tar.gz",
+      required: true
+    })
   }
 
   async run() {
     const { args, flags } = this.parse(Build)
     const env = flags.env!
-    const cwd = args.path || process.cwd()
-    const outFile = args.outFile || path.resolve(cwd, ".fly/release.tar.gz")
+    const cwd = path.resolve(process.cwd(), args.path)
+    const outFile = path.resolve(cwd, flags.output)
     const appName = getAppName({ ...flags, cwd })
 
-    this.log("Building", appName, `(env: ${env})`)
+    this.log("Building", appName, `(env: ${env}, path: ${cwd})`)
 
     const appStore = new FileAppStore({ appDir: cwd, env })
     await appStore.build()
