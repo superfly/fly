@@ -1,6 +1,6 @@
 {
     "name": "@fly/build",
-    "version": "0.53.0-pre.1",
+    "version": "0.53.0-pre.2",
     "description": "Fly app build compilation",
     "license": "Apache-2.0",
     "repository": {
