@@ -1,6 +1,6 @@
 {
     "name": "@fly/build",
-    "version": "0.53.1",
+    "version": "0.54.0-pre.0",
     "description": "Fly app build compilation",
     "license": "Apache-2.0",
     "repository": {
@@ -17,7 +17,7 @@
         "build:watch": "tsc -b -w -v ."
     },
     "dependencies": {
-        "@fly/v8env": "0.53.0",
+        "@fly/v8env": "0.54.0-pre.0",
         "tar-stream": "^2.0.1",
         "ts-loader": "^3.5.0",
         "typescript": "3.4.5",
