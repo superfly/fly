@@ -16,6 +16,7 @@ export class TextDecoder {
     this.encoding = encoding
   }
   public decode(input) {
+    if (!input) return ""
     return bridge.dispatchSync("TextDecoder.decode", input, this.encoding)
   }
 }

@@ -17,6 +17,7 @@ import { URL, URLSearchParams } from "./url"
 import { Headers } from "./headers"
 
 import { TextEncoder, TextDecoder } from "./text-encoding"
+import { TextEncoderStream, TextDecoderStream } from "@stardazed/streams-text-encoding"
 import { fetch, TimeoutError } from "./fetch"
 import Body from "./body_mixin"
 import Blob from "./blob"
@@ -60,6 +61,8 @@ global.bootstrap = function bootstrap() {
     TransformStream,
     TextEncoder,
     TextDecoder,
+    TextEncoderStream,
+    TextDecoderStream,
     Headers,
     Request,
     Response,

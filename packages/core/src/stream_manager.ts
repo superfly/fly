@@ -1,9 +1,10 @@
 import { Runtime } from "./runtime"
-import { Readable, Writable, PassThrough } from "stream"
+import { Readable, Writable, PassThrough, Duplex } from "stream"
 import { ivm } from "."
 import { transferInto } from "./utils/buffer"
 import log from "./log"
 import { setTimeout } from "timers"
+import { registerBridge } from "./bridge"
 
 export interface StreamInfo {
   stream: Readable
@@ -31,7 +32,10 @@ export const streamManager = {
     if (!streamInfo) {
       throw new Error(`stream ${key} not found`)
     }
-    return streamInfo.stream
+    if (streamInfo.stream instanceof Readable) {
+      return streamInfo.stream
+    }
+    throw new Error("Stream is not readable")
   },
 
   add(rt: Runtime, stream: Readable, opts: StreamOptions = {}): number {
@@ -45,6 +49,7 @@ export const streamManager = {
     streams[key] = { stream, readLength: 0, addedAt: Date.now(), endedAt: 0, readTimeout }
     return id
   },
+
   subscribe(rt: Runtime, id: number | string, cb: ivm.Reference<() => void>) {
     const key = streamKey(rt, id)
     log.debug("stream subscribe id:", id)
@@ -81,6 +86,7 @@ export const streamManager = {
       endStream(key, cb)
     })
   },
+
   read(rt: Runtime, id: number | string, cb: ivm.Reference<() => void>) {
     const key = streamKey(rt, id)
     log.debug("stream:read id:", id)
@@ -96,7 +102,7 @@ export const streamManager = {
     function tryRead() {
       attempts += 1
       try {
-        const chunk = info.stream.read(1024 * 1024)
+        const chunk = info.stream.read()
         log.debug("chunk is null? arraybuffer?", !chunk, chunk instanceof Buffer)
 
         if (chunk) {
@@ -161,8 +167,51 @@ export const streamManager = {
     info.stream.pipe(stream2)
 
     return [stream1Id, stream2Id]
+  },
+  write(rt: Runtime, id: number | string, chunk: any): void {
+    const key = streamKey(rt, id)
+    const info = streams[key]
+    if (!info) {
+      throw new Error("stream closed, not found or destroyed")
+    }
+    if (info.stream instanceof Writable) {
+      info.stream.write(chunk)
+    } else {
+      throw new Error("Stream cannot be written to")
+    }
+  },
+  end(rt: Runtime, id: number | string, chunk: any): void {
+    const key = streamKey(rt, id)
+    const info = streams[key]
+    if (!info) {
+      throw new Error("stream closed, not found or destroyed")
+    }
+    if (info.stream instanceof Writable) {
+      //@ts-ignore
+      setImmediate(() => info.stream.end(chunk))
+    } else {
+      throw new Error("Stream cannot be written to")
+    }
   }
 }
+
+registerBridge("stream.create", rt => {
+  const stream = new PassThrough()
+  return Promise.resolve(streamManager.add(rt, stream))
+})
+
+registerBridge("stream.push", (rt, _, id: number | string, chunk: any) => {
+  return Promise.resolve(streamManager.write(rt, id, chunk))
+})
+
+registerBridge("stream.end", (rt, _, id: number | string, chunk: any) => {
+  try {
+    streamManager.end(rt, id, chunk)
+  } catch (err) {
+    console.error("stream end failed:", err)
+  }
+  return Promise.resolve(true)
+})
 
 function streamKey(rt: Runtime, id: number | string) {
   return `${rt.app.name}:${id}`

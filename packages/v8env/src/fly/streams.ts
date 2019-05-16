@@ -24,6 +24,22 @@ export function isFlyStreamId(arg: any): arg is FlyStreamId {
   return typeof arg === "number"
 }
 
+export function makeFlyStream(): FlyStreamId {
+  const id = bridge.dispatchSync("stream.create")
+  if (typeof id === "number") {
+    return id as FlyStreamId
+  }
+  throw new Error("Failed to get stream ID")
+}
+
+export function writeToFlyStream(id: FlyStreamId, chunk: any) {
+  return bridge.dispatchSync("stream.push", id, chunk)
+}
+
+export function endFlyStream(id: FlyStreamId, chunk: any) {
+  return bridge.dispatchSync("stream.end", id, chunk)
+}
+
 /**
  * @hidden
  */

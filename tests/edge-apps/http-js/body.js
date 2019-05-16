@@ -13,5 +13,36 @@ fly.http.respondWith(async request => {
     return new Response(`res1: ${await res1.text()}\nres2: ${await res2.text()}`)
   }
 
+  if (url.pathname.startsWith("/stream")) {
+    let count = 0
+    let timeout
+    const write = function(controller) {
+      controller.enqueue(`chunk ${count++}\n`)
+      if (count < 3) {
+        timeout = setTimeout(() => write(controller), 1000)
+      } else {
+        controller.close()
+      }
+    }
+    // make a stream that waits 1s before writing
+    const b = new ReadableStream({
+      start(controller) {
+        timeout = setTimeout(() => write(controller), 1000)
+      },
+      cancel() {
+        if (timeout) {
+          clearImmediate(timeout)
+        }
+      }
+    })
+    return new Response(b, {
+      headers: {
+        "content-type": "text/html",
+        streaming: "true",
+        "transfer-encoding": "chunked"
+      }
+    })
+  }
+
   return new Response(await request.text(), {})
 })

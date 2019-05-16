@@ -4,7 +4,7 @@
  */
 import { logger } from "./logger"
 import { EventEmitter2 as EventEmitter } from "eventemitter2"
-import refToStream, { isFlyStream, isFlyStreamId } from "./fly/streams"
+import refToStream, { isFlyStream, makeFlyStream, writeToFlyStream, endFlyStream } from "./fly/streams"
 
 declare var bridge: any
 
@@ -134,9 +134,14 @@ export function fireFetchEvent(url, req, body, callback) {
       }
 
       let b = null
+      let streamID: number | undefined
 
       if (isFlyStream(res.body)) {
         b = res.body.flyStreamId
+      } else if (res.bodySource instanceof ReadableStream) {
+        // get response id
+        b = streamID = makeFlyStream()
+        // streaming happens below, we just need an ID to send to the bridge
       } else {
         logger.debug("body source type:", res.bodySource.constructor.name)
         if (typeof res.bodySource === "string") {
@@ -156,6 +161,32 @@ export function fireFetchEvent(url, req, body, callback) {
         }),
         b
       ])
+
+      // if body is a stream, send it over
+      if (streamID) {
+        // stream to bridge
+        logger.debug("sending stream response")
+        const stream: ReadableStream = res.bodySource
+        const reader = stream.getReader()
+        try {
+          while (true) {
+            const { done, value } = await reader.read()
+            if (!done && value) {
+              writeToFlyStream(streamID, value)
+            } else if (done) {
+              //pushToFlyStream(streamID, null)
+              endFlyStream(streamID, value)
+              break
+            }
+          }
+        } finally {
+          try {
+            // Might throw if the reader is still locked because we finished
+            // successfully without breaking or throwing.
+            await stream.cancel()
+          } catch {}
+        }
+      }
     }
   )
   const fn = emitter.listeners("fetch").slice(-1)[0]

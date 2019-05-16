@@ -285,6 +285,7 @@ function handleResponse(rt: Runtime, src: V8ResponseBody, res: http.ServerRespon
   }
 
   if (typeof src === "number") {
+    res.flushHeaders()
     return handleResponseStream(rt, src, res, dst)
   }
 

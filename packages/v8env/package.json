@@ -22,6 +22,7 @@
         "doc": "./publish-docs.sh"
     },
     "dependencies": {
+        "@stardazed/streams-text-encoding": "^1.0.2",
         "better-assert": "^1.0.2",
         "cookie": "^0.3.1",
         "css-select": "^1.3.0-rc0",
