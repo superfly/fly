@@ -174,6 +174,9 @@ export const streamManager = {
     if (!info) {
       throw new Error("stream closed, not found or destroyed")
     }
+    if (typeof chunk === "object" && chunk instanceof ArrayBuffer) {
+      chunk = Buffer.from(chunk)
+    }
     if (info.stream instanceof Writable) {
       info.stream.write(chunk)
     } else {
@@ -201,14 +204,19 @@ registerBridge("stream.create", rt => {
 })
 
 registerBridge("stream.push", (rt, _, id: number | string, chunk: any) => {
-  return Promise.resolve(streamManager.write(rt, id, chunk))
+  try {
+    streamManager.write(rt, id, chunk)
+  } catch (err) {
+    console.error("stream write error:", err)
+  }
+  return Promise.resolve()
 })
 
 registerBridge("stream.end", (rt, _, id: number | string, chunk: any) => {
   try {
     streamManager.end(rt, id, chunk)
   } catch (err) {
-    console.error("stream end failed:", err)
+    throw new Error(err.message)
   }
   return Promise.resolve(true)
 })
