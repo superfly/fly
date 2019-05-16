@@ -1,6 +1,6 @@
 {
     "name": "@fly/core",
-    "version": "0.53.1-pre.0",
+    "version": "0.53.1",
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
@@ -16,7 +16,7 @@
         "build:watch": "tsc -b -w -v ."
     },
     "dependencies": {
-        "@fly/build": "0.53.1-pre.0",
+        "@fly/build": "0.53.1",
         "@fly/examples": "0.50.0",
         "@fly/v8env": "0.53.0",
         "better-sqlite3": "^4.1.4",
