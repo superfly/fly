@@ -105,7 +105,7 @@ export function getWebpackConfig(options: BuildOptions): webpack.Configuration {
   const v8EnvPath = path.dirname(require.resolve("@fly/v8env"))
 
   conf = {
-    entry: options.entry || getEntryFile(inputPath),
+    entry: getEntryFile(inputPath),
     resolve: {
       extensions: [],
       alias: {},
@@ -119,6 +119,7 @@ export function getWebpackConfig(options: BuildOptions): webpack.Configuration {
     ...conf
   }
 
+  conf.entry = options.entry || conf.entry
   conf.resolve.extensions = [...(conf.resolve.extensions || []), ".js", ".ts", ".tsx"]
   conf.resolve.modules = [...(conf.resolve.modules || []), "node_modules"]
 
