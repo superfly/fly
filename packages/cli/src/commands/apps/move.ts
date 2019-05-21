@@ -1,25 +1,25 @@
 import { FlyCommand } from "../../base-command"
-import { apiClient, processResponse } from "../../api"
-import { getAppName } from "../../util"
-import { app, env } from "../../flags"
+import { processResponse } from "../../api"
+import * as sharedFlags from "../../flags"
 import * as inquirer from "inquirer"
 import { cli } from "cli-ux"
 
 export default class Move extends FlyCommand {
   static description = `move an new app to another organization`
 
-  static flags = {
-    app: app(),
-    env: env()
+  public static flags = {
+    env: sharedFlags.env({ default: "production" }),
+    app: sharedFlags.app(),
+    token: sharedFlags.apiToken()
   }
 
   static args = []
 
   public async run() {
     const { flags } = this.parse(Move)
-    console.log(flags)
-    const API = apiClient(this)
-    const appName = getAppName(flags)
+
+    const API = this.apiClient(flags)
+    const appName = this.getAppName(flags)
 
     const res = await API.get(`/api/v1/orgs`)
     processResponse(this, res, async () => {

@@ -1,7 +1,6 @@
 import { FlyCommand } from "../../base-command"
-import { apiClient, processResponse } from "../../api"
+import { processResponse } from "../../api"
 import * as sharedFlags from "../../flags"
-import { getAppName } from "../../util"
 import { flags as oclifFlags } from "@oclif/command"
 import { readFileSync } from "fs"
 
@@ -11,7 +10,9 @@ export default class SecretsSet extends FlyCommand {
   static flags = {
     app: sharedFlags.app(),
     env: sharedFlags.env(),
+    token: sharedFlags.apiToken(),
     "from-file": oclifFlags.string({
+      name: "from-file",
       description: "use a file's contents as the secret value"
     })
   }
@@ -23,14 +24,14 @@ export default class SecretsSet extends FlyCommand {
 
   public async run() {
     const { args, flags } = this.parse(SecretsSet)
-    const appName = getAppName(flags)
 
-    const API = apiClient(this)
+    const appName = this.getAppName(flags)
+    const API = this.apiClient(flags)
     const key = args.key
     const value = flags["from-file"] ? readFileSync(flags["from-file"]!).toString() : args.value
 
     if (!value) {
-      throw new Error("Either a value or --from-file needs to be provided.")
+      return this.error("Either a value or --from-file needs to be provided.")
     }
 
     const res = await API.patch(`/api/v1/apps/${appName}/secrets`, {

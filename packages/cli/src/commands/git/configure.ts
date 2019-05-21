@@ -1,7 +1,6 @@
 import { FlyCommand } from "../../base-command"
 import * as sharedFlags from "../../flags"
-import { getAppName } from "../../util"
-import { getToken, storeNetrcCredentials } from "../../credentials"
+import { storeNetrcCredentials } from "../../credentials"
 import * as execa from "execa"
 import * as fs from "fs"
 import * as path from "path"
@@ -9,7 +8,11 @@ import * as path from "path"
 export default class Configure extends FlyCommand {
   public static description = "configure remote and credentials for git deployments"
 
-  public static flags = { env: sharedFlags.env(), app: sharedFlags.app() }
+  public static flags = {
+    env: sharedFlags.env({ default: "production" }),
+    app: sharedFlags.app(),
+    token: sharedFlags.apiToken()
+  }
 
   static args = [{ name: "name", description: "name of the remote", default: "fly" }]
 
@@ -18,9 +21,9 @@ export default class Configure extends FlyCommand {
   public async run() {
     const { args, flags } = this.parse(Configure)
 
-    const appName = getAppName(flags)
+    const appName = this.getAppName(flags)
     const remoteName = args.name
-    const token = getToken(this)
+    const token = this.apiToken(flags)
     const host = "git.fly.io"
     const url = `https://${host}/${appName}.git`
 

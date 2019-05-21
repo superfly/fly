@@ -1,7 +1,5 @@
 import { FlyCommand } from "../base-command"
-import { apiClient } from "../api"
 import * as sharedFlags from "../flags"
-import { getAppName } from "../util"
 import { AxiosInstance } from "axios"
 import chalk from "chalk"
 
@@ -10,14 +8,15 @@ export default class Logs extends FlyCommand {
 
   public static flags = {
     env: sharedFlags.env(),
-    app: sharedFlags.app()
+    app: sharedFlags.app(),
+    token: sharedFlags.apiToken()
   }
 
   public async run() {
     const { flags } = this.parse(Logs)
 
-    const API = apiClient(this)
-    const appName = getAppName(flags)
+    const API = this.apiClient(flags)
+    const appName = this.getAppName(flags)
 
     await this.continuouslyGetLogs(API, appName)
   }

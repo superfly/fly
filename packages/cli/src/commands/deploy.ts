@@ -1,6 +1,5 @@
-import { apiClient, processResponse } from "../api"
+import { processResponse } from "../api"
 import { FlyCommand } from "../base-command"
-import { getAppName } from "../util"
 import * as sharedFlags from "../flags"
 import { FileAppStore } from "@fly/core"
 import { createReleaseTarball } from "@fly/build"
@@ -14,15 +13,17 @@ export default class Deploy extends FlyCommand {
 
   public static flags = {
     env: sharedFlags.env({ default: "production" }),
-    app: sharedFlags.app()
+    app: sharedFlags.app(),
+    token: sharedFlags.apiToken()
   }
 
   async run() {
     const { args, flags } = this.parse(Deploy)
-    const API = apiClient(this)
+
+    const API = this.apiClient(flags)
     const env = flags.env!
     const cwd = args.path || process.cwd()
-    const appName = getAppName({ ...flags, cwd })
+    const appName = this.getAppName({ cwd, ...flags })
 
     this.log("Deploying", appName, `(env: ${env})`)
 

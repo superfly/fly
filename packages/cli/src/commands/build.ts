@@ -1,7 +1,6 @@
 import * as glob from "glob"
 import { resolve as pathResolve } from "path"
 import { FlyCommand } from "../base-command"
-import { getAppName } from "../util"
 import * as sharedFlags from "../flags"
 import { FileAppStore } from "@fly/core"
 import * as path from "path"
@@ -35,7 +34,7 @@ export default class Build extends FlyCommand {
     const env = flags.env!
     const cwd = path.resolve(process.cwd(), args.path)
     const outFile = path.resolve(cwd, flags.output)
-    const appName = getAppName({ ...flags, cwd })
+    const appName = this.getAppName({ ...flags, cwd })
 
     this.log("Building", appName, `(env: ${env}, path: ${cwd})`)
 

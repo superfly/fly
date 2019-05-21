@@ -1,15 +1,15 @@
 import { FlyCommand } from "../../base-command"
-import { apiClient, processResponse } from "../../api"
-import { getAppName } from "../../util"
-import { app, env } from "../../flags"
+import { processResponse } from "../../api"
+import * as sharedFlags from "../../flags"
 import { cli } from "cli-ux"
 
 export default class Delete extends FlyCommand {
   static description = `delete an app`
 
-  static flags = {
-    app: app(),
-    env: env()
+  public static flags = {
+    env: sharedFlags.env({ default: "production" }),
+    app: sharedFlags.app(),
+    token: sharedFlags.apiToken()
   }
 
   static args = []
@@ -17,8 +17,8 @@ export default class Delete extends FlyCommand {
   public async run() {
     const { flags } = this.parse(Delete)
 
-    const API = apiClient(this)
-    const appName = getAppName(flags)
+    const API = this.apiClient(flags)
+    const appName = this.getAppName(flags)
 
     this.log(`Are you sure you want to delete '${appName}'?`)
 

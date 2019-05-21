@@ -59,6 +59,7 @@ export default class New extends FlyCommand {
     }
 
     const generator = new Generator({
+      path: cwd,
       appName: args.name,
       template
     })
@@ -128,7 +129,7 @@ class Generator {
   public readonly template: TemplateInfo
 
   constructor(options: GeneratorOptions) {
-    this.cwd = process.cwd()
+    this.cwd = options.path || process.cwd()
     this.appName = options.appName
     this.rootDir = options.path || path.resolve(this.cwd, this.appName)
     this.template = options.template
