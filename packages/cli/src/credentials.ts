@@ -4,23 +4,15 @@ import * as fs from "fs"
 import YAML = require("js-yaml")
 import netrc from "netrc-parser"
 
-export function getToken(cmd: FlyCommand) {
-  const token = null // recursivelyGetOption(cmd, "token") || process.env.FLY_ACCESS_TOKEN
-  if (!token) {
-    try {
-      const creds = getCredentials()
-      if (creds) {
-        return creds.access_token
-      }
-    } catch (e) {
-      // do nothing
+export function getSavedAccessToken(): string | undefined {
+  try {
+    const creds = getCredentials()
+    if (creds) {
+      return creds.access_token
     }
+  } catch (e) {
+    // do nothing
   }
-
-  if (!token) {
-    throw new Error("--token option or environment variable FLY_ACCESS_TOKEN needs to be set.")
-  }
-  return token
 }
 
 export function homeConfigPath() {

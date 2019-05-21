@@ -1,18 +1,17 @@
 import axios from "axios"
 import { AxiosResponse } from "axios"
 import { FlyCommand } from "./base-command"
-import { getToken } from "./credentials"
 
 const { version } = require("../package.json")
 
-export function apiClient(cmd: FlyCommand) {
+export function apiClient(token: string) {
   const baseURL = process.env.FLY_BASE_URL || "https://fly.io"
 
   return axios.create({
     baseURL,
     timeout: 30000,
     headers: {
-      Authorization: `Bearer ${getToken(cmd)}`,
+      Authorization: `Bearer ${token}`,
       "User-Agent": `fly/${version}`
     },
     validateStatus: status => {

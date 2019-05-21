@@ -1,10 +1,15 @@
 import { FlyCommand } from "../../base-command"
-import { apiClient, processResponse } from "../../api"
+import { processResponse } from "../../api"
 import { isValidAppName, fullAppMatch } from "../../util"
 import { existsSync, writeFileSync } from "fs"
+import * as sharedFlags from "../../flags"
 
 export default class Create extends FlyCommand {
   static description = `create a new app`
+
+  public static flags = {
+    token: sharedFlags.apiToken()
+  }
 
   static args = [
     {
@@ -17,7 +22,7 @@ export default class Create extends FlyCommand {
   public async run() {
     const { flags, argv } = this.parse(Create)
 
-    const API = apiClient(this)
+    const API = this.apiClient(flags)
 
     const name = argv[0]
 
