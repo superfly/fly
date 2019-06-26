@@ -36,8 +36,8 @@ export default class Deploy extends FlyCommand {
 
     const app = resp.data.deployImage.deployment.app
 
-    if (app.ip_addresses.nodes.length > 0) {
-      this.log(`--> https://${app.ip_addresses.nodes[0].address}`)
+    if (app.ipAddresses.nodes.length > 0) {
+      this.log(`--> https://${app.ipAddresses.nodes[0].address}`)
     }
   }
 }
@@ -50,7 +50,7 @@ const DEPLOY_IMAGE = gql`
         app {
           runtime
           status
-          ip_addresses {
+          ipAddresses {
             nodes {
               address
             }

@@ -62,8 +62,8 @@ export default class Create extends FlyCommand {
 
     this.log(`Created a new app: ${newAppName}`)
 
-    if (newApp.ip_addresses.nodes.length > 0) {
-      this.log(`--> https://${newApp.ip_addresses.nodes[0].address}`)
+    if (newApp.ipAddresses.nodes.length > 0) {
+      this.log(`--> https://${newApp.ipAddresses.nodes[0].address}`)
     }
 
     console.log(inspect(resp, { showHidden: true, depth: 10, colors: true }))
@@ -104,7 +104,7 @@ const CREATE_APP = gql`
         id
         name
         runtime
-        ip_addresses {
+        ipAddresses {
           nodes {
             address
           }
