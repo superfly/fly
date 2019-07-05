@@ -100,7 +100,12 @@ export class RedisCacheStore implements CacheStore {
       checks.push(this.redis.sismemberAsync(k + ":tags", tags))
     }
 
-    const result = await Promise.all(checks)
+    let result: boolean[] = []
+    const chunkedChecks = chunk(checks, 256)
+    for (let i = 0; i < chunkedChecks.length; i++){
+      result = result.concat(await Promise.all(chunkedChecks[i]))
+    }
+
     const deletes = new Array<Promise<boolean>>()
     for (let i = 0; i < result.length; i++) {
       const r = result[i]
@@ -114,9 +119,25 @@ export class RedisCacheStore implements CacheStore {
     }
     deletes.push(this.redis.delAsync(s))
 
-    await Promise.all(deletes)
+    const chunkedDeletes = chunk(deletes, 256)
+    for (let i = 0; i < chunkedDeletes.length; i++){
+      await Promise.all(chunkedDeletes[i])
+    }
+
     return keysToDelete.map(k => k.replace(/^cache:[^:]+:/, ""))
   }
+}
+
+function chunk<T>(arr: T[], len: number): T[][] {
+  let chunks = [],
+      i = 0,
+      n = arr.length;
+
+  while (i < n) {
+    chunks.push(arr.slice(i, i += len));
+  }
+
+  return chunks;
 }
 
 function tagKeyFor(ns: string, tag: string) {
