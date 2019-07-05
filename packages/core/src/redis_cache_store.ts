@@ -115,14 +115,14 @@ export class RedisCacheStore implements CacheStore {
     }
 
     if (keysToDelete.length > 0) {
-      deletes.push(this.redis.delAsync(...keysToDelete))
+      const chunkedKeysToDelete = chunk(keysToDelete, 256)
+      for (let i = 0; i < chunkedKeysToDelete.length; i++) {
+        deletes.push(this.redis.delAsync(...chunkedKeysToDelete[i]))
+      }
     }
     deletes.push(this.redis.delAsync(s))
 
-    const chunkedDeletes = chunk(deletes, 256)
-    for (let i = 0; i < chunkedDeletes.length; i++){
-      await Promise.all(chunkedDeletes[i])
-    }
+    await Promise.all(deletes)
 
     return keysToDelete.map(k => k.replace(/^cache:[^:]+:/, ""))
   }
