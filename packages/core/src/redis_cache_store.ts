@@ -106,7 +106,7 @@ export class RedisCacheStore implements CacheStore {
       result = result.concat(await Promise.all(chunkedChecks[i]))
     }
 
-    const deletes = new Array<Promise<boolean>>()
+    const deletes = new Array<Promise<any>>()
     for (let i = 0; i < result.length; i++) {
       const r = result[i]
       if (r) {
@@ -117,10 +117,12 @@ export class RedisCacheStore implements CacheStore {
     if (keysToDelete.length > 0) {
       const chunkedKeysToDelete = chunk(keysToDelete, 256)
       for (let i = 0; i < chunkedKeysToDelete.length; i++) {
-        deletes.push(this.redis.delAsync(...chunkedKeysToDelete[i]))
+        deletes.push(
+          this.redis.delAsync(...chunkedKeysToDelete[i])
+            .then(()=>this.redis.sremAsync(s, ...chunkedKeysToDelete[i]))
+        )
       }
     }
-    deletes.push(this.redis.delAsync(s))
 
     await Promise.all(deletes)
 
@@ -189,6 +191,7 @@ class FlyRedis {
   public ttlAsync: (key: string) => Promise<number>
   public delAsync: (...keys: string[]) => Promise<boolean>
   public saddAsync: (key: string, values: string | string[]) => Promise<boolean>
+  public sremAsync: (key: string, ...members: string[]) => Promise<number>
   public sscanAsync: (key: string, cursor: number) => Promise<[string, string[]]>
   public smembersAsync: (key: string) => Promise<string[] | undefined>
   public sismemberAsync: (key: string, member: string) => Promise<boolean>
@@ -204,6 +207,7 @@ class FlyRedis {
     this.ttlAsync = p(redis.ttl).bind(redis)
     this.delAsync = p(redis.del).bind(redis) as any
     this.saddAsync = p(redis.sadd).bind(redis) as any
+    this.sremAsync = p(redis.srem).bind(redis)
     this.sismemberAsync = p(redis.sismember).bind(redis) as any
     this.smembersAsync = p(redis.smembers).bind(redis)
     this.sscanAsync = this.sscanShim.bind(this) as any
