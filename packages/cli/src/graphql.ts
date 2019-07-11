@@ -1,13 +1,5 @@
-import ApolloClient from "apollo-client"
 import fetch from "node-fetch"
-
-import { createHttpLink } from "apollo-link-http"
-import { InMemoryCache } from "apollo-cache-inmemory"
-import { onError } from "apollo-link-error"
-import { ApolloLink } from "apollo-link"
 import { UnauthorizedError, MissingAuthTokenError } from "./errors"
-import Command from "@oclif/command"
-const { createUploadLink } = require("apollo-upload-client")
 import * as FormData from "form-data"
 import * as fs from "fs"
 
@@ -27,7 +19,7 @@ interface MutateOptions {
 
 interface QueryOptions {
   query: string
-  variables: any
+  variables?: { [key: string]: any }
 }
 
 export class GraphQLClient {
@@ -47,7 +39,12 @@ export class GraphQLClient {
     const { query, variables } = options
 
     const resp = await fetch(this.uri, {
-      headers: this.headers,
+      headers: Object.assign(
+        {
+          "Content-Type": "application/json"
+        },
+        this.headers
+      ),
       method: "POST",
       body: JSON.stringify({ query, variables })
     })
@@ -87,12 +84,43 @@ export class GraphQLClient {
       body
     })
 
+    console.log("Response", { resp })
+
     if (resp.status === 401) {
       throw new UnauthorizedError()
     }
+    if (resp.status >= 500) {
+      throw new ServerError(await resp.text())
+    }
 
-    console.log("status", resp.status)
+    const data = await resp.json()
 
-    return await resp.json()
+    if (data.errors && data.errors.length > 0) {
+      throw new ClientError(data.errors[0])
+    }
+
+    return data
+  }
+}
+
+interface ErrorData {
+  message: string
+  extensions: any
+}
+
+export class ClientError extends Error {
+  public readonly errorData: ErrorData
+  public readonly code: string
+
+  constructor(error: ErrorData) {
+    super(error.message)
+    this.errorData = error
+    this.code = error.extensions.code
+  }
+}
+
+export class ServerError extends Error {
+  constructor(message: string) {
+    super(message)
   }
 }

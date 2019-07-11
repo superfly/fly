@@ -1,7 +1,6 @@
 import { FlyCommand } from "../../base-command"
 import * as sharedFlags from "../../flags"
 import { inspect } from "util"
-import gql from "graphql-tag"
 
 export default class Status extends FlyCommand {
   static description = "App status"
@@ -30,7 +29,7 @@ export default class Status extends FlyCommand {
   }
 }
 
-const APP_STATUS = gql`
+const APP_STATUS = `
   query($appId: String!) {
     app(id: $appId) {
       id

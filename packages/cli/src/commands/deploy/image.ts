@@ -1,7 +1,6 @@
 import { FlyCommand } from "../../base-command"
 import * as sharedFlags from "../../flags"
 import { inspect } from "util"
-import gql from "graphql-tag"
 
 export default class Deploy extends FlyCommand {
   static description = "Deploy your local Fly app"
@@ -23,7 +22,7 @@ export default class Deploy extends FlyCommand {
     const appName = this.getAppName({ ...flags })
 
     const resp = await client.mutate({
-      mutation: DEPLOY_IMAGE,
+      query: DEPLOY_IMAGE,
       variables: {
         input: {
           appId: appName,
@@ -42,7 +41,7 @@ export default class Deploy extends FlyCommand {
   }
 }
 
-const DEPLOY_IMAGE = gql`
+const DEPLOY_IMAGE = `
   mutation($input: DeployImageInput!) {
     deployImage(input: $input) {
       deployment {

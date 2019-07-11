@@ -4,7 +4,6 @@ import { isValidAppName, fullAppMatch } from "../../util"
 import { existsSync, writeFileSync } from "fs"
 import * as sharedFlags from "../../flags"
 import { flags as cmdFlags } from "@oclif/parser"
-import gql from "graphql-tag"
 import inquirer = require("inquirer")
 import { inspect } from "util"
 import { cli } from "cli-ux"
@@ -29,6 +28,8 @@ export default class Create extends FlyCommand {
       query: LIST_ORGANIZATIONS
     })
 
+    console.log(orgResp)
+
     const organizations = orgResp.data.organizations.nodes.map((option: any) => (option.value = option.id) && option)
 
     const answers: any = await inquirer.prompt([
@@ -49,7 +50,7 @@ export default class Create extends FlyCommand {
     cli.action.start("creating app")
 
     const resp = await client.mutate({
-      mutation: CREATE_APP,
+      query: CREATE_APP,
       variables: {
         input: { ...answers, runtime: flags.container ? "FIRECRACKER" : "NODEPROXY" }
       }
@@ -84,7 +85,7 @@ function validateAppName(name?: string) {
   return true
 }
 
-const LIST_ORGANIZATIONS = gql`
+const LIST_ORGANIZATIONS = `
   {
     organizations {
       nodes {
@@ -97,7 +98,7 @@ const LIST_ORGANIZATIONS = gql`
   }
 `
 
-const CREATE_APP = gql`
+const CREATE_APP = `
   mutation($input: CreateAppInput!) {
     createApp(input: $input) {
       app {
