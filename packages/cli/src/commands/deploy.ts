@@ -5,6 +5,8 @@ import { FileAppStore } from "@fly/core"
 import { createReleaseTarball } from "@fly/build"
 import * as path from "path"
 import * as fs from "fs"
+import gql from "graphql-tag"
+import { inspect } from "util"
 
 export default class Deploy extends FlyCommand {
   static description = "Deploy your local Fly app"
@@ -20,10 +22,10 @@ export default class Deploy extends FlyCommand {
   async run() {
     const { args, flags } = this.parse(Deploy)
 
-    const API = this.apiClient(flags)
     const env = flags.env!
     const cwd = args.path || process.cwd()
-    const appName = this.getAppName({ cwd, ...flags })
+    const client = this.gqlClient(flags)
+    const appName = this.getAppName({ ...flags })
 
     this.log("Deploying", appName, `(env: ${env})`)
 
@@ -34,22 +36,65 @@ export default class Deploy extends FlyCommand {
     const tarball = await createReleaseTarball(outFile, appStore.manifest())
     const stream = fs.createReadStream(tarball.path)
 
-    const res = await API.post(`/api/v1/apps/${appName}/releases`, stream, {
-      params: {
-        sha1: tarball.digest,
-        env
+    const resp = await client.mutate({
+      query: DEPLOY_TARBALL,
+      variables: {
+        input: {
+          appId: appName,
+          tarball: null
+        }
       },
-      headers: {
-        "Content-Type": "application/x-tar",
-        "Content-Encoding": "gzip"
-      },
-      maxContentLength: 100 * 1024 * 1024,
-      timeout: 120 * 1000
+      attachments: { "variables.input.tarball": stream }
     })
 
-    processResponse(this, res, () => {
-      this.log(`Deploying v${res.data.data.attributes.version} globally @ https://${appName}.edgeapp.net`)
-      this.log(`App should be updated in a few seconds.`)
-    })
+    console.log(inspect(resp, { showHidden: true, depth: 10, colors: true }))
+
+    // const app = resp.data.deployImage.deployment.app
+
+    // if (app.ipAddresses.nodes.length > 0) {
+    //   this.log(`--> https://${app.ipAddresses.nodes[0].address}`)
+    // }
+
+    // const res = await API.post(`/api/v1/apps/${appName}/releases`, stream, {
+    //   params: {
+    //     sha1: tarball.digest,
+    //     env
+    //   },
+    //   headers: {
+    //     "Content-Type": "application/x-tar",
+    //     "Content-Encoding": "gzip"
+    //   },
+    //   maxContentLength: 100 * 1024 * 1024,
+    //   timeout: 120 * 1000
+    // })
+
+    // processResponse(this, res, () => {
+    //   this.log(`Deploying v${res.data.data.attributes.version} globally @ https://${appName}.edgeapp.net`)
+    //   this.log(`App should be updated in a few seconds.`)
+    // })
   }
 }
+
+const DEPLOY_TARBALL = `
+  mutation($input: DeployTarballInput!) {
+    deployTarball(input: $input) {
+      deployment {
+        id
+        app {
+          runtime
+          status
+          ipAddresses {
+            nodes {
+              address
+            }
+          }
+        }
+        status
+        currentPhase
+        release {
+          version
+        }
+      }
+    }
+  }
+`
