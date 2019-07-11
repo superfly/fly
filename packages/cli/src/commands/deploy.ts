@@ -5,7 +5,6 @@ import { FileAppStore } from "@fly/core"
 import { createReleaseTarball } from "@fly/build"
 import * as path from "path"
 import * as fs from "fs"
-import gql from "graphql-tag"
 import { inspect } from "util"
 
 export default class Deploy extends FlyCommand {

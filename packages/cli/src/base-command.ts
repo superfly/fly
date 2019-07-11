@@ -7,7 +7,7 @@ import { getSavedAccessToken } from "./credentials"
 import { apiClient } from "./api"
 import { FileAppStore } from "@fly/core"
 import { isValidAppName } from "./util"
-import { gqlClient } from "./graphql"
+import { gqlClient, ClientError, ServerError } from "./graphql"
 import { UnauthorizedError, MissingAuthTokenError } from "./errors"
 
 export abstract class FlyCommand extends Command {
@@ -78,6 +78,12 @@ export abstract class FlyCommand extends Command {
       return this.error(
         "API token not found. Provide one with the `token` flag, FLY_ACCESS_TOKEN variable, or by running `fly login`."
       )
+    }
+    if (err instanceof ClientError) {
+      return this.error(err.message)
+    }
+    if (err instanceof ServerError) {
+      return this.error(err.message)
     }
     if (err.networkError) {
       switch (err.networkError.statusCode) {
