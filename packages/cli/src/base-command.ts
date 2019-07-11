@@ -61,7 +61,7 @@ export abstract class FlyCommand extends Command {
   }
 
   protected gqlClient(flags?: { token?: string }) {
-    return gqlClient(this, this.apiToken(flags))
+    return gqlClient(this.apiToken(flags))
   }
 
   /**
