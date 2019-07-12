@@ -1,11 +1,9 @@
-import { FlyCommand } from "../../base-command"
-import * as sharedFlags from "../../flags"
+import { FlyCommand } from "../base-command"
+import * as sharedFlags from "../flags"
 import { inspect } from "util"
 
 export default class Status extends FlyCommand {
-  static description = "App status"
-
-  static hidden = true
+  static description = "Application status"
 
   public static flags = {
     app: sharedFlags.app(),
@@ -34,15 +32,20 @@ const APP_STATUS = `
     app(id: $appId) {
       id
       version
+      runtime
       status
-      ipAddresses {
-        nodes {
-          address
-        }
-      }
-      latestDeployment {
+      services {
+        id
+        name
         status
-        currentPhase
+        allocations {
+          id
+          name
+          status
+          region
+          createdAt
+          updatedAt
+        }
       }
     }
   }
