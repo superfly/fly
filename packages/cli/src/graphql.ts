@@ -1,4 +1,4 @@
-import fetch from "node-fetch"
+import fetch, { Response } from "node-fetch"
 import { UnauthorizedError, MissingAuthTokenError } from "./errors"
 import * as FormData from "form-data"
 import * as fs from "fs"
@@ -49,19 +49,7 @@ export class GraphQLClient {
       body: JSON.stringify({ query, variables })
     })
 
-    if (resp.status === 401) {
-      throw new UnauthorizedError()
-    }
-
-    console.log("status", resp.status)
-
-    const payload = await resp.json()
-
-    if (payload.errors && payload.errors.length > 0) {
-      throw new ClientError(payload.errors[0])
-    }
-
-    return payload
+    return await this.processResponse(resp)
   }
 
   public async mutate(options: MutateOptions) {
@@ -90,22 +78,28 @@ export class GraphQLClient {
       body
     })
 
-    console.log("Response", { resp })
+    return await this.processResponse(resp)
+  }
 
+  private async processResponse(resp: Response) {
     if (resp.status === 401) {
       throw new UnauthorizedError()
     }
-    if (resp.status >= 500) {
-      throw new ServerError(await resp.text())
+
+    const payload = await resp.json()
+
+    if (payload.errors) {
+      const error = payload.errors[0]
+      const code = error.extensions && error.extensions.code
+
+      if (code === "SERVER_ERROR") {
+        throw new ServerError(error.message)
+      } else {
+        throw new ClientError(error)
+      }
+    } else {
+      return payload
     }
-
-    const data = await resp.json()
-
-    if (data.errors && data.errors.length > 0) {
-      throw new ClientError(data.errors[0])
-    }
-
-    return data
   }
 }
 
