@@ -55,7 +55,13 @@ export class GraphQLClient {
 
     console.log("status", resp.status)
 
-    return await resp.json()
+    const payload = await resp.json()
+
+    if (payload.errors && payload.errors.length > 0) {
+      throw new ClientError(payload.errors[0])
+    }
+
+    return payload
   }
 
   public async mutate(options: MutateOptions) {
@@ -115,7 +121,7 @@ export class ClientError extends Error {
   constructor(error: ErrorData) {
     super(error.message)
     this.errorData = error
-    this.code = error.extensions.code
+    this.code = error.extensions && error.extensions.code
   }
 }
 
