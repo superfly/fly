@@ -17,7 +17,9 @@
 * [`fly releases`](#fly-releases)
 * [`fly secrets`](#fly-secrets)
 * [`fly secrets:set KEY [VALUE]`](#fly-secretsset-key-value)
+* [`fly secrets:unset KEY`](#fly-secretsunset-key)
 * [`fly server [PATH]`](#fly-server-path)
+* [`fly status`](#fly-status)
 * [`fly test [PATTERN]`](#fly-test-pattern)
 
 ## `fly apps`
@@ -32,7 +34,7 @@ OPTIONS
   --token=token  The api token to use. This will override the token created with `fly login` if present.
 ```
 
-_See code: [lib/commands/apps/index.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/apps/index.js)_
+_See code: [lib/commands/apps/index.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/apps/index.js)_
 
 ## `fly apps:create`
 
@@ -47,7 +49,7 @@ OPTIONS
   --token=token  The api token to use. This will override the token created with `fly login` if present.
 ```
 
-_See code: [lib/commands/apps/create.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/apps/create.js)_
+_See code: [lib/commands/apps/create.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/apps/create.js)_
 
 ## `fly apps:delete`
 
@@ -63,7 +65,7 @@ OPTIONS
   --token=token  The api token to use. This will override the token created with `fly login` if present.
 ```
 
-_See code: [lib/commands/apps/delete.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/apps/delete.js)_
+_See code: [lib/commands/apps/delete.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/apps/delete.js)_
 
 ## `fly apps:move`
 
@@ -79,7 +81,7 @@ OPTIONS
   --token=token  The api token to use. This will override the token created with `fly login` if present.
 ```
 
-_See code: [lib/commands/apps/move.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/apps/move.js)_
+_See code: [lib/commands/apps/move.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/apps/move.js)_
 
 ## `fly build [PATH]`
 
@@ -98,7 +100,7 @@ OPTIONS
   --env=env            [default: production] environment to use for commands
 ```
 
-_See code: [lib/commands/build.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/build.js)_
+_See code: [lib/commands/build.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/build.js)_
 
 ## `fly deploy [PATH]`
 
@@ -117,7 +119,7 @@ OPTIONS
   --token=token  The api token to use. This will override the token created with `fly login` if present.
 ```
 
-_See code: [lib/commands/deploy.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/deploy.js)_
+_See code: [lib/commands/deploy.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/deploy.js)_
 
 ## `fly help [COMMAND]`
 
@@ -150,7 +152,7 @@ OPTIONS
   --token=token  The api token to use. This will override the token created with `fly login` if present.
 ```
 
-_See code: [lib/commands/hostnames/index.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/hostnames/index.js)_
+_See code: [lib/commands/hostnames/index.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/hostnames/index.js)_
 
 ## `fly hostnames:add HOSTNAME`
 
@@ -169,7 +171,7 @@ OPTIONS
   --token=token  The api token to use. This will override the token created with `fly login` if present.
 ```
 
-_See code: [lib/commands/hostnames/add.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/hostnames/add.js)_
+_See code: [lib/commands/hostnames/add.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/hostnames/add.js)_
 
 ## `fly login`
 
@@ -180,7 +182,7 @@ USAGE
   $ fly login
 ```
 
-_See code: [lib/commands/login.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/login.js)_
+_See code: [lib/commands/login.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/login.js)_
 
 ## `fly logs`
 
@@ -191,12 +193,14 @@ USAGE
   $ fly logs
 
 OPTIONS
-  -a, --app=app  The app to run commands against
-  --env=env      [default: development] environment to use for commands
-  --token=token  The api token to use. This will override the token created with `fly login` if present.
+  -a, --app=app            The app to run commands against
+  -i, --instance=instance  Instance ID to filter
+  -r, --region=region      Region to filter
+  --env=env                [default: production] environment to use for commands
+  --token=token            The api token to use. This will override the token created with `fly login` if present.
 ```
 
-_See code: [lib/commands/logs.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/logs.js)_
+_See code: [lib/commands/logs.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/logs.js)_
 
 ## `fly new NAME`
 
@@ -213,7 +217,7 @@ OPTIONS
   -t, --template=template  the template to use
 ```
 
-_See code: [lib/commands/new.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/new.js)_
+_See code: [lib/commands/new.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/new.js)_
 
 ## `fly orgs`
 
@@ -227,7 +231,7 @@ OPTIONS
   --token=token  The api token to use. This will override the token created with `fly login` if present.
 ```
 
-_See code: [lib/commands/orgs.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/orgs.js)_
+_See code: [lib/commands/orgs.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/orgs.js)_
 
 ## `fly releases`
 
@@ -239,11 +243,11 @@ USAGE
 
 OPTIONS
   -a, --app=app  The app to run commands against
-  --env=env      [default: development] environment to use for commands
+  --env=env      [default: production] environment to use for commands
   --token=token  The api token to use. This will override the token created with `fly login` if present.
 ```
 
-_See code: [lib/commands/releases.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/releases.js)_
+_See code: [lib/commands/releases.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/releases.js)_
 
 ## `fly secrets`
 
@@ -254,7 +258,7 @@ USAGE
   $ fly secrets
 ```
 
-_See code: [lib/commands/secrets/index.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/secrets/index.js)_
+_See code: [lib/commands/secrets/index.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/secrets/index.js)_
 
 ## `fly secrets:set KEY [VALUE]`
 
@@ -270,12 +274,31 @@ ARGUMENTS
 
 OPTIONS
   -a, --app=app          The app to run commands against
-  --env=env              [default: development] environment to use for commands
+  --env=env              [default: production] environment to use for commands
   --from-file=from-file  use a file's contents as the secret value
   --token=token          The api token to use. This will override the token created with `fly login` if present.
 ```
 
-_See code: [lib/commands/secrets/set.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/secrets/set.js)_
+_See code: [lib/commands/secrets/set.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/secrets/set.js)_
+
+## `fly secrets:unset KEY`
+
+remove secrets from an app
+
+```
+USAGE
+  $ fly secrets:unset KEY
+
+ARGUMENTS
+  KEY  name of the secret
+
+OPTIONS
+  -a, --app=app  The app to run commands against
+  --env=env      [default: production] environment to use for commands
+  --token=token  The api token to use. This will override the token created with `fly login` if present.
+```
+
+_See code: [lib/commands/secrets/unset.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/secrets/unset.js)_
 
 ## `fly server [PATH]`
 
@@ -296,7 +319,20 @@ OPTIONS
   --[no-]watch     reload when source or configs change
 ```
 
-_See code: [lib/commands/server.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/server.js)_
+_See code: [lib/commands/server.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/server.js)_
+
+## `fly status`
+
+Application status
+
+```
+USAGE
+  $ fly status
+
+OPTIONS
+  -a, --app=app  The app to run commands against
+  --token=token  The api token to use. This will override the token created with `fly login` if present.
+```
 
 ## `fly test [PATTERN]`
 
@@ -316,5 +352,5 @@ EXAMPLES
   fly test test/these/** !but_not_this.js
 ```
 
-_See code: [lib/commands/test.js](https://github.com/superfly/fly/blob/v0.54.1-api-v2.0/lib/commands/test.js)_
+_See code: [lib/commands/test.js](https://github.com/superfly/fly/blob/v0.54.1-pre.0/lib/commands/test.js)_
 <!-- commandsstop -->
