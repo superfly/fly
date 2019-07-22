@@ -1,6 +1,7 @@
 import { FlyCommand } from "../../base-command"
 import * as sharedFlags from "../../flags"
 import { inspect } from "util"
+import { cli } from "cli-ux"
 
 export default class Deploy extends FlyCommand {
   static description = "Deploy your local Fly app"
@@ -21,6 +22,8 @@ export default class Deploy extends FlyCommand {
     const client = this.gqlClient(flags)
     const appName = this.getAppName({ ...flags })
 
+    cli.action.start("deploying image")
+
     const resp = await client.mutate({
       query: DEPLOY_IMAGE,
       variables: {
@@ -31,13 +34,13 @@ export default class Deploy extends FlyCommand {
       }
     })
 
-    console.log(inspect(resp, { showHidden: true, depth: 10, colors: true }))
+    cli.action.stop()
+
+    // console.log(inspect(resp, { showHidden: true, depth: 10, colors: true }))
 
     const app = resp.data.deployImage.deployment.app
 
-    if (app.ipAddresses.nodes.length > 0) {
-      this.log(`--> https://${app.ipAddresses.nodes[0].address}`)
-    }
+    this.log(`--> ${app.appUrl}`)
   }
 }
 
@@ -49,11 +52,7 @@ const DEPLOY_IMAGE = `
         app {
           runtime
           status
-          ipAddresses {
-            nodes {
-              address
-            }
-          }
+          appUrl
         }
         status
         currentPhase
