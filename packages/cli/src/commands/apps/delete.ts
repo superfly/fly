@@ -7,7 +7,7 @@ export default class Delete extends FlyCommand {
   static description = `delete an app`
 
   public static flags = {
-    env: sharedFlags.env({ default: "production" }),
+    env: sharedFlags.env(),
     app: sharedFlags.app(),
     token: sharedFlags.apiToken()
   }

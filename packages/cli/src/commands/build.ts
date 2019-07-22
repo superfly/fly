@@ -19,7 +19,7 @@ export default class Build extends FlyCommand {
   ]
 
   public static flags = {
-    env: sharedFlags.env({ default: "production" }),
+    env: sharedFlags.env(),
     app: sharedFlags.app(),
     output: cmdFlags.string({
       description: "Path to output file",

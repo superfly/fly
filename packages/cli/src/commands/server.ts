@@ -12,7 +12,7 @@ export default class ServerCmd extends FlyCommand {
   public static description = "run the local fly development server"
 
   public static flags = {
-    env: sharedFlags.env(),
+    env: sharedFlags.env("development"),
     port: cmdFlags.integer({
       char: "p",
       description: "Port to bind to",

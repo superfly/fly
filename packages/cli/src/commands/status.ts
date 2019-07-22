@@ -14,7 +14,7 @@ export default class Status extends FlyCommand {
     const { args, flags } = this.parse(Status)
 
     const client = this.gqlClient(flags)
-    const appName = this.getAppName({ ...flags })
+    const appName = this.getAppName(flags)
 
     const resp = await client.query({
       query: APP_STATUS,

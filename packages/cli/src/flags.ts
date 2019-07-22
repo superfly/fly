@@ -1,11 +1,14 @@
 import { flags } from "@oclif/command"
-import { getSavedAccessToken } from "./credentials"
 
-export const env = flags.build({
-  name: "env",
-  description: "environment to use for commands",
-  default: () => process.env.FLY_ENV || process.env.NODE_ENV || "development"
-})
+export function env(fallback = "production") {
+  return flags.build({
+    name: "env",
+    description: "environment to use for commands",
+    default: () => {
+      return process.env.FLY_ENV || fallback
+    }
+  })()
+}
 
 export const app = flags.build({
   name: "app",
