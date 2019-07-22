@@ -14,12 +14,12 @@ export default class Logs extends FlyCommand {
     instance: cmdFlags.string({
       description: "Instance ID to filter",
       char: "i",
-      required: false,
+      required: false
     }),
     region: cmdFlags.string({
       description: "Region to filter",
       char: "r",
-      required: false,
+      required: false
     })
   }
 
@@ -30,10 +30,11 @@ export default class Logs extends FlyCommand {
     const appName = this.getAppName(flags)
 
     const opts: LogOptions = {}
-    if (flags.region)
+    if (flags.region) {
       opts.region = flags.region
-    else if (flags.instance)
+    } else if (flags.instance) {
       opts.instance = flags.instance
+    }
 
     await this.continuouslyGetLogs(API, appName, opts)
   }
@@ -95,19 +96,22 @@ async function showLogs(logs: Log[]) {
     if (instance) {
       logLine += ` ${instance}`
     }
-    logLine += ` ${chalk.green(region)} [${levelColor(lvl)}] ${
-      l.attributes.message
-    }`
+    logLine += ` ${chalk.green(region)} [${levelColor(lvl)}] ${l.attributes.message}`
     console.log(logLine)
   }
 }
 
 interface LogOptions {
-  region?: string,
-  instance?: string,
+  region?: string
+  instance?: string
 }
 
-async function getLogs(API: AxiosInstance, appName: string, nextToken: string | undefined, opts?: LogOptions): Promise<[any[], string | undefined]> {
+async function getLogs(
+  API: AxiosInstance,
+  appName: string,
+  nextToken: string | undefined,
+  opts?: LogOptions
+): Promise<[any[], string | undefined]> {
   const res = await API.get(`/api/v1/apps/${appName}/logs`, {
     params: Object.assign({}, opts, { next_token: nextToken })
   })

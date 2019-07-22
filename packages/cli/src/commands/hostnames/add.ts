@@ -6,7 +6,7 @@ export default class HostnamesAdd extends FlyCommand {
   public static description = "add hostnames to an app"
 
   public static flags = {
-    env: sharedFlags.env({ default: "production" }),
+    env: sharedFlags.env(),
     app: sharedFlags.app(),
     token: sharedFlags.apiToken()
   }

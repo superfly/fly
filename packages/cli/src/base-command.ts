@@ -30,18 +30,18 @@ export abstract class FlyCommand extends Command {
   }
 
   protected getAppName(flags: { app?: string; cwd?: string; env?: string }) {
-    let { app, cwd } = flags
+    let { app, cwd, env } = flags
 
     if (!cwd) {
       cwd = process.cwd()
     }
 
-    if (!app) {
-      if (!flags.env) {
-        return this.error("--env option or FLY_ENV variable needs to be set.")
-      }
+    if (!env) {
+      env = "production"
+    }
 
-      const appStore = new FileAppStore({ appDir: cwd, env: flags.env })
+    if (!app) {
+      const appStore = new FileAppStore({ appDir: cwd, env })
       app = appStore.app.name
     }
 

@@ -10,7 +10,7 @@ export default class Deploy extends FlyCommand {
   static hidden = true
 
   public static flags = {
-    env: sharedFlags.env({ default: "production" }),
+    env: sharedFlags.env(),
     app: sharedFlags.app(),
     token: sharedFlags.apiToken()
   }

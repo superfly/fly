@@ -8,7 +8,7 @@ export default class Move extends FlyCommand {
   static description = `move an new app to another organization`
 
   public static flags = {
-    env: sharedFlags.env({ default: "production" }),
+    env: sharedFlags.env(),
     app: sharedFlags.app(),
     token: sharedFlags.apiToken()
   }
