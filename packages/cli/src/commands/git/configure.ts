@@ -9,7 +9,7 @@ export default class Configure extends FlyCommand {
   public static description = "configure remote and credentials for git deployments"
 
   public static flags = {
-    env: sharedFlags.env({ default: "production" }),
+    env: sharedFlags.env(),
     app: sharedFlags.app(),
     token: sharedFlags.apiToken()
   }
