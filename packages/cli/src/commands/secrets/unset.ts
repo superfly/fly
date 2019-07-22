@@ -3,6 +3,7 @@ import { processResponse } from "../../api"
 import * as sharedFlags from "../../flags"
 import { flags as oclifFlags } from "@oclif/command"
 import { inspect } from "util"
+import { cli } from "cli-ux"
 
 export default class SecretsUnset extends FlyCommand {
   public static description = "remove secrets from an app"
@@ -22,6 +23,8 @@ export default class SecretsUnset extends FlyCommand {
     const client = this.gqlClient(flags)
     const key = args.key
 
+    cli.action.start("unsetting secret")
+
     const resp = await client.mutate({
       query: MUTATION,
       variables: {
@@ -32,7 +35,7 @@ export default class SecretsUnset extends FlyCommand {
       }
     })
 
-    console.log(inspect(resp, { showHidden: true, depth: 10, colors: true }))
+    cli.action.stop()
   }
 }
 
@@ -41,17 +44,6 @@ const MUTATION = `
     unsetSecrets(input: $input) {
       deployment {
         id
-        app {
-          runtime
-          status
-          ipAddresses {
-            nodes {
-              address
-            }
-          }
-        }
-        status
-        currentPhase
       }
     }
   }

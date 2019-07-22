@@ -15,33 +15,57 @@ export default class Releases extends FlyCommand {
   public async run() {
     const { flags } = this.parse(Releases)
 
-    const API = this.apiClient(flags)
+    const client = this.gqlClient(flags)
     const appName = this.getAppName(flags)
 
-    const res = await API.get(`/api/v1/apps/${appName}/releases`)
-    processResponse(this, res, () => {
-      if (res.data.data.length === 0) {
-        return this.log(`No releases for ${appName} yet.`)
+    const resp = await client.query({
+      query: RELEASES,
+      variables: {
+        appId: appName
       }
+    })
 
-      cli.table(res.data.data, {
-        version: {
-          header: "Version",
-          get: (row: any) => `v${row.attributes.version}`
-        },
-        reason: {
-          header: "Reason",
-          get: (row: any) => row.attributes.reason
-        },
-        author: {
-          header: "Author",
-          get: (row: any) => row.attributes.author
-        },
-        date: {
-          header: "Date",
-          get: (row: any) => row.attributes.created_at
-        }
-      })
+    const { app } = resp.data
+
+    cli.table(app.releases.nodes, {
+      version: {
+        get: (row: any) => `v${row.version}`
+      },
+      reason: {
+        get: (row: any) => row.deployment.reason
+      },
+      description: {
+        get: (row: any) => row.deployment.description
+      },
+      user: {
+        get: (row: any) => row.deployment.user.email
+      },
+      date: {
+        get: (row: any) => row.createdAt
+      }
     })
   }
 }
+
+const RELEASES = `
+  query($appId: String!) {
+    app(id: $appId) {
+      id
+      name
+      releases {
+        nodes {
+          version
+          createdAt
+          deployment {
+            reason
+            trigger
+            description
+            user {
+              email
+            }
+          }
+        }
+      }
+    }
+  }
+`

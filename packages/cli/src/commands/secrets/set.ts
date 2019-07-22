@@ -4,6 +4,7 @@ import * as sharedFlags from "../../flags"
 import { flags as oclifFlags } from "@oclif/command"
 import { readFileSync } from "fs"
 import { inspect } from "util"
+import { cli } from "cli-ux"
 
 export default class SecretsSet extends FlyCommand {
   public static description = "add secrets to an app"
@@ -35,6 +36,8 @@ export default class SecretsSet extends FlyCommand {
       return this.error("Either a value or --from-file needs to be provided.")
     }
 
+    cli.action.start("setting secret")
+
     const resp = await client.mutate({
       query: MUTATION,
       variables: {
@@ -50,7 +53,7 @@ export default class SecretsSet extends FlyCommand {
       }
     })
 
-    console.log(inspect(resp, { showHidden: true, depth: 10, colors: true }))
+    cli.action.stop()
   }
 }
 
@@ -59,17 +62,6 @@ const MUTATION = `
     setSecrets(input: $input) {
       deployment {
         id
-        app {
-          runtime
-          status
-          ipAddresses {
-            nodes {
-              address
-            }
-          }
-        }
-        status
-        currentPhase
       }
     }
   }
