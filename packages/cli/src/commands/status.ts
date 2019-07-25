@@ -3,6 +3,7 @@ import * as sharedFlags from "../flags"
 import { inspect } from "util"
 import { PrintKVList } from "../ui"
 import { cli } from "cli-ux"
+import { formatRuntime } from "../util"
 
 export default class Status extends FlyCommand {
   static description = "Application status"
@@ -31,9 +32,9 @@ export default class Status extends FlyCommand {
       Name: app.name,
       Owner: app.organization.slug,
       Version: app.version,
-      Runtime: app.runtime,
+      Runtime: formatRuntime(app.runtime),
       Status: app.status,
-      "App URL": app.appUrl
+      "App URL": app.appUrl || "N/A"
     })
 
     if (app.services.length > 0) {
