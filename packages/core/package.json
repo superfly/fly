@@ -1,6 +1,6 @@
 {
     "name": "@fly/core",
-    "version": "0.54.1-pre.0",
+    "version": "0.54.1",
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
