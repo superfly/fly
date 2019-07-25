@@ -1,6 +1,6 @@
 {
   "name": "@fly/cli",
-  "version": "0.54.1",
+  "version": "0.54.2",
   "description": "fly cli",
   "homepage": "https://github.com/superfly/fly#readme",
   "license": "Apache-2.0",

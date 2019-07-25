@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.54.2](https://github.com/superfly/fly/compare/v0.54.1...v0.54.2) (2019-07-25)
+
+**Note:** Version bump only for package @fly/cli
+
+
+
+
+
 ## [0.54.1](https://github.com/superfly/fly/compare/v0.54.1-pre.0...v0.54.1) (2019-07-25)
 
 **Note:** Version bump only for package @fly/cli
