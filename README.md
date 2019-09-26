@@ -20,8 +20,6 @@ You can [use it locally](#hello-world) for development and testing, and [deploy 
 
 You can use Fly to build HTTP load balancers, caching services, etc, etc. Edge Applications are typically built to replace or augment infrastructure that runs between web apps and users.
 
-![edge ascci](https://fly.io/articles/content/images/2018/08/edge-ascii@2x.png)
-
 This in-between is a great place to solve certain categories of problems. If you need to solve one of these, you might want to build an Edge Application:
 
 * A/B testing at the load balancer layer
