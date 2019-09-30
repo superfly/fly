@@ -8,5 +8,5 @@ curl \
   -XPOST -u "$GITHUB_AUTH" \
   -H "Accept: application/vnd.github.everest-preview+json" \
   -H "Content-Type: application/json" \
-  https://api.github.com/repos/superfly/homebrew-brew/dispatches \
+  https://api.github.com/repos/superfly/homebrew-tap/dispatches \
   --data '{"event_type": "release"}'
