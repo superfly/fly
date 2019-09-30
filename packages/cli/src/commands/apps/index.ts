@@ -17,7 +17,8 @@ export default class AppsList extends FlyCommand {
 
     const res = await API.get("/api/v1/apps")
     processResponse(this, res, () => {
-      cli.table(res.data.data, {
+      const apps = res.data.data.filter((app: any) => app.type === "nodeproxy_apps")
+      cli.table(apps, {
         org: {
           header: "Organization",
           get: (row: any) => row.attributes.org

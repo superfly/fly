@@ -13,10 +13,7 @@ export default class Create extends FlyCommand {
 
   public static flags = {
     token: sharedFlags.apiToken(),
-    app: sharedFlags.app(),
-    container: cmdFlags.boolean({
-      hidden: true
-    })
+    app: sharedFlags.app()
   }
 
   public async run() {
@@ -52,7 +49,7 @@ export default class Create extends FlyCommand {
     const resp = await client.mutate({
       query: CREATE_APP,
       variables: {
-        input: { ...answers, runtime: flags.container ? "FIRECRACKER" : "NODEPROXY" }
+        input: { ...answers, runtime: "NODEPROXY" }
       }
     })
 
