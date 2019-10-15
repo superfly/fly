@@ -31,14 +31,11 @@ export default class Releases extends FlyCommand {
       version: {
         get: (row: any) => `v${row.version}`
       },
-      reason: {
-        get: (row: any) => row.deployment.reason
-      },
       description: {
-        get: (row: any) => row.deployment.description
+        get: (row: any) => row.description
       },
       user: {
-        get: (row: any) => row.deployment.user.email
+        get: (row: any) => row.user.email
       },
       date: {
         get: (row: any) => row.createdAt
@@ -56,13 +53,9 @@ const RELEASES = `
         nodes {
           version
           createdAt
-          deployment {
-            reason
-            trigger
-            description
-            user {
-              email
-            }
+          description
+          user {
+            email
           }
         }
       }
