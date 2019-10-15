@@ -3,7 +3,7 @@
     "packages/*",
     "tests/*"
   ],
-  "version": "0.54.3",
+  "version": "0.54.4",
   "npmClient": "yarn",
   "useWorkspaces": true,
   "command": {
