@@ -60,8 +60,8 @@ export default class SecretsSet extends FlyCommand {
 const MUTATION = `
   mutation($input: SetSecretsInput!) {
     setSecrets(input: $input) {
-      deployment {
-        id
+      release {
+        version
       }
     }
   }
