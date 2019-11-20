@@ -1,21 +1,22 @@
-import { App, FileAppStore } from "../src"
+import { App } from "@fly/core"
+import { DevAppStore } from "../src/dev"
 
 describe("FileAppStore initialization", () => {
   test("invalid path", () => {
-    expect(() => new FileAppStore({ appDir: "badpath", env: "test" })).toThrowError(/Could not find path/)
+    expect(() => new DevAppStore({ appDir: "badpath", env: "test" })).toThrowError(/Could not find path/)
   })
 
   test("no code at path", async () => {
-    expect(new FileAppStore({ appDir: __dirname, env: "test" }).build()).rejects.toMatch(/Entry module not found/i)
+    expect(new DevAppStore({ appDir: __dirname, env: "test" }).build()).rejects.toMatch(/Entry module not found/i)
   })
 
   test("app with no config", () => {
-    const store = new FileAppStore({ appDir: __dirname + "/fixtures/apps/no-config", env: "test" })
+    const store = new DevAppStore({ appDir: __dirname + "/fixtures/apps/no-config", env: "test" })
     expect(store.release.config).toEqual({})
   })
 
   test("secret interpolation", () => {
-    const store = new FileAppStore({ appDir: __dirname + "/fixtures/apps/config-and-secrets", env: "test" })
+    const store = new DevAppStore({ appDir: __dirname + "/fixtures/apps/config-and-secrets", env: "test" })
     expect(new App(store.release).config).toEqual({
       option_a: "val_a",
       password: "sekret"
@@ -23,7 +24,7 @@ describe("FileAppStore initialization", () => {
   })
 
   test("picks config environment", () => {
-    const store = new FileAppStore({
+    const store = new DevAppStore({
       appDir: __dirname + "/fixtures/apps/config-multi-env",
       env: "stage"
     })

@@ -8,11 +8,11 @@ export { Bridge } from "./bridge/bridge"
 export { Trace } from "./trace"
 import * as ivm from "isolated-vm"
 export { ivm }
-export { FileAppStore, FileAppStoreOptions } from "./file_app_store"
 export { LocalFileStore } from "./local_file_store"
-export { SQLiteDataStore } from "./sqlite_data_store"
+export { FileSystemBlobStore } from "./fs_blob_store"
 
 export { Runtime } from "./runtime"
+export { LocalRuntime } from "./local_runtime"
 
 export { streams, StreamInfo } from "./stream_manager"
 

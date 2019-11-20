@@ -6,15 +6,12 @@ import * as httpUtils from "./utils/http"
 import { Writable } from "stream"
 import { App } from "./app"
 
-import { FileAppStore } from "./file_app_store"
-import { Bridge } from "./bridge/bridge"
-import { LocalFileStore } from "./local_file_store"
+import { AppStore } from "./app_store"
+import { Bridge, BridgeOptions } from "./bridge/bridge"
 import { randomBytes } from "crypto"
 import { LocalRuntime } from "./local_runtime"
 import { Runtime } from "./runtime"
-import { SQLiteDataStore } from "./sqlite_data_store"
 import { streamManager } from "./stream_manager"
-import { FileSystemBlobStore } from "./fs_blob_store"
 import { formatDuration } from "./utils/formatting"
 
 const hopHeaders = [
@@ -48,8 +45,8 @@ declare module "http" {
 
 export interface ServerOptions {
   env: string
-  appStore: FileAppStore
-  bridge?: Bridge
+  appStore: AppStore
+  bridgeOptions?: BridgeOptions
   inspect?: boolean
   monitorFrequency?: number
 }
@@ -64,23 +61,22 @@ export class Server extends http.Server {
 
   public bridge: Bridge
   public runtime: LocalRuntime
-  public appStore: FileAppStore
+  public appStore: AppStore
 
   constructor(options: ServerOptions) {
     super()
     this.options = options
     this.appStore = options.appStore
-    this.bridge =
-      options.bridge ||
-      new Bridge({
-        fileStore: new LocalFileStore(this.appStore.appDir),
-        dataStore: new SQLiteDataStore(this.appStore.app.name, options.env),
-        blobStore: new FileSystemBlobStore()
-      })
+    this.bridge = new Bridge(options.bridgeOptions)
     this.runtime = new LocalRuntime(this.appStore.app, this.bridge, {
       inspect: !!options.inspect,
       monitorFrequency: options.monitorFrequency
     })
+    console.log("Cache Store Adapter: " + this.bridge.cacheStore.constructor.name)
+    console.log("Data Store Adapter: " + (this.bridge.dataStore ? this.bridge.dataStore.constructor.name : "none"))
+    console.log("File Store Adapter: " + (this.bridge.fileStore ? this.bridge.fileStore.constructor.name : "none"))
+    console.log("Blob Store Adapter: " + (this.bridge.blobStore ? this.bridge.blobStore.constructor.name : "none"))
+
     this.on("request", this.handleRequest.bind(this))
     this.on("listening", () => {
       const addr = this.address()
