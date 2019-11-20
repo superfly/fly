@@ -18,7 +18,10 @@
     },
     {
       "path": "./packages/examples"
-    }
+    },
+    {
+      "path": "./packages/bundle-server"
+    },
   ],
   "include": [],
 }
