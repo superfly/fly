@@ -40,8 +40,5 @@
     "ts-node": "^8",
     "tslint": "^5"
   },
-  "private": true,
-  "engines": {
-    "node": ">=11.10.0"
-  }
+  "private": true
 }

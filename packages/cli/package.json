@@ -102,7 +102,7 @@
         }
       },
       "node": {
-        "version": "11.10.1",
+        "version": "10.17.0",
         "targets": [
           "darwin-x64",
           "linux-x64"
@@ -118,6 +118,6 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=11.10.0"
+    "node": ">=10.17.0"
   }
 }
