@@ -1234,7 +1234,7 @@
   dependencies:
     "@types/integer" "*"
 
-"@types/bluebird@*", "@types/bluebird@^3.5.1":
+"@types/bluebird@*":
   version "3.5.23"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.23.tgz#e805da976b76892b2b2e50eec29e84914c730670"
 
