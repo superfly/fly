@@ -3,7 +3,7 @@ import { ivm } from ".."
 import { registerBridge } from "."
 import { Bridge } from "./bridge"
 
-import { SourceMapConsumer, MappedPosition, Position } from "source-map"
+import { SourceMapConsumer, MappedPosition, Position, NullableMappedPosition } from "source-map"
 import { Runtime } from "../runtime"
 import { v8DistroMapPath } from "../v8env"
 
@@ -13,24 +13,25 @@ const smConsumers: { [source: string]: SourceMapConsumer } = {}
 
 registerBridge(
   "SourceMapConsumer.originalPositionFor",
-  (rt: Runtime, bridge: Bridge, source: string, position: Position): Promise<ivm.Copy<MappedPosition>> => {
-    let mp: MappedPosition
+  async (rt: Runtime, bridge: Bridge, source: string, position: Position) => {
+    let mp: NullableMappedPosition
     if (source === "dist/v8env.js") {
-      mp = v8EnvSourceMapConsumer.originalPositionFor(position)
+      mp = (await v8EnvSourceMapConsumer).originalPositionFor(position)
     } else {
       if (rt.app.sourceMap) {
         const sourceKey = `${rt.app.name}:${rt.app.version}:${source}`
         try {
           const sm =
-            smConsumers[sourceKey] || (smConsumers[sourceKey] = new SourceMapConsumer(JSON.parse(rt.app.sourceMap)))
+            smConsumers[sourceKey] ||
+            (smConsumers[sourceKey] = await new SourceMapConsumer(JSON.parse(rt.app.sourceMap)))
           mp = sm.originalPositionFor(position)
         } catch (e) {
-          mp = Object.assign({}, position, { source })
+          mp = Object.assign({}, position, { source, name: null })
         }
       } else {
-        mp = Object.assign({}, position, { source })
+        mp = Object.assign({}, position, { source, name: null })
       }
     }
-    return Promise.resolve(new ivm.ExternalCopy(mp).copyInto({ release: true }))
+    return new ivm.ExternalCopy(mp).copyInto({ release: true })
   }
 )
