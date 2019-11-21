@@ -91,7 +91,7 @@
         }
       },
       "node": {
-        "version": "11.10.1",
+        "version": "12.13.1",
         "targets": [
           "darwin-x64",
           "linux-x64"
