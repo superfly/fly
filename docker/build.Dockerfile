@@ -1,7 +1,9 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE AS builder
 
-FROM mhart/alpine-node:11
+RUN node-prune
+
+FROM mhart/alpine-node:10
 
 WORKDIR /fly
 

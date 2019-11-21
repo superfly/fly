@@ -2,8 +2,9 @@ ARG BASE_IMAGE
 FROM $BASE_IMAGE AS builder
 
 RUN scripts/release/pack-bundle-server ./tmp/bundle-server
+RUN node-prune ./tmp/bundle-server
 
-FROM mhart/alpine-node:11
+FROM mhart/alpine-node:slim-10
 
 COPY --from=builder /src/tmp/bundle-server /fly
 

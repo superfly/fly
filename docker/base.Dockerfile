@@ -1,6 +1,7 @@
-FROM mhart/alpine-node:11 AS builder
+FROM mhart/alpine-node:10 AS builder
 
-RUN apk add python make build-base libexecinfo-dev libpng-dev bash
+RUN apk add python make build-base libexecinfo-dev libpng-dev bash curl
+RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash -s -- -b /usr/local/bin
 
 WORKDIR /src
 COPY package.json yarn.lock lerna.json ./
