@@ -9,6 +9,7 @@
     "outDir": "./lib",
     "lib": [
       "es2017",
+      "es2018.promise",
       "esnext.asynciterable"
     ]
   },
