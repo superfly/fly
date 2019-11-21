@@ -1,0 +1,20 @@
+# **
+# !packages/*/*.json
+# !packages/*/*.js
+# !packages/*/bin
+# !packages/*/src
+# !packages/*/tests
+# !packages/*/vendor
+# !scripts
+
+node_modules
+**/.fly
+**/node_modules
+**/tsconfig.tsbuildinfo
+packages/*/lib
+packages/*/dist
+# .git
+tmp
+artifacts
+.envrc
+docker

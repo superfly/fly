@@ -10,9 +10,11 @@
   },
   "files": [
     "/bin",
-    "/lib",
-    "/npm-shrinkwrap.json"
+    "/lib"
   ],
+  "bin": {
+    "fly-bundle-server": "./bin/run"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/superfly/fly"
@@ -27,18 +29,18 @@
   "dependencies": {
     "@fly/core": "0.54.1",
     "@fly/v8env": "0.54.0",
+    "fs-extra": "^5.0.0",
     "js-yaml": "^3.13.0",
     "mksuid": "0.0.3",
     "tslib": "^1"
   },
   "devDependencies": {
+    "@types/fs-extra": "^5.0.0",
     "@types/node": "^10",
     "ts-node": "^8",
     "tslint": "^5"
   },
-  "publishConfig": {
-    "access": "private"
-  },
+  "private": true,
   "engines": {
     "node": ">=11.10.0"
   }
