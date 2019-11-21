@@ -16,26 +16,17 @@
     "build:watch": "tsc -b -w -v ."
   },
   "dependencies": {
-    "@fly/build": "0.55.0-pre.0",
-    "@fly/examples": "0.50.0",
     "@fly/v8env": "0.55.0-pre.0",
-    "better-sqlite3": "^5.4.3",
-    "chokidar": "^3.2.1",
     "console-log-level": "^1.4.0",
-    "glob": "^7.1.2",
     "ioredis": "^4",
     "ioredis-mock": "^4",
     "isolated-vm": "2.0.1",
-    "js-yaml": "^3.10.0",
-    "mocha": "^4.0.1",
     "redis": "^2.8.0",
     "sharp": "^0.23.3",
     "source-map": "^0.7.3",
     "ws": "^4.0.0"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^5.4.0",
-    "@types/glob": "^5.0.35",
     "@types/ioredis": "^4",
     "@types/jest": "^24",
     "@types/js-yaml": "^3.10.1",

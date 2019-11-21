@@ -5,7 +5,7 @@ import * as Parser from "@oclif/parser"
 import { IFlag } from "@oclif/parser/lib/flags"
 import { getSavedAccessToken } from "./credentials"
 import { apiClient } from "./api"
-import { FileAppStore } from "@fly/core"
+import { DevAppStore } from "./dev"
 import { isValidAppName } from "./util"
 import { gqlClient, ClientError, ServerError } from "./graphql"
 import { UnauthorizedError, MissingAuthTokenError } from "./errors"
@@ -41,7 +41,7 @@ export abstract class FlyCommand extends Command {
     }
 
     if (!app) {
-      const appStore = new FileAppStore({ appDir: cwd, env })
+      const appStore = new DevAppStore({ appDir: cwd, env })
       app = appStore.app.name
     }
 

@@ -1,8 +1,7 @@
 import Database = require("better-sqlite3")
 import * as fs from "fs"
-import { DataStore, CollectionStore } from "./data_store"
-import log from "./log"
-import { Runtime } from "./runtime"
+import { DataStore, CollectionStore, Runtime } from "@fly/core"
+import log from "@fly/core/lib/log"
 import * as path from "path"
 
 export class Collection implements CollectionStore {

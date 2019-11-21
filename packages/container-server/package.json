@@ -1,0 +1,41 @@
+{
+  "name": "@fly/container-server",
+  "version": "0.54.5",
+  "description": "fly container server",
+  "homepage": "https://github.com/superfly/fly#readme",
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "/bin",
+    "/lib"
+  ],
+  "bin": {
+    "fly-container-server": "./bin/run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superfly/fly"
+  },
+  "scripts": {
+    "build": "tsc -b .",
+    "build:watch": "tsc -b -w -v ."
+  },
+  "bugs": {
+    "url": "https://github.com/superfly/fly/issues"
+  },
+  "dependencies": {
+    "@fly/core": "0.55.0-pre.0",
+    "@fly/v8env": "0.55.0-pre.0",
+    "js-yaml": "^3.13.0",
+    "mksuid": "0.0.3",
+    "tslib": "^1"
+  },
+  "devDependencies": {
+    "ts-node": "^8",
+    "tslint": "^5"
+  },
+  "private": true
+}

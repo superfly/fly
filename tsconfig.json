@@ -18,6 +18,9 @@
     },
     {
       "path": "./packages/examples"
+    },
+    {
+      "path": "./packages/container-server"
     }
   ],
   "include": [],

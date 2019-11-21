@@ -1,31 +1,32 @@
-import { App, Release } from "./app"
+import { App, Release } from "@fly/core"
 import * as path from "path"
 import * as fs from "fs"
 import * as YAML from "js-yaml"
 import * as glob from "glob"
 import * as chokidar from "chokidar"
 import { buildApp, buildAndWatchApp, BuildInfo, BuildOptions } from "@fly/build"
-import { formatByteLength } from "./utils/formatting"
+import { formatByteLength } from "@fly/core/lib/utils/formatting"
 
-export interface FileAppStoreOptions {
+export interface DevAppStoreOptions {
   appDir: string
   env: string
   app_name?: string
   buildDir?: string
 }
 
-export class FileAppStore {
+export class DevAppStore {
   public readonly app: App
   public readonly appDir: string
   public release: Release
   public readonly buildDir: string
   public readonly env: string
 
-  constructor(options: FileAppStoreOptions) {
+  constructor(options: DevAppStoreOptions) {
     this.appDir = options.appDir
     if (!fs.existsSync(this.appDir)) {
       throw new Error("Could not find path: " + this.appDir)
     }
+
     const stat = fs.statSync(this.appDir)
     if (!stat.isDirectory()) {
       this.appDir = path.dirname(this.appDir)
@@ -53,6 +54,10 @@ export class FileAppStore {
     // some callers expect config to be loaded after constructor returns
     this.buildConfig()
     this.loadSecrets()
+  }
+
+  public appName() {
+    return this.release.app
   }
 
   public async build(options: Partial<BuildOptions> = {}) {

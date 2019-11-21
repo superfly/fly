@@ -2,7 +2,7 @@ import * as glob from "glob"
 import { resolve as pathResolve } from "path"
 import { FlyCommand } from "../base-command"
 import * as sharedFlags from "../flags"
-import { FileAppStore } from "@fly/core"
+import { DevAppStore } from "../dev"
 import * as path from "path"
 import { createReleaseTarball } from "@fly/build"
 import Command, { flags as cmdFlags } from "@oclif/command"
@@ -38,7 +38,7 @@ export default class Build extends FlyCommand {
 
     this.log("Building", appName, `(env: ${env}, path: ${cwd})`)
 
-    const appStore = new FileAppStore({ appDir: cwd, env })
+    const appStore = new DevAppStore({ appDir: cwd, env })
     await appStore.build()
     const tarball = await createReleaseTarball(outFile, appStore.manifest())
 

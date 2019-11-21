@@ -1,7 +1,7 @@
 import { processResponse } from "../api"
 import { FlyCommand } from "../base-command"
 import * as sharedFlags from "../flags"
-import { FileAppStore } from "@fly/core"
+import { DevAppStore } from "../dev"
 import { createReleaseTarball } from "@fly/build"
 import * as path from "path"
 import * as fs from "fs"
@@ -27,7 +27,7 @@ export default class Deploy extends FlyCommand {
 
     this.log("Deploying", appName, `(env: ${env})`)
 
-    const appStore = new FileAppStore({ appDir: cwd, env })
+    const appStore = new DevAppStore({ appDir: cwd, env })
     await appStore.build()
 
     const outFile = path.resolve(cwd, ".fly/release.tar.gz")

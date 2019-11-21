@@ -1,12 +1,10 @@
 import * as fs from "fs"
 import * as path from "path"
 import glob = require("glob")
-import { Bridge } from "./bridge/bridge"
-import { LocalRuntime } from "./local_runtime"
-import { App } from "./app"
+import { App, Bridge, LocalRuntime, FileSystemBlobStore, LocalFileStore } from "@fly/core"
+import { v8envModulePath } from "@fly/core/lib/v8env"
+import { DevAppStore } from "./dev_app_store"
 import { SQLiteDataStore } from "./sqlite_data_store"
-import { v8envModulePath } from "./v8env"
-import { FileAppStore } from "./file_app_store"
 
 interface TestRunnerOptions {
   cwd: string
@@ -45,7 +43,7 @@ export class TestRunner {
     const { ivm } = require("./ivm")
 
     return new Promise<boolean>(async (resolve, reject) => {
-      const appStore = new FileAppStore({
+      const appStore = new DevAppStore({
         appDir: this.cwd,
         env: "test"
       })
@@ -64,7 +62,11 @@ export class TestRunner {
             secrets: {},
             env: appStore.env
           }),
-          new Bridge({ dataStore: new SQLiteDataStore(app.name, appStore.env) })
+          new Bridge({
+            blobStore: new FileSystemBlobStore(),
+            dataStore: new SQLiteDataStore(appStore.appName(), appStore.env),
+            fileStore: new LocalFileStore(this.cwd)
+          })
         )
 
         await rt.set(

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -ex
+
+DEST=$1
+
+mkdir -p $DEST
+
+yarn --cwd packages/v8env pack -f $DEST/v8env.tgz
+yarn --cwd packages/core pack -f $DEST/core.tgz
+yarn --cwd packages/container-server pack -f $DEST/container-server.tgz
+
+yarn --global-folder $DEST --cache-folder $DEST/cache global add file:./v8env.tgz
+yarn --global-folder $DEST --cache-folder $DEST/cache global add file:./core.tgz
+yarn --global-folder $DEST --cache-folder $DEST/cache global add file:./container-server.tgz
+
+rm -r $DEST/*.tgz $DEST/cache

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+docker build . -f docker/base.Dockerfile -t fly-edge-app-base
+docker build . --build-arg BASE_IMAGE=fly-edge-app-base -f docker/build.Dockerfile -t fly-edge-app-build
+docker build . --build-arg BASE_IMAGE=fly-edge-app-base -f docker/run.Dockerfile -t fly-edge-app-run

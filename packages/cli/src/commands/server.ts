@@ -2,8 +2,8 @@ import Command, { flags as cmdFlags } from "@oclif/command"
 import * as path from "path"
 import * as fs from "fs"
 import { spawn } from "child_process"
-import { FileAppStore } from "@fly/core/lib/file_app_store"
-import { Server } from "@fly/core/lib/server"
+import { Server, LocalFileStore, FileSystemBlobStore } from "@fly/core"
+import { DevAppStore, SQLiteDataStore } from "../dev"
 import { examplesPath } from "@fly/examples"
 import { FlyCommand } from "../base-command"
 import * as sharedFlags from "../flags"
@@ -38,7 +38,7 @@ export default class ServerCmd extends FlyCommand {
 
   public async run() {
     const { args, flags } = this.parse(ServerCmd)
-    let appDir = args.path || process.cwd()
+    let appDir = path.resolve(args.path || process.cwd())
 
     if (!fs.existsSync(appDir)) {
       appDir = (await getExamplePath(appDir)) || appDir
@@ -48,10 +48,7 @@ export default class ServerCmd extends FlyCommand {
     let port = flags.port!
     const env = flags.env!
 
-    const appStore = new FileAppStore({
-      appDir,
-      env
-    })
+    const appStore = new DevAppStore({ appDir, env })
 
     if (flags.watch) {
       appStore.watch({ uglify: flags.uglify })
@@ -59,11 +56,17 @@ export default class ServerCmd extends FlyCommand {
       appStore.build({ uglify: flags.uglify })
     }
 
-    const server = new Server({ appStore, env, inspect: !!flags.inspect })
-    console.log("Memory Cache Adapter: " + server.bridge.cacheStore.constructor.name)
-    if (server.bridge.blobStore) {
-      console.log(`Blob Cache Adapter: ${server.bridge.blobStore}`)
-    }
+    const server = new Server({
+      appStore,
+      env,
+      inspect: !!flags.inspect,
+      bridgeOptions: {
+        fileStore: new LocalFileStore(appDir),
+        blobStore: new FileSystemBlobStore(),
+        dataStore: new SQLiteDataStore(appStore.appName(), appStore.env)
+      }
+    })
+
     if (port === 3000) {
       // auto increment if default port in use
       server.on("error", (e: any) => {

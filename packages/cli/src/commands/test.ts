@@ -1,5 +1,5 @@
 import { FlyCommand } from "../base-command"
-import { TestRunner } from "@fly/core/lib/test_runner"
+import { TestRunner } from "../dev"
 
 export default class Test extends FlyCommand {
   public static description = `run unit tests`
