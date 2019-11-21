@@ -30,7 +30,6 @@
     "js-yaml": "^3.10.0",
     "mocha": "^4.0.1",
     "redis": "^2.8.0",
-    "semver": "^5.5.0",
     "sharp": "^0.23.3",
     "source-map": "^0.7.3",
     "ws": "^4.0.0"
@@ -43,7 +42,6 @@
     "@types/jest": "^24",
     "@types/js-yaml": "^3.10.1",
     "@types/redis": "^2.8.14",
-    "@types/semver": "^5.5.0",
     "@types/sharp": "^0.23.0",
     "@types/ws": "^4.0.0",
     "jest": "^24",

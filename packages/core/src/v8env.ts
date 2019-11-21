@@ -1,6 +1,5 @@
 import * as path from "path"
 import * as fs from "fs"
-import * as semver from "semver"
 
 import { EventEmitter } from "events"
 import { createHash } from "crypto"
