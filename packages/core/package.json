@@ -22,7 +22,6 @@
     "better-sqlite3": "^5.4.3",
     "chokidar": "^3.2.1",
     "console-log-level": "^1.4.0",
-    "execa": "^0.7.0",
     "glob": "^7.1.2",
     "ioredis": "^4",
     "ioredis-mock": "^4",
@@ -36,7 +35,6 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^5.4.0",
-    "@types/execa": "^0.7.0",
     "@types/glob": "^5.0.35",
     "@types/ioredis": "^4",
     "@types/jest": "^24",
