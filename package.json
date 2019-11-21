@@ -44,9 +44,6 @@
     "typescript": "3.7.2",
     "wait-on": "^3.2.0"
   },
-  "resolutions": {
-    "fsevents": "^1.2.9"
-  },
   "prettier": {
     "parser": "typescript",
     "semi": false,
