@@ -1,41 +1,43 @@
 {
-    "name": "@fly/v8env",
-    "version": "0.54.0",
-    "description": "Open source Edge Application runtime",
-    "license": "Apache-2.0",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/superfly/fly"
-    },
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
-    "files": [
-        "lib/",
-        "dist/",
-        "testing/",
-        "vendor/whatwg-streams/reference-implementation/lib/"
-    ],
-    "scripts": {
-        "build": "tsc -b .",
-        "build:watch": "tsc -b -w -v .",
-        "bundle": "webpack",
-        "doc": "./publish-docs.sh"
-    },
-    "dependencies": {
-        "@stardazed/streams-text-encoding": "^1.0.2",
-        "better-assert": "^1.0.2",
-        "cookie": "^0.3.1",
-        "css-select": "^1.3.0-rc0",
-        "domutils": "^1.6.2",
-        "eventemitter2": "^5.0.1",
-        "htmlparser2": "^3.9.2",
-        "http-cache-semantics": "^3.8.1"
-    },
-    "devDependencies": {
-        "@types/cookie": "^0.3.1",
-        "webpack": "^3.11.0"
-    },
-    "publishConfig": {
-        "access": "public"
-    }
+  "name": "@fly/v8env",
+  "version": "0.54.0",
+  "description": "Open source Edge Application runtime",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superfly/fly"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/",
+    "dist/",
+    "testing/",
+    "vendor/whatwg-streams/reference-implementation/lib/"
+  ],
+  "scripts": {
+    "build": "tsc -b .",
+    "build:watch": "tsc -b -w -v .",
+    "bundle": "webpack",
+    "doc": "./publish-docs.sh"
+  },
+  "dependencies": {
+    "@stardazed/streams-text-encoding": "^1.0.2",
+    "better-assert": "^1.0.2",
+    "cookie": "^0.3.1",
+    "css-select": "^1.3.0-rc0",
+    "domutils": "^1.6.2",
+    "eventemitter2": "^5.0.1",
+    "htmlparser2": "^3.9.2",
+    "http-cache-semantics": "^3.8.1"
+  },
+  "devDependencies": {
+    "@types/cookie": "^0.3.1",
+    "webpack": "^4",
+    "webpack-cli": "^3",
+    "ts-loader": "^6.2.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

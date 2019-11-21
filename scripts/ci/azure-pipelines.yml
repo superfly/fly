@@ -3,11 +3,11 @@ variables:
   - name: System.Debug
     value: true
   - name: cli_node_version
-    value: 11.10.1
+    value: 12.13.1
   - name: node_version
-    value: 11.10.1
+    value: 12.13.1
   - name: yarn_version
-    value: 1.15.2
+    value: 1.19.1
 
 jobs:
   - job: test

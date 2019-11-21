@@ -1,28 +1,28 @@
 {
-    "name": "@fly/test-environment",
-    "private": true,
-    "version": "0.54.1",
-    "license": "Apache-2.0",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/superfly/fly"
-    },
-    "main": "index.js",
-    "types": "lib/index.d.ts",
-    "files": [
-        "lib/"
-    ],
-    "scripts": {
-        "build": "tsc -b .",
-        "build:watch": "tsc -b -w -v ."
-    },
-    "dependencies": {
-        "@fly/core": "0.54.1",
-        "@types/node-fetch": "2.1.2",
-        "execa": "^1.0.0",
-        "jest": "^24.1.0",
-        "jest-environment-node": "^24.0.0",
-        "node-fetch": "2.2.0",
-        "ts-jest": "^24.0.0"
-    }
+  "name": "@fly/test-environment",
+  "private": true,
+  "version": "0.54.1",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/superfly/fly"
+  },
+  "main": "index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/"
+  ],
+  "scripts": {
+    "build": "tsc -b .",
+    "build:watch": "tsc -b -w -v ."
+  },
+  "dependencies": {
+    "@fly/core": "0.54.1",
+    "@types/node-fetch": "2.1.2",
+    "execa": "^1.0.0",
+    "jest": "^24",
+    "jest-environment-node": "^24",
+    "node-fetch": "2.2.0",
+    "ts-jest": "^24"
+  }
 }

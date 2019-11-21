@@ -162,8 +162,8 @@ class Generator {
 
     console.log("Installing packages...")
     const exec = execa("npm", ["install"], { cwd: this.rootDir })
-    exec.stdout.pipe(process.stdout)
-    exec.stderr.pipe(process.stderr)
+    exec.stdout?.pipe(process.stdout)
+    exec.stderr?.pipe(process.stderr)
 
     await exec
   }

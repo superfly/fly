@@ -125,7 +125,7 @@ export class TestServer {
       this.child.on("error", err => {
         console.warn(`[${this.alias}] process error`, { err })
       })
-      this.child.stdout.on("data", chunk => {
+      this.child.stdout?.on("data", chunk => {
         console.debug(`[${this.alias}] ${chunk}`)
       })
 

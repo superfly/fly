@@ -7,8 +7,8 @@
   },
   "devDependencies": {
     "@fly/core": "0.54.1",
-    "arraybuffer-loader": "^1.0.3",
+    "arraybuffer-loader": "^1.0.8",
     "chai": "^4.1.2",
-    "image-webpack-loader": "^4.3.1"
+    "image-webpack-loader": "^6.0.0"
   }
 }

@@ -1,6 +1,6 @@
 import { App, Release } from "./app"
 import * as path from "path"
-import * as fs from "fs-extra"
+import * as fs from "fs"
 import * as YAML from "js-yaml"
 import * as glob from "glob"
 import * as chokidar from "chokidar"
@@ -35,7 +35,7 @@ export class FileAppStore {
 
     this.buildDir = options.buildDir || path.join(this.appDir, ".fly", "build", this.env)
     if (!fs.existsSync(this.buildDir)) {
-      fs.mkdirpSync(this.buildDir)
+      fs.mkdirSync(this.buildDir, { recursive: true })
     }
 
     this.release = {

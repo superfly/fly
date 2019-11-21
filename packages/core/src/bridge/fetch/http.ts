@@ -54,7 +54,7 @@ export function handleRequest(
         if (init.tls && init.tls.servername) {
           reqOptions.servername = init.tls.servername
         } else {
-          reqOptions.servername = reqOptions.hostname
+          reqOptions.servername = reqOptions.hostname || ""
         }
         log.debug("Sending servername:", reqOptions.servername)
       }
