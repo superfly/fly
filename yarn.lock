@@ -2587,10 +2587,6 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.0.0.tgz#23c0df14f6a88077f5f986c0d167ec03c3d5537c"
   integrity sha512-Phlt0plgpIIBOGTT/ehfFnbNlfsDEiqmzE2KRXoX1bLIlir4X/MR+zSyBEkL05ffWgnRSf/DXv+WrUAVr93/ow==
 
-bindings@^1.2.1:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.3.0.tgz#b346f6ecf6a95f5a815c5839fc7cdb22502f1ed7"
-
 bl@^1.0.0:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/bl/-/bl-1.2.2.tgz#a160911717103c07410cef63ef51b397c025af9c"
@@ -9599,14 +9595,6 @@ seek-bzip@^1.0.5:
   resolved "https://registry.yarnpkg.com/seek-bzip/-/seek-bzip-1.0.5.tgz#cfe917cb3d274bcffac792758af53173eb1fabdc"
   dependencies:
     commander "~2.8.1"
-
-segfault-handler@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/segfault-handler/-/segfault-handler-1.3.0.tgz#054bc847832fa14f218ba6a79e42877501c8870e"
-  integrity sha512-p7kVHo+4uoYkr0jmIiTBthwV5L2qmWtben/KDunDZ834mbos+tY+iO0//HpAJpOFSQZZ+wxKWuRo4DxV02B7Lg==
-  dependencies:
-    bindings "^1.2.1"
-    nan "^2.14.0"
 
 semver-regex@^2.0.0:
   version "2.0.0"
