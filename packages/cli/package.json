@@ -58,8 +58,7 @@
     "@types/inquirer": "^0.0.44",
     "aws-sdk": "^2.428.0",
     "globby": "^8",
-    "ts-node": "^8",
-    "tslint": "^5"
+    "ts-node": "^8"
   },
   "oclif": {
     "description": "Fly edge application runtime",
