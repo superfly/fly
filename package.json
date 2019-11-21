@@ -12,7 +12,7 @@
     "build": "tsc -b .",
     "build:watch": "tsc -b -w -v .",
     "bundle": "lerna run bundle",
-    "clean-build": "rm -rf ./packages/*/lib ./packages/*/dist ./packages/*/tmp ./packages/*/tsconfig.tsbuildinfo",
+    "clean-build": "find . -name \".fly\" -type d -exec /bin/rm -rf {} + && rm -rf ./packages/*/lib ./packages/*/dist ./packages/*/tmp ./packages/*/tsconfig.tsbuildinfo",
     "clean": "yarn clean-build && lerna run --parallel clean",
     "clean:dependencies": "lerna clean && rm -rf node_modules",
     "lint": "yarn run tslint '{packages,tests}/*/{src,tests}/**/*.{ts,tsx}'",
