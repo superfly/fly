@@ -1,5 +1,5 @@
 import Database = require("better-sqlite3")
-import { mkdirpSync } from "fs-extra"
+import * as fs from "fs"
 import { DataStore, CollectionStore } from "./data_store"
 import log from "./log"
 import { Runtime } from "./runtime"
@@ -46,7 +46,7 @@ export class SQLiteDataStore implements DataStore {
   public db: Database.Database
   constructor(appName: string, env: string) {
     // FIXME: use correct cwd, for now: using default.
-    mkdirpSync(path.join(".fly", "data"))
+    fs.mkdirSync(path.join(".fly", "data"), { recursive: true })
     appName = appName.split(path.sep).join("-") // useful in our own testing environment
     this.db = new Database(path.join(".fly", "data", `${appName}-${env}.db`))
   }

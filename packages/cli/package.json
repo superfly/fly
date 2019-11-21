@@ -56,7 +56,6 @@
     "@oclif/tslint": "^3",
     "@types/execa": "^0.7.0",
     "@types/inquirer": "^0.0.44",
-    "@types/node": "^12",
     "aws-sdk": "^2.428.0",
     "globby": "^8",
     "ts-node": "^8",

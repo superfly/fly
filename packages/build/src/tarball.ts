@@ -1,5 +1,5 @@
 import * as path from "path"
-import * as fs from "fs-extra"
+import * as fs from "fs"
 import * as tarStream from "tar-stream"
 import * as zlib from "zlib"
 import { createHash } from "crypto"
@@ -19,7 +19,7 @@ export async function createReleaseTarball(
 
     const outDir = path.dirname(outFile)
     if (!fs.existsSync(outDir)) {
-      fs.mkdirpSync(outDir)
+      fs.mkdirSync(outDir, { recursive: true })
     }
 
     for (const { rootDir, files } of manifest) {
