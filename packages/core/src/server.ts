@@ -83,7 +83,7 @@ export class Server extends http.Server {
     })
     this.on("request", this.handleRequest.bind(this))
     this.on("listening", () => {
-      const addr = this.address()
+      const addr = this.address()!
       if (typeof addr === "string") {
         console.log(`Server listening on ${addr}`)
       } else {

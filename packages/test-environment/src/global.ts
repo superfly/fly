@@ -8,7 +8,7 @@ export function install(this: any) {
   })
 
   process.on("unhandledRejection", error => {
-    process.stderr.write(`Unhandled Rejection: ${error} ${error.stack}`)
+    process.stderr.write(`Unhandled Rejection: ${error} ${(error as any).stack}`)
   })
 
   Object.assign(global, {
