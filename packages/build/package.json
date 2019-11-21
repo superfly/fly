@@ -19,14 +19,14 @@
   "dependencies": {
     "@fly/v8env": "0.54.0",
     "tar-stream": "^2.0.1",
-    "ts-loader": "^3.5.0",
+    "ts-loader": "^6.2.1",
     "typescript": "3.7.2",
-    "uglifyjs-webpack-plugin": "^1.3.0",
-    "webpack": "^3.11.0"
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4"
   },
   "devDependencies": {
     "@types/tar-stream": "^1.6.0",
-    "@types/webpack": "^3.8.2"
+    "@types/webpack": "^4"
   },
   "publishConfig": {
     "access": "public"

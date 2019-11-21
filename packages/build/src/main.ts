@@ -106,6 +106,7 @@ export function getWebpackConfig(options: BuildOptions): webpack.Configuration {
 
   conf = {
     entry: getEntryFile(inputPath),
+    mode: "production",
     resolve: {
       extensions: [],
       alias: {},
