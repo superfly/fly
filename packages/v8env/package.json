@@ -1,6 +1,6 @@
 {
   "name": "@fly/v8env",
-  "version": "0.54.0",
+  "version": "0.55.0-pre.0",
   "description": "Open source Edge Application runtime",
   "license": "Apache-2.0",
   "repository": {
@@ -33,9 +33,9 @@
   },
   "devDependencies": {
     "@types/cookie": "^0.3.1",
+    "ts-loader": "^6.2.1",
     "webpack": "^4",
-    "webpack-cli": "^3",
-    "ts-loader": "^6.2.1"
+    "webpack-cli": "^3"
   },
   "publishConfig": {
     "access": "public"
