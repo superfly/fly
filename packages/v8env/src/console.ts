@@ -69,6 +69,7 @@ export const console: Console = {
   profileEnd: noop,
   table: noop,
   time: noop,
+  timeLog: noop,
   timeEnd: noop
 }
 
