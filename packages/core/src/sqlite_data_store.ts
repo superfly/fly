@@ -7,9 +7,9 @@ import * as path from "path"
 
 export class Collection implements CollectionStore {
   public name: string
-  public db: Database
+  public db: Database.Database
 
-  constructor(db: Database, name: string) {
+  constructor(db: Database.Database, name: string) {
     this.db = db
     this.name = name
   }
@@ -43,7 +43,7 @@ export class Collection implements CollectionStore {
 }
 
 export class SQLiteDataStore implements DataStore {
-  public db: Database
+  public db: Database.Database
   constructor(appName: string, env: string) {
     // FIXME: use correct cwd, for now: using default.
     mkdirpSync(path.join(".fly", "data"))
