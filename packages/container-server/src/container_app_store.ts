@@ -2,6 +2,7 @@ import { App, Release } from "@fly/core"
 import * as path from "path"
 import * as fs from "fs"
 import * as YAML from "js-yaml"
+import { findSecretsInConfig } from "@fly/core/lib/utils/app"
 
 export interface ContainerAppStoreOptions {
   dir: string
@@ -45,9 +46,22 @@ export class ContainerAppStore {
       sourceHash: "",
       config: rawConfig.config,
       files: rawConfig.files,
-      secrets: {}
+      secrets: findSecrets(rawConfig.config)
     }
 
     this.app = new App(this.release)
   }
+}
+
+function findSecrets(config: any) {
+  const secrets: { [key: string]: string } = {}
+
+  for (const secretName of findSecretsInConfig(config)) {
+    const secretVal = process.env[secretName.toUpperCase()]
+    if (secretVal != null) {
+      secrets[secretName] = secretVal
+    }
+  }
+
+  return secrets
 }
