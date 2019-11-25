@@ -10,10 +10,8 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
-    "lib/",
     "dist/",
-    "testing/",
-    "vendor/whatwg-streams/reference-implementation/lib/"
+    "testing/"
   ],
   "scripts": {
     "build": "tsc -b .",
@@ -21,21 +19,20 @@
     "bundle": "webpack",
     "doc": "./publish-docs.sh"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@stardazed/streams-text-encoding": "^1.0.2",
+    "@types/cookie": "^0.3.1",
     "better-assert": "^1.0.2",
     "cookie": "^0.3.1",
     "css-select": "^1.3.0-rc0",
     "domutils": "^1.6.2",
     "eventemitter2": "^5.0.1",
     "htmlparser2": "^3.9.2",
-    "http-cache-semantics": "^3.8.1"
-  },
-  "devDependencies": {
-    "@types/cookie": "^0.3.1",
+    "http-cache-semantics": "^3.8.1",
     "ts-loader": "^6.2.1",
-    "webpack": "^4",
-    "webpack-cli": "^3"
+    "webpack-cli": "^3",
+    "webpack": "^4"
   },
   "publishConfig": {
     "access": "public"
