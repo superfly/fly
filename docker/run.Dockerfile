@@ -4,7 +4,7 @@ FROM $BASE_IMAGE AS builder
 RUN scripts/release/pack-container-server ./tmp/container-server
 RUN node-prune ./tmp/container-server
 
-FROM mhart/alpine-node:slim-10
+FROM mhart/alpine-node:slim-12
 
 COPY --from=builder /src/tmp/container-server /fly
 

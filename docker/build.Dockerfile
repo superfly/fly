@@ -3,7 +3,7 @@ FROM $BASE_IMAGE AS builder
 
 RUN node-prune
 
-FROM mhart/alpine-node:10
+FROM mhart/alpine-node:12
 
 WORKDIR /fly
 

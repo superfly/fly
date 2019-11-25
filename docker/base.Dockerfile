@@ -1,6 +1,6 @@
-FROM mhart/alpine-node:10 AS builder
+FROM mhart/alpine-node:12 AS builder
 
-RUN apk add python make build-base libexecinfo-dev libpng-dev bash curl
+RUN apk add python make build-base libexecinfo-dev libpng-dev bash curl autoconf
 RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash -s -- -b /usr/local/bin
 
 WORKDIR /src
