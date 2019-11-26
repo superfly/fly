@@ -12,6 +12,7 @@ export function initRedisClient(opts: RedisConnectionOptions) {
   if (typeof opts === "string") {
     opts = { url: opts }
   }
+  opts = { ...opts, no_ready_check: true }
   const r = redis.createClient(opts)
   console.debug("Connected to redis:", (r as any).address)
   return r

@@ -1,4 +1,4 @@
-import { Server, LocalFileStore } from "@fly/core"
+import { Server, LocalFileStore, BridgeOptions, RedisCacheStore } from "@fly/core"
 import { ContainerAppStore } from "./container_app_store"
 
 console.log(process.argv)
@@ -17,13 +17,19 @@ const appStore = new ContainerAppStore({
   env
 })
 
+const bridgeOptions: BridgeOptions = {
+  fileStore: new LocalFileStore(bundleDir)
+}
+
+if (process.env.FLY_REDIS_CACHE_URL) {
+  bridgeOptions.cacheStore = new RedisCacheStore(process.env.FLY_REDIS_CACHE_URL)
+}
+
 const server = new Server({
   appStore,
   env,
   inspect: false,
-  bridgeOptions: {
-    fileStore: new LocalFileStore(bundleDir)
-  }
+  bridgeOptions
 })
 
 server.listen(port)
