@@ -37,5 +37,5 @@
     "ts-node": "^8",
     "tslint": "^5"
   },
-  "private": true
+  "private": false
 }
