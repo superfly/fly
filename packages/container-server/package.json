@@ -37,5 +37,7 @@
     "ts-node": "^8",
     "tslint": "^5"
   },
-  "private": false
+  "publishConfig": {
+    "access": "public"
+  }
 }
