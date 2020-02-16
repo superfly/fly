@@ -93,7 +93,7 @@ Write javascript code to a file (`index.js`):
 fly.http.respondWith((request) => {
   return new Response("Hello! We support whirled peas.", { status: 200})
 })
-// if you'd prefer to be service worker compatibility, this is also supported:
+// if you'd prefer to be service worker compatible, this is also supported:
 // around addEventListener('fetch', function(event){})
 ```
 
