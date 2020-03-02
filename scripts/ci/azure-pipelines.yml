@@ -135,6 +135,22 @@ jobs:
         displayName: Update homebrew
         env:
           GITHUB_AUTH: $(GITHUB_AUTH)
+
+  - job: build_docker_images
+    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+    dependsOn: test
+    pool:
+      vmImage: ubuntu-16.04
+    steps:
+      - bash: ./scripts/build-images
+        displayName: Build Firecracker Base Images
+      - task: Docker@2
+        displayName: Push Firecracker base images
+        inputs:
+          containerRegistry: $(dockerHub)
+          repository: $(imageName)
+          command: push
+          tags: latest
   #
   # - job: Windows
   #   pool:
