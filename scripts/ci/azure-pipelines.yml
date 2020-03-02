@@ -145,10 +145,17 @@ jobs:
       - bash: ./scripts/build-images
         displayName: Build Firecracker Base Images
       - task: Docker@2
-        displayName: Push Firecracker base images
+        displayName: Push build image
         inputs:
-          containerRegistry: $(dockerHub)
-          repository: $(imageName)
+          containerRegistry: "Docker Hub (md)"
+          repository: flyio/js-app-build
+          command: push
+          tags: latest
+      - task: Docker@2
+        displayName: Push run image
+        inputs:
+          containerRegistry: "Docker Hub (md)"
+          repository: flyio/js-app-run
           command: push
           tags: latest
   #
