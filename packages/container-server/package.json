@@ -1,6 +1,6 @@
 {
   "name": "@fly/container-server",
-  "version": "0.55.0-pre.1",
+  "version": "0.55.0",
   "description": "fly container server",
   "homepage": "https://github.com/superfly/fly#readme",
   "license": "Apache-2.0",
@@ -27,8 +27,8 @@
     "url": "https://github.com/superfly/fly/issues"
   },
   "dependencies": {
-    "@fly/core": "0.55.0-pre.1",
-    "@fly/v8env": "0.55.0-pre.1",
+    "@fly/core": "0.55.0",
+    "@fly/v8env": "0.55.0",
     "js-yaml": "^3.13.0",
     "mksuid": "0.0.3",
     "tslib": "^1"
