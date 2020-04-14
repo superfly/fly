@@ -5,7 +5,7 @@ import * as fs from "fs"
 
 const { version } = require("../package.json")
 
-const baseURL = process.env.FLY_BASE_URL || "https://fly.io"
+const baseURL = process.env.FLY_BASE_URL || "https://api.fly.io"
 
 export function gqlClient(token: string) {
   return new GraphQLClient(token)
