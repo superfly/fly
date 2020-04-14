@@ -15,7 +15,7 @@ jobs:
       maxParallel: 2
       matrix:
         mac:
-          vm: macOS-10.13
+          vm: macOS-latest
         linux:
           vm: ubuntu-16.04
     pool:
@@ -75,7 +75,7 @@ jobs:
       maxParallel: 2
       matrix:
         mac:
-          vm: xcode9-macos10.13
+          vm: macOS-latest
           target: darwin-x64
         linux:
           vm: ubuntu-16.04
