@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.55.2](https://github.com/superfly/fly/compare/v0.55.1...v0.55.2) (2020-04-15)
+
+
+### Bug Fixes
+
+* include lib in bundled v8env package ([98c21ac](https://github.com/superfly/fly/commit/98c21ac780d0b58e895e7f883d9e2d1f73788295))
+
+
+
+
+
 ## [0.55.1](https://github.com/superfly/fly/compare/v0.55.0...v0.55.1) (2020-04-15)
 
 

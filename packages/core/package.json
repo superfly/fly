@@ -1,6 +1,6 @@
 {
   "name": "@fly/core",
-  "version": "0.55.0",
+  "version": "0.55.2",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
     "build:watch": "tsc -b -w -v ."
   },
   "dependencies": {
-    "@fly/v8env": "0.55.0",
+    "@fly/v8env": "0.55.2",
     "console-log-level": "^1.4.0",
     "ioredis": "^4",
     "ioredis-mock": "^4",
