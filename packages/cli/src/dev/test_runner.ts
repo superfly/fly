@@ -40,7 +40,7 @@ export class TestRunner {
       throw new Error("no test files found")
     }
 
-    const { ivm } = require("./ivm")
+    const { ivm } = require("@fly/core/lib/ivm")
 
     return new Promise<boolean>(async (resolve, reject) => {
       const appStore = new DevAppStore({
