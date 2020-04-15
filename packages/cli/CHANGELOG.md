@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.55.1](https://github.com/superfly/fly/compare/v0.55.0...v0.55.1) (2020-04-15)
+
+
+### Bug Fixes
+
+* ivm path ([decdbc6](https://github.com/superfly/fly/commit/decdbc6851f4efecd2dfd1749b577e80883b2502))
+
+
+
+
+
 # [0.55.0](https://github.com/superfly/fly/compare/v0.55.0-pre.1...v0.55.0) (2020-04-14)
 
 **Note:** Version bump only for package @fly/cli
