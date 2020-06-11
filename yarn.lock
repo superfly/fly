@@ -244,6 +244,35 @@
     reflect-metadata "^0.1.12"
     tslib "^1.8.1"
 
+"@fly/cli@0.55.2":
+  version "0.55.2"
+  resolved "https://registry.yarnpkg.com/@fly/cli/-/cli-0.55.2.tgz#5755a6ca9e553fad2dd1c12ed00e633ecda967a3"
+  integrity sha512-GIRoGAuKmiXZ0bd7YzcK9oFMj4v7DWSIcO4eUoxQYXQSf7/Wnwwbyp+F/j76h3lvn3aR58mbbQPbCzzzvyURDQ==
+  dependencies:
+    "@fly/build" "0.55.2"
+    "@fly/core" "0.55.2"
+    "@fly/examples" "0.50.0"
+    "@fly/v8env" "0.55.2"
+    "@oclif/command" "^1"
+    "@oclif/config" "^1"
+    "@oclif/plugin-help" "^2"
+    "@oclif/plugin-update" "^1.3.9"
+    "@oclif/plugin-warn-if-update-available" "^1.7.0"
+    axios "^0.18.0"
+    better-sqlite3 "^5.4.3"
+    chalk "^2.4.2"
+    chokidar "^3.2.1"
+    cli-ux "^5.2.1"
+    execa "^0.7.0"
+    form-data "^2.5.0"
+    glob "^7.1.2"
+    inquirer "^6.2.2"
+    js-yaml "^3.13.0"
+    mocha "^4.0.1"
+    netrc-parser "^3.1.6"
+    node-fetch "^2.6.0"
+    tslib "^1"
+
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-24.9.0.tgz#79b1bc06fb74a8cfb01cbdedf945584b1b9707f0"

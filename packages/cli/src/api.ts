@@ -5,7 +5,7 @@ import { FlyCommand } from "./base-command"
 const { version } = require("../package.json")
 
 export function apiClient(token: string) {
-  const baseURL = process.env.FLY_BASE_URL || "https://fly.io"
+  const baseURL = process.env.FLY_BASE_URL || "https://web.fly.io"
 
   return axios.create({
     baseURL,

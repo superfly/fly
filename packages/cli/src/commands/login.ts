@@ -4,7 +4,7 @@ import { cli } from "cli-ux"
 import axios from "axios"
 import { storeCredentials, credentialsPath, storeNetrcCredentials } from "../credentials"
 
-const baseURL = process.env.FLY_BASE_URL || "https://fly.io"
+const baseURL = process.env.FLY_BASE_URL || "https://web.fly.io"
 
 export default class Login extends FlyCommand {
   static description = `login to fly`
