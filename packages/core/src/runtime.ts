@@ -1,13 +1,14 @@
 import { ivm } from "."
 import { App } from "./app"
+import { ResultTypeAsync, Transferable } from "isolated-vm"
 
 export interface Runtime {
   isolate: ivm.Isolate
   context: ivm.Context
   app: App
 
-  get(name: string): Promise<ivm.Reference<any>>
-  getSync(name: string): ivm.Reference<any>
+  get(name: string): ResultTypeAsync<any>
+  getSync(name: string): Transferable
   set(name: string, value: any): Promise<boolean>
   setSync(name: string, value: any): boolean
 

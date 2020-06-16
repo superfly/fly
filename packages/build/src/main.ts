@@ -160,7 +160,6 @@ export function getWebpackConfig(options: BuildOptions): webpack.Configuration {
           "@fly/v8env": [v8EnvPath],
           "@fly/v8env/lib/*": [path.join(v8EnvPath, "*")]
         },
-        baseUrl: "."
       }
     }
   })

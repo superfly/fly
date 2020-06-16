@@ -190,7 +190,7 @@ export const streamManager = {
       throw new Error("stream closed, not found or destroyed")
     }
     if (info.stream instanceof Writable) {
-      //@ts-ignore
+      // @ts-ignore
       setImmediate(() => info.stream.end(chunk))
     } else {
       throw new Error("Stream cannot be written to")

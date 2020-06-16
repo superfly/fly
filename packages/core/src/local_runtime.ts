@@ -7,6 +7,7 @@ import log from "./log"
 
 import * as WebSocket from "ws"
 import { inspect } from "util"
+import { Reference, Transferable } from "isolated-vm"
 
 export interface LocalRuntimeOptions {
   inspect?: boolean
@@ -99,12 +100,12 @@ export class LocalRuntime implements Runtime {
       })
     )
 
-    const bootstrap = g.getSync("bootstrap")
-    bootstrap.applySync()
+    const bootstrap = g.getSync("bootstrap") as Reference
+    bootstrap!.applySync()
 
-    const bootstrapBridge = g.getSync("bootstrapBridge")
-    bootstrapBridge.applySync(null, [
-      ivm,
+    const bootstrapBridge = g.getSync("bootstrapBridge") as Reference
+    bootstrapBridge!.applySync(null, [
+      ivm as unknown as Reference,
       new ivm.Reference((name: string, ...args: any[]) => {
         return this.bridge.dispatch(this, name, ...args)
       })
@@ -158,7 +159,7 @@ async function startInspector(iso: ivm.Isolate) {
     ws.on("close", dispose)
 
     // Relay messages from frontend to backend
-    ws.on("message", message => {
+    ws.on("message", (message: string) => {
       try {
         channel.dispatchProtocolMessage(message)
       } catch (err) {
@@ -175,7 +176,7 @@ async function startInspector(iso: ivm.Isolate) {
         dispose()
       }
     }
-    channel.onResponse = (callId: any, message: any) => send(message)
+    channel.onResponse = (message: any) => send(message)
     channel.onNotification = send
   })
   console.log(
