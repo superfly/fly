@@ -20,7 +20,7 @@
     "console-log-level": "^1.4.0",
     "ioredis": "^4",
     "ioredis-mock": "^4",
-    "isolated-vm": "^3.3.3",
+    "isolated-vm": "3.3.0",
     "redis": "^2.8.0",
     "sharp": "^0.23.3",
     "source-map": "^0.7.3",
