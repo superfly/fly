@@ -16,6 +16,7 @@ Fly is a hosting platform for running app servers close to users.
   The command line interface for deploying and managing Fly hosted applications.
 * __[Speedrun](https://fly.io/docs/speedrun/)__<br>A *really* quick start, deploy a Docker image to Fly with just a few commands.
 * __[Documentation](https://fly.io/docs/)__<br>Reference documentation for the Fly platform, configuration options, etc.
+* __[Fly JS](https://github.com/superfly/flyjs)__ (*deprecated*)<br>The Fly JavaScript runtime for building edge apps.
 
 ## Write for Fly
 
