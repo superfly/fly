@@ -1,0 +1,8 @@
+[submodule "flyctl"]
+	path = flyctl
+	branch = master
+	url = https://github.com/superfly/flyctl
+[submodule "example-projects/edge-apollo-cache"]
+	path = example-projects/edge-apollo-cache
+	branch = master
+	url = https://github.com/fly-examples/edge-apollo-cache
